@@ -80,18 +80,13 @@ class BackupConfig(models.Model):
     send_to_s3 = fields.Boolean('Enviar Amazon S3 ?')
     aws_access_key = fields.Char(string="Chave API S3", size=100)
     aws_secret_key = fields.Char(string="Chave Secreta API S3", size=100)
-    backup_dir = fields.Char(string=u"Diretório", size=300)
+    backup_dir = fields.Char(string=u"Diretório", size=300,
+                             default="/opt/backups/database/")
 
     next_backup = fields.Datetime(string=u"Próximo Backup")
     backup_count = fields.Integer(
         string=u"Nº Backups",
         compute='_get_total_backups')
-
-    _defaults = {
-        'backup_dir': '/opt/backups/database/',
-        'host': lambda *a: 'localhost',
-        'port': lambda *a: '8069'
-    }
 
     def _set_next_backup(self):
         if self.interval == 'hora':
