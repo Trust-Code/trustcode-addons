@@ -7,7 +7,7 @@
     'name': 'Trustcode Backup Simples',
     'summary': """Trustcode simples ferramenta de backup""",
     'version': '8.0',
-    'category': 'Tools',
+    'category': 'Extra Tools',
     'author': 'Trustcode',
     'license': 'AGPL-3',
     'website': 'http://www.trustcode.com.br',
