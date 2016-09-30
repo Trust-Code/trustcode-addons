@@ -23,18 +23,16 @@
         </field>
     </record>
 
-    <record id="hr_timesheet_line_form" model="ir.ui.view">
-        <field name="name">account.analytic.line.form.inherit.hr_timesheet</field>
+    <record id="view_account_analytic_line_form" model="ir.ui.view">
+        <field name="name">account.analytic.line.form.inherit.analytic</field>
         <field name="model">account.analytic.line</field>
         <field name="inherit_id" ref="analytic.view_account_analytic_line_form"/>
         <field name="arch" type="xml">
-            <data>
-                <field name="date" position="after">
-                    <field name="running_time" readonly="1" />
-                    <field name="start_date" />
-                    <field name="end_date" />
-                </field>
-            </data>
+            <field name="date" position="after">
+                <field name="running_time" readonly="1" />
+                <field name="start_date" />
+                <field name="end_date" />
+            </field>
         </field>
     </record>
 

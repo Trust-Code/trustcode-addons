@@ -4,18 +4,18 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 
-from odoo import api, fields, models, tools
+from odoo import api, models, tools
 from datetime import datetime
 
 
-class ProjectTask (models.Model):
-    _inherit = 'project.task'
+class ProjectIssue(models.Model):
+    _inherit = 'project.issue'
 
     def start_track_time(self, stage_name, user_id):
         df = tools.DEFAULT_SERVER_DATETIME_FORMAT
         self.env['account.analytic.line'].sudo().create(
             {'name': u'Tempo Automático (%s)' % (stage_name),
-             'task_id': self.id,
+             'issue_id': self.id,
              'project_id': self.project_id.id,
              'date': datetime.now().strftime(df),
              'start_date': datetime.now().strftime(df),
@@ -27,7 +27,8 @@ class ProjectTask (models.Model):
     def stop_track_time(self, user_id):
         task_work = self.env['account.analytic.line'].sudo().search(
             [('user_id', '=', user_id),
-             ('running_time', '=', True)],
+             ('running_time', '=', True),
+             ('issue_id', '=', self.id)],
             order='id desc', limit=1)
 
         if task_work:
@@ -64,18 +65,4 @@ class ProjectTask (models.Model):
             self.start_track_time(
                 self.stage_id.name, vals["user_id"] or self.env.user.id)
 
-        return super(ProjectTask, self).write(vals)
-
-
-class ProjectTaskType(models.Model):
-    _inherit = 'project.task.type'
-
-    tracking_time = fields.Boolean('Registrar Tempo neste estágio?')
-
-
-class AccountAnalyticLine(models.Model):
-    _inherit = 'account.analytic.line'
-
-    start_date = fields.Datetime('Inicio Atividade')
-    end_date = fields.Datetime('Fim Atividade')
-    running_time = fields.Boolean('Em execução')
+        return super(ProjectIssue, self).write(vals)

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_project_issue_track_time_account_analytic_form" model="ir.ui.view">
+        <field name="name">project.issue.track.time.account.analytic.form</field>
+        <field name="model">project.issue</field>
+        <field name="inherit_id" ref="project_issue_sheet.project_issue_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='timesheet_ids']/tree/field[@name='project_id']" position="after">
+                <field name="running_time" readonly="1" />
+            </xpath>
+        </field>
+    </record>
+
+</odoo>
