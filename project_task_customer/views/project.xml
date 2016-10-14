@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_project_customer_task_kanban" model="ir.ui.view">
+        <field name="name">project.customer.project.task.kanban</field>
+        <field name="model">project.task</field>
+        <field name="inherit_id" ref="project.view_task_kanban"/>
+        <field name="arch" type="xml">
+            <field name="user_id" position="after">
+                <field name="partner_id" />
+            </field>
+            <div class="oe_kanban_bottom_right" position="inside">
+                <img t-if="record.partner_id" t-att-src="kanban_image('res.partner', 'image_small', record.partner_id.raw_value)" t-att-title="record.partner_id.value" width="24" height="24" class="oe_kanban_avatar pull-right"/>
+            </div>
+        </field>
+    </record>
+
+    <record id="view_project_customer_issue_kanban" model="ir.ui.view">
+        <field name="name">project.customer.project.issue.kanban</field>
+        <field name="model">project.issue</field>
+        <field name="inherit_id" ref="project_issue.project_issue_kanban_view"/>
+        <field name="arch" type="xml">
+            <field name="user_id" position="after">
+                <field name="partner_id" />
+            </field>
+            <div class="oe_kanban_bottom_right" position="inside">
+                <img t-if="record.partner_id" t-att-src="kanban_image('res.partner', 'image_small', record.partner_id.raw_value)" t-att-title="record.partner_id.value" width="24" height="24" class="oe_kanban_avatar pull-right"/>
+            </div>
+        </field>
+    </record>
+
+
+
+</odoo>
