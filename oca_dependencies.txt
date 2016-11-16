@@ -1,0 +1,1 @@
+odoo-brasil https://github.com/Trust-Code/odoo-brasil.git
