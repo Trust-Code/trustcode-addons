@@ -5,17 +5,20 @@
 import os
 import time
 import socket
-import odoorpc
 import logging
-
-from boto.s3.connection import S3Connection
-from boto.s3.key import Key
 
 from odoo import api, fields, models
 from odoo.exceptions import Warning
 from datetime import datetime, timedelta
 
 _logger = logging.getLogger(__name__)
+
+try:
+    import odoorpc
+    from boto.s3.connection import S3Connection
+    from boto.s3.key import Key
+except ImportError:
+    _logger.debug('Cannot import boto and or odoorpc')
 
 
 def execute(connector, method, *args):
