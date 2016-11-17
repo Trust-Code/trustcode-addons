@@ -10,7 +10,7 @@
     'website': 'http://trustcode.com.br/',
     'version': '10.0.1.0.0',
     'depends': [
-        'br_sale',
+        'purchase',
     ],
     'data': [
         'views/purchase_order.xml',
