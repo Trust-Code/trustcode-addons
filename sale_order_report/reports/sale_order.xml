@@ -138,7 +138,7 @@
                                 </td>
                                 <td class="text-right">
                                     <span t-field="l.price_unit"
-                                        t-field-options='{"widget": "monetary", "display_currency": "doc.pricelist_id.currency_id"}'/>
+                                        t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
                                 </td>
                                 <td class="text-center">
                                     <span t-foreach="l.tax_id" t-as="ltax">
@@ -155,11 +155,11 @@
                                     </span>
                                 </td>
                                 <td class="text-right">
-                                    <span t-field="l.product_id.fiscal_classification_id.name"/>
+                                    <span t-field="l.product_id.fiscal_classification_id.code"/>
                                 </td>
                                 <td class="text-right">
                                     <span t-field="l.price_subtotal"
-                                        t-field-options='{"widget": "monetary", "display_currency": "doc.pricelist_id.currency_id"}'/>
+                                        t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
                                 </td>
                                 <td class="text-center" width="60">
                                     <span t-esc="str(int(l.customer_lead)) + ' dias'" />
@@ -174,28 +174,28 @@
                                     <td><strong>Total Bruto</strong></td>
                                     <td class="text-right">
                                         <span t-field="doc.total_bruto"
-                                            t-field-options='{"widget": "monetary", "display_currency": "doc.pricelist_id.currency_id"}'/>
+                                            t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
                                     </td>
                                 </tr>
                                 <tr name="total_desconto">
                                     <td>Total Descontos</td>
                                     <td class="text-right">
                                         <span t-field="doc.total_desconto"
-                                            t-field-options='{"widget": "monetary", "display_currency": "doc.pricelist_id.currency_id"}'/>
+                                            t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
                                     </td>
                                 </tr>
                                 <tr name="total_tax">
                                     <td>Impostos (IPI + ST)</td>
                                     <td class="text-right">
                                         <span t-field="doc.total_tax"
-                                            t-field-options='{"widget": "monetary", "display_currency": "doc.pricelist_id.currency_id"}'/>
+                                            t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
                                     </td>
                                 </tr>
                                 <tr class="border-black">
                                     <td><strong>Total</strong></td>
                                     <td class="text-right">
                                         <span t-field="doc.amount_total"
-                                            t-field-options='{"widget": "monetary", "display_currency": "doc.pricelist_id.currency_id"}'/>
+                                            t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
                                     </td>
                                 </tr>
                             </table>
