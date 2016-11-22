@@ -20,7 +20,8 @@ encomendas""",
         'stock', 'delivery'
     ],
     'data': [
-        'views/trust_correios.xml',
+        'views/delivery_carrier.xml',
+        'views/sale_order.xml',
     ],
     'application': True,
     'instalable': False,

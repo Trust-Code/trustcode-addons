@@ -192,11 +192,13 @@
                                     </td>
                                 </tr>
                                 <tr class="border-black">
-                                    <td><strong>Total</strong></td>
-                                    <td class="text-right">
-                                        <span t-field="doc.amount_total"
-                                            t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
-                                    </td>
+                                    <div name="total">
+                                        <td><strong>Total</strong></td>
+                                        <td class="text-right">
+                                            <span t-field="doc.amount_total"
+                                                t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
+                                        </td>
+                                    </div>
                                 </tr>
                             </table>
                         </div>
