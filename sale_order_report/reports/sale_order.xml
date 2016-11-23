@@ -6,7 +6,7 @@
             <t t-set="doc" t-value="doc.with_context({'lang':doc.partner_id.lang})" />
 
             <div class="page">
-                <div class="oe_structure">
+                <div id="informations" class="oe_structure">
                     <div class="row" style="border-bottom:1px solid black; padding-bottom: 4px;">
                         <div class="col-xs-3">
                             <img t-if="doc.company_id.logo" t-att-src="'data:image/png;base64,%s' % doc.company_id.logo" style="max-height: 75px; padding-top: 2px; text-align:center"/>
@@ -94,7 +94,7 @@
                         </t>
                     </div>
                     <div class="row" style="padding-bottom: 10px; padding-top: 10px;">
-                        <div class="col-xs-4">
+                        <div id="informations" class="col-xs-4">
                             <strong class="small">Condição Pagamento: </strong><span style="font-size:11px" t-field="doc.payment_term_id"></span> <br />
                             <strong class="small">Validade Proposta: </strong><span style="font-size:11px" t-field="doc.validity_date"></span> <br />
                             <strong class="small">Moeda: </strong> <span style="font-size:11px" t-field="doc.currency_id"></span> <br />
@@ -204,6 +204,8 @@
                         </div>
                     </div>
                 </div>
+                <p id="fiscal_position_remark">
+                </p>
             </div>
         </t>
     </template>

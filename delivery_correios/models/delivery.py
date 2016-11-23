@@ -36,10 +36,11 @@ class DeliveryCarrier(models.Model):
 
     delivery_type = fields.Selection(
         selection_add=[('correios', 'Correios')])
+    service_id = fields.Many2one('delivery.correios.service', string="Serviço")
     service_ids = fields.One2many('delivery.correios.service', 'delivery_id')
 
     @api.one
-    def gerar_servicos(self):
+    def action_get_correio_services(self):
         req = BuscaCliente(self.num_contrato, self.cartao_postagem,
                            self.correio_login, self.correio_password)
 
@@ -64,13 +65,13 @@ class DeliveryCarrier(models.Model):
         custos = []
         for order in orders:
             custo = 0.0
-            if not order.service_id:
-                raise UserError('Escolha o tipo de serviço para poder calcular \
-                                corretamente o frete dos correios')
+            if not self.service_id:
+                raise UserError(u'Escolha o tipo de serviço para poder \
+                                calcular corretamente o frete dos correios')
 
             cod_administrativo = self.cod_administrativo
             senha = self.correio_password
-            codigo_servico = order.service_id.code
+            codigo_servico = self.service_id.code
             origem = '88032-050'
             destino = '88037-240'
             peso = '0.650'
@@ -80,7 +81,6 @@ class DeliveryCarrier(models.Model):
             mao_propria = 'N'
             valor_declarado = 0.0
             aviso_recebimento = 'N'
-
             consulta = CalcularPrecoPrazo(cod_administrativo, senha,
                                           codigo_servico, origem, destino,
                                           peso, formato, comprimento, altura,
@@ -104,7 +104,6 @@ class DeliveryCarrier(models.Model):
                          { 'exact_price': price,
                            'tracking_number': number }
         '''
-        # TODO Criar a etiqueta e o código de rastreio aqui
         return [{
             'exact_price': 22.67,
             'tracking_number': 123
@@ -125,6 +124,4 @@ class DeliveryCarrier(models.Model):
 
         :param pickings: A recordset of pickings
         '''
-        print "============================================"
-        print "como cancelar entrega correios ?"
-        print "============================================"
+        pass
