@@ -20,6 +20,7 @@ encomendas""",
         'stock', 'delivery'
     ],
     'data': [
+        'security/ir.model.access.csv',
         'views/delivery_carrier.xml',
         'views/sale_order.xml',
     ],
