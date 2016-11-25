@@ -94,12 +94,10 @@
                         </t>
                     </div>
                     <div class="row" style="padding-bottom: 10px; padding-top: 10px;">
-                        <div id="informations" class="col-xs-4">
+                        <div id="sale_information" class="col-xs-4">
                             <strong class="small">Condição Pagamento: </strong><span style="font-size:11px" t-field="doc.payment_term_id"></span> <br />
                             <strong class="small">Validade Proposta: </strong><span style="font-size:11px" t-field="doc.validity_date"></span> <br />
                             <strong class="small">Moeda: </strong> <span style="font-size:11px" t-field="doc.currency_id"></span> <br />
-                            <div name="payment_term" style="display:none;">
-                            </div>
                         </div>
                         <div class="col-xs-8">
                             <div class="col-xs-12">
