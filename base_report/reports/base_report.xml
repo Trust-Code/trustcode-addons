@@ -30,6 +30,7 @@
                     <strong><span t-field="company.name" /></strong>
                 </div>
             </div>
+            <div name="company_address" style="display:none;"></div>
         </div>
     </template>
 
