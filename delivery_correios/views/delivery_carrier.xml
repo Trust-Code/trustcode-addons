@@ -18,6 +18,11 @@
                             <field name="num_contrato" attrs="{'required': [('delivery_type', '=', 'correios')]}" />
                             <field name="cartao_postagem" attrs="{'required': [('delivery_type', '=', 'correios')]}"  />
                         </group>
+                        <group>
+                            <field name="mao_propria"  attrs="{'invisible': [('delivery_type', '!=', 'correios')]}"/>
+                            <field name="aviso_recebimento"  attrs="{'invisible': [('delivery_type', '!=', 'correios')]}"/>
+                            <field name="valor_declarado"  attrs="{'invisible': [('delivery_type', '!=', 'correios')]}"/>
+                        </group>
                     </group>
                     <group>
                         <button string="Buscar Serviços de Postagem" type="object" name="action_get_correio_services" class="oe_highlight"/>

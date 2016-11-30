@@ -8,8 +8,6 @@
         <field name="arch" type="xml">
             <field name="carrier_id" position="after">
                 <field name="delivery_type" invisible="1" />
-                <field name="service_id" attrs="{'invisible': [('delivery_type', '!=', 'correios')],
-                                                'required': [('delivery_type', '=', 'correios')]}" />
             </field>
         </field>
     </record>

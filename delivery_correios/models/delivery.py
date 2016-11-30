@@ -37,7 +37,11 @@ class DeliveryCarrier(models.Model):
     delivery_type = fields.Selection(
         selection_add=[('correios', 'Correios')])
     service_id = fields.Many2one('delivery.correios.service', string="Serviço")
-    service_ids = fields.One2many('delivery.correios.service', 'delivery_id')
+    mao_propria = fields.Selection([('S', 'Sim'), ('N', 'Não')],
+                                   string='Entregar em Mão Própria')
+    valor_declarado = fields.Boolean('Valor Declarado')
+    aviso_recebimento = fields.Selection([('S', 'Sim'), ('N', 'Não')],
+                                         string='Receber Aviso de Entrega')
 
     @api.one
     def action_get_correio_services(self):
@@ -45,15 +49,19 @@ class DeliveryCarrier(models.Model):
                            self.correio_login, self.correio_password)
 
         objeto_resposta = req.execute()
-
         self.service_ids.unlink()
         for item in objeto_resposta.contratos.cartoesPostagem.servicos:
-            self.env['delivery.correios.service'].create({
-                'code': item.codigo,
-                'identifier': item.id,
-                'name': item.descricao,
-                'delivery_id': self.id,
-            })
+            correio = self.env['delivery.correios.service']
+            item_correio = correio.search([('code', '=', item.codigo)])
+            if len(item_correio) == 1:
+                item_correio[0].update({'name': item.descricao})
+            else:
+                correio.create({
+                    'code': item.codigo,
+                    'identifier': item.id,
+                    'name': item.descricao,
+                    'delivery_id': self.id,
+                })
 
     def correios_get_shipping_price_from_so(self, orders):
         ''' For every sale order, compute the price of the shipment
@@ -62,6 +70,8 @@ class DeliveryCarrier(models.Model):
         :return list: A list of floats, containing the estimated price for the
          shipping of the sale order
         '''
+        if len(orders.order_line) == 0:
+            raise UserError(u'Não existe nenhum item para calcular')
         custos = []
         for order in orders:
             custo = 0.0
@@ -72,26 +82,31 @@ class DeliveryCarrier(models.Model):
             cod_administrativo = self.cod_administrativo
             senha = self.correio_password
             codigo_servico = self.service_id.code
-            origem = '88032-050'
-            destino = '88037-240'
-            peso = '0.650'
-            formato = 1
-            comprimento = altura = largura = 30.0
-            diametro = 0.0
-            mao_propria = 'N'
-            valor_declarado = 0.0
-            aviso_recebimento = 'N'
-            consulta = CalcularPrecoPrazo(cod_administrativo, senha,
-                                          codigo_servico, origem, destino,
-                                          peso, formato, comprimento, altura,
-                                          largura, diametro, mao_propria,
-                                          valor_declarado, aviso_recebimento)
-            resposta = consulta.execute()
-            if int(resposta.Servicos.cServico.Erro) != 0:
-                raise UserError(resposta.Servicos.cServico.MsgErro)
-            valor = str(resposta.Servicos.cServico.Valor).replace(',', '.')
-            custo = float(valor)
-            custos.append(custo)
+            origem = order.warehouse_id.partner_id.zip
+            destino = order.partner_id.zip
+
+            for line in order.order_line:
+                produto = line.product_id
+                peso = str(produto.weight)
+                formato = 1
+                comprimento = str(produto.comprimento)
+                altura = str(produto.altura)
+                largura = str(produto.altura)
+                diametro = str(produto.diametro)
+                mao_propria = self.mao_propria or 'N'
+                valor_declarado = line.price_subtotal if self.valor_declarado else 0
+                aviso_recebimento = self.aviso_recebimento or 'N'
+                consulta = CalcularPrecoPrazo(cod_administrativo, senha,
+                                              codigo_servico, origem, destino,
+                                              peso, formato, comprimento, altura,
+                                              largura, diametro, mao_propria,
+                                              valor_declarado, aviso_recebimento)
+                resposta = consulta.execute()
+                if int(resposta.Servicos.cServico.Erro) != 0:
+                    raise UserError(resposta.Servicos.cServico.MsgErro)
+                valor = str(resposta.Servicos.cServico.Valor).replace(',', '.')
+                custo = float(valor)
+                custos.append(custo)
 
         return custos
 
