@@ -51,7 +51,7 @@
                                 <br />
                                 <span t-field="partner_invoice.street"></span><span>,</span>
                                 <span t-field="partner_invoice.number"></span>
-                                <span t-field="doc.partner_invoice_id.district"></span>
+                                <span t-field="partner_invoice.district"></span>
                                 <span t-field="partner_invoice.city_id">--</span><span>/</span>
                                 <span t-field="partner_invoice.state_id.code"></span><span> - </span>
                                 <span t-field="partner_invoice.zip"></span><br />
@@ -64,7 +64,7 @@
                                 <br />
                                 <span t-field="partner_shipping.street"></span><span>,</span>
                                 <span t-field="partner_shipping.number"></span>
-                                <span t-field="doc.partner_invoice_id.district"></span>
+                                <span t-field="partner_shipping.district"></span>
                                 <span t-field="partner_shipping.city_id">--</span><span>/</span>
                                 <span t-field="partner_shipping.state_id.code"></span><span> - </span>
                                 <span t-field="partner_shipping.zip"></span>
@@ -72,7 +72,7 @@
                         </t>
                         <t t-if="doc.partner_shipping_id == doc.partner_invoice_id">
                             <div class="col-xs-6">
-                                <strong>Cliente: </strong><span  t-field="doc.partner_id.parent_id.name or doc.partner_id.name"></span>	<br />
+                                <strong>Cliente: </strong><span  t-field="doc.partner_id.parent_id or doc.partner_id.name"></span>	<br />
                                 <strong>Contato: </strong><span t-field="doc.partner_id.name"></span>	<br />
                                 <strong>Cargo: </strong><span t-field="doc.partner_id.function"></span> <br />
                                 <strong>Telefone: </strong><span t-field="doc.partner_id.phone"></span> <br />
@@ -80,16 +80,16 @@
                             </div>
                             <div class="col-xs-6">
                                 <strong class="small">Faturamento e endereço de entrega:</strong><br />
-                                <span t-field="doc.partner_invoice_id" style="text-transform: uppercase"></span>
-                                <br />
-                                <span t-field="doc.partner_invoice_id.street"></span><span>,</span>
-                                <span t-field="doc.partner_invoice_id.number"></span>
-                                <span t-field="doc.partner_invoice_id.district"></span>
-                                <span t-field="doc.partner_invoice_id.city_id">--</span><span>/</span>
-                                <span t-field="doc.partner_invoice_id.state_id.code"></span><span> - </span>
-                                <span t-field="doc.partner_invoice_id.zip"></span><br />
-                                <strong class="small">Cnpj: </strong><span t-field="doc.partner_id.cnpj_cpf"></span><br />
-                                <strong class="small">IE: </strong><span t-field="doc.partner_id.inscr_est"></span>
+                                <span t-field="doc.partner_invoice_id" style="text-transform: uppercase"/>
+                                <br/>
+                                <span t-field="partner_invoice.street"/><span>,</span>
+                                <span t-field="partner_invoice.number"/>
+                                <span t-field="partner_invoice.district"/>
+                                <span t-field="partner_invoice.city_id">--</span><span>/</span>
+                                <span t-field="partner_invoice.state_id.code"/><span> - </span>
+                                <span t-field="partner_invoice.zip"/><br/>
+                                <strong class="small">Cnpj: </strong><span t-field="partner_invoice.cnpj_cpf"/><br/>
+                                <strong class="small">IE: </strong><span t-field="partner_invoice.inscr_est"/>
                             </div>
                         </t>
                     </div>
