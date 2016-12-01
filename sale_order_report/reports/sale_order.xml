@@ -40,23 +40,37 @@
                         <t t-if="doc.partner_shipping_id != doc.partner_invoice_id">
                             <div class="col-xs-4">
                                 <strong>Cliente: </strong><span t-field="doc.partner_id.parent_id or doc.partner_id.name"></span>	<br />
-                                <strong>Contato: </strong><span t-field="doc.partner_id.name"></span>	<br />
-                                <strong>Cargo: </strong><span t-field="doc.partner_id.function"></span> <br />
+																<t t-if="doc.partner_id.company_type == 'person' and doc.partner_id.parent_id">
+																	<strong>Contato: </strong><span t-field="doc.partner_id.name"></span>	<br />
+																	<strong>Cargo: </strong><span t-field="doc.partner_id.function"></span> <br />
+																</t>
                                 <strong>Telefone: </strong><span t-field="doc.partner_id.phone"></span> <br />
                                 <strong>E-mail: </strong><span t-field="doc.partner_id.email"></span> <br />
                             </div>
                             <div class="col-xs-4">
                                 <strong class="small">Dados para Faturamento:</strong><br />
-                                <span t-field="doc.partner_invoice_id" style="text-transform: uppercase"></span>
-                                <br />
+																<t t-if="partner_invoice.company_type=='company'">
+																	<span t-field="doc.partner_invoice_id.parent_id or doc.partner_invoice_id.legal_name" style="text-transform: uppercase"/>
+																</t>
+																<t t-if="partner_invoice.company_type=='person'">
+																	<span t-field="doc.partner_invoice_id.parent_id or doc.partner_invoice_id.name" style="text-transform: uppercase"/>
+																</t>
+																<br />
                                 <span t-field="partner_invoice.street"></span><span>,</span>
                                 <span t-field="partner_invoice.number"></span>
                                 <span t-field="partner_invoice.district"></span>
                                 <span t-field="partner_invoice.city_id">--</span><span>/</span>
                                 <span t-field="partner_invoice.state_id.code"></span><span> - </span>
                                 <span t-field="partner_invoice.zip"></span><br />
-                                <strong class="small">Cnpj: </strong><span t-field="partner_invoice.cnpj_cpf"></span><br />
-                                <strong class="small">IE: </strong><span t-field="partner_invoice.inscr_est"></span>
+																<t t-if="partner_invoice.company_type=='company'">
+																	<strong class="small">Cnpj: </strong><span t-field="partner_invoice.cnpj_cpf"></span><br />
+																	<strong class="small">IE: </strong><span t-field="partner_invoice.inscr_est"></span>
+																</t>
+																<t t-if="partner_invoice.company_type=='person'">
+																	<strong class="small">Cpf: </strong><span t-field="partner_invoice.cnpj_cpf"></span><br />
+																	<strong class="small">RG: </strong><span t-field="partner_invoice.rg_fisica"></span>
+																</t>
+
                             </div>
                             <div class="col-xs-4">
                                 <strong class="small">Endereço de Entrega:</strong><br />
@@ -73,23 +87,36 @@
                         <t t-if="doc.partner_shipping_id == doc.partner_invoice_id">
                             <div class="col-xs-6">
                                 <strong>Cliente: </strong><span  t-field="doc.partner_id.parent_id or doc.partner_id.name"></span>	<br />
-                                <strong>Contato: </strong><span t-field="doc.partner_id.name"></span>	<br />
-                                <strong>Cargo: </strong><span t-field="doc.partner_id.function"></span> <br />
+																<t t-if="doc.partner_id.company_type == 'person' and doc.partner_id.parent_id">
+																	<strong>Contato: </strong><span t-field="doc.partner_id.name"></span>	<br />
+																	<strong>Cargo: </strong><span t-field="doc.partner_id.function"></span> <br />
+																</t>
                                 <strong>Telefone: </strong><span t-field="doc.partner_id.phone"></span> <br />
                                 <strong>e-mail: </strong><span t-field="doc.partner_id.email"></span> <br />
                             </div>
                             <div class="col-xs-6">
                                 <strong class="small">Faturamento e endereço de entrega:</strong><br />
-                                <span t-field="doc.partner_invoice_id.parent_id or doc.partner_invoice_id.name" style="text-transform: uppercase"/>
-                                <br/>
+																<t t-if="partner_invoice.company_type=='company'">
+																	<span t-field="doc.partner_invoice_id.parent_id or doc.partner_invoice_id.legal_name" style="text-transform: uppercase"/>
+																</t>
+																<t t-if="partner_invoice.company_type=='person'">
+																	<span t-field="doc.partner_invoice_id.parent_id or doc.partner_invoice_id.name" style="text-transform: uppercase"/>
+																</t>
+                                <br />
                                 <span t-field="partner_invoice.street"/><span>,</span>
                                 <span t-field="partner_invoice.number"/>
                                 <span t-field="partner_invoice.district"/>
                                 <span t-field="partner_invoice.city_id">--</span><span>/</span>
                                 <span t-field="partner_invoice.state_id.code"/><span> - </span>
                                 <span t-field="partner_invoice.zip"/><br/>
-                                <strong class="small">Cnpj: </strong><span t-field="partner_invoice.cnpj_cpf"/><br/>
-                                <strong class="small">IE: </strong><span t-field="partner_invoice.inscr_est"/>
+																<t t-if="partner_invoice.company_type=='company'">
+																	<strong class="small">Cnpj: </strong><span t-field="partner_invoice.cnpj_cpf"></span><br />
+																	<strong class="small">IE: </strong><span t-field="partner_invoice.inscr_est"></span>
+																</t>
+																<t t-if="partner_invoice.company_type=='person'">
+																	<strong class="small">Cpf: </strong><span t-field="partner_invoice.cnpj_cpf"></span><br />
+																	<strong class="small">RG: </strong><span t-field="partner_invoice.rg_fisica"></span>
+																</t>
                             </div>
                         </t>
                     </div>
