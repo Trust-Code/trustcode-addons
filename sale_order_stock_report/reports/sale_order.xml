@@ -3,7 +3,7 @@
 
     <template id="sale_stock.report_saleorder_document_inherit_sale_stock" inherit_id="sale.report_saleorder_document">
         <xpath expr="//div[@id='sale_information']" position="inside">
-            <strong class="small">Frete (Incoterms): </strong> <span style="font-size:11px" t-field="doc.incoterm.code"></span> <br />
+            <strong class="small">Frete (Incoterms): </strong> <span style="font-size:11px" t-field="doc.incoterm.name"></span> <br />
         </xpath>
     </template>
 
