@@ -80,7 +80,7 @@
                             </div>
                             <div class="col-xs-6">
                                 <strong class="small">Faturamento e endereço de entrega:</strong><br />
-                                <span t-field="doc.partner_invoice_id" style="text-transform: uppercase"/>
+                                <span t-field="doc.partner_invoice_id.parent_id or doc.partner_invoice_id.name" style="text-transform: uppercase"/>
                                 <br/>
                                 <span t-field="partner_invoice.street"/><span>,</span>
                                 <span t-field="partner_invoice.number"/>
