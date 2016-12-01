@@ -189,13 +189,13 @@
                                             t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
                                     </td>
                                 </tr>
-																<tr name="total_frete">
-																		<td>Frete</td>
-																		<td class="text-right">
-																				<span t-field="doc.total_frete"
-																						t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
-																		</td>
-																</tr>
+															<tr name="total_frete">
+																	<td>Frete</td>
+																	<td class="text-right">
+																			<span t-field="doc.total_frete"
+																					t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
+																	</td>
+															</tr>
                                 <tr class="border-black">
                                     <div name="total">
                                         <td><strong>Total</strong></td>
