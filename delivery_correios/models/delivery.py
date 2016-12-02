@@ -9,8 +9,8 @@ from odoo.exceptions import UserError
 _logger = logging.getLogger(__name__)
 
 try:
-    from pysigep.sigep import BuscaCliente
-    from pysigep.sigep import CalcularPrecoPrazo
+    from pysigep.correios import calcular_preco_prazo
+    from pysigep.sigep import busca_cliente, solicita_etiquetas
 except ImportError:
     _logger.debug('Cannot import pysigepweb')
 
@@ -45,12 +45,14 @@ class DeliveryCarrier(models.Model):
 
     @api.one
     def action_get_correio_services(self):
-        req = BuscaCliente(self.num_contrato, self.cartao_postagem,
-                           self.correio_login, self.correio_password)
-
-        objeto_resposta = req.execute()
-        self.service_ids.unlink()
-        for item in objeto_resposta.contratos.cartoesPostagem.servicos:
+        usuario = {
+            'idContrato': self.num_contrato,
+            'idCartaoPostagem': self.cartao_postagem,
+            'usuario': self.correio_login,
+            'senha': self.correio_password,
+        }
+        servicos = busca_cliente(**usuario).contratos.cartoesPostagem.servicos
+        for item in servicos:
             correio = self.env['delivery.correios.service']
             item_correio = correio.search([('code', '=', item.codigo)])
             if len(item_correio) == 1:
@@ -79,32 +81,29 @@ class DeliveryCarrier(models.Model):
                 raise UserError(u'Escolha o tipo de serviço para poder \
                                 calcular corretamente o frete dos correios')
 
-            cod_administrativo = self.cod_administrativo
-            senha = self.correio_password
-            codigo_servico = self.service_id.code
-            origem = order.warehouse_id.partner_id.zip
-            destino = order.partner_id.zip
+            usuario = {
+                'nCdEmpresa': self.cod_administrativo,
+                'sDsSenha': self.correio_password,
+                'nCdServico': self.service_id.code,
+                'sCepOrigem': order.warehouse_id.partner_id.zip,
+                'sCepDestino': order.partner_id.zip,
+            }
 
             for line in order.order_line:
                 produto = line.product_id
-                peso = str(produto.weight)
-                formato = 1
-                comprimento = str(produto.comprimento)
-                altura = str(produto.altura)
-                largura = str(produto.altura)
-                diametro = str(produto.diametro)
-                mao_propria = self.mao_propria or 'N'
-                valor_declarado = line.price_subtotal if self.valor_declarado else 0
-                aviso_recebimento = self.aviso_recebimento or 'N'
-                consulta = CalcularPrecoPrazo(cod_administrativo, senha,
-                                              codigo_servico, origem, destino,
-                                              peso, formato, comprimento, altura,
-                                              largura, diametro, mao_propria,
-                                              valor_declarado, aviso_recebimento)
-                resposta = consulta.execute()
-                if int(resposta.Servicos.cServico.Erro) != 0:
-                    raise UserError(resposta.Servicos.cServico.MsgErro)
-                valor = str(resposta.Servicos.cServico.Valor).replace(',', '.')
+                usuario['nVlPeso'] = produto.weight
+                usuario['nCdFormato'] = 1
+                usuario['nVlComprimento'] = produto.comprimento
+                usuario['nVlAltura'] = produto.altura
+                usuario['nVlLargura'] = produto.largura
+                usuario['nVlDiametro'] = produto.largura
+                usuario['sCdMaoPropria'] = self.mao_propria or 'N'
+                usuario['nVlValorDeclarado'] = line.price_subtotal if self.valor_declarado else 0
+                usuario['sCdAvisoRecebimento'] = self.aviso_recebimento or 'N'
+                solicita = solicita_etiquetas(**usuario)
+                if int(solicita.cServico.Erro) != 0:
+                    raise UserError(solicita.cServico.Erro)
+                valor = str(solicita.cServico.Valor).replace(',', '.')
                 custo = float(valor)
                 custos.append(custo)
 
@@ -120,8 +119,8 @@ class DeliveryCarrier(models.Model):
                            'tracking_number': number }
         '''
         return [{
-            'exact_price': 22.67,
-            'tracking_number': 123
+            'exact_price': 0,
+            'tracking_number': 1234567
         }]
 
     def correios_get_tracking_link(self, pickings):
