@@ -15,15 +15,6 @@ except ImportError:
     _logger.debug('Cannot import pysigepweb')
 
 
-class CorreiosServicos(models.Model):
-    _name = 'delivery.correios.service'
-
-    code = fields.Char(string="Código", size=20)
-    identifier = fields.Char(string="Identificador", size=20)
-    name = fields.Char(string="Descrição", size=70)
-    delivery_id = fields.Many2one('delivery.carrier', string="Método entrega")
-
-
 class DeliveryCarrier(models.Model):
     _inherit = 'delivery.carrier'
 
