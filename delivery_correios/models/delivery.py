@@ -5,11 +5,12 @@
 import logging
 from odoo import api, fields, models
 from odoo.exceptions import UserError
+from datetime import datetime
 
 _logger = logging.getLogger(__name__)
 
 try:
-    from pysigep.correios import calcular_preco_prazo
+    from pysigep.correios import calcular_preco_prazo, get_eventos
     from pysigep.sigep import busca_cliente, solicita_etiquetas
 except ImportError:
     _logger.debug('Cannot import pysigepweb')
@@ -109,10 +110,54 @@ class DeliveryCarrier(models.Model):
                          { 'exact_price': price,
                            'tracking_number': number }
         '''
-        return [{
-            'exact_price': 0,
-            'tracking_number': 1234567
-        }]
+        usuario = {'usuario': 'sigep', 'senha': 'n5f9t8',
+                   'identificador': '34028316000103', 'idServico': '104625',
+                   'qtdEtiquetas': 1, }
+        plp = self.env['delivery.correios.postagem.plp'].search(
+            [('state', '=', 'draft')], limit=1)
+        if not len(plp):
+            plp = self.env['delivery.correios.postagem.plp'].create({
+                'name': 'FOOBARBAZ', 'state': 'draft',
+                'delivery_id': self.id, 'total_value': 0,
+            })
+        res = []
+        for picking in pickings:
+            tags = []
+            preco_soma = 0
+            for pack in picking.pack_operation_product_ids:
+                usuario_preco_prazo = {
+                    'nCdEmpresa': self.cod_administrativo,
+                    'sDsSenha': self.correio_password,
+                    'nCdServico': self.service_id.code,
+                    'sCepOrigem': pack.location_id.company_id.zip,
+                    'sCepDestino': picking.partner_id.zip,
+                    'nVlPeso': pack.product_id.weight * pack.product_qty,
+                    'nVlComprimento': pack.product_id.comprimento * pack.
+                                      product_qty,
+                    'nVlAltura': pack.product_id.altura * pack.product_qty,
+                    'nVlLargura': pack.product_id.largura * pack.product_qty,
+                    'nVlDiametro': pack.product_id.diametro * pack.product_qty,
+                    'nCdFormato': 1,
+                    'sCdMaoPropria': self.mao_propria,
+                    'nVlValorDeclarado': self.product_id.lst_price,
+                    'sCdAvisoRecebimento': self.aviso_recebimento,
+                }
+                preco = calcular_preco_prazo(**usuario_preco_prazo)
+                preco = str(preco.cServico.Valor).replace(',', '.')
+                preco = float(preco)
+                preco_soma += preco
+                plp.total_value += preco_soma
+                etiqueta = solicita_etiquetas(**usuario)[0]
+                pack.track_ref = etiqueta
+                tags.append(etiqueta)
+                self.env['delivery.correios.postagem.objeto'].create({
+                    'name': etiqueta, 'stock_pack_id': picking.id,
+                    'plp_id': plp.id,
+                })
+            tags = ','.join(tags)
+            pickings.carrier_tracking_ref = tags
+            res.append({'exact_price': preco_soma, 'tracking_number': tags})
+        return res
 
     def correios_get_tracking_link(self, pickings):
         ''' Ask the tracking link to the service provider
@@ -121,8 +166,40 @@ class DeliveryCarrier(models.Model):
         :return list: A list of string URLs, containing the tracking links
          for every picking
         '''
-        # TODO Retornar a url correta aqui
-        return ['http://www.google.com']
+        usuario = {
+            'usuario': self.correio_login,
+            'senha': self.correio_password,
+        }
+#       tracking_refs = ['PL207893158BR', 'JS535334467BR']
+        for picking in pickings:
+            for pack in picking.pack_operation_product_ids:
+                track_ref = list(pack.track_ref)
+                usuario['objetos'] = track_ref
+                objetos = get_eventos(**usuario).objeto
+                for objeto in objetos:
+                    postagem = self.env['delivery.correios.postagem.objeto'].\
+                        search([('stock_pack_id', '=', pack.id)], limit=1)
+                    correio_evento = {
+                        'etiqueta': objeto.numero,
+                        'postagem_id': postagem.id
+                    }
+                    for evento in objeto.evento:
+                        correio_evento['status'] = evento.status
+                        correio_evento['data'] = datetime.strptime(
+                            str(evento.data), '%d/%m/%Y')
+                        correio_evento['local_origem'] = evento.local +\
+                            ' - ' + str(evento.codigo) + ', ' +\
+                            evento.cidade + '/' + evento.uf
+                        correio_evento['descricao'] = evento.descricao
+                        if 'destino' in evento:
+                            correio_evento['local_destino'] =\
+                                evento.destino.local + ' - ' +\
+                                str(evento.destino.codigo) + ', ' +\
+                                evento.destino.cidade + '/' + evento.destino.uf
+                    self.env['delivery.correios.postagem.eventos'].create(
+                        correio_evento)
+
+
 
     def correios_cancel_shipment(self):
         ''' Cancel a shipment

@@ -1,0 +1,90 @@
+
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="delivery_correios_postagem_plp_form" model="ir.ui.view">
+        <field name="name">delivery_correios.postagem_plp.form</field>
+        <field name="model">delivery.correios.postagem.plp</field>
+        <field name="arch" type="xml">
+            <form>
+                <field name="name" />
+                <field name="state" />
+                <field name="delivery_id" />
+                <field name="total_value" />
+                <field name="postagem_id" />
+            </form>
+        </field>
+    </record>
+    <record id="delivery_correios_postagem_plp_tree" model="ir.ui.view">
+        <field name="name">delivery_correios.postagem_plp.tree</field>
+        <field name="model">delivery.correios.postagem.plp</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name" />
+                <field name="state" />
+                <field name="delivery_id" />
+                <field name="total_value" />
+                <field name="postagem_id" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="delivery_correios_postagem_objeto_form" model="ir.ui.view">
+        <field name="name">delivery_correios.postagem_objeto.form</field>
+        <field name="model">delivery.correios.postagem.objeto</field>
+        <field name="arch" type="xml">
+            <form>
+                <field name="name" />
+                <field name="stock_pack_id" />
+                <field name="plp_id" />
+                <field name="eventos_id" nolabel="1"/>
+                    <tree>
+                        <field name="etiqueta" />
+                        <field name="status" />
+                        <field name="descricao" />
+                    </tree>
+            </form>
+        </field>
+    </record>
+    <record id="delivery_correios_postagem_objeto_tree" model="ir.ui.view">
+        <field name="name">delivery_correios.postagem_objeto.tree</field>
+        <field name="model">delivery.correios.postagem.objeto</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name" />
+                <field name="stock_pack_id" />
+                <field name="plp_id" />
+                <field name="eventos_id" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="delivery_correios_postagem_eventos" model="ir.ui.view">
+        <field name="name">delivery_correios.postagem_eventos</field>
+        <field name="model">delivery.correios.postagem.eventos</field>
+        <field name="arch" type="xml">
+            <field name="etiqueta" />
+            <field name="postagem_id" />
+            <field name="status" />
+            <field name="data" />
+            <field name="local_origem" />
+            <field name="local_destino" />
+            <field name="descricao" />
+        </field>
+    </record>
+    <record id="delivery_correios_postagem_eventos_tree" model="ir.ui.view">
+        <field name="name">delivery_correios.postagem_eventos.tree</field>
+        <field name="model">delivery.correios.postagem.eventos</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="etiqueta" />
+                <field name="postagem_id" />
+                <field name="status" />
+                <field name="data" />
+                <field name="local_origem" />
+                <field name="local_destino" />
+                <field name="descricao" />
+            </tree>
+        </field>
+    </record>
+
+</odoo>
