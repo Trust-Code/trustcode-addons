@@ -39,7 +39,7 @@
 
                         <t t-if="doc.partner_shipping_id != doc.partner_invoice_id">
                             <div class="col-xs-4">
-                                <strong>Cliente: </strong><span t-field="doc.partner_id.parent_id or doc.partner_id.name"></span>	<br />
+                                <strong>Cliente: </strong><span t-esc="partner_invoice.legal_name or partner_invoice.name"></span>	<br />
                                 <strong>Contato: </strong><span t-field="doc.partner_id.name"></span>	<br />
                                 <strong>Cargo: </strong><span t-field="doc.partner_id.function"></span> <br />
                                 <strong>Telefone: </strong><span t-field="doc.partner_id.phone"></span> <br />
@@ -72,7 +72,7 @@
                         </t>
                         <t t-if="doc.partner_shipping_id == doc.partner_invoice_id">
                             <div class="col-xs-6">
-                                <strong>Cliente: </strong><span  t-field="doc.partner_id.parent_id or doc.partner_id.name"></span>	<br />
+                                <strong>Cliente: </strong><span  t-esc="partner_invoice.legal_name or partner_invoice.name"></span>	<br />
                                 <strong>Contato: </strong><span t-field="doc.partner_id.name"></span>	<br />
                                 <strong>Cargo: </strong><span t-field="doc.partner_id.function"></span> <br />
                                 <strong>Telefone: </strong><span t-field="doc.partner_id.phone"></span> <br />

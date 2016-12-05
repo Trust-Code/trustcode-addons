@@ -9,7 +9,6 @@ from odoo.exceptions import UserError
 _logger = logging.getLogger(__name__)
 
 try:
-    from pysigep.correios import calcular_preco_prazo
     from pysigep.sigep import busca_cliente, solicita_etiquetas
 except ImportError:
     _logger.debug('Cannot import pysigepweb')
@@ -89,7 +88,8 @@ class DeliveryCarrier(models.Model):
                 usuario['nVlLargura'] = produto.largura
                 usuario['nVlDiametro'] = produto.largura
                 usuario['sCdMaoPropria'] = self.mao_propria or 'N'
-                usuario['nVlValorDeclarado'] = line.price_subtotal if self.valor_declarado else 0
+                usuario['nVlValorDeclarado'] = line.price_subtotal \
+                    if self.valor_declarado else 0
                 usuario['sCdAvisoRecebimento'] = self.aviso_recebimento or 'N'
                 solicita = solicita_etiquetas(**usuario)
                 if int(solicita.cServico.Erro) != 0:

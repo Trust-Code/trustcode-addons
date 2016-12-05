@@ -3,7 +3,16 @@
 
     <template id="sale_stock.report_saleorder_document_inherit_sale_stock" inherit_id="sale.report_saleorder_document">
         <xpath expr="//div[@id='sale_information']" position="inside">
-            <strong class="small">Frete (Incoterms): </strong> <span style="font-size:11px" t-field="doc.incoterm.code"></span> <br />
+            <strong class="small">Frete (Incoterms): </strong> <span style="font-size:11px" t-field="doc.incoterm"></span> <br />
+        </xpath>
+        <xpath expr="//tr[@name='total_tax']" position="after">
+            <tr name="total_frete">
+                <td>Frete</td>
+                    <td class="text-right">
+                        <span t-field="doc.total_frete"
+                            t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
+                    </td>
+            </tr>
         </xpath>
     </template>
 
