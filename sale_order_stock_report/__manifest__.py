@@ -16,7 +16,7 @@
         'Mackilem Van der Laan Soares <mack.vdl@gmail.com>'
     ],
     'depends': [
-        'sale_order_report', 'sale_stock',
+        'sale_order_report', 'sale_stock', 'br_sale_stock',
     ],
     'data': [
         'reports/sale_order.xml',

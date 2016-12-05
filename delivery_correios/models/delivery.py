@@ -90,7 +90,8 @@ class DeliveryCarrier(models.Model):
                 usuario['nVlLargura'] = produto.largura
                 usuario['nVlDiametro'] = produto.largura
                 usuario['sCdMaoPropria'] = self.mao_propria or 'N'
-                usuario['nVlValorDeclarado'] = line.price_subtotal if self.valor_declarado else 0
+                usuario['nVlValorDeclarado'] = line.price_subtotal \
+                    if self.valor_declarado else 0
                 usuario['sCdAvisoRecebimento'] = self.aviso_recebimento or 'N'
                 solicita = solicita_etiquetas(**usuario)
                 if int(solicita.cServico.Erro) != 0:
