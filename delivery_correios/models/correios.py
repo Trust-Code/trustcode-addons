@@ -49,7 +49,7 @@ src="/report/barcode/Code128/' + self.carrier_tracking_ref + '" />'
         return services
 
     def action_generate_voucher(self):
-        self.carrier_tracking_ref = '123'
+        self.state = 'done'
 
 
 class CorreiosPostagemObjeto(models.Model):
