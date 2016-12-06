@@ -7,7 +7,7 @@
     <report
         id="delivery_correios_plp_report"
         string="Impressão PLP"
-        model="stock.picking"
+        model="delivery.correios.postagem.plp"
         report_type="qweb-pdf"
         file="delivery_correios.main_template_plp_report"
         name="delivery_correios.main_template_plp_report" />
@@ -55,12 +55,12 @@
                                                 correios</strong></td>
                                         </tr>
                                         <tr>
-                                            <td style="width: 45%;"><strong>Contrato: </strong> <span t-field="doc.carrier_id.num_contrato" />
+                                            <td style="width: 45%;"><strong>Contrato: </strong> <span t-field="doc.delivery_id.num_contrato" />
                                             </td>
                                         </tr>
 
                                         <tr>
-                                            <td style="width: 45%;"><strong>Cliente: </strong><span t-field="doc.company_id.name" /></td>
+                                            <td style="width: 45%;"><strong>Cliente: </strong><span t-field="doc.company_id.legal_name" /></td>
                                         </tr>
                                         <tr>
                                             <td style="width: 45%;"><strong>Telefone
@@ -89,7 +89,9 @@
                                         <tr>
                                             <td>
                                                 <span style="text-align: center; white-space: nowrap;">
-                                                    <img src='data:image/png;base64,${plp.barcode_id.image}'/>
+                                                    <t t-if="doc.carrier_tracking_ref">
+                                                        <t t-raw="doc.barcode_url()" />
+                                                    </t>
                                                 </span>
                                             </td>
                                         </tr>
@@ -108,6 +110,7 @@
                             <tbody>
                             <tr>
                                 <td style="vertical-align: top;">
+                                    <t t-set="services" t-value="doc._get_post_services()" />
                                     <table border="0" cellpadding="1"
                                            cellspacing="1"
                                            style="width: 100%;">
@@ -123,16 +126,16 @@
                                                 <strong>Serviço:</strong>
                                             </td>
                                         </tr>
-
-                                            <tr>
-                                                <td>${value['code']}</td>
-                                                <td>${value['quant']}</td>
-                                                <td>${value['name']}</td>
-                                            </tr>
-
+                                            <t t-foreach="services.keys()" t-as="serv">
+                                                <tr>
+                                                    <td><span t-esc="services[serv]['code']" /></td>
+                                                    <td><span t-esc="services[serv]['quantity']" /></td>
+                                                    <td><span t-esc="services[serv]['name']" /></td>
+                                                </tr>
+                                            </t>
                                         <tr>
                                             <td><strong>Total:</strong></td>
-                                            <td>${total}</td>
+                                            <td><span t-esc="sum([x[1]['quantity'] for x in services.iteritems()])" /></td>
                                             <td></td>
                                         </tr>
                                         </tbody>
@@ -140,11 +143,9 @@
                                 </td>
                                 <td style="width: 25%;">
                                     <p><strong>Data da entrega:</strong>
-                                        <span t-field="doc.min_date" />
+                                        <span t-field="doc.sent_date" />
                                     </p>
-
                                     <p> </p>
-
                                     <p style="text-decoration: overline;">
                                         Assinatura/Matrícula dos Correios</p>
 
@@ -199,7 +200,7 @@
                                                 correios</strong></td>
                                         </tr>
                                         <tr>
-                                            <td style="width: 45%;"><strong>Contrato: </strong> <span t-field="doc.carrier_id.num_contrato" />
+                                            <td style="width: 45%;"><strong>Contrato: </strong> <span t-field="doc.delivery_id.num_contrato" />
                                             </td>
                                         </tr>
 
@@ -234,7 +235,9 @@
                                             <td>
                                                 <span
                                                     style="text-align: center; white-space: nowrap;">
-                                                    <img src='data:image/png;base64,${plp.barcode_id.image}'/>
+                                                    <t t-if="doc.carrier_tracking_ref">
+                                                        <t t-raw="doc.barcode_url()" />
+                                                    </t>
                                                 </span>
                                             </td>
                                         </tr>
@@ -264,15 +267,16 @@
                                             <td style="width: 33%;"><strong>Serviço:</strong>
                                             </td>
                                         </tr>
-
-                                            <tr>
-                                                <td>${value['code']}</td>
-                                                <td>${value['quant']}</td>
-                                                <td>${value['name']}</td>
-                                            </tr>
+                                            <t t-foreach="services.keys()" t-as="serv">
+                                                <tr>
+                                                    <td><span t-esc="services[serv]['code']" /></td>
+                                                    <td><span t-esc="services[serv]['quantity']" /></td>
+                                                    <td><span t-esc="services[serv]['name']" /></td>
+                                                </tr>
+                                            </t>
                                         <tr>
                                             <td><strong>Total:</strong></td>
-                                            <td>${total}</td>
+                                            <td><span t-esc="sum([x[1]['quantity'] for x in services.iteritems()])" /></td>
                                             <td></td>
                                         </tr>
                                         </tbody>
@@ -280,14 +284,11 @@
                                 </td>
                                 <td style="width: 25%;">
                                     <p><strong>Data da entrega:</strong>
-                                        <span t-field="doc.min_date" />
+                                        <span t-field="doc.sent_date" />
                                     </p>
-
                                     <p></p>
-
                                     <p style="text-decoration: overline;">
                                         Assinatura/Matrícula dos Correios</p>
-
                                     <p>2ª via - Correios</p>
                                 </td>
                             </tr>
@@ -301,7 +302,7 @@
         <div class="footer">
             <div class="row" style="font-size:10px">
                 Página <span class="page"/> de <span class="topage"/> ----
-                <span style="font-size:10px">PLP gerado com Odoo Brasil - Software open source - saiba mais em <a href="http://www.trustcode.com.br/odoo-open-source">http://www.trustcode.com.br/odoo-open-source</a></span>
+                <span style="font-size:10px">PLP gerado com Odoo Brasil - Software open source - saiba mais em <a href="http://www.trustcode.com.br/page/open-source-1">Trustcode - Open Source</a></span>
             </div>
         </div>
     </template>
@@ -310,7 +311,7 @@
     <template id="main_template_plp_report">
         <t t-call="report.html_container">
             <t t-foreach="docs" t-as="doc">
-                <t t-call="delivery_correios.template_plp_report" t-lang="doc.partner_id.lang"/>
+                <t t-call="delivery_correios.template_plp_report" t-lang="doc.company_id.partner_id.lang"/>
             </t>
         </t>
     </template>

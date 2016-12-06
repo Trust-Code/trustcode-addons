@@ -2,6 +2,7 @@
 # © 2016 Danimar Ribeiro, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
+import re
 import logging
 from odoo import api, fields, models
 from odoo.exceptions import UserError
@@ -111,14 +112,20 @@ class DeliveryCarrier(models.Model):
                          { 'exact_price': price,
                            'tracking_number': number }
         '''
-        usuario = {'usuario': 'sigep', 'senha': 'n5f9t8',
-                   'identificador': '34028316000103', 'idServico': '104625',
-                   'qtdEtiquetas': 1, }
+        solicitacao = {
+            'usuario': self.correio_login,
+            'senha': self.correio_password,
+            'identificador': re.sub(
+                '[^0-9]', '', self.company_id.cnpj_cpf or ''),
+            'idServico': self.service_id.identifier,
+            'qtdEtiquetas': 1
+        }
         plp = self.env['delivery.correios.postagem.plp'].search(
             [('state', '=', 'draft')], limit=1)
         if not len(plp):
+            name = "%s - %s" % (self.name, datetime.now().strftime("%d-%m-%Y"))
             plp = self.env['delivery.correios.postagem.plp'].create({
-                'name': 'FOOBARBAZ', 'state': 'draft',
+                'name': name, 'state': 'draft',
                 'delivery_id': self.id, 'total_value': 0,
             })
         res = []
@@ -132,12 +139,11 @@ class DeliveryCarrier(models.Model):
                     'nCdServico': self.service_id.code,
                     'sCepOrigem': pack.location_id.company_id.zip,
                     'sCepDestino': picking.partner_id.zip,
-                    'nVlPeso': pack.product_id.weight * pack.product_qty,
-                    'nVlComprimento': pack.product_id.comprimento * pack.
-                                      product_qty,
-                    'nVlAltura': pack.product_id.altura * pack.product_qty,
-                    'nVlLargura': pack.product_id.largura * pack.product_qty,
-                    'nVlDiametro': pack.product_id.diametro * pack.product_qty,
+                    'nVlPeso': pack.product_id.weight,
+                    'nVlComprimento': pack.product_id.comprimento,
+                    'nVlAltura': pack.product_id.altura,
+                    'nVlLargura': pack.product_id.largura,
+                    'nVlDiametro': pack.product_id.diametro,
                     'nCdFormato': 1,
                     'sCdMaoPropria': self.mao_propria,
                     'nVlValorDeclarado': self.product_id.lst_price,
@@ -146,16 +152,17 @@ class DeliveryCarrier(models.Model):
                 preco = calcular_preco_prazo(**usuario_preco_prazo)
                 preco = str(preco.cServico.Valor).replace(',', '.')
                 preco = float(preco)
-                preco_soma += preco
+                preco_soma += preco * pack.product_qty
                 plp.total_value += preco_soma
-                etiqueta = solicita_etiquetas(**usuario)[0]
+                etiqueta = solicita_etiquetas(**solicitacao)[0]
                 pack.track_ref = etiqueta
                 tags.append(etiqueta)
                 self.env['delivery.correios.postagem.objeto'].create({
                     'name': etiqueta, 'stock_pack_id': picking.id,
-                    'plp_id': plp.id,
+                    'plp_id': plp.id, 'delivery_id': self.id,
+                    'company_id': self.company_id.id,
                 })
-            tags = ','.join(tags)
+            tags = ';'.join(tags)
             pickings.carrier_tracking_ref = tags
             res.append({'exact_price': preco_soma, 'tracking_number': tags})
         return res
@@ -199,8 +206,6 @@ class DeliveryCarrier(models.Model):
                                 evento.destino.cidade + '/' + evento.destino.uf
                     self.env['delivery.correios.postagem.eventos'].create(
                         correio_evento)
-
-
 
     def correios_cancel_shipment(self):
         ''' Cancel a shipment

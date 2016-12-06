@@ -21,6 +21,7 @@ encomendas""",
     ],
     'data': [
         'security/ir.model.access.csv',
+        'views/correios.xml',
         'views/delivery_carrier.xml',
         'views/sale_order.xml',
         'views/product_template.xml',
