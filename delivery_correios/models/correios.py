@@ -12,6 +12,8 @@ class CorreiosServicos(models.Model):
     identifier = fields.Char(string=u"Identificador", size=20)
     name = fields.Char(string=u"Descrição", size=70, required=True)
     delivery_id = fields.Many2one('delivery.carrier', string=u"Método entrega")
+    chancela = fields.Binary(string='Chancela')
+    ano_assinatura = fields.Char(string="Ano Assinatura")
 
 
 class CorreiosPostagemPlp(models.Model):

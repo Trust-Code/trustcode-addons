@@ -36,6 +36,7 @@ class DeliveryCarrier(models.Model):
     aviso_recebimento = fields.Selection([('S', 'Sim'), ('N', 'Não')],
                                          string='Receber Aviso de Entrega')
 
+
     @api.one
     def action_get_correio_services(self):
         usuario = {
@@ -44,16 +45,23 @@ class DeliveryCarrier(models.Model):
             'usuario': self.correio_login,
             'senha': self.correio_password,
         }
-        servicos = busca_cliente(**usuario).contratos.cartoesPostagem.servicos
+        cliente = busca_cliente(**usuario)
+        servicos = cliente.contratos.cartoesPostagem.servicos
+        ano_assinatura = cliente.contratos.dataVigenciaInicio
         for item in servicos:
             correio = self.env['delivery.correios.service']
             item_correio = correio.search([('code', '=', item.codigo)])
             if len(item_correio) == 1:
-                item_correio[0].update({'name': item.descricao})
+                item_correio[0].update({
+                    'name': item.descricao,
+                    'chancela': item.servicoSigep.chancela.chancela,
+                    'ano_assinatura': str(ano_assinatura)[:4],
+                })
             else:
                 correio.create({
                     'code': item.codigo,
                     'identifier': item.id,
+                    'chancela': item.servicoSigep.chancela.chancela,
                     'name': item.descricao,
                     'delivery_id': self.id,
                 })
@@ -191,7 +199,7 @@ class DeliveryCarrier(models.Model):
                         'etiqueta': objeto.numero,
                         'postagem_id': postagem.id
                     }
-                    for evento in objeto.evento:
+                    for evento in objeto.get('evento', []):
                         correio_evento['status'] = evento.status
                         correio_evento['data'] = datetime.strptime(
                             str(evento.data), '%d/%m/%Y')
@@ -206,6 +214,9 @@ class DeliveryCarrier(models.Model):
                                 evento.destino.cidade + '/' + evento.destino.uf
                     self.env['delivery.correios.postagem.eventos'].create(
                         correio_evento)
+        # TODO: return the url to th tracking statuses
+        return ['/web#min=1&limit=80&view_type=list&model=delivery.correios.postagem.plp&action=396']
+
 
     def correios_cancel_shipment(self):
         ''' Cancel a shipment

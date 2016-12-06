@@ -8,6 +8,12 @@ from odoo import fields, models
 
 _logger = logging.getLogger(__name__)
 
+try:
+    from pysigep.correios import sign_chancela
+except ImportError:
+    _logger.debug('Cannot import pysigepweb')
+
+
 
 class StockPackOperation(models.Model):
     _inherit = 'stock.pack.operation'
@@ -35,3 +41,27 @@ src="/report/barcode/Code128/' + self.track_ref + '" />'
         url = '<img style="width:200px;height:50px;"\
 src="/report/barcode/Code128/' + cep + '" />'
         return url
+
+    def get_chancela(self):
+
+        picking = self.picking_id
+        transportadora = picking.carrier_id
+
+        nome = picking.company_id.legal_name
+        ano_assinatura = transportadora.service_id.ano_assinatura
+        contrato = transportadora.num_contrato
+        origem = self.location_id.company_id.state_id.code
+        postagem = picking.partner_id.state_id.code
+        usuario_correios = {
+            'contrato': contrato, 'nome': nome,
+            'ano_assinatura': ano_assinatura,
+            'origem': origem, 'postagem': postagem,
+        }
+
+        chancela = self.with_context({'bin_size': False}).\
+            picking_id.carrier_id.service_id.chancela
+
+        chancela = sign_chancela(chancela, usuario_correios)
+
+        return '<img style="height: 114px; width: 114px"\
+src="data:image/png;base64,' + chancela + '"/>'

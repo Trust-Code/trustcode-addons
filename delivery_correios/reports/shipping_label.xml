@@ -24,7 +24,9 @@
                             <tbody>
                                 <tr>
                                     <td>
-                                        <img style="height: 114px; width: 114px" src='data:image/png;base64,${chancela}'/>
+                                        <t t-if="pack.track_ref">
+                                            <t t-raw="pack.get_chancela()" />
+                                        </t>
                                     </td>
                                     <td>
                                         <t t-if="pack.track_ref">
