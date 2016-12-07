@@ -21,11 +21,64 @@ class StockPackOperation(models.Model):
     track_ref = fields.Char(string="Etiqueta de Rastreamento")
 
     def tracking_qrcode(self):
-        origem = re.sub('[^0-9]', '', self.picking_id.company_id.zip or '')
-        destino = re.sub('[^0-9]', '', self.picking_id.partner_id.zip or '')
+        origem = self.picking_id.company_id
+        destino = self.picking_id.partner_id
 
-        # TODO Implementar o código correto aqui.
-        code = '%s00000%s00000' % (destino, origem)
+        dados = {}
+
+        dados['destino_cep'] = re.sub('[^0-9]', '', destino.zip or '')
+        dados['destino_compl'] = re.sub(r'\D', '', destino.number or '').\
+            zfill(5)
+        dados['origem_cep'] = re.sub('[^0-9]', '', origem.zip or '')
+        dados['origem_compl'] = re.sub(r'\D', '', origem.number or '')\
+            .zfill(5)
+        validador_cep_dest = sum([int(n) for n in re.sub(r'\D', '',
+                                                         destino.zip) or ''])
+        next_10 = validador_cep_dest
+        while next_10 % 10 != 0:
+            next_10 += 1
+        dados['validador_cep_dest'] = next_10 - validador_cep_dest
+
+        dados['idv'] = '51'
+
+        dados['etiqueta'] = self.track_ref
+
+        transportadora = self.picking_id.carrier_id
+        servicos_adicionais = ''
+        servicos_adicionais += '01' if transportadora.aviso_recebimento == 'S'\
+            else '00'
+        servicos_adicionais += '02' if transportadora.mao_propria == 'S'\
+            else '00'
+        servicos_adicionais += '19' if transportadora.valor_declarado else '00'
+        dados['servicos_adicionais'] = servicos_adicionais.ljust(12, '0')
+
+        dados['cartao_postagem'] = transportadora.cartao_postagem.zfill(10)
+        dados['codigo_servico'] = transportadora.service_id.code
+        dados['agrupamento'] = '00'
+        dados['num_logradouro'] = destino.number.zfill(5) or '0' * 5
+        dados['compl_logradouro'] = '{:.20}'.format(str(destino.street2))\
+            .zfill(20)
+        dados['valor_declarado'] = str(self.product_id * self.product_qty).\
+            replace('.', '').replace(',', '').zfill(5)\
+            if transportadora.valor_declarado else '00000'
+        if destino.phone:
+            telefone = re.sub(r'\D', '', destino.phone).replace(' ', '')\
+                .zfill(12)
+        elif destino.mobile:
+            telefone = re.sub(r'\D', '', destino.mobile).replace(' ', '')\
+                .zfill(12)
+        else:
+            telefone = '0' * 12
+        dados['telefone'] = telefone
+        dados['latitude'] = '-00.000000'
+        dados['longitude'] = '-00.000000'
+        dados['pipe'] = '|'
+        dados['reserva'] = ' ' * 30
+        code = '{destino_cep}{destino_compl}{origem_cep}{origem_compl}\
+{validador_cep_dest}{idv}{etiqueta}{servicos_adicionais}{cartao_postagem}\
+{codigo_servico}{agrupamento}{num_logradouro}{compl_logradouro}\
+{valor_declarado}{telefone}{latitude}{longitude}{pipe}{reserva}'.\
+            format(**dados)
 
         url = '<img style="width:125px;height:125px;"\
 src="/report/barcode/QR/' + code + '" />'
