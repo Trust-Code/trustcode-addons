@@ -4,9 +4,9 @@
 
 import re
 import logging
+from datetime import datetime
 from odoo import api, fields, models
 from odoo.exceptions import UserError
-from datetime import datetime
 
 _logger = logging.getLogger(__name__)
 
@@ -214,7 +214,6 @@ class DeliveryCarrier(models.Model):
                                 evento.destino.cidade + '/' + evento.destino.uf
                     self.env['delivery.correios.postagem.eventos'].create(
                         correio_evento)
-        # TODO: return the url to th tracking statuses
         return ['/web#min=1&limit=80&view_type=list&model=delivery.correios.postagem.plp&action=396']
 
 
