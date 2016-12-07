@@ -82,7 +82,7 @@
                                            style="width: 100%;">
                                         <tbody>
                                         <tr>
-                                            <td>
+                                            <td style="text-align: center;">
                                                 <strong>N º PLP: <span t-field="doc.carrier_tracking_ref" /></strong>
                                             </td>
                                         </tr>
@@ -141,14 +141,14 @@
                                         </tbody>
                                     </table>
                                 </td>
-                                <td style="width: 25%;">
+                                <td style="width: 30%;">
                                     <p><strong>Data da entrega:</strong>
                                         <span t-field="doc.sent_date" />
                                     </p>
-                                    <p> </p>
+                                    <br />
+                                    <br />
                                     <p style="text-decoration: overline;">
                                         Assinatura/Matrícula dos Correios</p>
-
                                     <p>1ª via - Correios</p>
                                 </td>
                             </tr>
@@ -227,7 +227,7 @@
                                            style="width: 100%;">
                                         <tbody>
                                         <tr>
-                                            <td>
+                                            <td style="text-align: center;">
                                                 <strong>N º PLP: <span t-field="doc.carrier_tracking_ref" /></strong>
                                             </td>
                                         </tr>
@@ -282,11 +282,12 @@
                                         </tbody>
                                     </table>
                                 </td>
-                                <td style="width: 25%;">
+                                <td style="width: 30%;">
                                     <p><strong>Data da entrega:</strong>
                                         <span t-field="doc.sent_date" />
                                     </p>
-                                    <p></p>
+                                    <br />
+                                    <br />
                                     <p style="text-decoration: overline;">
                                         Assinatura/Matrícula dos Correios</p>
                                     <p>2ª via - Correios</p>

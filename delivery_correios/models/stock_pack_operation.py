@@ -4,7 +4,7 @@
 
 import re
 import logging
-from odoo import fields, models
+from odoo import api, fields, models
 
 _logger = logging.getLogger(__name__)
 
@@ -14,9 +14,16 @@ except ImportError:
     _logger.debug('Cannot import pysigepweb')
 
 
-
 class StockPackOperation(models.Model):
     _inherit = 'stock.pack.operation'
+
+    @api.multi
+    def name_get(self):
+        result = []
+        for rec in self:
+            result.append((rec.id, "Qtd: %s - %s" % (
+                rec.product_qty, rec.product_id.name)))
+        return result
 
     track_ref = fields.Char(string="Etiqueta de Rastreamento")
 

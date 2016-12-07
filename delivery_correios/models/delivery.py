@@ -36,7 +36,6 @@ class DeliveryCarrier(models.Model):
     aviso_recebimento = fields.Selection([('S', 'Sim'), ('N', 'Não')],
                                          string='Receber Aviso de Entrega')
 
-
     @api.one
     def action_get_correio_services(self):
         usuario = {
@@ -51,8 +50,8 @@ class DeliveryCarrier(models.Model):
         for item in servicos:
             correio = self.env['delivery.correios.service']
             item_correio = correio.search([('code', '=', item.codigo)])
-            if len(item_correio) == 1:
-                item_correio[0].update({
+            if item_correio:
+                item_correio.write({
                     'name': item.descricao,
                     'chancela': item.servicoSigep.chancela.chancela,
                     'ano_assinatura': str(ano_assinatura)[:4],
@@ -135,6 +134,7 @@ class DeliveryCarrier(models.Model):
             plp = self.env['delivery.correios.postagem.plp'].create({
                 'name': name, 'state': 'draft',
                 'delivery_id': self.id, 'total_value': 0,
+                'company_id': self.company_id.id,
             })
         res = []
         for picking in pickings:

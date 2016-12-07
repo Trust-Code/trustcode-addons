@@ -10,12 +10,15 @@
                 </header>
                 <sheet string="Pré Lista de Postagem">
                     <div class="oe_button_box" name="button_box">
-                        <button name="action_generate_voucher" type="object" class="oe_stat_button" icon="fa-send" string="Gerar Postagem"/>
+                        <button name="action_generate_voucher" type="object" class="oe_stat_button"
+                            icon="fa-send" string="Gerar Postagem" states="draft"
+                            confirm="Confirma a geração da PLP? O processo não poderá ser desfeito"/>
                     </div>
                     <group>
                         <field name="name" />
-                        <field name="company_id" groups="base.group_multi_company" />
+                        <field name="company_id" />
                         <field name="delivery_id" />
+                        <field name="sent_date" />
                         <field name="total_value" />
                         <field name="carrier_tracking_ref" />
                     </group>
