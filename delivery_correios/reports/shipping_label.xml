@@ -48,6 +48,7 @@
                     </tr>
                     <tr>
                         <th>
+                            <span t-field="pack.track_ref"/>
                             <t t-if="pack.track_ref">
                                 <t t-raw="pack.tracking_barcode()" />
                             </t>

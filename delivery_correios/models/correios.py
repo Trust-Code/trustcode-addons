@@ -129,6 +129,7 @@ src="/report/barcode/Code128/' + self.carrier_tracking_ref + '" />'
 
         dados["objetos"] = postagens
         dados["listaEtiquetas"] = etiquetas
+        dados['ambiente'] = self.delivery_id.ambiente
         track_ref = fecha_plp_servicos(**dados)
         if "mensagem_erro" in track_ref:
             raise UserError(track_ref["mensagem_erro"])

@@ -12,7 +12,7 @@ _logger = logging.getLogger(__name__)
 
 try:
     from pysigep.correios import calcular_preco_prazo, get_eventos
-    from pysigep.sigep import busca_cliente, solicita_etiquetas
+    from pysigep.sigep import busca_cliente, solicita_etiquetas_com_dv
 except ImportError:
     _logger.debug('Cannot import pysigepweb')
 
@@ -27,14 +27,15 @@ class DeliveryCarrier(models.Model):
     cartao_postagem = fields.Char(
         string="Número do cartão de Postagem", size=20)
 
-    delivery_type = fields.Selection(
-        selection_add=[('correios', 'Correios')])
+    delivery_type = fields.Selection(selection_add=[('correios', 'Correios')])
     service_id = fields.Many2one('delivery.correios.service', string="Serviço")
     mao_propria = fields.Selection([('S', 'Sim'), ('N', 'Não')],
                                    string='Entregar em Mão Própria')
     valor_declarado = fields.Boolean('Valor Declarado')
     aviso_recebimento = fields.Selection([('S', 'Sim'), ('N', 'Não')],
                                          string='Receber Aviso de Entrega')
+    ambiente = fields.Selection([(1, 'Homologação'), (2, 'Produção')],
+                                default=1, string="Ambiente")
 
     @api.one
     def action_get_correio_services(self):
@@ -44,7 +45,8 @@ class DeliveryCarrier(models.Model):
             'usuario': self.correio_login,
             'senha': self.correio_password,
         }
-        cliente = busca_cliente(**usuario)
+        ambiente = self.ambiente
+        cliente = busca_cliente(ambiente=ambiente, **usuario)
         servicos = cliente.contratos.cartoesPostagem.servicos
         ano_assinatura = cliente.contratos.dataVigenciaInicio
         for item in servicos:
@@ -101,7 +103,8 @@ class DeliveryCarrier(models.Model):
                 usuario['nVlValorDeclarado'] = line.price_subtotal \
                     if self.valor_declarado else 0
                 usuario['sCdAvisoRecebimento'] = self.aviso_recebimento or 'N'
-                solicita = solicita_etiquetas(**usuario)
+                usuario['ambiente'] = self.ambiente
+                solicita = solicita_etiquetas_com_dv(**usuario)
                 if int(solicita.cServico.Erro) != 0:
                     raise UserError(solicita.cServico.Erro)
                 valor = str(solicita.cServico.Valor).replace(',', '.')
@@ -157,12 +160,14 @@ class DeliveryCarrier(models.Model):
                     'nVlValorDeclarado': self.product_id.lst_price,
                     'sCdAvisoRecebimento': self.aviso_recebimento,
                 }
+                usuario_preco_prazo['ambiente'] = self.ambiente
                 preco = calcular_preco_prazo(**usuario_preco_prazo)
                 preco = str(preco.cServico.Valor).replace(',', '.')
                 preco = float(preco)
                 preco_soma += preco * pack.product_qty
                 plp.total_value += preco_soma
-                etiqueta = solicita_etiquetas(**solicitacao)[0]
+                solicitacao['ambiente'] = self.ambiente
+                etiqueta = solicita_etiquetas_com_dv(**solicitacao)[0]
                 pack.track_ref = etiqueta
                 tags.append(etiqueta)
                 self.env['delivery.correios.postagem.objeto'].create({
@@ -191,6 +196,7 @@ class DeliveryCarrier(models.Model):
             for pack in picking.pack_operation_product_ids:
                 track_ref = list(pack.track_ref)
                 usuario['objetos'] = track_ref
+                usuario['ambiente'] = self.ambiente
                 objetos = get_eventos(**usuario).objeto
                 for objeto in objetos:
                     postagem = self.env['delivery.correios.postagem.objeto'].\
