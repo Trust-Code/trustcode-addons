@@ -11,12 +11,11 @@
     <template id="nota_debito_document">
         <t t-call="report.external_layout">
             <t t-set="doc" t-value="doc.with_context({'lang':doc.partner_id.lang})" />
-
             <div class="page">
                 <div class="row">
                     <div class="col-xs-8">
                         <div class="panel panel-primary">
-                            <div class="panel-body">
+                            <div class="panel-body" style="padding: 5px 15px;">
                                 <address>
                                     <strong t-field="doc.company_id.legal_name" /><br />
                                     <span t-field="doc.company_id.street" />
@@ -38,7 +37,7 @@
                     </div>
                     <div class="col-xs-4">
                         <div class="panel panel-primary">
-                            <div class="panel-body center">
+                            <div class="panel-body center" style="padding: 5px 15px;">
                                 <img style="height:140px;" t-att-src="'data:image/png;base64,%s' % doc.company_id.logo" />
                             </div>
                         </div>
@@ -48,10 +47,10 @@
                 <div class="row">
                     <div class="col-xs-8">
                         <div class="panel panel-primary">
-                            <div class="panel-heading">
+                            <div class="panel-heading" style="padding:3px 6px;">
                                 <h3 class="panel-title center">Nota de Débito</h3>
                             </div>
-                            <div class="panel-body">
+                            <div class="panel-body" style="padding: 5px 15px;">
                                 <strong style="center">Data de emissão: <span t-field="doc.date_invoice" /></strong><br />
                                 <span>1º VIA -DESTINATÁRIO</span><br />
                                 <span>2º VIA - FISCAL</span><br />
@@ -60,7 +59,7 @@
                     </div>
                     <div class="col-xs-4">
                         <div class="panel panel-primary">
-                            <div class="panel-heading">
+                            <div class="panel-heading" style="padding:3px 6px;">
                                 <h3 class="panel-title">Nº FORMULÁRIO <span class="pull-right" t-field="doc.number" /></h3>
                             </div>
                         </div>
@@ -70,10 +69,10 @@
                 <div class="row">
                     <div class="col-xs-12">
                         <div class="panel panel-primary">
-                            <div class="panel-heading">
+                            <div class="panel-heading" style="padding:3px 6px;">
                                 <h3 class="panel-title center">Destinatário</h3>
                             </div>
-                            <div class="panel-body">
+                            <div class="panel-body" style="padding: 5px 15px;">
                                 <address style="margin-bottom:0px;">
                                     <strong>SACADO: </strong><span t-field="doc.commercial_partner_id.name" /><br />
                                     <strong>ENDEREÇO: </strong>
@@ -112,17 +111,47 @@
                 <div class="row">
                     <div class="col-xs-8">
                         <div class="panel panel-primary" style="min-height:150px;">
-                            <div class="panel-heading">
-                                <h3 class="panel-title center">Débito Fatura</h3>
+                            <div class="panel-heading" style="padding:3px 6px;">
+                                <h3 class="panel-title center">Débito Fatura / Duplicatas</h3>
                             </div>
-                            <div class="panel-body">
-                                Fatura / Duplicata:
+                            <div class="panel-body" style="padding: 0px 10px;">
+                                <div class="row">
+                                    <div class="col-xs-4">
+                                        <table class="table table-bordered">
+                                            <tr class="info">
+                                                <td class="text-center"><strong>Fatura</strong></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-center"><h5 style="margin:0px;" t-field="doc.number"></h5></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-center"><h4 style="margin:0px;" t-field="doc.amount_total"></h4></td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                    <div class="col-xs-8">
+                                        <table class="table table-condensed table-bordered table-striped">
+                                            <thead>
+                                                <th>VALOR R$</th>
+                                                <th>Nº ORDEM</th>
+                                                <th>VENCIMENTO</th>
+                                            </thead>
+                                            <tbody>
+                                                <tr t-foreach="doc.receivable_move_line_ids" t-as="move">
+                                                    <td><span t-esc="move.debit or move.credit" /></td>
+                                                    <td><span t-esc="'%s/%s' % (move.move_id.name, move.name)" /></td>
+                                                    <td><span t-field="move.date_maturity" /></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                     <div class="col-xs-4">
                         <div class="panel panel-primary" style="min-height:150px;">
-                            <div class="panel-heading">
+                            <div class="panel-heading" style="padding:3px 2px;">
                                 <h3 class="panel-title center">Para Uso da Instituição Financeira</h3>
                             </div>
                             <div class="panel-body">
@@ -134,10 +163,10 @@
                 <div class="row">
                     <div class="col-xs-6">
                         <div class="panel panel-primary" style="min-height:200px;">
-                            <div class="panel-heading">
+                            <div class="panel-heading" style="padding:3px 6px;">
                                 <h3 class="panel-title center">Descrição dos Serviços</h3>
                             </div>
-                            <div class="panel-body">
+                            <div class="panel-body" style="padding: 5px 15px;">
                                 <t t-foreach="doc.invoice_line_ids" t-as="line">
                                     <span t-field="line.name" /><br />
                                 </t>
@@ -172,10 +201,10 @@
                 <div class="row">
                     <div class="col-xs-12">
                         <div class="panel panel-primary">
-                            <div class="panel-heading">
+                            <div class="panel-heading" style="padding:3px 6px;">
                                 <h3 class="panel-title center">Informações</h3>
                             </div>
-                            <div class="panel-body">
+                            <div class="panel-body" style="padding: 5px 15px;">
                                 <p t-field="doc.comment">
                                 </p>
                             </div>
@@ -191,13 +220,13 @@
                     </div>
                 </div>
 
-                <div class="row">
+                <div class="row" style="margin-top:60px;">
                     <div class="col-xs-6 text-center">
                         ____/____/_______ <br />
                         DATA DO ACEITE
                     </div>
                     <div class="col-xs-6 text-center">
-                        ______________________________________________________ <br />
+                        ___________________________________________________ <br />
                         CARIMBO E ASSINATURA DO SACADO
                     </div>
                 </div>
