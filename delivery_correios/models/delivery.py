@@ -104,10 +104,10 @@ class DeliveryCarrier(models.Model):
                     if self.valor_declarado else 0
                 usuario['sCdAvisoRecebimento'] = self.aviso_recebimento or 'N'
                 usuario['ambiente'] = self.ambiente
-                solicita = solicita_etiquetas_com_dv(**usuario)
-                if int(solicita.cServico.Erro) != 0:
-                    raise UserError(solicita.cServico.Erro)
-                valor = str(solicita.cServico.Valor).replace(',', '.')
+                preco_prazo = calcular_preco_prazo(**usuario)
+                if int(preco_prazo.cServico.Erro) != 0:
+                    raise UserError(preco_prazo.cServico.MsgErro)
+                valor = str(preco_prazo.cServico.Valor).replace(',', '.')
                 custo = float(valor)
                 custos.append(custo)
 
@@ -194,7 +194,7 @@ class DeliveryCarrier(models.Model):
 #       tracking_refs = ['PL207893158BR', 'JS535334467BR']
         for picking in pickings:
             for pack in picking.pack_operation_product_ids:
-                track_ref = list(pack.track_ref)
+                track_ref = [pack.track_ref]
                 usuario['objetos'] = track_ref
                 usuario['ambiente'] = self.ambiente
                 objetos = get_eventos(**usuario).objeto
