@@ -77,8 +77,8 @@ class DeliveryCarrier(models.Model):
         if len(orders.order_line) == 0:
             raise UserError(u'Não existe nenhum item para calcular')
         custos = []
+        custo = 0.0
         for order in orders:
-            custo = 0.0
             if not self.service_id:
                 raise UserError(u'Escolha o tipo de serviço para poder \
                                 calcular corretamente o frete dos correios')
@@ -111,7 +111,7 @@ class DeliveryCarrier(models.Model):
                 custo = float(valor)
                 custos.append(custo)
 
-        return custos
+        return [sum(custos)]
 
     def correios_send_shipping(self, pickings):
         ''' Send the package to the service provider
