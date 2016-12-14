@@ -220,8 +220,8 @@ class DeliveryCarrier(models.Model):
                                 evento.destino.cidade + '/' + evento.destino.uf
                     self.env['delivery.correios.postagem.eventos'].create(
                         correio_evento)
-        return ['/web#min=1&limit=80&view_type=list&model=delivery.correios.postagem.plp&action=396']
-
+        return ['/web#min=1&limit=80&view_type=list&model=delivery.\
+correios.postagem.plp&action=396']
 
     def correios_cancel_shipment(self):
         ''' Cancel a shipment
