@@ -1,0 +1,246 @@
+<?xml version="1.0"?>
+<odoo>
+
+    <report id="action_nota_debito_reports"
+            name="nota_debito.main_template_nota_debito"
+            file="nota_debito.main_template_nota_debito"
+            model="account.invoice"
+            report_type="qweb-pdf"
+            string="Nota de Débito"/>
+
+    <template id="nota_debito_document">
+        <t t-call="report.external_layout">
+            <t t-set="doc" t-value="doc.with_context({'lang':doc.partner_id.lang})" />
+            <div class="page">
+                <div class="row">
+                    <div class="col-xs-8">
+                        <div class="panel panel-primary">
+                            <div class="panel-body" style="padding: 5px 15px;">
+                                <address>
+                                    <strong t-field="doc.company_id.legal_name" /><br />
+                                    <span t-field="doc.company_id.street" />
+                                    <span t-field="doc.company_id.number" />
+                                    <span t-field="doc.company_id.district" />
+                                    <span t-field="doc.company_id.street2" />
+                                    <br/>
+                                    CEP: <span t-field="doc.company_id.zip" /> |
+                                    Tel: <span t-field="doc.company_id.phone" /> |
+                                    Fax: <span t-field="doc.company_id.fax" />
+                                </address>
+                                <div>
+                                    Inscrição Estadual nº <span t-field="doc.company_id.inscr_est" /><br />
+                                    CNPJ <span t-field="doc.company_id.cnpj_cpf" /><br />
+                                    <span t-field="doc.company_id.email" /> | <span t-field="doc.company_id.website" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-4">
+                        <div class="panel panel-primary">
+                            <div class="panel-body center" style="padding: 5px 15px;">
+                                <img style="height:140px;" t-att-src="'data:image/png;base64,%s' % doc.company_id.logo" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-xs-8">
+                        <div class="panel panel-primary">
+                            <div class="panel-heading" style="padding:3px 6px;">
+                                <h3 class="panel-title center">Nota de Débito</h3>
+                            </div>
+                            <div class="panel-body" style="padding: 5px 15px;">
+                                <strong style="center">Data de emissão: <span t-field="doc.date_invoice" /></strong><br />
+                                <span>1º VIA -DESTINATÁRIO</span><br />
+                                <span>2º VIA - FISCAL</span><br />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-4">
+                        <div class="panel panel-primary">
+                            <div class="panel-heading" style="padding:3px 6px;">
+                                <h3 class="panel-title">Nº FORMULÁRIO <span class="pull-right" t-field="doc.number" /></h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="panel panel-primary">
+                            <div class="panel-heading" style="padding:3px 6px;">
+                                <h3 class="panel-title center">Destinatário</h3>
+                            </div>
+                            <div class="panel-body" style="padding: 5px 15px;">
+                                <address style="margin-bottom:0px;">
+                                    <strong>SACADO: </strong><span t-field="doc.commercial_partner_id.name" /><br />
+                                    <strong>ENDEREÇO: </strong>
+                                    <span t-field="doc.commercial_partner_id.street" />
+                                    <span t-field="doc.commercial_partner_id.number" />
+                                    <span t-field="doc.commercial_partner_id.district" />
+                                    <span t-field="doc.commercial_partner_id.street2" />
+                                </address>
+                                <div class="row">
+                                    <div class="col-xs-4">
+                                        <strong>MUNICÍPIO: </strong><span t-field="doc.commercial_partner_id.city_id" />
+                                    </div>
+                                    <div class="col-xs-3">
+                                        <strong>UF: </strong><span t-field="doc.commercial_partner_id.state_id.code" />
+                                    </div>
+                                    <div class="col-xs-5">
+                                        <strong>CEP: </strong><span t-field="doc.commercial_partner_id.zip" />
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-xs-4">
+                                        <strong>CNPJ: </strong><span t-field="doc.commercial_partner_id.cnpj_cpf" />
+                                    </div>
+                                    <div class="col-xs-3">
+                                        <strong>Tel: </strong><span t-field="doc.commercial_partner_id.phone" />
+                                    </div>
+                                    <div class="col-xs-5">
+                                        <strong>Contato: </strong><span t-field="doc.partner_id.name" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-xs-8">
+                        <div class="panel panel-primary" style="min-height:150px;">
+                            <div class="panel-heading" style="padding:3px 6px;">
+                                <h3 class="panel-title center">Débito Fatura / Duplicatas</h3>
+                            </div>
+                            <div class="panel-body" style="padding: 0px 10px;">
+                                <div class="row">
+                                    <div class="col-xs-4">
+                                        <table class="table table-bordered">
+                                            <tr class="info">
+                                                <td class="text-center"><strong>Fatura</strong></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-center"><h5 style="margin:0px;" t-field="doc.number"></h5></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-center"><h4 style="margin:0px;" t-field="doc.amount_total"></h4></td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                    <div class="col-xs-8">
+                                        <table class="table table-condensed table-bordered table-striped">
+                                            <thead>
+                                                <th>VALOR R$</th>
+                                                <th>Nº ORDEM</th>
+                                                <th>VENCIMENTO</th>
+                                            </thead>
+                                            <tbody>
+                                                <tr t-foreach="doc.receivable_move_line_ids" t-as="move">
+                                                    <td><span t-esc="move.debit or move.credit" /></td>
+                                                    <td><span t-esc="'%s/%s' % (move.move_id.name, move.name)" /></td>
+                                                    <td><span t-field="move.date_maturity" /></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-4">
+                        <div class="panel panel-primary" style="min-height:150px;">
+                            <div class="panel-heading" style="padding:3px 2px;">
+                                <h3 class="panel-title center">Para Uso da Instituição Financeira</h3>
+                            </div>
+                            <div class="panel-body">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-xs-6">
+                        <div class="panel panel-primary" style="min-height:200px;">
+                            <div class="panel-heading" style="padding:3px 6px;">
+                                <h3 class="panel-title center">Descrição dos Serviços</h3>
+                            </div>
+                            <div class="panel-body" style="padding: 5px 15px;">
+                                <t t-foreach="doc.invoice_line_ids" t-as="line">
+                                    <span t-field="line.name" /><br />
+                                </t>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-6">
+                        <div class="panel panel-primary" style="min-height:200px;">
+                            <table class="table table-condensed table-bordered table-striped">
+                                <thead>
+                                    <th>Quantidade</th>
+                                    <th>Valor Unitário</th>
+                                    <th>Valor Total Líquido</th>
+                                </thead>
+                                <tbody>
+                                    <tr t-foreach="doc.invoice_line_ids" t-as="line">
+                                        <td><span t-field="line.quantity" /></td>
+                                        <td><span t-field="line.price_unit" /></td>
+                                        <td><span t-field="line.price_subtotal" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td></td>
+                                        <td class="info"><strong>Valor Total</strong></td>
+                                        <td class="info"><strong t-field="doc.amount_total" /></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="panel panel-primary">
+                            <div class="panel-heading" style="padding:3px 6px;">
+                                <h3 class="panel-title center">Informações</h3>
+                            </div>
+                            <div class="panel-body" style="padding: 5px 15px;">
+                                <p t-field="doc.comment">
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-xs-12">
+                        RECONHECEMOS O RECEBIMENTO DESTA FATURA PELA
+                        <span t-field="doc.company_id.legal_name" />,
+                        DE PRESTAÇÃO DE SERVIÇOS PROFISSIONAIS CONSTANTES NESTA NOTA DE DÉBITO/FATURA
+                    </div>
+                </div>
+
+                <div class="row" style="margin-top:60px;">
+                    <div class="col-xs-6 text-center">
+                        ____/____/_______ <br />
+                        DATA DO ACEITE
+                    </div>
+                    <div class="col-xs-6 text-center">
+                        ___________________________________________________ <br />
+                        CARIMBO E ASSINATURA DO SACADO
+                    </div>
+                </div>
+
+            </div>
+        </t>
+    </template>
+
+    <template id="main_template_nota_debito">
+        <t t-call="report.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="nota_debito.nota_debito_document" t-lang="doc.partner_id.lang"/>
+            </t>
+        </t>
+    </template>
+
+</odoo>
