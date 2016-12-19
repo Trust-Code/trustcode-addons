@@ -13,6 +13,7 @@ class TestDeliveryCorreios(TransactionCase):
     def setUp(self):
         super(TestDeliveryCorreios, self).setUp()
         correio = {
+            'name': 'Correio',
             'correio_login': 'sigep',
             'correio_password': 'n5f9t8',
             'cod_administrativo': '08082650',
