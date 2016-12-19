@@ -54,7 +54,9 @@ class TestDeliveryCorreios(TransactionCase):
         self.sale_order = self.env['sale.order'].create(sale_order)
 
     @patch('odoo.addons.delivery_correios.models.delivery.calcular_preco_prazo')
-    def test_correios_get_shipping_price_from_so(self, preco):
+    @patch('odoo.addons.delivery_correios.models.delivery.check_for_correio_error')
+    def test_correios_get_shipping_price_from_so(self, preco, erro):
+        erro.return_value = None
         cServico = type('', (), {})()
         cServico.Valor = '42,00'
         preco.return_value = cServico
@@ -63,7 +65,9 @@ class TestDeliveryCorreios(TransactionCase):
         self.assertEqual(self.sale_order.amount_total, 82)
 
     @patch('odoo.addons.delivery_correios.models.delivery.busca_cliente')
-    def test_action_get_correio_services(self, services):
+    @patch('odoo.addons.delivery_correios.models.delivery.check_for_correio_error')
+    def test_action_get_correio_services(self, services, erro):
+        erro.return_value = None
         # mock servicos
         servico_1 = type('', (), {})()
         servico_1.servicoSigep = type('', (), {})()
