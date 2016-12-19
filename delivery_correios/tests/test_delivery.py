@@ -25,7 +25,41 @@ class TestDeliveryCorreios(TransactionCase):
             'ambiente': 1,
         }
         self.delivery = self.env['delivery.carrier'].create(correio)
+        partner = {
+            'name': 'Parceiro 1',
+            'company_type': 'person',
+            'cnpj_cpf': '515.741.801-93',
+            'zip': '27336-400',
+        }
+        self.partner = self.env['res.partner'].create(partner)
+        produto = {
+            'name': 'Produto 1',
+            'weight': 10,
+            'comprimento': 20,
+            'altura': 20,
+            'largura': 20,
+            'list_price': 20,
+        }
+        self.produto = self.env['product.template'].create(produto)
+        sale_order_line = {
+            'product_id': self.produto.id,
+            'product_uom_qty': 2,
+        }
+        sale_order = {
+            'partner_id': self.partner.id,
+            'order_line': [(0, 0, sale_order_line)],
+            'carrier_id': self.delivery.id,
+        }
+        self.sale_order = self.env['sale.order'].create(sale_order)
 
+    @patch('odoo.addons.delivery_correios.delivery.busca_cliente')
+    def test_correios_get_shipping_price_from_so(self, preco):
+        cServico = type('', (), {})()
+        cServico.Valor = '42,00'
+        preco.return_value = cServico
+        self.env['delivery.carrier'].\
+            correios_get_shipping_price_from_so([self.sale_order])
+        self.assertEqual(self.sale_order.amount_total, 82)
 
     @patch('odoo.addons.delivery_correios.delivery.busca_cliente')
     def test_action_get_correio_services(self, services):
