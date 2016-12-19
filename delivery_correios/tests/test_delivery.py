@@ -52,7 +52,7 @@ class TestDeliveryCorreios(TransactionCase):
         }
         self.sale_order = self.env['sale.order'].create(sale_order)
 
-    @patch('odoo.addons.delivery_correios.delivery.busca_cliente')
+    @patch('odoo.addons.delivery_correios.delivery.calcular_preco_prazo')
     def test_correios_get_shipping_price_from_so(self, preco):
         cServico = type('', (), {})()
         cServico.Valor = '42,00'
