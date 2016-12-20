@@ -66,7 +66,7 @@ class TestDeliveryCorreios(TransactionCase):
         }
         self.sale_order_line =\
             self.env['sale.order.line'].create(sale_order_line)
-        self.sale_order.order_line = (4, self.sale_order_line.id, 0)
+        self.sale_order.order_line = [(4, self.sale_order_line.id, 0)]
 
     @patch('odoo.addons.delivery_correios.models.delivery.calcular_preco_prazo')
     @patch('odoo.addons.delivery_correios.models.delivery.check_for_correio_error')
