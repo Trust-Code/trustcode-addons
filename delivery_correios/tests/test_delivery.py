@@ -34,6 +34,15 @@ class TestDeliveryCorreios(TransactionCase):
             'zip': '27336-400',
         }
         self.partner = self.env['res.partner'].create(partner)
+        product_uom = {
+            'name': 'UOM',
+            'category_id': self.env['product.uom.categ'].create(
+                {'name': 'Unity'}),
+            'uom_type': 'reference',
+            'active': True,
+            'rounding': 0.00100,
+        }
+        self.product_uom = self.env['product.uom'].create(product_uom)
         produto = {
             'name': 'Produto 1',
             'weight': 10,
@@ -41,6 +50,7 @@ class TestDeliveryCorreios(TransactionCase):
             'altura': 20,
             'largura': 20,
             'list_price': 20,
+            'uom_id': self.product_uom.id,
         }
         self.produto = self.env['product.product'].create(produto)
         sale_order_line = {
