@@ -37,7 +37,7 @@ class TestDeliveryCorreios(TransactionCase):
         product_uom = {
             'name': 'UOM',
             'category_id': self.env['product.uom.categ'].create(
-                {'name': 'Unity'}),
+                {'name': 'Unity'}).id,
             'uom_type': 'reference',
             'active': True,
             'rounding': 0.00100,
