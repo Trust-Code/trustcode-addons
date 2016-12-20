@@ -51,6 +51,7 @@ class TestDeliveryCorreios(TransactionCase):
             'largura': 20,
             'list_price': 20,
             'uom_id': self.product_uom.id,
+            'uom_po_id': self.product_uom.id,
         }
         self.produto = self.env['product.product'].create(produto)
         sale_order_line = {
