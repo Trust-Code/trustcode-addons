@@ -5,7 +5,6 @@
 from collections import namedtuple
 from mock import patch
 
-from odoo.exceptions import UserError
 from odoo.tests.common import TransactionCase
 
 
@@ -67,6 +66,7 @@ class TestDeliveryCorreios(TransactionCase):
         }
         self.sale_order_line =\
             self.env['sale.order.line'].create(sale_order_line)
+        self.sale_order.order_line = self.sale_order_line.id
 
     @patch('odoo.addons.delivery_correios.models.delivery.calcular_preco_prazo')
     @patch('odoo.addons.delivery_correios.models.delivery.check_for_correio_error')
