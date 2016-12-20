@@ -46,6 +46,8 @@ class TestDeliveryCorreios(TransactionCase):
             'product_id': self.produto.id,
             'product_uom_qty': 2,
         }
+        self.sale_order_line =\
+            self.env['sale.order.line'].create(sale_order_line)
         sale_order = {
             'partner_id': self.partner.id,
             'order_line': [(0, 0, sale_order_line)],
@@ -67,7 +69,6 @@ class TestDeliveryCorreios(TransactionCase):
     @patch('odoo.addons.delivery_correios.models.delivery.busca_cliente')
     @patch('odoo.addons.delivery_correios.models.delivery.check_for_correio_error')
     def test_action_get_correio_services(self, services, erro):
-        erro.return_value = None
         # mock servicos
         servico_1 = type('', (), {})()
         servico_1.servicoSigep = type('', (), {})()
@@ -76,27 +77,12 @@ class TestDeliveryCorreios(TransactionCase):
         servico_1.codigo = '40096'
         servico_1.id = '104625'
         servico_1.descricao = 'Servico 1'
-        servico_2 = type('', (), {})()
-        servico_2.servicoSigep = type('', (), {})()
-        servico_2.servicoSigep.chancela = type('', (), {})()
-        servico_2.servicoSigep.chancela.chancela = 'foobarbazbam'
-        servico_2.codigo = '40160'
-        servico_2.id = '104540'
-        servico_2.descricao = 'Servico 2'
-        servico_3 = type('', (), {})()
-        servico_3.servicoSigep = type('', (), {})()
-        servico_3.servicoSigep.chancela = type('', (), {})()
-        servico_3.servicoSigep.chancela.chancela = 'foobarbazbam'
-        servico_3.codigo = '40245'
-        servico_3.id = '104715'
-        servico_3.descricao = 'Servico 3'
         Services = type('', (), {})()
         Services.contratos = type('', (), {})()
         Services.contratos.cartoesPostagem = type('', (), {})()
         Services.contratos.dataVigenciaInicio = 2015
-        Services.contratos.cartoesPostagem.servicos = [
-            servico_1, servico_2, servico_3,
-        ]
+        Services.contratos.cartoesPostagem.servicos = [servico_1]
         services.return_value = Services
+        erro.return_value = None
         self.delivery.action_get_correio_services()
         self.assertTrue(len(self.delivery.service_id) == 3)
