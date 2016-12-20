@@ -54,19 +54,19 @@ class TestDeliveryCorreios(TransactionCase):
             'uom_po_id': self.product_uom.id,
         }
         self.produto = self.env['product.product'].create(produto)
+        sale_order = {
+            'partner_id': self.partner.id,
+            'carrier_id': self.delivery.id,
+        }
+        self.sale_order = self.env['sale.order'].create(sale_order)
         sale_order_line = {
             'product_id': self.produto.id,
             'product_uom_qty': 2,
             'product_uom': self.product_uom.id,
+            'order_id': self.sale_order.id,
         }
         self.sale_order_line =\
             self.env['sale.order.line'].create(sale_order_line)
-        sale_order = {
-            'partner_id': self.partner.id,
-            'order_line': [(0, 0, self.sale_order_line.id)],
-            'carrier_id': self.delivery.id,
-        }
-        self.sale_order = self.env['sale.order'].create(sale_order)
 
     @patch('odoo.addons.delivery_correios.models.delivery.calcular_preco_prazo')
     @patch('odoo.addons.delivery_correios.models.delivery.check_for_correio_error')
