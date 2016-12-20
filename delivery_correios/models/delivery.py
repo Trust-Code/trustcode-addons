@@ -17,6 +17,15 @@ except ImportError:
     _logger.debug('Cannot import pysigepweb')
 
 
+def check_for_correio_error(method):
+    if 'mensagem_erro' in method:
+        raise UserError(method['mensagem_erro'])
+    elif 'erro' in method:
+        raise UserError(method['erro'])
+    elif hasattr(method, 'cServico') and int(method.cServico.Erro) != 0:
+        raise UserError(method.cServico.MsgErro)
+
+
 class DeliveryCarrier(models.Model):
     _inherit = 'delivery.carrier'
 
@@ -47,6 +56,7 @@ class DeliveryCarrier(models.Model):
         }
         ambiente = self.ambiente
         cliente = busca_cliente(ambiente=ambiente, **usuario)
+        check_for_correio_error(cliente)
         servicos = cliente.contratos.cartoesPostagem.servicos
         ano_assinatura = cliente.contratos.dataVigenciaInicio
         for item in servicos:
@@ -76,7 +86,6 @@ class DeliveryCarrier(models.Model):
         '''
         if len(orders.order_line) == 0:
             raise UserError(u'Não existe nenhum item para calcular')
-        custos = []
         custo = 0.0
         for order in orders:
             if not self.service_id:
@@ -105,13 +114,11 @@ class DeliveryCarrier(models.Model):
                 usuario['sCdAvisoRecebimento'] = self.aviso_recebimento or 'N'
                 usuario['ambiente'] = self.ambiente
                 preco_prazo = calcular_preco_prazo(**usuario)
-                if int(preco_prazo.cServico.Erro) != 0:
-                    raise UserError(preco_prazo.cServico.MsgErro)
+                check_for_correio_error(preco_prazo)
                 valor = str(preco_prazo.cServico.Valor).replace(',', '.')
-                custo = float(valor)
-                custos.append(custo)
+                custo += float(valor)
 
-        return [sum(custos)]
+        return [custo]
 
     def correios_send_shipping(self, pickings):
         ''' Send the package to the service provider
@@ -162,12 +169,16 @@ class DeliveryCarrier(models.Model):
                 }
                 usuario_preco_prazo['ambiente'] = self.ambiente
                 preco = calcular_preco_prazo(**usuario_preco_prazo)
+                check_for_correio_error(preco)
                 preco = str(preco.cServico.Valor).replace(',', '.')
                 preco = float(preco)
                 preco_soma += preco * pack.product_qty
-                plp.total_value += preco_soma
                 solicitacao['ambiente'] = self.ambiente
-                etiqueta = solicita_etiquetas_com_dv(**solicitacao)[0]
+                etiqueta = solicita_etiquetas_com_dv(**solicitacao)
+                if len(etiqueta) > 0:
+                    etiqueta = etiqueta[0]
+                else:
+                    raise UserError('Nenhuma etiqueta recebida')
                 pack.track_ref = etiqueta
                 tags.append(etiqueta)
                 self.env['delivery.correios.postagem.objeto'].create({
@@ -178,6 +189,7 @@ class DeliveryCarrier(models.Model):
             tags = ';'.join(tags)
             pickings.carrier_tracking_ref = tags
             res.append({'exact_price': preco_soma, 'tracking_number': tags})
+            plp.total_value = preco_soma
         return res
 
     def correios_get_tracking_link(self, pickings):
@@ -197,7 +209,9 @@ class DeliveryCarrier(models.Model):
                 track_ref = [pack.track_ref]
                 usuario['objetos'] = track_ref
                 usuario['ambiente'] = self.ambiente
-                objetos = get_eventos(**usuario).objeto
+                objetos = get_eventos(**usuario)
+                check_for_correio_error(objetos)
+                objetos = objetos.objeto
                 for objeto in objetos:
                     postagem = self.env['delivery.correios.postagem.objeto'].\
                         search([('stock_pack_id', '=', pack.id)], limit=1)

@@ -1,1 +1,2 @@
+pypandoc
 https://github.com/Trust-Code/pysigep/archive/develop.zip
