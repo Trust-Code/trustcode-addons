@@ -78,7 +78,7 @@ class TestDeliveryCorreios(TransactionCase):
         preco.return_value = cServico
         erro.return_value = None
         self.env['delivery.carrier'].\
-            correios_get_shipping_price_from_so([self.sale_order])
+            correios_get_shipping_price_from_so(self.sale_order)
         self.assertEqual(self.sale_order.amount_total, 82)
 
     @patch('odoo.addons.delivery_correios.models.delivery.busca_cliente')
