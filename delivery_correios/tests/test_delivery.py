@@ -162,4 +162,6 @@ AgICAgICAwUDAwMDAwYEBAMFBwYHBwcGBwcICQsJCAgKCAcH</chancela>
         services.return_value = objectify.fromstring(correio_return_xml)
         erro.return_value = None
         self.delivery.action_get_correio_services()
-        self.assertTrue(len(self.delivery.service_id) == 1)
+        servicos = self.env['delivery.correios.service'].search([])
+        self.assertTrue(len(servicos) == 1,
+                        "Número de serviços: %d " % len(servicos))
