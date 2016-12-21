@@ -149,6 +149,8 @@ class TestDeliveryCorreios(TransactionCase):
                 <id>104625</id>
             </servicos>
         </cartoesPostagem>
+        <dataVigenciaInicio>2016</dataVigenciaInicio>
+        <codigoDiretoria>10</codigoDiretoria>
     </contratos>
 </cliente>"""
         services.return_value = objectify.fromstring(correio_return_xml)
