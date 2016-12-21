@@ -77,6 +77,31 @@ class TestDeliveryCorreios(TransactionCase):
         cServico = cServico(Valor=42.00)
         preco.return_value = cServico
         erro.return_value = None
+        entrega = self.env['delivery.carrier'].create({
+            'name': 'Metodo 1',
+            'delivery_type': 'correios',
+            'margin': 0,
+            'integration_level': 'rate_and_ship',
+            'correio_login': 'sigep',
+            'correio_password': 'n5f9t8',
+            'cod_administrativo': '08082650',
+            'num_contrato': '9912208555',
+            'cartao_postagem': '0057018901',
+            'ambiente': 1,
+        })
+        servico = self.env['delivery.correios.service'].create({
+            'ano_assinatura': '2016',
+            'name': 'Serviço 1',
+            'code': '40215',
+            'identifier': 'foo bar baz',
+            'delivery_id': entrega.id,
+        })
+        entrega.update({
+            'service_id': servico.id,
+        })
+        self.sale_order.update({
+            'carrier_id': entrega.id
+        })
         self.env['delivery.carrier'].\
             correios_get_shipping_price_from_so(self.sale_order)
         self.assertEqual(self.sale_order.amount_total, 82)
