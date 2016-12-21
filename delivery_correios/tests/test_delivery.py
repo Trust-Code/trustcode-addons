@@ -3,6 +3,7 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 from collections import namedtuple
+from lxml import objectify
 from mock import patch
 
 from odoo.tests.common import TransactionCase
@@ -73,9 +74,34 @@ class TestDeliveryCorreios(TransactionCase):
     @patch('odoo.addons.delivery_correios.models.delivery.check_for_correio_error')
     @patch('odoo.addons.delivery_correios.models.delivery.calcular_preco_prazo')
     def test_correios_get_shipping_price_from_so(self, preco, erro):
-        cServico = namedtuple('cServico', 'Valor')
-        cServico = cServico(Valor=42.00)
-        preco.return_value = cServico
+        correio_return_xml = """\
+<Servicos>
+    <cServico>
+        <Codigo>41106</Codigo> 
+        <Valor>12,80</Valor> 
+        <PrazoEntrega>6</PrazoEntrega> 
+        <ValorMaoPropria>0,00</ValorMaoPropria> 
+        <ValorAvisoRecebimento>2,80</ValorAvisoRecebimento> 
+        <ValorValorDeclarado>0,00</ValorValorDeclarado> 
+        <EntregaDomiciliar>S</EntregaDomiciliar> 
+        <EntregaSabado>N</EntregaSabado> 
+        <Erro>0</Erro> 
+        <MsgErro /> 
+    </cServico>
+    <cServico>
+        <Codigo>40010</Codigo> 
+        <Valor>29,00</Valor> 
+        <PrazoEntrega>2</PrazoEntrega> 
+        <ValorMaoPropria>0,00</ValorMaoPropria> 
+        <ValorAvisoRecebimento>2,80</ValorAvisoRecebimento> 
+        <ValorValorDeclarado>0,00</ValorValorDeclarado> 
+        <EntregaDomiciliar>S</EntregaDomiciliar> 
+        <EntregaSabado>S</EntregaSabado> 
+        <Erro>0</Erro> 
+        <MsgErro /> 
+    </cServico>
+</Servicos>"""
+        preco.return_value = objectify.fromstring(correio_return_xml)
         erro.return_value = None
         entrega = self.env['delivery.carrier'].create({
             'name': 'Metodo 1',
@@ -110,17 +136,22 @@ class TestDeliveryCorreios(TransactionCase):
     @patch('odoo.addons.delivery_correios.models.delivery.busca_cliente')
     def test_action_get_correio_services(self, services, erro):
         # mock servicos
-        Servicos = namedtuple('Servicos', 'contratos')
-        Contrato = namedtuple('Contratos',
-                              'servicoSigep codigo id descricao')
-        ServicoSigep = namedtuple('ServicoSigep', 'chancela')
-        Chancela = namedtuple('Chancela', 'chancela')
-        chancela = Chancela(chancela='foobarbazbam')
-        servicoSigep = ServicoSigep(chancela=chancela)
-        contrato = Contrato(servicoSigep=servicoSigep, codigo='40096',
-                            id='104625', descricao='Servico 1')
-        Servico = Servicos(contratos=contrato)
-        services.return_value = Servico
+        correio_return_xml = """\
+<cliente>
+    <cnpj>20535586000104</cnpj>
+    <contratos>
+        <cartoesPostagem>
+            <codigoAdministrativo>08082650</codigoAdministrativo>
+            <numero>12345678</numero>
+            <servicos>
+                <codigo>40096</codigo>
+                <descricao>SEDEX - CONTRATO</descricao>
+                <id>104625</id>
+            </servicos>
+        </cartoesPostagem>
+    </contratos>
+</cliente>"""
+        services.return_value = objectify.fromstring(correio_return_xml)
         erro.return_value = None
         self.delivery.action_get_correio_services()
         self.assertTrue(len(self.delivery.service_id) == 1)
