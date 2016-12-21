@@ -67,7 +67,7 @@ class TestDeliveryCorreios(TransactionCase):
         }
         self.sale_order_line =\
             self.env['sale.order.line'].create(sale_order_line)
-        self.sale_order.update({
+        self.sale_order.write({
             'order_line': [(4, self.sale_order_line.id, 0)],
         })
 
@@ -122,10 +122,10 @@ class TestDeliveryCorreios(TransactionCase):
             'identifier': 'foo bar baz',
             'delivery_id': entrega.id,
         })
-        entrega.update({
+        entrega.write({
             'service_id': servico.id,
         })
-        self.sale_order.update({
+        self.sale_order.write({
             'carrier_id': entrega.id
         })
         self.env['delivery.carrier'].\
