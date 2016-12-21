@@ -147,6 +147,12 @@ class TestDeliveryCorreios(TransactionCase):
                 <codigo>40096</codigo>
                 <descricao>SEDEX - CONTRATO</descricao>
                 <id>104625</id>
+                <servicoSigep>
+                    <chancela>
+                        <chancela>/9j/4AAQSkZJRgABAQEBLAEsAAD/2wBDAAIBAQIBAQIC\
+AgICAgICAwUDAwMDAwYEBAMFBwYHBwcGBwcICQsJCAgKCAcH</chancela>
+                    </chancela>
+                </servicoSigep>
             </servicos>
         </cartoesPostagem>
         <dataVigenciaInicio>2016</dataVigenciaInicio>
