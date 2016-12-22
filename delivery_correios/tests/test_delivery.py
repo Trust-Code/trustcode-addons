@@ -82,7 +82,8 @@ calcular_preco_prazo')
     def test_correios_get_shipping_price_from_so(self, preco, erro):
         calcular_preco_prazo = os.path.join(xmls, 'calcular_preco_prazo.xml')
         with open(calcular_preco_prazo, 'r') as correio_return_xml:
-            preco.return_value = objectify.fromstring(correio_return_xml.read())
+            preco.return_value = objectify.fromstring(
+                correio_return_xml.read())
             erro.return_value = None
             entrega = self.env['delivery.carrier'].create({
                 'name': 'Metodo 1',
