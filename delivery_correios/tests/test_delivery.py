@@ -78,25 +78,13 @@ class TestDeliveryCorreios(TransactionCase):
 <Servicos>
     <cServico>
         <Codigo>41106</Codigo> 
-        <Valor>12,80</Valor> 
+        <Valor>42,00</Valor> 
         <PrazoEntrega>6</PrazoEntrega> 
         <ValorMaoPropria>0,00</ValorMaoPropria> 
-        <ValorAvisoRecebimento>2,80</ValorAvisoRecebimento> 
+        <ValorAvisoRecebimento>0,00</ValorAvisoRecebimento> 
         <ValorValorDeclarado>0,00</ValorValorDeclarado> 
-        <EntregaDomiciliar>S</EntregaDomiciliar> 
+        <EntregaDomiciliar>N</EntregaDomiciliar> 
         <EntregaSabado>N</EntregaSabado> 
-        <Erro>0</Erro> 
-        <MsgErro /> 
-    </cServico>
-    <cServico>
-        <Codigo>40010</Codigo> 
-        <Valor>29,00</Valor> 
-        <PrazoEntrega>2</PrazoEntrega> 
-        <ValorMaoPropria>0,00</ValorMaoPropria> 
-        <ValorAvisoRecebimento>2,80</ValorAvisoRecebimento> 
-        <ValorValorDeclarado>0,00</ValorValorDeclarado> 
-        <EntregaDomiciliar>S</EntregaDomiciliar> 
-        <EntregaSabado>S</EntregaSabado> 
         <Erro>0</Erro> 
         <MsgErro /> 
     </cServico>
@@ -128,9 +116,9 @@ class TestDeliveryCorreios(TransactionCase):
         self.sale_order.write({
             'carrier_id': entrega.id
         })
-        self.env['delivery.carrier'].\
-            correios_get_shipping_price_from_so(self.sale_order)
-        self.assertEqual(self.sale_order.amount_total, 82)
+        import ipdb; ipdb.set_trace()
+        preco = entrega.correios_get_shipping_price_from_so(self.sale_order)
+        self.assertEqual(preco[0], 42.00)
 
     @patch('odoo.addons.delivery_correios.models.delivery.check_for_correio_error')
     @patch('odoo.addons.delivery_correios.models.delivery.busca_cliente')
