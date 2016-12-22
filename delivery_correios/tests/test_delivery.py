@@ -116,7 +116,6 @@ class TestDeliveryCorreios(TransactionCase):
         self.sale_order.write({
             'carrier_id': entrega.id
         })
-        import ipdb; ipdb.set_trace()
         preco = entrega.correios_get_shipping_price_from_so(self.sale_order)
         self.assertEqual(preco[0], 42.00)
 
@@ -153,3 +152,92 @@ AgICAgICAwUDAwMDAwYEBAMFBwYHBwcGBwcICQsJCAgKCAcH</chancela>
         servicos = self.env['delivery.correios.service'].search([])
         self.assertTrue(len(servicos) == 1,
                         "Número de serviços: %d " % len(servicos))
+
+    @patch('odoo.addons.delivery_correios.models.delivery.check_for_correio_error')
+    @patch('odoo.addons.delivery_correios.models.delivery.get_eventos')
+    def test_correios_get_tracking_link(self, eventos, erro):
+        correios_eventos = """\
+<objetos>
+    <versao>2.0</versao>
+    <qtd>1</qtd>
+    <objeto>
+        <numero>JF598971235BR</numero>
+        <sigla>JF</sigla>
+        <nome>REMESSA ECONÔMICA C/AR DIGITAL</nome>
+        <categoria>REMESSA ECONÔMICA TALÃO/CARTÃO</categoria>
+        <evento>
+            <tipo>BDE</tipo>
+            <status>23</status>
+            <data>18/03/2014</data>
+            <hora>18:37</hora>
+            <descricao>Objeto devolvido ao remetente</descricao>
+            <detalhe/>
+            <local>CTCE MACEIO</local>
+            <codigo>57060971</codigo>
+            <cidade>MACEIO</cidade>
+            <uf>AL</uf>
+        </evento>
+    </objeto>
+</objetos>
+"""
+        eventos.return_value = objectify.fromstring(correios_eventos)
+        move_line = [(0, 0, {
+            'name': 'Move 1',
+            'product_id': self.produto.id,
+            'product_uom_qty': 1.0,
+            'product_uom': self.product_uom.id,
+            'state': 'draft',
+        })]
+        pack_operation = [(0, 0, {
+            'qty_done': 0,
+            'location_id': 1,
+            'location_dest_id': 1,
+            'product_id': self.produto.id,
+        })]
+        picking = self.env['stock.picking'].create({
+            'name': 'Picking 1',
+            'partner_id': self.partner.id,
+            'move_lines': move_line,
+            'location_id': 1,
+            'location_dest_id': 1,
+            'picking_type_id': 1,
+            'pack_operation_product_ids': pack_operation,
+        })
+        entrega = self.env['delivery.carrier'].create({
+            'name': 'Metodo 1',
+            'delivery_type': 'correios',
+            'margin': 0,
+            'integration_level': 'rate_and_ship',
+            'correio_login': 'sigep',
+            'correio_password': 'n5f9t8',
+            'cod_administrativo': '08082650',
+            'num_contrato': '9912208555',
+            'cartao_postagem': '0057018901',
+            'ambiente': 1,
+        })
+        servico = self.env['delivery.correios.service'].create({
+            'ano_assinatura': '2016',
+            'name': 'Serviço 1',
+            'code': '40215',
+            'identifier': 'foo bar baz',
+            'delivery_id': entrega.id,
+        })
+        entrega.write({
+            'service_id': servico.id,
+        })
+        self.sale_order.write({
+            'carrier_id': entrega.id
+        })
+        tracks_link = entrega.correios_get_tracking_link(picking)
+        evento = self.env['delivery.correios.postagem.eventos'].search([])
+        self.assertEqual(1, len(evento))
+        self.assertEqual(evento.etiqueta, u'JF598971235BR')
+        self.assertEqual(evento.data, u'2014-03-18')
+        self.assertEqual(evento.status, u'23')
+        self.assertEqual(evento.local_origem,
+                         u'CTCE MACEIO - 57060971, MACEIO/AL')
+        self.assertFalse(evento.local_destino)
+        self.assertEqual(
+            tracks_link,
+            ['/web#min=1&limit=80&view_type=list&model=delivery.correios.\
+postagem.plp&action=396'])
