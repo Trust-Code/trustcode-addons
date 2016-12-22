@@ -233,7 +233,7 @@ class DeliveryCarrier(models.Model):
                                     evento.destino.local + ' - ' +\
                                     str(evento.destino.codigo) + ', ' +\
                                     evento.destino.cidade + '/' + evento.\
-                                        destino.uf
+                                    destino.uf
                     self.env['delivery.correios.postagem.eventos'].create(
                         correio_evento)
         return ['/web#min=1&limit=80&view_type=list&model=delivery.\

@@ -3,7 +3,6 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 import os
-from collections import namedtuple
 
 from lxml import objectify
 from mock import patch
@@ -12,6 +11,7 @@ from odoo.tests.common import TransactionCase
 
 root = os.path.dirname(__file__)
 xmls = os.path.join(root, 'xmls')
+
 
 class TestDeliveryCorreios(TransactionCase):
 
@@ -75,8 +75,10 @@ class TestDeliveryCorreios(TransactionCase):
             'order_line': [(4, self.sale_order_line.id, 0)],
         })
 
-    @patch('odoo.addons.delivery_correios.models.delivery.check_for_correio_error')
-    @patch('odoo.addons.delivery_correios.models.delivery.calcular_preco_prazo')
+    @patch('odoo.addons.delivery_correios.models.delivery.\
+check_for_correio_error')
+    @patch('odoo.addons.delivery_correios.models.delivery.\
+calcular_preco_prazo')
     def test_correios_get_shipping_price_from_so(self, preco, erro):
         calcular_preco_prazo = os.path.join(xmls, 'calcular_preco_prazo.xml')
         with open(calcular_preco_prazo, 'r') as correio_return_xml:
@@ -111,7 +113,8 @@ class TestDeliveryCorreios(TransactionCase):
                 self.sale_order)
             self.assertEqual(preco[0], 42.00)
 
-    @patch('odoo.addons.delivery_correios.models.delivery.check_for_correio_error')
+    @patch('odoo.addons.delivery_correios.models.delivery.\
+check_for_correio_error')
     @patch('odoo.addons.delivery_correios.models.delivery.busca_cliente')
     def test_action_get_correio_services(self, services, erro):
         # mock servicos
@@ -125,7 +128,8 @@ class TestDeliveryCorreios(TransactionCase):
             self.assertTrue(len(servicos) == 1,
                             "Número de serviços: %d " % len(servicos))
 
-    @patch('odoo.addons.delivery_correios.models.delivery.check_for_correio_error')
+    @patch('odoo.addons.delivery_correios.models.delivery.\
+check_for_correio_error')
     @patch('odoo.addons.delivery_correios.models.delivery.get_eventos')
     def test_correios_get_tracking_link(self, eventos, erro):
         get_eventos = os.path.join(xmls, 'get_eventos.xml')
