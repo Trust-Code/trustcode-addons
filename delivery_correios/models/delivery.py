@@ -184,7 +184,6 @@ class DeliveryCarrier(models.Model):
                 self.env['delivery.correios.postagem.objeto'].create({
                     'name': etiqueta, 'stock_pack_id': pack.id,
                     'plp_id': plp.id, 'delivery_id': self.id,
-                    'company_id': self.company_id.id,
                 })
             tags = ';'.join(tags)
             pickings.carrier_tracking_ref = tags
