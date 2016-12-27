@@ -218,19 +218,21 @@ class DeliveryCarrier(models.Model):
                         'etiqueta': objeto.numero,
                         'postagem_id': postagem.id
                     }
-                    for evento in objeto.get('evento', []):
-                        correio_evento['status'] = evento.status
-                        correio_evento['data'] = datetime.strptime(
-                            str(evento.data), '%d/%m/%Y')
-                        correio_evento['local_origem'] = evento.local +\
-                            ' - ' + str(evento.codigo) + ', ' +\
-                            evento.cidade + '/' + evento.uf
-                        correio_evento['descricao'] = evento.descricao
-                        if 'destino' in evento:
-                            correio_evento['local_destino'] =\
-                                evento.destino.local + ' - ' +\
-                                str(evento.destino.codigo) + ', ' +\
-                                evento.destino.cidade + '/' + evento.destino.uf
+                    if hasattr(objeto, 'evento'):
+                        for evento in objeto.evento:
+                            correio_evento['status'] = evento.status
+                            correio_evento['data'] = datetime.strptime(
+                                str(evento.data), '%d/%m/%Y')
+                            correio_evento['local_origem'] = evento.local +\
+                                ' - ' + str(evento.codigo) + ', ' +\
+                                evento.cidade + '/' + evento.uf
+                            correio_evento['descricao'] = evento.descricao
+                            if 'destino' in evento:
+                                correio_evento['local_destino'] =\
+                                    evento.destino.local + ' - ' +\
+                                    str(evento.destino.codigo) + ', ' +\
+                                    evento.destino.cidade + '/' + evento.\
+                                    destino.uf
                     self.env['delivery.correios.postagem.eventos'].create(
                         correio_evento)
         return ['/web#min=1&limit=80&view_type=list&model=delivery.\
