@@ -20,6 +20,7 @@ class ProjectIssue(models.Model):
              'date': datetime.now().strftime(df),
              'start_date': datetime.now().strftime(df),
              'user_id': user_id,
+             'partner_id': self.partner_id.id,
              'unit_amount': 0.0,
              'running_time': True})
         return
