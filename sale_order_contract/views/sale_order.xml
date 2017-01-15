@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_sale_order_contract_form" model="ir.ui.view">
+        <field name="name">view.sale.order.contract.form</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form" />
+        <field name="arch" type="xml">
+            <group name="technical" position="after">
+                <group name="contract" string="Faturamento Recorrente">
+                    <field name="recurring_contract" />
+                    <field name="active_contract" />
+                    <field name="invoice_period" />
+                    <field name="start_contract" />
+                    <field name="end_contract" />
+                    <field name="next_invoice" />
+                </group>
+            </group>
+        </field>
+    </record>
+
+</odoo>
