@@ -13,6 +13,7 @@
         'payment',
         'website_sale',
         'br_base',
+        'account',
     ],
     'data': [
         'views/cielo.xml',
