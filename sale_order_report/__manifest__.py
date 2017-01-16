@@ -20,5 +20,7 @@
     ],
     'data': [
         'reports/sale_order.xml',
+        'views/sale_order_report.xml',
+        'views/sale_order.xml',
     ],
 }
