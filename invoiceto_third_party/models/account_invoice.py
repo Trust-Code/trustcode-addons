@@ -18,3 +18,12 @@ class AccountInvoice(models.Model):
                 line = invoice_line[2]
                 line['partner_id'] = self.partner_shipping_id.id
         return res
+
+    @api.multi
+    def invoice_validate(self):
+        res = super(AccountInvoice, self).invoice_validate()
+        for invoice in self:
+            if invoice.partner_shipping_id.invoiceto_id:
+                invoice.message_unsubscribe([invoice.partner_id.id])
+                invoice.message_subscribe([invoice.partner_shipping_id.id])
+        return res
