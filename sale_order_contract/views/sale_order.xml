@@ -9,7 +9,7 @@
             <group name="technical" position="after">
                 <group name="contract" string="Faturamento Recorrente">
                     <field name="recurring_contract" />
-                    <field name="active_contract" />
+                    <field name="active_contract" groups="sale_order_contract.admin_contract_active" />
                     <field name="invoice_period" />
                     <field name="start_contract" />
                     <field name="end_contract" />
