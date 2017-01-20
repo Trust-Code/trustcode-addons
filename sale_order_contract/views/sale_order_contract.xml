@@ -45,7 +45,7 @@
     </record>
     <menuitem action="action_sale_order_contracts"
         id="menu_sale_order_contract" parent="sale.menu_sale_invoicing"
-        sequence="2"/>
+        groups="sale_order_contract.admin_contract_active" sequence="2"/>
 
     <record id="ir_cron_sale_contract_generate_invocie" model="ir.cron" forcecreate="True">
         <field name="name">Faturamento Recorrente de Contratos</field>

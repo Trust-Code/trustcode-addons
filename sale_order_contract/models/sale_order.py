@@ -85,6 +85,7 @@ class SaleOrder(models.Model):
                 months=1, day=last_invoice.day)
             new_order.action_confirm()
             new_order.action_invoice_create(final=True)
+            new_order.action_done()
 
     @api.multi
     @api.depends('next_month')
