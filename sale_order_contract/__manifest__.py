@@ -18,7 +18,7 @@
         'Danimar Ribeiro <danimaribeiro@gmail.com>',
     ],
     'depends': [
-        'sale',
+        'sale', 'account',
     ],
     'data': [
         'views/sale_order_contract.xml',
