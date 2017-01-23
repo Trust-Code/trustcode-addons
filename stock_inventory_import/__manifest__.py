@@ -26,6 +26,7 @@
         "stock",
     ],
     "data": [
+        "security/ir.model.access.csv",
         "wizard/import_inventory.xml",
         "views/inventory.xml",
     ],
