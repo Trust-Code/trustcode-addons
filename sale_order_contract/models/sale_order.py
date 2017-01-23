@@ -88,7 +88,6 @@ class SaleOrder(models.Model):
             new_order.action_done()
 
     @api.multi
-    @api.depends('next_month')
     def _get_next_month(self):
         for order in self:
             order.next_month = date.today() + relativedelta(months=1)
