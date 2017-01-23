@@ -32,8 +32,7 @@ class StockInventory(models.Model):
     imported = fields.Boolean('Importado')
     import_lines = fields.One2many('stock.inventory.import.line',
                                    'inventory_id', string='Linhas Importadas')
-    filter = fields.Selection(_get_available_filters,
-                              string='Filtro',
+    filter = fields.Selection(_get_available_filters, string='Filtro',
                               required=True)
     processed = fields.Boolean(string='Foi processado?',
                                compute='_file_lines_processed')

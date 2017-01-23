@@ -57,12 +57,14 @@ class ImportInventory(models.TransientModel):
         try:
             reader_info.extend(reader)
         except Exception:
-            raise UserError("Not a valid file!")
+            raise UserError("Arquivo inválido!")
         keys = reader_info[0]
         # check if keys exist
-        if not isinstance(keys, list) or ('code' not in keys or
-                                          'quantity' not in keys):
-            raise UserError("Not 'code' or 'quantity' keys found")
+        if not isinstance(keys, list) or ('codigo' not in keys or
+                                          'preco' not in keys or
+                                          'quantidade' not in keys):
+            raise UserError("Arquivo CSV deve conter pelo menos codigo, "
+                            "preço, e quantidade no cabeçalho.")
         del reader_info[0]
         values = {}
         inv_name = u'{} - {}'.format(self.name, fields.Date.today())
@@ -82,16 +84,16 @@ class ImportInventory(models.TransientModel):
                 if locations:
                     prod_location = locations[:1].id
             prod_lst = product_obj.search([('default_code', '=',
-                                            values['code'])])
+                                            values['codigo'])])
             if prod_lst:
                 val['product'] = prod_lst[0].id
             if 'lot' in values and values['lot']:
                 val['lot'] = values['lot']
-            val['code'] = values['code']
-            val['quantity'] = values['quantity']
+            val['code'] = values['codigo']
+            val['quantity'] = values['quantidade']
             val['location_id'] = prod_location
             val['inventory_id'] = inventory.id
             val['fail'] = True
             val['fail_reason'] = 'No processed'
-            val['standard_price'] = values['standard_price']
+            val['standard_price'] = values['preco']
             inv_imporline_obj.create(val)
