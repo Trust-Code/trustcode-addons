@@ -4,7 +4,7 @@
 # © 2016 Alessandro Fernandes Martini, Trustcode
 # License AGPL-3.0 or later (http://gnu.org/licenses/agpl-3.0.html)
 
-from odoo import api, fields, models
+from odoo import api, fields, models, _
 from odoo.exceptions import UserError
 
 
@@ -12,9 +12,9 @@ class StockInventory(models.Model):
     _inherit = "stock.inventory"
 
     @api.model
-    def _get_available_filters(self):
-        res = []
-        res.append(('file', 'By File'))
+    def _selection_filter(self):
+        res = super(StockInventory, self)._selection_filter()
+        res.append(('file', _('By File')))
         return res
 
     @api.multi
@@ -32,9 +32,7 @@ class StockInventory(models.Model):
     imported = fields.Boolean('Importado')
     import_lines = fields.One2many('stock.inventory.import.line',
                                    'inventory_id', string='Linhas Importadas')
-    filter = fields.Selection(_get_available_filters, string='Filtro',
-                              required=True)
-    processed = fields.Boolean(string='Foi processado?',
+    processed = fields.Boolean(string='Foi Processado?',
                                compute='_file_lines_processed')
 
     @api.multi
@@ -42,7 +40,7 @@ class StockInventory(models.Model):
         """Process Inventory Load lines."""
         import_lines = self.mapped('import_lines')
         if not import_lines:
-            raise UserError("There must be one line at least to process")
+            raise UserError("É necessário pelo menos uma linha para processar")
         inventory_line_obj = self.env['stock.inventory.line']
         stk_lot_obj = self.env['stock.production.lot']
         product_obj = self.env['product.product']
@@ -50,11 +48,11 @@ class StockInventory(models.Model):
             if line.fail:
                 if not line.product:
                     prod_lst = product_obj.search([('default_code', '=',
-                                                    line.code)])
+                                                    line.code)], limit=1)
                     if prod_lst:
-                        product = prod_lst[0]
+                        product = prod_lst
                     else:
-                        line.fail_reason = 'No product code found'
+                        line.fail_reason = 'Nenhum produto encontrado'
                         continue
                 else:
                     product = line.product
@@ -78,16 +76,17 @@ class StockInventory(models.Model):
                     'location_id': line.location_id.id,
                     'prod_lot_id': lot_id,
                     'theoretical_std_price': product.standard_price,
-                    'standard_price': line.standard_price,
+                    'list_price': line.list_price,
                 })
-                line.write({'fail': False, 'fail_reason': 'Processed'})
+                line.write({'fail': False, 'fail_reason': 'Processado'})
         return True
 
     @api.multi
     def action_done(self):
         for inventory in self:
             if not inventory.processed:
-                raise UserError('Loaded lines must be processed at least one '
-                                'time for inventory : %s' % (inventory.name))
+                raise UserError('Linhas carregadas devem ser processadas ao '
+                                'menos uma vez para o inventário : %s' %
+                                inventory.name)
             super(StockInventory, inventory).action_done()
         return True

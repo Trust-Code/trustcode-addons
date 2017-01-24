@@ -9,14 +9,16 @@
                 <form string="Import Inventory">
                 <label string="The file must have 2 column keys:
                 'code' => for product reference
-                'quantity' => for product quantity" colspan="4"/>
-                    <group colspan="4" col="4">
-                        <field name="name" required="True"/>
-                        <field name="delimeter"/>
-                        <field name="data" filename="name" colspan="4" />
-                        <field name="location" colspan="4"/>
+                'quantity' => for product quantity"/>
+                    <group>
+                        <group>
+                            <field name="location"/>
+                            <field name="data"/>
+                        </group>
+                        <group>
+                            <field name="delimeter"/>
+                        </group>
                     </group>
-                   <separator string="" colspan="4"/>
                    <footer>
                         <button class="oe_highlight" special="cancel" string="Cancel"/>
                         <button name="action_import" string="Import" type="object"/>

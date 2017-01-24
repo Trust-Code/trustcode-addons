@@ -26,7 +26,8 @@
                             <field name="quantity"/>
                             <field name="location_id" />
                             <field name="lot" />
-                            <field name="fail" />
+                            <field name="owner_id" />
+                            <field name="fail" invisible="1"/>
                             <field name="fail_reason" />
                         </tree>
                     </field>

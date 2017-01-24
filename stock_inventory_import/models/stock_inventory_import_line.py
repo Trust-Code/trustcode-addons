@@ -11,13 +11,14 @@ class StockInventoryImportLine(models.Model):
     _name = "stock.inventory.import.line"
     _description = "Stock Inventory Import Line"
 
-    code = fields.Char('Product Code')
-    product = fields.Many2one('product.product', 'Found Product')
-    quantity = fields.Float('Quantity')
-    inventory_id = fields.Many2one('stock.inventory', 'Inventory',
+    code = fields.Char(string='Código do Produto')
+    product = fields.Many2one('product.product', string='Produto')
+    quantity = fields.Float(string='Quantidade')
+    inventory_id = fields.Many2one('stock.inventory', string='Inventário',
                                    readonly=True)
-    location_id = fields.Many2one('stock.location', 'Location')
-    lot = fields.Char('Product Lot')
-    fail = fields.Boolean('Fail')
-    fail_reason = fields.Char('Fail Reason')
-    standard_price = fields.Float(string='Cost Price')
+    location_id = fields.Many2one('stock.location', string='Local')
+    lot = fields.Char(string='Lote do Produto')
+    fail = fields.Boolean(string='Erro')
+    fail_reason = fields.Char(string='Status')
+    list_price = fields.Float(string='Preço')
+    owner_id = fields.Many2one('res.partner', string="Proprietário")

@@ -24,10 +24,8 @@ class ImportInventory(models.TransientModel):
             return inventory.location_id or self.env['stock.location']
         return False
 
-    data = fields.Binary('File', required=True)
-    name = fields.Char('Filename')
-    delimeter = fields.Char('Delimeter', default=',',
-                            help='Default delimeter is ","')
+    data = fields.Binary('CSV', required=True)
+    delimeter = fields.Char('Divisória', default=',')
     location = fields.Many2one('stock.location', 'Default Location',
                                default=_get_default_location, required=True)
 
@@ -42,58 +40,48 @@ class ImportInventory(models.TransientModel):
         inventory = inventory_obj
         if 'active_id' in ctx:
             inventory = inventory_obj.browse(ctx['active_id'])
-        # Decode the file data
         data = base64.b64decode(self.data)
         file_input = cStringIO.StringIO(data)
         file_input.seek(0)
         location = self.location
-        reader_info = []
         if self.delimeter:
             delimeter = str(self.delimeter)
         else:
             delimeter = ','
-        reader = csv.reader(file_input, delimiter=delimeter,
-                            lineterminator='\r\n')
-        try:
-            reader_info.extend(reader)
-        except Exception:
-            raise UserError("Arquivo inválido!")
-        keys = reader_info[0]
-        # check if keys exist
-        if not isinstance(keys, list) or ('codigo' not in keys or
-                                          'preco' not in keys or
-                                          'quantidade' not in keys):
-            raise UserError("Arquivo CSV deve conter pelo menos codigo, "
-                            "preço, e quantidade no cabeçalho.")
-        del reader_info[0]
-        values = {}
-        inv_name = u'{} - {}'.format(self.name, fields.Date.today())
+        reader = csv.DictReader(file_input, delimiter=delimeter,
+                                lineterminator='\r\n', restval=False)
+        keys = reader.fieldnames
+        if ('codigo' not in keys or 'quantidade' not in keys):
+            raise UserError("Arquivo CSV deve conter pelo menos codigo "
+                            "e quantidade no cabeçalho.")
+        inv_name = u'Estoque CSV - {}'.format(fields.Date.today())
         inventory.write({'name': inv_name,
                          'date': fields.Datetime.now(),
                          'imported': True,
                          'state': 'confirm',
                          })
-        for i in range(len(reader_info)):
+        for row in reader:
             val = {}
-            field = reader_info[i]
-            values = dict(zip(keys, field))
             prod_location = location.id
-            if 'location' in values and values['location']:
-                locations = stloc_obj.search([('name', '=',
-                                               values['location'])])
-                if locations:
-                    prod_location = locations[:1].id
-            prod_lst = product_obj.search([('default_code', '=',
-                                            values['codigo'])])
-            if prod_lst:
-                val['product'] = prod_lst[0].id
-            if 'lot' in values and values['lot']:
-                val['lot'] = values['lot']
-            val['code'] = values['codigo']
-            val['quantity'] = values['quantidade']
+            if row['local']:
+                locations = stloc_obj.search(
+                    [('name', '=', row['local'])], limit=1)
+                prod_location = locations.id if locations else prod_location
+            product = product_obj.search([('default_code', '=',
+                                           row['codigo'])], limit=1)
+            if 'proprietario' in row and row['proprietario']:
+                owner = self.env['res.partner'].search([
+                    ('cnpj_cpf', '=', row['proprietario'])])
+                if owner:
+                    val['owner_id'] = owner.id
+            val['product'] = None or product.id
+            val['lot'] = row['lote'] if 'lote' in row else None
+            val['list_price'] = row['preco'].strip() if 'preco' in row \
+                else product.list_price
+            val['code'] = row['codigo']
+            val['quantity'] = row['quantidade']
             val['location_id'] = prod_location
             val['inventory_id'] = inventory.id
             val['fail'] = True
-            val['fail_reason'] = 'No processed'
-            val['standard_price'] = values['preco']
+            val['fail_reason'] = 'Não Processada'
             inv_imporline_obj.create(val)
