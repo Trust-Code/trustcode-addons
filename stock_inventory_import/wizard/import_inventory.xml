@@ -13,9 +13,10 @@
                     <group>
                         <group>
                             <field name="location"/>
-                            <field name="data"/>
+                            <field name="owner" />
                         </group>
                         <group>
+                            <field name="data"/>
                             <field name="delimeter"/>
                         </group>
                     </group>

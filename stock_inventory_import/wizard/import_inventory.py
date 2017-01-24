@@ -28,6 +28,7 @@ class ImportInventory(models.TransientModel):
     delimeter = fields.Char('Divisória', default=',')
     location = fields.Many2one('stock.location', 'Default Location',
                                default=_get_default_location, required=True)
+    owner = fields.Many2one('res.partner', 'Proprietário')
 
     @api.multi
     def action_import(self):
@@ -69,11 +70,7 @@ class ImportInventory(models.TransientModel):
                 prod_location = locations.id if locations else prod_location
             product = product_obj.search([('default_code', '=',
                                            row['codigo'])], limit=1)
-            if 'proprietario' in row and row['proprietario']:
-                owner = self.env['res.partner'].search([
-                    ('cnpj_cpf', '=', row['proprietario'])])
-                if owner:
-                    val['owner_id'] = owner.id
+            val['owner_id'] = self.owner.id
             val['product'] = None or product.id
             val['lot'] = row['lote'] if 'lote' in row else None
             val['list_price'] = row['preco'].strip() if 'preco' in row \
