@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_sale_order_contract_form" model="ir.ui.view">
+        <field name="name">view.sale.order.contract.form</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form" />
+        <field name="arch" type="xml">
+            <button name="action_cancel" position="attributes">
+                <attribute name="states">draft,sent,sale,done</attribute>
+                <attribute name="groups">sale_order_contract.admin_contract_active</attribute>
+            </button>
+            <group name="technical" position="after">
+                <group name="contract" string="Faturamento Recorrente">
+                    <field name="recurring_contract" />
+                    <field name="active_contract" groups="sale_order_contract.admin_contract_active" />
+                    <field name="invoice_period" />
+                    <field name="start_contract" />
+                    <field name="end_contract" />
+                    <field name="next_invoice" />
+                </group>
+            </group>
+            <div name="button_box" position="inside">
+               <button name="action_view_contract_orders" string="Pedidos" type="object" class="oe_stat_button" icon="fa-dollar"
+                    attrs="{'invisible': [('recurring_contract', '=', False)]}"></button>
+            </div>
+            <xpath expr="//field[@name='order_line']/tree/field[@name='price_total']" position="after">
+                <field name="recurring_line" />
+            </xpath>
+            <xpath expr="//field[@name='order_line']/form/group/group/label[@for='product_uom_qty']" position="before">
+                <field name="recurring_line" />
+            </xpath>
+        </field>
+    </record>
+
+    <record id="sale.action_quotations" model="ir.actions.act_window">
+        <field name="domain">[('active_contract', '=', False)]</field>
+    </record>
+
+    <record id="sale.action_orders" model="ir.actions.act_window">
+        <field name="domain">[('active_contract', '=', False)]</field>
+    </record>
+
+</odoo>
