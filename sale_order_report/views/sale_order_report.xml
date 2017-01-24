@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_sale_order_report_tree" model="ir.ui.view">
+        <field name="name">sale.order.report.tree</field>
+        <field name="model">sale.order.report</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="description" string="Descrição"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_sale_order_report_form2" model="ir.ui.view">
+        <field name="name">sale.order.report.form2</field>
+        <field name="model">sale.order.report</field>
+        <field name="arch" type="xml">
+            <form>
+                <group name="config">
+                    <field name="name"/>
+                </group>
+                <field name="description"/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_sale_order_report_tree" model="ir.actions.act_window">
+        <field name="name">Descrição para Layout de Vendas</field>
+        <field name="res_model">sale.order.report</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="view_sale_order_report_tree"/>
+    </record>
+
+    <menuitem sequence="30" action="action_sale_order_report_tree"
+        id="menu_action_sale_order_report_tree"
+        parent="sale.menu_sales_config"/>
+
+</odoo>
