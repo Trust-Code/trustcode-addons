@@ -6,6 +6,7 @@
     'name': 'Sales Order Versioning',
     'summary': """Módulo que cria um campo para controlar a versão da
             cotação enviada ao cliente.""",
+    'description': "Controle de versão em Cotações",
     'version': '10.0.1.0.0',
     'category': 'Localisation',
     'author': 'Trustcode',

@@ -5,6 +5,7 @@
 
 from datetime import date
 from dateutil.relativedelta import relativedelta
+from dateutil import parser
 from odoo import api, fields, models
 from odoo.exceptions import UserError
 
@@ -42,7 +43,8 @@ class SaleOrder(models.Model):
     @api.onchange('active_contract')
     def _onchange_active_contract(self):
         if self.active_contract and not self.next_invoice:
-            self.next_invoice = self.start_contract
+            self.next_invoice = parser.parse(self.start_contract) + \
+                relativedelta(months=1)
 
     @api.multi
     def action_view_contract_orders(self):
@@ -57,8 +59,8 @@ class SaleOrder(models.Model):
     @api.multi
     def action_invoice_contracts(self):
         sale_orders = self.search([('active_contract', '=', True),
-                                   ('next_invoice', '=', date.today())])
-
+                                   ('next_invoice', '=', date.today()),
+                                   ('state', '=', 'sale')])
         for order in sale_orders:
             end_contract = fields.Date.from_string(order.end_contract)
             if end_contract < date.today():  # Cancelar contrato
@@ -73,12 +75,24 @@ class SaleOrder(models.Model):
                 'start_contract': None,
                 'end_contract': None,
                 'origin': order.name,
+                'client_order_ref': 'Contrato ' + order.name,
             })
+            non_recurrent_lines = filter(lambda line: not line.recurring_line,
+                                         new_order.order_line)
+            map(lambda line: line.unlink(), non_recurrent_lines)
             last_invoice = fields.Date.from_string(order.next_invoice)
             order.next_invoice = date.today() + relativedelta(
                 months=1, day=last_invoice.day)
             new_order.action_confirm()
             new_order.action_invoice_create(final=True)
+            new_order.action_done()
+
+    @api.multi
+    def _get_next_month(self):
+        for order in self:
+            order.next_month = date.today() + relativedelta(months=1)
+
+    next_month = fields.Date(string="Next Month", compute='_get_next_month')
 
 
 class SaleOrderLine(models.Model):
