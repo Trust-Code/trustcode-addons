@@ -13,6 +13,7 @@
               "AvanzOSC, "
               "TrustCode,"
               "Serv. Tecnol. Avanzados - Pedro M. Baeza",
+    "description": "Módulo para importar estoques a partir de um CSV.",
     "contributors": [
         "Daniel Campos <danielcampos@avanzosc.es>",
         "Pedro M. Baeza <pedro.baeza@serviciosbaeza.com>",
