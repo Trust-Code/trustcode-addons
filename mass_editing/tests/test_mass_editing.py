@@ -33,12 +33,10 @@ class TestMassEditing(common.TransactionCase):
 
     def _create_partner(self):
         """Create a Partner."""
-        categ_ids = self.env['res.partner.category'].search([]).ids
         return self.res_partner_model.create({
             'name': 'Test Partner',
             'email': 'example@yourcompany.com',
             'phone': 123456,
-            'category_id': [(6, 0, categ_ids)],
         })
 
     def _create_user(self):
