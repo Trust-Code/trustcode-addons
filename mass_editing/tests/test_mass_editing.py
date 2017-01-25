@@ -36,7 +36,6 @@ class TestMassEditing(common.TransactionCase):
         return self.res_partner_model.create({
             'name': 'Test Partner',
             'email': 'example@yourcompany.com',
-            'notify_email': 'example@yourcompany.com',
             'phone': 123456,
         })
 
