@@ -64,7 +64,7 @@ class ImportInventory(models.TransientModel):
         for row in reader:
             val = {}
             prod_location = location.id
-            if row['local']:
+            if row.get('local', False):
                 locations = stloc_obj.search(
                     [('name', '=', row['local'])], limit=1)
                 prod_location = locations.id if locations else prod_location
