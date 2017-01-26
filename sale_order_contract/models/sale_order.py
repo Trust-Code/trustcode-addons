@@ -94,6 +94,13 @@ class SaleOrder(models.Model):
 
     next_month = fields.Date(string="Next Month", compute='_get_next_month')
 
+    @api.multi
+    def _get_next_month(self):
+        for order in self:
+            order.next_month = date.today() + relativedelta(months=1)
+
+    next_month = fields.Date(string="Next Month", compute='_get_next_month')
+
 
 class SaleOrderLine(models.Model):
     _inherit = 'sale.order.line'
