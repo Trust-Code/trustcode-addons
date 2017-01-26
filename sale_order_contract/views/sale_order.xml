@@ -6,6 +6,10 @@
         <field name="model">sale.order</field>
         <field name="inherit_id" ref="sale.view_order_form" />
         <field name="arch" type="xml">
+            <button name="action_cancel" position="attributes">
+                <attribute name="states">draft,sent,sale,done</attribute>
+                <attribute name="groups">sale_order_contract.admin_contract_active</attribute>
+            </button>
             <group name="technical" position="after">
                 <group name="contract" string="Faturamento Recorrente">
                     <field name="recurring_contract" />
@@ -27,6 +31,14 @@
                 <field name="recurring_line" />
             </xpath>
         </field>
+    </record>
+
+    <record id="sale.action_quotations" model="ir.actions.act_window">
+        <field name="domain">[('active_contract', '=', False)]</field>
+    </record>
+
+    <record id="sale.action_orders" model="ir.actions.act_window">
+        <field name="domain">[('active_contract', '=', False)]</field>
     </record>
 
 </odoo>

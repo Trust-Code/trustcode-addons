@@ -21,6 +21,7 @@
         'sale', 'account',
     ],
     'data': [
+        'data/admin_contract_active.xml',
         'views/sale_order_contract.xml',
         'views/sale_order.xml',
         'views/product.xml',

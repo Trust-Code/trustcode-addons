@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Inherit Form view -->
+    <record id="view_sale_order_report_inherit" model="ir.ui.view">
+        <field name="name">sale.order.report.inherit</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <field name="client_order_ref" position="after">
+                <field name="description_report" string="Descrição para o Relatório"/>
+            </field>
+        </field>
+    </record>
+</odoo>

@@ -85,6 +85,14 @@ class SaleOrder(models.Model):
                 months=1, day=last_invoice.day)
             new_order.action_confirm()
             new_order.action_invoice_create(final=True)
+            new_order.action_done()
+
+    @api.multi
+    def _get_next_month(self):
+        for order in self:
+            order.next_month = date.today() + relativedelta(months=1)
+
+    next_month = fields.Date(string="Next Month", compute='_get_next_month')
 
     @api.multi
     def _get_next_month(self):
