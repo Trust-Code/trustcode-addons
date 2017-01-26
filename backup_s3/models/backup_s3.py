@@ -7,6 +7,7 @@ import time
 import socket
 import logging
 
+import odoo
 from odoo import api, fields, models
 from odoo.exceptions import Warning
 from datetime import datetime, timedelta
@@ -14,7 +15,6 @@ from datetime import datetime, timedelta
 _logger = logging.getLogger(__name__)
 
 try:
-    import odoorpc
     from boto.s3.connection import S3Connection
     from boto.s3.key import Key
 except ImportError:
@@ -123,25 +123,16 @@ class BackupConfig(models.Model):
                 next_backup = datetime.now()
             if next_backup < datetime.now():
 
-                odoo = odoorpc.ODOO(
-                    rec.host,
-                    protocol='jsonrpc',
-                    port=rec.port,
-                    timeout=1200)
-
-                try:
-                    if not os.path.isdir(rec.backup_dir):
+                if not os.path.isdir(rec.backup_dir):
                         os.makedirs(rec.backup_dir)
-                except:
-                    raise
-                dump = odoo.db.dump(rec.admin_password, rec.database_name)
+
                 zip_name = '%s_%s.zip' % (rec.database_name,
                                           time.strftime('%Y%m%d_%H_%M_%S'))
                 zip_file = '%s/%s' % (rec.backup_dir, zip_name)
 
                 with open(zip_file, 'wb') as dump_zip:
-                    dump_zip.write(dump.read())
-                    dump_zip.close()
+                    odoo.service.db.dump_db(
+                        rec.database_name, dump_zip, 'zip')
 
                 backup_env = self.env['backup.executed']
 

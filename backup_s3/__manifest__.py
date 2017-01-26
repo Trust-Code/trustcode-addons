@@ -6,7 +6,7 @@
 {
     'name': 'Trustcode Backup Simples',
     'summary': """Trustcode simples ferramenta de backup""",
-    'version': '8.0',
+    'version': '10.0.1.0.0',
     'category': 'Extra Tools',
     'author': 'Trustcode',
     'license': 'AGPL-3',
