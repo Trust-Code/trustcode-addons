@@ -30,5 +30,5 @@ encomendas""",
         'reports/plp_report.xml',
     ],
     'application': True,
-    'installable': False,
+    'installable': True,
 }
