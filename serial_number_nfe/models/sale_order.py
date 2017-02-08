@@ -17,10 +17,11 @@ class SaleOrderLine(models.Model):
             # Verifica a entrega mais recente finalizada e adiciona os lotes
             if move.state == 'done':
                 for lote in move.lot_ids:
-                    expiry = fields.Datetime.from_string(lote.life_date)
-                    info += u"Lote/Série: %s / Vencimento: %s\n" % (
-                        lote.name, expiry.strftime("%d/%m/%Y")
-                    )
+                    date = fields.Datetime.from_string(lote.life_date)
+                    info += u"Lote/Série: %s" % lote.name
+                    if date:
+                        info += "/ Vencimento: %s" % date.strftime("%d/%m/%Y")
+                    info += "\n"
                 break
         res['informacao_adicional'] = info
         return res
