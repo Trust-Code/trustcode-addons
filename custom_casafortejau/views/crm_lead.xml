@@ -71,17 +71,6 @@
         <attribute name="invisible">1</attribute>
       </field>
 
-      <page name="lead" position="after" >
-        <page name="interactions" string="Interações" >
-          <field name="interactions" nolabel="1" >
-            <tree>
-              <field name="next_activity_id" />
-              <field name="title_action" />
-            </tree>
-          </field>
-        </page>
-      </page>
-
     </field>
   </record>
 

@@ -19,9 +19,6 @@ class CrmLead(models.Model):
                                          store=True)
     is_late = fields.Boolean(string="Atrasada?", compute="_is_late",
                              store=True)
-    interactions = fields.One2many('crm.activity.log', 'lead_id',
-                                   string="Interações")
-
     @api.depends('date_last_stage_update')
     def _days_in_current_stage(self):
         for record in self:
