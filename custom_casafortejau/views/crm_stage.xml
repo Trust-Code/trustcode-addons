@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_crm_stage_max_days_form" model="ir.ui.view">
+        <field name="name">view.crm_stage.max_days.form</field>
+        <field name="model">crm.stage</field>
+        <field name="inherit_id" ref="crm.crm_stage_form"/>
+        <field name="arch" type="xml">
+          <field name="on_change" position="after" >
+            <field name="maximum_days" />
+          </field>
+        </field>
+    </record>
+
+</odoo>
