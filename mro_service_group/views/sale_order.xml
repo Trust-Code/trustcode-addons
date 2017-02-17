@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_mro_group_sale_order_form" model="ir.ui.view">
+        <field name="name">view.mro.group.sale_order.form</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//group[@name='technical']" position="inside">
+                <field name="mro_group_id" />
+            </xpath>
+            <div name="button_box" position="inside">
+                <button type="object" name="action_view_mro" class="oe_stat_button" icon="fa-gear"
+                    groups="base.group_user">
+                      <field name="maintenance_count" widget="statinfo" string="Manutenção"/>
+                 </button>
+            </div>
+        </field>
+    </record>
+</odoo>
