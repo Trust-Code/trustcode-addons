@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_mro_group_stock_picking_form" model="ir.ui.view">
+        <field name="name">view.mro.group.stock.picking.form</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form" />
+        <field name="arch" type="xml">
+            <field name="origin" position="after">
+                <field name="mro_group_id" />
+            </field>
+        </field>
+    </record>
+
+    <record id="view_mro_group_procurement_group_form" model="ir.ui.view">
+        <field name="name">view.mro.group.procurement.group.form</field>
+        <field name="model">procurement.group</field>
+        <field name="inherit_id" ref="procurement.procurement_group_form_view" />
+        <field name="arch" type="xml">
+            <field name="move_type" position="after">
+                <field name="mro_group_id" />
+            </field>
+        </field>
+    </record>
+
+    <record id="view_mro_group_procurement_order_form" model="ir.ui.view">
+        <field name="name">view.mro.group.procurement.order.form</field>
+        <field name="model">procurement.order</field>
+        <field name="inherit_id" ref="procurement.procurement_form_view" />
+        <field name="arch" type="xml">
+            <field name="group_id" position="after">
+                <field name="mro_group_id" />
+            </field>
+        </field>
+    </record>
+
+</odoo>

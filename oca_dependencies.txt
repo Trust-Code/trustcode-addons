@@ -1,1 +1,2 @@
 odoo-brasil https://github.com/Trust-Code/odoo-brasil.git
+odoo-eam https://github.com/Trust-Code/odoo-eam.git
