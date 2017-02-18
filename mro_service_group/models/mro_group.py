@@ -84,6 +84,31 @@ class MroOrder(models.Model):
     def _onchange_sale_order(self):
         self.mro_group_id = self.sale_order_id.mro_group_id
 
+    def _prepare_procurement_values(self, group, order, line):
+        vals = super(MroOrder, self)._prepare_procurement_values(
+            group, order, line)
+        if self.mro_group_id:
+            vals['mro_group_id'] = self.mro_group_id.id
+        return vals
+
+    def action_confirm(self):
+        res = super(MroOrder, self).action_confirm()
+        for order in self:
+            order.procurement_group_id.mro_group_id = order.mro_group_id
+        return res
+
+
+class StockMove(models.Model):
+    _inherit = 'stock.move'
+
+    mro_group_id = fields.Many2one('mro.group', string=u'Agrupador')
+
+    def _get_new_picking_values(self):
+        vals = super(StockMove, self)._get_new_picking_values()
+        if self.mro_group_id:
+            vals['mro_group_id'] = self.mro_group_id.id
+        return vals
+
 
 class StockPicking(models.Model):
     _inherit = 'stock.picking'
@@ -95,6 +120,19 @@ class ProcurementOrder(models.Model):
     _inherit = 'procurement.order'
 
     mro_group_id = fields.Many2one('mro.group', string=u'Agrupador')
+
+    @api.multi
+    def _prepare_purchase_order(self, partner):
+        vals = super(ProcurementOrder)._prepare_purchase_order(partner)
+        if self.mro_group_id:
+            vals['mro_group_id'] = self.mro_group_id.id
+        return vals
+
+    def _get_stock_move_values(self):
+        vals = super(ProcurementOrder, self)._get_stock_move_values()
+        if self.mro_group_id:
+            vals['mro_group_id'] = self.mro_group_id.id
+        return vals
 
 
 class ProcurementGroup(models.Model):
