@@ -19,6 +19,14 @@ class SaleOrder(models.Model):
     def _compute_end_contract(self):
         return date.today() + relativedelta(years=1)
 
+    @api.depends('order_line.price_total')
+    def _compute_recurrent_values(self):
+        for order in self:
+            recurrent = order.order_line.filtered(lambda x: x.recurring_line)
+            non_rec = order.order_line.filtered(lambda x: not x.recurring_line)
+            order.total_recurrent = sum(l.price_subtotal for l in recurrent)
+            order.total_non_recurrent = sum(l.price_subtotal for l in non_rec)
+
     recurring_contract = fields.Boolean(string="Possui Contrato?")
     active_contract = fields.Boolean(string="Contrato Ativo?", copy=False)
 
@@ -30,6 +38,11 @@ class SaleOrder(models.Model):
     end_contract = fields.Date(
         string="Final Contrato", default=_compute_end_contract)
     next_invoice = fields.Date(string="Próximo Faturamento", copy=False)
+    total_recurrent = fields.Monetary(
+        string="Total Recorrente", compute='_compute_recurrent_values',
+        store=True)
+    total_non_recurrent = fields.Monetary(
+        string="Total Avulso", compute='_compute_recurrent_values', store=True)
 
     @api.onchange('order_line')
     def _onchange_sale_order_contract_order_line(self):
@@ -86,13 +99,6 @@ class SaleOrder(models.Model):
             new_order.action_confirm()
             new_order.action_invoice_create(final=True)
             new_order.action_done()
-
-    @api.multi
-    def _get_next_month(self):
-        for order in self:
-            order.next_month = date.today() + relativedelta(months=1)
-
-    next_month = fields.Date(string="Next Month", compute='_get_next_month')
 
     @api.multi
     def _get_next_month(self):
