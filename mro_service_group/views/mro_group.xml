@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="view_mro_service_group_form" model="ir.ui.view">
+        <field name="name">mro.service.mro.group</field>
+        <field name="model">mro.group</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet string="Agrupador">
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" default_focus="1" placeholder="Nome" />
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="write_date" readonly="1"/>
+                            <field name="asset_id"/>
+                        </group>
+                        <group>
+                            <field name="partner_id"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Ordem de Manutenção">
+                            <field name="maintenance_order_ids" nolabel="1" />
+                        </page>
+                        <page string="Oportunidades">
+                            <field name="lead_ids" nolabel="1" />
+                        </page>
+                        <page string="Vendas">
+                            <field name="sale_order_ids" nolabel="1" />
+                        </page>
+                        <page string="Compras">
+                            <field name="purchase_order_ids" nolabel="1" />
+                        </page>
+                        <page string="Recebimentos">
+                            <field name="picking_ids" nolabel="1" />
+                        </page>
+                        <page string="Faturas de Clientes">
+                            <field name="customer_invoice_ids" nolabel="1" />
+                        </page>
+                        <page string="Faturas de Fornecedor">
+                            <field name="supplier_invoice_ids" nolabel="1" />
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_mro_service_group_tree" model="ir.ui.view">
+        <field name="name">mro.service.mro.group.tree</field>
+        <field name="model">mro.group</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name" />
+                <field name="partner_id" />
+                <field name="asset_id" />
+                <field name="create_date" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_mro_group" model="ir.actions.act_window">
+        <field name="name">Agrupador</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">mro.group</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem name="Agrupador"
+        action="action_mro_group"
+        id="menu_mro_group"
+        parent="mro.menu_mro_maintenance"
+        sequence="20"/>
+
+</odoo>
