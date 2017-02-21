@@ -4,9 +4,9 @@
 
 
 {
-    'name': 'Customizações para Casa Forte Jaú',
-    'description': 'Customizações para Casa Forte Jaú',
-    'summary': """Alterações desenvolvidas para Casa Forte Jaú""",
+    'name': 'Customizações para o kanban e CRM',
+    'description': 'Customizações para o Kanban e CRM',
+    'summary': """Alterações desenvolvidas para Kanban e CRM""",
     'version': '10.0.1.0.0',
     'category': 'Customization',
     'author': 'Trustcode',
@@ -14,10 +14,10 @@
     'website': 'http://www.trustcode.com.br',
     'contributors': [
         'Danimar Ribeiro <danimaribeiro@gmail.com>',
-        'Mackilem Van der Laan Soares <mack.vdl@gmail.com>'
+        'Alessandro Fernandes Martini <fmartini@gmail.com>'
     ],
     'depends': [
-        'br_crm_zip',
+        'br_crm_zip', 'crm'
     ],
     'data': [
         'views/crm_lead.xml',

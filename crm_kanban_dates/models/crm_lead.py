@@ -19,6 +19,7 @@ class CrmLead(models.Model):
                                          store=True)
     is_late = fields.Boolean(string="Atrasada?", compute="_is_late",
                              store=True)
+
     @api.depends('date_last_stage_update')
     def _days_in_current_stage(self):
         for record in self:
@@ -35,4 +36,4 @@ class CrmLead(models.Model):
     def _is_late(self):
         for record in self:
             record.is_late = record.stage_id.maximum_days < \
-                             record.days_in_current_stage
+                record.days_in_current_stage
