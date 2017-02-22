@@ -6,9 +6,9 @@
         <field name="model">sale.order</field>
         <field name="inherit_id" ref="sale.view_order_form" />
         <field name="arch" type="xml">
-            <xpath expr="//group[@name='technical']" position="inside">
+            <field name="payment_term_id" position="after">
                 <field name="mro_group_id" />
-            </xpath>
+            </field>
             <div name="button_box" position="inside">
                 <button type="object" name="action_view_mro" class="oe_stat_button" icon="fa-gear"
                     groups="base.group_user">
