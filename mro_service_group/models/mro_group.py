@@ -79,6 +79,8 @@ class MroOrder(models.Model):
 
     mro_group_id = fields.Many2one('mro.group', string=u'Agrupador')
     sale_order_id = fields.Many2one('sale.order', string=u'Pedido de Venda')
+    order_line_id = fields.Many2one(
+        'sale.order.line', string=u'Linha do Pedido')
 
     @api.onchange('sale_order_id')
     def _onchange_sale_order(self):
