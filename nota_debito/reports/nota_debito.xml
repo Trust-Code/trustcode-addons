@@ -202,6 +202,10 @@
                             <h3 class="panel-title center">Dados Adicionais</h3>
                         </div>
                         <div class="panel-body" style="padding: 5px 15px;">
+                            <p t-raw="doc.compute_legal_information()">
+                            </p>
+                            <p t-field="doc.fiscal_comment">
+                            </p>
                             <p t-field="doc.comment">
                             </p>
                         </div>
