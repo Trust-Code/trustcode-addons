@@ -21,8 +21,8 @@
                         </group>
                     </group>
                    <footer>
-                        <button class="oe_highlight" special="cancel" string="Cancelar"/>
-                        <button name="action_import" string="Importar" type="object"/>
+                        <button special="cancel" string="Cancelar"/>
+                        <button class="oe_highlight" name="action_import" string="Importar" type="object"/>
                    </footer>
                </form>
             </field>

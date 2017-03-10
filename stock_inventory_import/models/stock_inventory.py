@@ -75,6 +75,7 @@ class StockInventory(models.Model):
                     'inventory_id': line.inventory_id.id,
                     'location_id': line.location_id.id,
                     'prod_lot_id': lot_id,
+                    'partner_id': line.owner_id.id,
                 })
                 line.write({'fail': False, 'fail_reason': 'Processado'})
         return True
