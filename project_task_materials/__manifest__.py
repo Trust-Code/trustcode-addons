@@ -17,7 +17,7 @@
     ],
     'depends': [
         'base_report',
-        'project', 
+        'project',
     ],
     'data': [
         'views/task_materials.xml',

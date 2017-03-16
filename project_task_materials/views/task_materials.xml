@@ -7,12 +7,12 @@
         <field name="arch" type="xml">
             <page name="description_page" position="after">
                 <page string="Controle de Materiais">
-                    <field name="material_ids" >
+                    <field name="material_project_task_ids" >
                         <tree string="Materiais Usados" editable="top">
-                            <field name="product_id" attrs="{'readonly': [('stock_picking_id', '!=',False)]}"/>
-                            <field name="quantity" attrs="{'readonly': [('stock_picking_id', '!=',False)]}"/>
-                            <field name="requested" attrs="{'readonly': [('stock_picking_id', '!=',False)]}"/>
-                            <field name="stock_picking_id" readonly="1"/>
+                            <field name="product_id"/>
+                            <field name="quantity"/>
+                            <field name="requested" />
+                            <field name="stock_status" readonly="1"/>
                             <field name="stock_stage" readonly="1"/>
                         </tree>
                     </field>
@@ -29,6 +29,17 @@
         <field name="arch" type="xml">
             <field name="sequence" position="after">
                 <field name="can_request_stock"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="view_task_route_form" model="ir.ui.view">
+        <field name="name">view.task.route.form</field>
+        <field name="model">project.project</field>
+        <field name="inherit_id" ref="project.edit_project"/>
+        <field name="arch" type="xml">
+            <field name="partner_id" position="after">
+                <field name="rule_id"/>
             </field>
         </field>
     </record>
