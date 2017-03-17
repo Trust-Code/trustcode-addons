@@ -112,4 +112,3 @@ class ProcurementOrder(models.Model):
 
     material_project_task_id = fields.Many2one(
         'project.task.material', 'Material Project Task')
-    
