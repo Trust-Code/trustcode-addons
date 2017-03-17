@@ -12,7 +12,8 @@
                             <field name="product_id"/>
                             <field name="quantity"/>
                             <field name="requested" />
-                            <field name="stock_status" readonly="1"/>
+                            <field name="qty_stock_available" readonly="1"/>
+                            <field name="qty_delivered" readonly="1"/>
                             <field name="stock_stage" readonly="1"/>
                         </tree>
                     </field>
@@ -43,4 +44,25 @@
             </field>
         </field>
     </record>
+
+    <record id="view_procurement_order_form" model="ir.ui.view">
+        <field name="name">view.procurement.order.form</field>
+        <field name="model">procurement.order</field>
+        <field name="inherit_id" ref="procurement.procurement_form_view"/>
+        <field name="arch" type="xml">
+            <field name="company_id" position="after">
+                <field name="material_project_task_id"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="view_procurement_material_tree" model="ir.ui.view">
+            <field name="name">view.procurement.material.tree</field>
+            <field name="model">project.task.material</field>
+            <field name="arch" type="xml">
+                <tree string="Material">
+                    <field name="product_id"/>
+                </tree>
+            </field>
+        </record>
 </data>
