@@ -20,6 +20,7 @@
         'project',
     ],
     'data': [
+        'security/ir.model.access.csv',
         'views/task_materials.xml',
     ],
 }
