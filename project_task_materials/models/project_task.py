@@ -10,6 +10,7 @@ class ProjectTaskType(models.Model):
 
     can_request_stock = fields.Boolean(string="Pode Solicitar Estoque?")
 
+
 class ProjectProject(models.Model):
     _inherit = 'project.project'
 
@@ -51,12 +52,10 @@ class ProjectTaskMaterial(models.Model):
                 qty_done = operation_move_link.operation_id.qty_done
                 item.qty_delivered = qty_done
 
-
     def _get_stock_product_available(self):
         for item in self:
             qty_available = item.product_id.qty_available
             item.qty_stock_available = qty_available
-
 
     @api.multi
     def name_get(self):
@@ -78,13 +77,11 @@ class ProjectTask(models.Model):
         res.create_picking_from_material()
         return res
 
-
     @api.multi
     def write(self, vals):
         res = super(ProjectTask, self).write(vals)
         self.create_picking_from_material()
         return res
-
 
     def create_picking_from_material(self):
         for item in self:
