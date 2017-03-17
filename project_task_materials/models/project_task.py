@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # © 2017 Fillipe Ramos, Trustcode
-# License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
+# License AGPL-3.0 or latres (http://www.gnu.org/licenses/agpl.html).
 
 from odoo import api, fields, models
 
@@ -19,11 +19,17 @@ class ProjectProject(models.Model):
 class ProjectTaskMaterial(models.Model):
     _name = 'project.task.material'
 
-    product_id = fields.Many2one('product.product', string='Produto', required=True)
+    product_id = fields.Many2one(
+        'product.product', string='Produto', required=True)
     name = fields.Char(string="Name")
     stock_picking_id = fields.Many2one('stock.picking', string='Documento')
-    stock_status = fields.Float(compute='_get_stock_status', string='Quantidade Entregue', readonly=True)
-    stock_stage =  fields.Char(string='Estágio de Solicitação', readonly=True)
+    qty_delivered = fields.Float(
+        compute='_get_stock_status',
+        string='Quantidade Entregue', readonly=True)
+    qty_stock_available = fields.Float(
+        compute='_get_stock_product_available',
+        string='Quantidade Disponível', readonly=True)
+    stock_stage = fields.Char(string='Estágio de Solicitação', readonly=True)
     quantity = fields.Float(string='Quantidade')
     requested = fields.Boolean(string="Solicitado")
     task_id = fields.Many2one('project.task', string='Tarefa')
@@ -34,23 +40,36 @@ class ProjectTaskMaterial(models.Model):
         res.stock_stage = res.task_id.stage_id.name
         return res
 
-    # @api.depends('product_id.invoice_policy', 'order_id.state')
     def _get_stock_status(self):
+        stock_move_operation_link = self.env['stock.move.operation.link']
         for item in self:
-            procurement_ids = item.env['procurement.order'].search(
-                [('task_id', '=', item.task_id.id)])
-            qty = 0.0
-            for move in procurement_ids.mapped('move_ids').filtered(lambda r: r.state == 'done' and not r.scrapped):
-                if move.location_dest_id.usage == "customer":
-                    qty += move.product_uom._compute_quantity(move.product_uom_qty)
-                elif move.location_dest_id.usage == "internal" and move.to_refund_so:
-                    qty -= move.product_uom._compute_quantity(move.product_uom_qty)
-            item.stock_status = qty
+            procurement_ids = self.env['procurement.order'].search(
+                [('material_project_task_id.id', '=', item.id)])
+            for line in procurement_ids:
+                operation_move_link = stock_move_operation_link.search(
+                    [('move_id.procurement_id', '=', line.id)])
+
+                qty_done = operation_move_link.operation_id.qty_done
+                item.qty_delivered = qty_done
+
+    def _get_stock_product_available(self):
+        for item in self:
+            qty_available = item.product_id.qty_available
+            item.qty_stock_available = qty_available
+
+    @api.multi
+    def name_get(self):
+        res = []
+        for item in self:
+            res.append((item.id, "%s" % (item.product_id.name)))
+        return res
+
 
 class ProjectTask(models.Model):
     _inherit = 'project.task'
 
-    material_project_task_ids = fields.One2many('project.task.material', 'task_id', string='Materiais Usados')
+    material_project_task_ids = fields.One2many(
+        'project.task.material', 'task_id', string='Materiais Usados')
 
     @api.model
     def create(self, vals):
@@ -68,19 +87,28 @@ class ProjectTask(models.Model):
         for item in self:
             if not item.stage_id.can_request_stock:
                 continue
-            warehouse = self.env['stock.warehouse'].search([('company_id', '=', item.company_id.id)], limit=1)
+            warehouse = self.env['stock.warehouse'].search(
+                [('company_id', '=', item.company_id.id)], limit=1)
             for line in item.material_project_task_ids:
-                if line.requested and not line.stock_picking_id:    
+                if line.requested and not line.stock_picking_id:
                     if line.product_id.qty_available <= line.quantity:
-                        procurement_id = self.env['procurement.order'].create({
-                                'product_id': line.product_id.id,
-                                'product_uom': line.product_id.uom_id.id,
-                                'product_qty': line.quantity,
-                                'origin': item.name,
-                                'task_id': item.id,
-                                'name': item.name,
-                                'rule_id': item.project_id.rule_id.id,
-                                'company_id': item.company_id.id,
-                                'warehouse_id': warehouse.id,
-                                'location_id': warehouse.lot_stock_id.id,
-                                })
+                        self.env['procurement.order'].create({
+                            'product_id': line.product_id.id,
+                            'product_uom': line.product_id.uom_id.id,
+                            'product_qty': line.quantity,
+                            'origin': item.name,
+                            'task_id': item.id,
+                            'name': item.name,
+                            'rule_id': item.project_id.rule_id.id,
+                            'company_id': item.company_id.id,
+                            'warehouse_id': warehouse.id,
+                            'location_id': warehouse.lot_stock_id.id,
+                            'material_project_task_id': line.id
+                            })
+
+
+class ProcurementOrder(models.Model):
+    _inherit = "procurement.order"
+
+    material_project_task_id = fields.Many2one(
+        'project.task.material', 'Material Project Task')
