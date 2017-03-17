@@ -6,10 +6,10 @@
             <field name="model">import.inventory</field>
             <field name="type">form</field>
             <field name="arch" type="xml">
-                <form string="Import Inventory">
-                <label string="The file must have 2 column keys:
-                'code' => for product reference
-                'quantity' => for product quantity"/>
+                <form string="Importar Inventário">
+                <label string="O arquivo deve ter duas colunas com o seguinte nome:
+                'codigo' => para a referencia do produto
+                'quantidade' => para a quantidade do produto"/>
                     <group>
                         <group>
                             <field name="location"/>
@@ -21,8 +21,8 @@
                         </group>
                     </group>
                    <footer>
-                        <button class="oe_highlight" special="cancel" string="Cancel"/>
-                        <button name="action_import" string="Import" type="object"/>
+                        <button special="cancel" string="Cancelar"/>
+                        <button class="oe_highlight" name="action_import" string="Importar" type="object"/>
                    </footer>
                </form>
             </field>
