@@ -31,6 +31,16 @@ class TestDeliveryCorreios(TransactionCase):
             'ambiente': 1,
         }
         self.delivery = self.env['delivery.carrier'].create(correio)
+        self.servico = self.env['delivery.correios.service'].create({
+            'ano_assinatura': '2016',
+            'name': 'Serviço 1',
+            'code': '40215',
+            'identifier': 'foo bar baz',
+            'delivery_id': self.delivery.id,
+        })
+        self.delivery.write({
+            'service_id': self.servico.id,
+        })
         partner = {
             'name': 'Parceiro 1',
             'company_type': 'person',
@@ -65,7 +75,6 @@ class TestDeliveryCorreios(TransactionCase):
         self.produto = self.env['product.product'].create(produto)
         sale_order = {
             'partner_id': self.partner.id,
-            'carrier_id': self.delivery.id,
         }
         self.sale_order = self.env['sale.order'].create(sale_order)
         sale_order_line = {
@@ -130,7 +139,8 @@ check_for_correio_error')
                 correio_return_xml.read())
         erro.return_value = None
         self.delivery.action_get_correio_services()
-        servicos = self.env['delivery.correios.service'].search([])
+        servicos = self.env['delivery.correios.service'].search(
+            [('code', '=', '40096')])
         self.assertTrue(len(servicos) == 1,
                         "Número de serviços: %d " % len(servicos))
 
