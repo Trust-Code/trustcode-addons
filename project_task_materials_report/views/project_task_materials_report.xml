@@ -1,16 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <record id="paperformat_project_task_materials_report" model="report.paperformat">
-        <field name="name">Formato Report Manutenção</field>
-        <field name="default" eval="True" />
-        <field name="orientation">Portrait</field>
-        <field name="margin_top">7.0</field>
-        <field name="margin_left">7.0</field>
-        <field name="margin_right">7.0</field>
-        <field name="margin_bottom">7.0</field>
-        <field name="header_line" eval="False"/>
-        <field name="header_spacing">0</field>
-    </record>
 
     <report
         id="action_project_task_materials_reportt"
@@ -19,7 +8,6 @@
         string="Report de Manutenção"
         name="project_task_materials_report.materials_report"
         file="project_task_materials_report.materials_report"
-        paperformat="paperformat_project_task_materials_report"
         />
 
     <template id="project_task_materials_report_assets_backend" name="Project Task Materials assets" inherit_id="report.assets_common">
@@ -47,7 +35,9 @@
                                     <tbody>
                                         <tr>
                                             <td>Equipamento:</td>
-                                            <td><span t-field="o.x_product_id"/></td>
+                                            <td>
+                                                <span t-field="o.sale_line_id.name"/>
+                                            </td>
                                             <td></td>
                                             <td>Data Criação</td>
                                             <td><span t-field="o.create_date"/></td>
@@ -95,12 +85,12 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <t t-foreach="o.x_material_ids" t-as="l">
+                                        <t t-foreach="o.material_project_task_ids" t-as="l">
                                             <tr>
-                                                <td><span t-esc="l.x_product_id"></span></td>
-                                                <td><span t-field="l.x_quantity"></span></td>
-                                                <td><span t-field="l.x_product_id.uom_id"></span></td>
-                                                <td><span t-esc="l.x_product_id.x_name"></span></td>
+                                                <td><span t-esc="l.product_id.name"></span></td>
+                                                <td><span t-field="l.quantity"></span></td>
+                                                <td><span t-field="l.product_id.uom_id"></span></td>
+                                                <td><span t-esc="l.product_id.description"></span></td>
                                             </tr>
                                         </t>
                                     </tbody>
