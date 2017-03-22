@@ -23,7 +23,7 @@ class ProjectTaskMaterial(models.Model):
     product_id = fields.Many2one(
         'product.product', string='Produto', required=True)
     name = fields.Char(string="Name")
-    stock_picking_id = fields.Many2one('stock.picking', string='Documento')
+    procurement_id = fields.Many2one('procurement.order', string='Documento')
     qty_delivered = fields.Float(
         compute='_get_stock_status',
         string='Quantidade Entregue', readonly=True)
@@ -89,26 +89,31 @@ class ProjectTask(models.Model):
                 continue
             warehouse = self.env['stock.warehouse'].search(
                 [('company_id', '=', item.company_id.id)], limit=1)
+            group_id = self.env['procurement.group'].create(
+                {'name': item.name, 'move_type': 'direct'}
+            )
             for line in item.material_project_task_ids:
-                if line.requested and not line.stock_picking_id:
-                    if line.product_id.qty_available <= line.quantity:
-                        self.env['procurement.order'].create({
-                            'product_id': line.product_id.id,
-                            'product_uom': line.product_id.uom_id.id,
-                            'product_qty': line.quantity,
-                            'origin': item.name,
-                            'task_id': item.id,
-                            'name': item.name,
-                            'rule_id': item.project_id.rule_id.id,
-                            'company_id': item.company_id.id,
-                            'warehouse_id': warehouse.id,
-                            'location_id': warehouse.lot_stock_id.id,
-                            'material_project_task_id': line.id
-                            })
+                if line.requested and not line.procurement_id:
+                    vals = {
+                        'product_id': line.product_id.id,
+                        'product_uom': line.product_id.uom_id.id,
+                        'product_qty': line.quantity,
+                        'origin': item.name,
+                        'task_id': item.id,
+                        'name': item.name,
+                        'rule_id': item.project_id.rule_id.id,
+                        'company_id': item.company_id.id,
+                        'warehouse_id': warehouse.id,
+                        'location_id': item.project_id.rule_id.location_id.id,
+                        'material_project_task_id': line.id,
+                        'group_id': group_id.id,
+                    }
+                    procurement = self.env['procurement.order'].create(vals)
+                    line.procurement_id = procurement.id
 
 
 class ProcurementOrder(models.Model):
     _inherit = "procurement.order"
 
     material_project_task_id = fields.Many2one(
-        'project.task.material', 'Material Project Task')
+        'project.task.material', 'Linha de material na tarefa')
