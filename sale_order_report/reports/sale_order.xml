@@ -19,7 +19,7 @@
                                         <span t-if="doc.state in ['draft','sent']">Cotação N°</span>
                                         <span t-field="doc.name"/>
                                     </p>
-                                        <strong>de </strong><span t-field="doc.write_date" t-field-options='{"format": "dd/MM/yy"}'/> <br />
+                                        <strong>de </strong><span t-field="doc.date_order" t-field-options='{"format": "dd/MM/yy"}'/> <br />
                                         <strong>Pedido Cliente:</strong><span t-field="doc.client_order_ref"/>
                                 </div>
                                 <div class="col-xs-6">
