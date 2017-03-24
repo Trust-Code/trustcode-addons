@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+      <record id="trustcode_purchase_advanced_kanban" model="ir.ui.view">
+        <field name="name">trustcode.purchase.advanced.Kanban</field>
+        <field name="model">purchase.requisition</field>
+        <field name="arch" type="xml">
+          <kanban  class="o_kanban_mobile">
+              <header>
+                <!--field name="state_kanban" statusbar_visible="req,req_concl,req_fat" widget="statusbar" /-->
+              </header>
+
+              <field name="name"/>
+              <field name="origin"/>
+
+              <templates>
+                  <t t-name="kanban-box">
+                      <div t-attf-class="oe_kanban_card oe_kanban_global_click">
+                          <div class="row">
+                              <div class="col-xs-6">
+                                  <strong><span><t t-esc="record.name"/></span></strong>
+                              </div>
+                              <div class="col-xs-6 pull-right text-right">
+                                  <!--strong><field name="amount_total" widget="monetary"/></strong-->
+                              </div>
+                          </div>
+                          <div class="row">
+                              <div class="col-xs-6">
+                                  <!--span><t t-esc="record.name.value"/> <t t-esc="record.date_order.value and record.date_order.value.split(' ')[0] or False"/></span-->
+                              </div>
+                              <div class="col-xs-6">
+                                  <span class="pull-right text-right">
+                                      <!--field name="state" widget="kanban_label_selection" options="{'classes': {'draft': 'default', 'cancel': 'default', 'done': 'success', 'approved': 'warning'}}"/-->
+                                  </span>
+                              </div>
+                          </div>
+                      </div>
+                  </t>
+              </templates>
+
+          </kanban>
+        </field>
+      </record>
+
+      <record id="purchase_advanced_kanban" model="ir.actions.act_window">
+          <field name="name">Purchase Advanced Kanban</field>
+          <field name="type">ir.actions.act_window</field>
+          <field name="res_model">purchase.requisition</field>
+          <field name="view_mode">kanban,form</field>
+          <field name="context">{}</field>
+          <field name="domain">[]</field>
+          <field name="search_view_id" ref=""/>
+            <field name="view_id" eval="trustcode_purchase_advanced_kanban"/>
+          <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+              Click to create a quotation that will be converted into a purchase order.
+            </p>
+            <p>
+
+            </p>
+          </field>
+      </record>
+
+      <!-- Top menu item -->
+      <menuitem name="Controle de Compras"
+        action="purchase_advanced_kanban"
+        id="menu_purchase_advanced_kanban"
+        parent="purchase.menu_purchase_control"
+        sequence="1"/>
+
+  </odoo>
