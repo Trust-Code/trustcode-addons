@@ -48,7 +48,7 @@ class ProjectTaskMaterial(models.Model):
                 [('material_project_task_id.id', '=', item.id)])
             for line in procurement_ids:
                 operation_move_link = stock_move_operation_link.search(
-                    [('move_id.procurement_id', '=', line.id)])
+                    [('move_id.procurement_id', '=', line.id), limit=1])
                 qty_done = operation_move_link.operation_id.qty_done
                 item.qty_delivered = qty_done
 
