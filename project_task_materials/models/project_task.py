@@ -47,10 +47,10 @@ class ProjectTaskMaterial(models.Model):
             procurement_ids = self.env['procurement.order'].search(
                 [('material_project_task_id.id', '=', item.id)])
             for line in procurement_ids:
-                operation_move_link = stock_move_operation_link.search(
-                    [('move_id.procurement_id', '=', line.id), limit=1])
-                qty_done = operation_move_link.operation_id.qty_done
-                item.qty_delivered = qty_done
+                operation_move_link_ids = stock_move_operation_link.search(
+                    [('move_id.procurement_id', '=', line.id)])
+                for x in operation_move_link_ids:
+                    item.qty_delivered += x.operation_id.qty_done
 
     def _get_stock_product_available(self):
         for item in self:
