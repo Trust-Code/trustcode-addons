@@ -39,7 +39,6 @@ class royalties(models.Model):
             commission_id = self.env['royalties.commission.invoiced'].search([
                 ('contract_id', '=', contract_id.id)])
             if commission_id.voucher_id:
-                import ipdb; ipdb.set_trace()
                 continue
             account_id = 0
             prod_id = contract_id.product_id
@@ -67,9 +66,11 @@ class royalties(models.Model):
             else:
                 product_price = prod_id.list_price
 
+            product_id = self.env['product.product'].search([('product_tmpl_id', '=', prod_id.id)])
+
             voucher_line = {
                 'account_id': account_id.id,
-                'product_id': prod_id.id,
+                'product_id': product_id.id,
                 'price_unit': commission_id.commission,
                 'quantity': '1',
                 'name': prod_id.description or 'royalties',

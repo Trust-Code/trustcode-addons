@@ -25,6 +25,7 @@
         'views/product.xml',
         'views/res_partner_view.xml',
         'wizard/royalties_view.xml',
+        'security/ir.model.access.csv',
     ],
     'installable': True,
     'application': True,
