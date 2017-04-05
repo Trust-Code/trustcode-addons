@@ -3,10 +3,9 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 
-from odoo import api, exceptions, fields, models
-from odoo.addons import decimal_precision as dp
+from odoo import api, fields, models, _
 from odoo.exceptions import ValidationError
-from datetime import datetime, date, timedelta
+from date import date
 
 
 class ProductTemplate(models.Model):
@@ -14,6 +13,7 @@ class ProductTemplate(models.Model):
 
     contract_ids = fields.One2many(
         'royalties.contract', 'product_id')
+
 
 class AccountInvoice(models.Model):
     _inherit = "account.invoice"
@@ -28,6 +28,8 @@ class AccountInvoice(models.Model):
                     continue
                 line.commission_invoiced_ids.unlink()
                 for contract in line.product_id.contract_ids:
+                    if contract.validity_date < invoice.date_invoice:
+                        continue
                     for commission_id in contract.commission_ids.sorted(
                         key=lambda r: r.min_qty, reverse=True):
                         qty_to_invoice = line.quantity
@@ -37,7 +39,7 @@ class AccountInvoice(models.Model):
                                 product_value = line.product_id.standard_price
                             else:
                                 product_value = line.product_id.list_price
-                            comm_perc = (commission_id.commission/100)
+                            comm_perc = (commission_id.commission / 100)
                             qty_sold = (product_value * qty_to_invoice)
                             commission_line = (qty_sold * comm_perc)
                             vals = {
@@ -47,8 +49,6 @@ class AccountInvoice(models.Model):
                                 'contract_id': contract.id,
                             }
                             line.commission_total += commission_line
-                            write = line.commission_invoiced_ids.browse(
-                                contract.partner_id.id)
                             self.env['royalties.commission.invoiced'].create(
                                 vals)
         return super(AccountInvoice, self).invoice_validate()
@@ -92,10 +92,11 @@ class RoyaltiesContract(models.Model):
         today = str(date.today())
         if self.validity_date < today:
             raise ValidationError(
-                "Date must be today or later")
+                _("Date must be today or later"))
         elif year > (date.today().year + 12):
             raise ValidationError(
-                "Date must be NO later than 12 years")
+                _("Date must be NO later than 12 years"))
+
 
 class RoyaltiesContractCommissionRule(models.Model):
     _name = 'royalties.contract.commission.rule'
@@ -109,17 +110,17 @@ class RoyaltiesContractCommissionRule(models.Model):
     def _check_value(self):
         if self.commission < 0:
             raise ValidationError(
-                "Commission percentage must be higher than 0")
+                _("Commission percentage must be higher than 0"))
         if self.commission > 100:
             raise ValidationError(
-                "Commission percentage must be lower than 100")
+                _("Commission percentage must be lower than 100"))
 
     @api.one
     @api.constrains('commission')
     def _check_positive(self):
         if self.min_qty < 1:
             raise ValidationError(
-                "Quantity must be higher than 1")
+                _("Quantity must be higher than 1"))
 
 
 class RoyaltiesCommissionInvoiced(models.Model):
