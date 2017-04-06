@@ -28,7 +28,7 @@
         <field name="name" position="after" >
           <field name="is_late"/>
         </field>
-        <filter name="overdue_opp" position="after">
+        <filter name="this_week" position="after">
           <filter name="is_late" string="Atrasadas" domain="[('is_late','=',True)]"/>
         </filter>
     </field>
