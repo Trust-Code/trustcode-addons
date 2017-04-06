@@ -71,7 +71,7 @@
                         </div>
                         <div class="panel-body" style="padding: 5px 15px;">
                             <address style="margin-bottom:0px;">
-                                <strong>SACADO: </strong><span t-field="doc.commercial_partner_id.name" /><br />
+                                <strong>SACADO: </strong><span t-esc="doc.commercial_partner_id.legal_name or doc.commercial_partner_id.name" /><br />
                                 <strong>ENDEREÇO: </strong>
                                 <span t-field="doc.commercial_partner_id.street" />
                                 <span t-field="doc.commercial_partner_id.number" />
@@ -202,6 +202,10 @@
                             <h3 class="panel-title center">Dados Adicionais</h3>
                         </div>
                         <div class="panel-body" style="padding: 5px 15px;">
+                            <p t-raw="doc.compute_legal_information()">
+                            </p>
+                            <p t-field="doc.fiscal_comment">
+                            </p>
                             <p t-field="doc.comment">
                             </p>
                         </div>

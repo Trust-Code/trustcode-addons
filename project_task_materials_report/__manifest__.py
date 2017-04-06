@@ -3,11 +3,11 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 {
-    'name': 'Modelo de Cotação de Venda',
-    'description': "Modelo de Cotação de Venda",
-    'summary': "Modelo de Cotação de Venda",
+    'name': 'Modelo de Tarefas',
+    'description': "Modelo de Tarefas",
+    'summary': "Modelo de Tarefas",
     'version': '10.0.1.0.0',
-    'category': "Sales",
+    'category': "Taks",
     'author': 'Trustcode',
     'license': 'AGPL-3',
     'website': 'http://www.trustcode.com.br',
@@ -16,13 +16,10 @@
         'Mackilem Van der Laan Soares <mack.vdl@gmail.com>'
     ],
     'depends': [
-        'base_report', 'sale', 'br_account',
+        'base_report',
+        'project_task_materials',
     ],
     'data': [
-        'data/report_groups.xml',
-        'reports/sale_order.xml',
-        'views/sale_order_report.xml',
-        'views/sale_order.xml',
-        'security/ir.model.access.csv',
+        'views/project_task_materials_report.xml',
     ],
 }
