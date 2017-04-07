@@ -17,14 +17,6 @@ class Royalties(models.Model):
 
     date_to = fields.Date(string=u"Até", required=True)
     date_from = fields.Date(string="De", required=True)
-    validity_date = fields.Date(string="Data de Validade")
-    royalty_type = fields.Char(string="Tipo")
-    product_id = fields.Many2one(
-        'product.template', string="Produto")
-    commission_ids = fields.One2many(
-        'royalties.contract.commission.rule', 'contract_id')
-    partner_id = fields.Many2one('res.partner', string=u'Beneficiários')
-    region = fields.Char(string=u"Região", size=20)
 
     def create_commission(self):
         search_vals = []
@@ -49,6 +41,11 @@ class Royalties(models.Model):
                 account_id = 0
                 prod_id = contract_id.product_id
                 part_id = contract_id.partner_id
+                categ_id = prod_id.categ_id
+                if prod_id.property_account_expense_id:
+                    account_id = prod_id.property_account_expense_id
+                else:
+                    account_id = categ_id.property_account_expense_categ_id
 
                 voucher_type = self.env['account.journal'].search([
                     ('type', '=', 'purchase')])
@@ -75,17 +72,6 @@ class Royalties(models.Model):
                     voucher_id = self.env['account.voucher'].create(voucher)
                 else:
                     voucher_id = voucher_ids[0]
-
-                voucher_type = self.env['account.journal'].search([
-                    ('type', '=', 'purchase')])
-                voucher = {
-                    'account_id': part_id.property_account_payable_id.id,
-                    'validity_date': contract_id.validity_date,
-                    'pay_now': 'pay_later',
-                    'partner_id': part_id.id,
-                    'voucher_type': voucher_type.type,
-                    'journal_id': voucher_type.id,
-                }
 
                 product_id = self.env['product.product'].search([
                     ('product_tmpl_id', '=', prod_id.id)])

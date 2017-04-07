@@ -19,7 +19,8 @@
         'base',
         'product',
         'sale',
-        'account'
+        'account',
+        'account_voucher',
     ],
     'data': [
         'views/product.xml',
