@@ -3,12 +3,7 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 
-<<<<<<< HEAD
 from odoo import api, fields, models, _
-=======
-from odoo import api, exceptions, fields, models, _
-from odoo.addons import decimal_precision as dp
->>>>>>> origin/10.0-royalties
 from odoo.exceptions import ValidationError
 from datetime import date
 
@@ -33,10 +28,6 @@ class AccountInvoice(models.Model):
                     continue
                 line.commission_invoiced_ids.unlink()
                 for contract in line.product_id.contract_ids:
-<<<<<<< HEAD
-=======
-                    today = str(date.today())
->>>>>>> origin/10.0-royalties
                     if contract.validity_date < invoice.date_invoice:
                         continue
                     for commission_id in contract.commission_ids.sorted(
@@ -105,10 +96,7 @@ class RoyaltiesContract(models.Model):
         elif year > (date.today().year + 12):
             raise ValidationError(
                 _("Date must be NO later than 12 years"))
-<<<<<<< HEAD
 
-=======
->>>>>>> origin/10.0-royalties
 
 class RoyaltiesContractCommissionRule(models.Model):
     _name = 'royalties.contract.commission.rule'
