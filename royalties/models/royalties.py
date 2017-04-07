@@ -5,7 +5,7 @@
 
 from odoo import api, fields, models, _
 from odoo.exceptions import ValidationError
-from date import date
+from datetime import date
 
 
 class ProductTemplate(models.Model):
