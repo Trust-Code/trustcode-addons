@@ -36,7 +36,6 @@ class Royalties(models.Model):
         for contract_id in contract_ids:
             commission_ids = self.env['royalties.commission.invoiced'].search([
                 ('contract_id', '=', contract_id.id)], order='partner_id')
-
             for commission_id in commission_ids:
                 invoice_id = self.env['account.invoice'].search([
                     ('id', '=', commission_id.invoice_line_id.invoice_id.id)])
@@ -77,11 +76,16 @@ class Royalties(models.Model):
                 else:
                     voucher_id = voucher_ids[0]
 
-                categ_id = prod_id.categ_id
-                if prod_id.property_account_expense_id:
-                    account_id = prod_id.property_account_expense_id
-                else:
-                    account_id = categ_id.property_account_expense_categ_id
+                voucher_type = self.env['account.journal'].search([
+                    ('type', '=', 'purchase')])
+                voucher = {
+                    'account_id': part_id.property_account_payable_id.id,
+                    'validity_date': contract_id.validity_date,
+                    'pay_now': 'pay_later',
+                    'partner_id': part_id.id,
+                    'voucher_type': voucher_type.type,
+                    'journal_id': voucher_type.id,
+                }
 
                 product_id = self.env['product.product'].search([
                     ('product_tmpl_id', '=', prod_id.id)])
