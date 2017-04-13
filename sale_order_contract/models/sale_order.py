@@ -20,7 +20,7 @@ class SaleOrder(models.Model):
         return date.today() + relativedelta(years=1)
 
     @api.depends('order_line.price_total')
-    def _compute_recurrent_values(self):
+    def _compute_total_values(self):
         for order in self:
             recurrent = order.order_line.filtered(lambda x: x.recurring_line)
             non_rec = order.order_line.filtered(lambda x: not x.recurring_line)
@@ -39,10 +39,18 @@ class SaleOrder(models.Model):
         string="Final Contrato", default=_compute_end_contract)
     next_invoice = fields.Date(string="Próximo Faturamento", copy=False)
     total_recurrent = fields.Monetary(
-        string="Total Recorrente", compute='_compute_recurrent_values',
+        string="Total Recorrente", compute='_compute_total_values',
         store=True)
     total_non_recurrent = fields.Monetary(
-        string="Total Avulso", compute='_compute_recurrent_values', store=True)
+        string="Total Avulso", compute='_compute_total_values', store=True)
+    margin_recurrent = fields.Float(
+        string="Margem do Recorrente (%)",
+        compute='_compute_margin_percentage',
+        store=True)
+    margin_non_recurrent = fields.Float(
+        string="Margem do Avulso (%)",
+        compute='_compute_margin_percentage',
+        store=True)
 
     @api.onchange('order_line')
     def _onchange_sale_order_contract_order_line(self):
@@ -106,6 +114,18 @@ class SaleOrder(models.Model):
             order.next_month = date.today() + relativedelta(months=1)
 
     next_month = fields.Date(string="Next Month", compute='_get_next_month')
+
+    @api.depends('order_line.margin')
+    def _compute_margin_percentage(self):
+        for order in self:
+            recurrent = sum(order.order_line.filtered(
+                lambda x: x.recurring_line).mapped('margin'))
+            non_rec = sum(order.order_line.filtered(
+                lambda x: not x.recurring_line).mapped('margin'))
+
+            order.margin_recurrent = (recurrent / order.total_recurrent) * 100
+            order.margin_non_recurrent = (
+                non_rec / order.total_non_recurrent) * 100
 
 
 class SaleOrderLine(models.Model):
