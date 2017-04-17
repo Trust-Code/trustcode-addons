@@ -123,9 +123,13 @@ class SaleOrder(models.Model):
             non_rec = sum(order.order_line.filtered(
                 lambda x: not x.recurring_line).mapped('margin'))
 
-            order.margin_recurrent = (recurrent / order.total_recurrent) * 100
-            order.margin_non_recurrent = (
-                non_rec / order.total_non_recurrent) * 100
+            if order.total_recurrent != 0:
+                order.margin_recurrent = (
+                    recurrent / order.total_recurrent) * 100
+
+            if order.total_non_recurrent != 0:
+                order.margin_non_recurrent = (
+                    non_rec / order.total_non_recurrent) * 100
 
 
 class SaleOrderLine(models.Model):
