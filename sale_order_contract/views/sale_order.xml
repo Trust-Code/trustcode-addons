@@ -30,7 +30,8 @@
             <xpath expr="//field[@name='order_line']/form/group/group/label[@for='product_uom_qty']" position="before">
                 <field name="recurring_line" />
             </xpath>
-            <group name="sale_margin_grp" position="replace">
+            <group name="sale_margin_grp" position="attributes">
+                 <attribute name="invisible">1</attribute>
             </group>
             <xpath expr="//group[@name='sale_total']/div" position="before">
                 <label style="font-size: 13px;" class="oe_subtotal_footer_separator" for="total_recurrent"/>
