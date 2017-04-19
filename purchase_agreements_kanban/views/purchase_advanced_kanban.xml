@@ -4,29 +4,45 @@
   <field name="name">trustcode.purchase.advanced.Kanban</field>
   <field name="model">purchase.requisition</field>
   <field name="arch" type="xml">
-    <kanban  class="o_kanban_mobile">
+    <kanban  class="o_kanban_mobile" default_group_by="state_kanban" default_order="sequence asc">
         <header>
-          <!--field name="state_kanban" statusbar_visible="req,req_concl,req_fat" widget="statusbar" /-->
+          <field name="state_kanban" widget="statusbar" />
         </header>
 
         <field name="name"/>
         <field name="origin"/>
         <field name="image"/>
         <field name="date_end"/>
-        <field name="days_end"/>
-
+        <field name="state_kanban"/>
+        <field name="ordering_date"/>
+        <field name="schedule_date"/>
         <templates>
             <t t-name="kanban-box">
                 <div t-attf-class="oe_kanban_card oe_kanban_global_click">
                     <div class="row">
-                        <div class="col-xs-4">
+                        <div class="col-xs-3">
                             <strong><field name="name"/></strong>
                         </div>
-                        <div class="col-xs-8">
-                            <span class="pull-right text-right">
-                              <t t-esc="record.date_end.value and record.date_end.value.split(' ')[0] or False"/>
-                              <span>-</span><field name="days_end"/><t> Dias</t>
-                            </span>
+                        <span t-if="state_kanban in ['req','req_pdc','req_concl']">
+                            <div class="col-xs-9 pull-right text-left" style="padding-right:5px">
+                                <div class="row">
+                                  <t>Data Limite </t>
+                                  <t t-esc="record.date_end.value and record.date_end.value.split(' ')[0] or False"/>
+                                  <t> :: </t><field name="days_end"/><t> Dias</t>
+                                </div>
+                                <div class="row">
+                                  <t>Data Ordenação </t>
+                                  <t t-esc="record.ordering_date.value and record.ordering_date.value.split(' ')[0] or False"/>
+                                  <t> :: </t><field name="days_ordering"/><t> Dias</t>
+                                </div>
+                              </div>
+                          </span>
+                        <div class="col-xs-9 pull-right text-left" style="padding-right:5px">
+                            <div class="row">
+                              <t>Data Entrega </t>
+                              <t t-esc="record.schedule_date.value and record.schedule_date.value.split(' ')[0] or False"/>
+                              <t> :: </t><field name="days_schedule"/><t> Dias</t>
+                            </div>
                         </div>
                     </div>
                     <div class="row">
