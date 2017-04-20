@@ -8,6 +8,13 @@ from odoo import api, fields, models, _
 from odoo.exceptions import UserError
 
 
+class StockInventoryLine(models.Model):
+    _inherit = 'stock.inventory.line'
+
+    product_name = fields.Char(readonly=True)
+    product_code = fields.Char(readonly=True)
+
+
 class StockInventory(models.Model):
     _inherit = "stock.inventory"
 
