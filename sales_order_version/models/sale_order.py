@@ -15,12 +15,12 @@ class SaleOrder(models.Model):
 
     @api.multi
     def _compute_version(self):
-        obj_attach = self.env['ir.attachment'].search(
-            [('res_id', '=', self.id)],
-            order='id desc', limit=1)
-
-        self.version = obj_attach.res_version
-        self.last_revision = datetime.now()
+        for item in self:
+            obj_attach = self.env['ir.attachment'].search(
+                [('res_id', '=', item.id)],
+                order='id desc', limit=1)
+            item.version = obj_attach.res_version
+            item.last_revision = datetime.now()
 
 
 class IrAttachment(models.Model):
