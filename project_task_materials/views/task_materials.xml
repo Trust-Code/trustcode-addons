@@ -19,6 +19,9 @@
                     </field>
                 </page>
             </page>
+            <field name="sale_line_id" position="after">
+                <field name="sale_order_id" />
+            </field>
         </field>
     </record>
 
