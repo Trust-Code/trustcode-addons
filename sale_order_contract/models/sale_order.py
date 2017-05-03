@@ -19,7 +19,7 @@ class SaleOrder(models.Model):
     def _compute_end_contract(self):
         return date.today() + relativedelta(years=1)
 
-    @api.depends('order_line.price_total')
+    @api.depends('order_line.price_subtotal')
     def _compute_total_values(self):
         for order in self:
             recurrent = order.order_line.filtered(lambda x: x.recurring_line)
@@ -115,7 +115,7 @@ class SaleOrder(models.Model):
 
     next_month = fields.Date(string="Next Month", compute='_get_next_month')
 
-    @api.depends('order_line.margin')
+    @api.depends('order_line.margin', 'total_recurrent', 'total_non_recurrent')
     def _compute_margin_percentage(self):
         for order in self:
             recurrent = sum(order.order_line.filtered(
@@ -140,3 +140,8 @@ class SaleOrderLine(models.Model):
         self.recurring_line = self.product_id.recurring_product
 
     recurring_line = fields.Boolean(string="Recorrente?")
+
+    @api.depends('product_id', 'purchase_price', 'product_uom_qty',
+                 'price_unit', 'discount')
+    def _product_margin(self):
+        return super(SaleOrderLine, self)._product_margin()
