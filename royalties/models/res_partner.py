@@ -3,13 +3,12 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 
-from odoo import api, fields, models
+from odoo import fields, models
 
 
 class ResPartner(models.Model):
-    """Add some fields related to commissions"""
     _inherit = "res.partner"
 
     government = fields.Boolean(
-        string="Government",
-        help="Check this field if the partner is a government.")
+        string="Governo",
+        help="Marque este campo se o parceiro é uma instituição governamental")

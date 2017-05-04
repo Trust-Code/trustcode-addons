@@ -8,23 +8,15 @@
             <form>
                 <group>
                     <group>
-                        <!-- <field name="product_id"/> -->
-                        <!-- <field name="partner_id"/> -->
                         <field name="date_from"/>
                     </group>
                     <group>
                         <field name="date_to"/>
                     </group>
-                    <!-- <group>
-                        <field name="royalty_type"/>
-                    </group>
-                    <group>
-                        <field name="region"/>
-                    </group> -->
                 </group>  
                 <footer>
                 <button name="create_commission" string="Calculate comissions" type="object" default_focus="1" class="oe_highlight"/>
-                or 
+                or
                 <button string="Cancel" class="oe_link" special="cancel" />
             </footer>
             </form>
