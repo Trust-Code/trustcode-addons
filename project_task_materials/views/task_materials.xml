@@ -19,6 +19,12 @@
                     </field>
                 </page>
             </page>
+            <field name="sale_line_id" position="before">
+                <field name="sale_order_id" />
+            </field>
+            <field name="sale_line_id" position="attributes">
+                <attribute name="domain">[('order_id', '=', sale_order_id)]</attribute>
+            </field>
         </field>
     </record>
 

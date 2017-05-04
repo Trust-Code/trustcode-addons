@@ -17,7 +17,8 @@
     ],
     'depends': [
         'project',
-        'stock'
+        'stock',
+        'sale_timesheet'
     ],
     'data': [
         'security/ir.model.access.csv',

@@ -2,6 +2,7 @@
 # © 2016 Alessandro Martini, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
+from datetime import datetime
 from odoo import api, fields, models
 
 
@@ -9,14 +10,17 @@ class SaleOrder(models.Model):
     _inherit = 'sale.order'
 
     version = fields.Integer(u'Versão', compute='_compute_version')
+    last_revision = fields.Datetime(
+        u'Última revisão', compute='_compute_version')
 
     @api.multi
     def _compute_version(self):
-        obj_attach = self.env['ir.attachment'].search(
-            [('res_id', '=', self.id)],
-            order='id desc', limit=1)
-
-        self.version = obj_attach.res_version
+        for item in self:
+            obj_attach = self.env['ir.attachment'].search(
+                [('res_id', '=', item.id)],
+                order='id desc', limit=1)
+            item.version = obj_attach.res_version
+            item.last_revision = datetime.now()
 
 
 class IrAttachment(models.Model):
