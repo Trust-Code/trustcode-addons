@@ -1,0 +1,18 @@
+.royalties_report .border-div{
+    border: 1px solid black;
+}
+
+.royalties_report .productsTable td {
+    text-align: center;
+}
+.royalties_report .table-bordered td, .table-bordered th{
+    border-color: #000 !important;
+}
+
+.royalties_report .infoTable th {
+    border-color: #000 !important;
+}
+
+.royalties_report .workTable td {
+    height: 40px;
+}
