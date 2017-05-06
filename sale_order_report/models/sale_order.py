@@ -4,21 +4,20 @@
 
 from openerp import api, fields, models
 
-
 class SaleOrderReport(models.Model):
     _name = 'sale.order.report'
     _description = u'Sale Order Report'
 
-    name = fields.Char(string='Nome', size=60)
-    description = fields.Html('Description')
 
+    name = fields.Char (string='Nome')
+    description = fields.Html('Description')
 
 class SaleOrder(models.Model):
     _inherit = 'sale.order'
 
     @api.multi
     def _description_default(self):
-        return self.env['sale.order.report'].search([], limit=1)
+        return self.env['sale.order.report'].search([],limit=1)
 
     description_report = fields.Many2one(
         'sale.order.report',

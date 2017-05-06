@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <record id="view_sale_order_report_tree" model="ir.ui.view">
+   <record id="view_sale_order_report_tree" model="ir.ui.view">
         <field name="name">sale.order.report.tree</field>
         <field name="model">sale.order.report</field>
         <field name="arch" type="xml">
@@ -36,5 +36,6 @@
     <menuitem sequence="30" action="action_sale_order_report_tree"
         id="menu_action_sale_order_report_tree"
         parent="sale.menu_sales_config"/>
+
 
 </odoo>
