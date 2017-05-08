@@ -5,6 +5,7 @@
 {
     'name': 'Task Report',
     'summary': "Relatório de Tarefas",
+    "description": "Relatório de tarefas em PDF",
     'version': '10.0.1.0.0',
     'category': 'Project',
     'author': 'Trustcode',
@@ -13,7 +14,8 @@
     'contributors': [
         'Mackilem Van der Laan Soares <mack.vdl@gmail.com>',
         'Danimar Ribeiro <danimaribeiro@gmail.com>',
-        'Alessandro Fernandes Martini <alessandrofmartini@gmail.com>'],
+        'Alessandro Fernandes Martini <alessandrofmartini@gmail.com>'
+    ],
     'depends': [
         'hr', 'project'
     ],
