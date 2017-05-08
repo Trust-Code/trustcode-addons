@@ -1,0 +1,118 @@
+<?xml version="1.0"?>
+<odoo>
+
+    <report
+        id="action_project_task_report"
+        string="Relatório Tarefa"
+        model="project.task"
+        report_type="qweb-pdf"
+        name="project_task_report.report_project_task_main" />
+
+    <template id="project_task_report_template">
+        <div class="page">
+            <h1 style="text-align: center;"><span>Relatório de Tarefas</span></h1>
+            <h2><span t-field="docs[0].partner_id"/></h2>
+            <h3><span>Sumário de Horas: </span><strong t-esc="'%02d:%02d' % (int(str(hours).split('.')[0]), int(float(str('%.2f' % hours).split('.')[1])/100*60))"></strong></h3>
+            <t t-foreach="docs" t-as="o">
+                <div class="oe_structure" style="padding-top: 20px;">
+                    <div class="row">
+                        <div class="col-xs-2">
+                            <strong>Projeto: </strong>
+                        </div>
+                        <div class="col-xs-4">
+                             <span t-field="o.project_id.name"></span>
+                        </div>
+                        <div class="col-xs-2">
+                            <strong>Prazo Limite: </strong>
+                        </div>
+                        <div class="col-xs-4">
+                            <span t-field="o.date_deadline" t-field-options='{"format": "dd/MM/yyyy"}'></span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-2">
+                            <strong>Data de Início: </strong>
+                        </div>
+                        <div class="col-xs-4">
+                            <span t-field="o.date_start" t-field-options='{"format": "dd/MM/yyyy"}'></span>
+                        </div>
+                        <div class="col-xs-2">
+                            <strong>Data Final: </strong>
+                        </div>
+                        <div class="col-xs-4">
+                            <span t-field="o.date_end" t-field-options='{"format": "dd/MM/yyyy"}'></span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-2">
+                            <strong>Horas Planejadas: </strong>
+                        </div>
+                        <div class="col-xs-4">
+                            <span t-esc="'%02d:%02d' % (int(str(o.planned_hours).split('.')[0]), int(float(str('%.2f' % o.planned_hours).split('.')[1])/100*60))"/>
+                        </div>
+                        <div class="col-xs-2">
+                            <strong>Horas Gastas: </strong>
+                        </div>
+                        <div class="col-xs-4">
+                            <span t-esc="'%02d:%02d' % (int(str(o.effective_hours).split('.')[0]), int(float(str('%.2f' % o.effective_hours).split('.')[1])/100*60))"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-2">
+                            <strong>Restante: </strong>
+                        </div>
+                        <div class="col-xs-4">
+                            <span t-esc="'%02d:%02d' % (int(str(o.remaining_hours).split('.')[0]), int(float(str('%.2f' % o.remaining_hours).split('.')[1])/100*60))"/>
+                        </div>
+                        <div class="col-xs-2">
+                            <strong>Total: </strong>
+                        </div>
+                        <div class="col-xs-4">
+                            <span t-esc="'%02d:%02d' % (int(str(o.total_hours).split('.')[0]), int(float(str('%.2f' % o.total_hours).split('.')[1])/100*60))"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                         <div class="col-xs-12">
+                             <strong>Descrição: </strong>
+                             <span t-raw="o.commercial_description or o.description"/>
+                         </div>
+                     </div>
+                     <table class="table table-condensed table-bordered table-striped" style="padding-top: 5px">
+                         <thead>
+                             <tr>
+                                 <th>Resumo do Trabalho</th>
+                                 <th class="text-right">Tempo Gasto</th>
+                                 <th class="text-right">Data</th>
+                                 <th class="text-right">Concluído por</th>
+                             </tr>
+                        </thead>
+                        <tbody class="sale_tbody">
+                             <tr t-foreach="o.timesheet_ids" t-as="l" class="small">
+                                 <td>
+                                     <span t-field="l.name"/>
+                                 </td>
+                                 <td class="text-right">
+                                     <span t-esc="'%02d:%02d' % (int(str(l.unit_amount).split('.')[0]), int(float(str('%.2f' % l.unit_amount).split('.')[1])/100*60))"/>
+                                 </td>
+                                 <td class="text-right">
+                                     <span t-field="l.date"/>
+                                 </td>
+                                 <td class="text-right">
+                                     <span t-field="l.user_id"/>
+                                 </td>
+                             </tr>
+                         </tbody>
+                     </table>
+                 </div>
+            </t>
+        </div>
+    </template>
+
+    <template id="report_project_task_main">
+        <t t-call="report.html_container">
+            <t t-call="project_task_report.project_task_report_template" t-lang="docs[0].partner_id.lang"/>
+        </t>
+    </template>
+
+
+</odoo>
