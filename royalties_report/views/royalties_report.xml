@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="paperformat_royalties_report" model="report.paperformat">
+        <field name="name">Formato Relatorio de Royalties</field>
+        <field name="default" eval="True" />
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">35.0</field>
+        <field name="margin_left">7.0</field>
+        <field name="margin_right">7.0</field>
+        <field name="margin_bottom">60.0</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">25</field>
+    </record>
+
+    <report
+        id="royalties_report.action_royalties_report"
+        model="account.invoice"
+        report_type="qweb-pdf"
+        string="Report de Royalties"
+        name="royalties_report.main_template_royalties_report"
+        file="royalties_report.main_template_royalties_report"
+        paperformat="paperformat_royalties_report"
+        />
+
+    <template id="royalties_report_assets_backend" name="Royalties assets" inherit_id="report.assets_common">
+        <xpath expr="." position="inside">
+            <link rel="stylesheet" type="text/css" href="/royalties_report/static/css/royalties_report.css"/>
+        </xpath>
+    </template>
+
+    <template id="royalties_report_document">
+        <t t-set="o" t-value="o.with_context({'lang':o.partner_id.lang})"/>
+        <div class="header royalties_report">
+            <table class="table infoTable border-div">
+                <thead>
+                    <tr>
+                        <th colspan="4"><h2>Cliente:  
+                            <span t-esc="o.partner_id.display_name"/></h2>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Vendedor:</td>
+                        <td>
+                            <span t-field="o.user_id.name"/>
+                        </td>
+                        <td>Data da Fatura:</td>
+                        <td><span t-field="o.date_invoice"/></td>
+                    </tr>
+                </tbody> 
+            </table>           
+        </div>
+        <div class="page royalties_report">
+            <br/>
+            <div class="row">
+                <div class="col-xs-12">
+                    <table class="table productsTable table-bordered border-div">
+                        <thead>
+                            <tr>
+                                <th>Produto</th>
+                                <th>Descrição</th>
+                                <th>Quantidade</th>
+                                <th>Comissão</th>
+                            </tr>
+                        </thead>
+                        <tbody >
+                        <t t-set="last_partner" t-value="None" />
+                        <t t-foreach="o.invoice_line_ids" t-as="l">
+                            <t t-foreach="l.commission_invoiced_ids" t-as="cids">
+                                                                        
+                                <t t-if="cids.partner_id != last_partner">
+                                    <t t-set="last_partner" t-value="cids.partner_id" />
+                                    <tr>
+                                        <td colspan="5">
+                                            <span t-field="cids.partner_id.name"/></td>
+                                    </tr>
+                                </t>
+
+                                <tr>
+                                    <td><span t-esc="l.product_id.name"/></td>
+                                        <td><span t-esc="l.product_id.description or 'Royalties'"/></td>
+                                        <td><span t-esc="l.quantity"></span></td>
+                                        <td><span t-esc="cids.commission"></span></td>
+                                </tr> 
+
+                            </t>
+                            
+                        </t>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <template id="main_template_royalties_report">
+        <t t-call="report.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="royalties_report.royalties_report_document" t-lang="o.partner_id.lang"/>
+            </t>
+        </t>
+    </template>
+</odoo>
