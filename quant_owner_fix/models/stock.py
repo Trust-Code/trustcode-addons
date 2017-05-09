@@ -13,5 +13,6 @@ class StockQuant(models.Model):
         res = super(StockQuant, self).quants_reserve(quants, move, link=link)
         for quant in quants:
             if quant[0] and move.picking_id.owner_id:
-                quant[0].write({'owner_id': move.picking_id.owner_id.id})
+                quant[0].sudo().write(
+                    {'owner_id': move.picking_id.owner_id.id})
         return res
