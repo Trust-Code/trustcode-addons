@@ -49,7 +49,7 @@
     </record>
 
     <record id="sale.action_orders" model="ir.actions.act_window">
-        <field name="domain">[('active_contract', '=', False)]</field>
+        <field name="domain">[('active_contract', '=', False), ('state', 'not in', ('draft', 'sent', 'cancel'))]</field>
     </record>
 
 </odoo>

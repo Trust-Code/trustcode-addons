@@ -68,6 +68,12 @@ class SaleOrder(models.Model):
                 relativedelta(months=1)
 
     @api.multi
+    def action_confirm(self):
+        res = super(SaleOrder, self).action_confirm()
+        self.write({'active_contract': True})
+        return res
+
+    @api.multi
     def action_view_contract_orders(self):
         orders = self.search([('origin', '=', self.name)])
         action = self.env.ref('sale.action_orders').read()[0]
