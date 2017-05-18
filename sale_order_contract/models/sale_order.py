@@ -13,11 +13,10 @@ from odoo.exceptions import UserError
 class SaleOrder(models.Model):
     _inherit = 'sale.order'
 
-    def _compute_start_contract(self):
-        return date.today()
-
-    def _compute_end_contract(self):
-        return date.today() + relativedelta(years=1)
+    @api.multi
+    def _get_next_month(self):
+        for order in self:
+            order.next_month = date.today() + relativedelta(months=1)
 
     @api.depends('order_line.price_subtotal')
     def _compute_total_values(self):
@@ -31,57 +30,81 @@ class SaleOrder(models.Model):
     active_contract = fields.Boolean(string="Contrato Ativo?", copy=False)
 
     invoice_period = fields.Selection(
-        [('monthly', 'Mensal'), ('annual', 'Anual')],
-        string="Período Faturamento")
+        [('1', 'Mensal'),('6','Semestral'),('12', 'Anual')],
+        string="Período Faturamento",
+        default='1',
+        track_visibility='onchange')
     start_contract = fields.Date(
-        string="Inicio Contrato", default=_compute_start_contract)
+        string="Inicio Contrato",
+        track_visibility='onchange',
+        default=date.today())
     end_contract = fields.Date(
-        string="Final Contrato", default=_compute_end_contract)
+        string="Final Contrato",
+        track_visibility='onchange',
+        default=date.today() + relativedelta(years=1))
     next_invoice = fields.Date(string="Próximo Faturamento", copy=False)
     total_recurrent = fields.Monetary(
-        string="Total Recorrente", compute='_compute_total_values',
-        store=True)
+        string="Total Recorrente",
+        store=True,
+        compute='_compute_total_values',
+        track_visibility='onchange')
     total_non_recurrent = fields.Monetary(
-        string="Total Avulso", compute='_compute_total_values', store=True)
+        string="Total Avulso",
+        store=True,
+        compute='_compute_total_values',
+        track_visibility='onchange')
     margin_recurrent = fields.Float(
         string="Margem do Recorrente (%)",
         compute='_compute_margin_percentage',
+        track_visibility='onchange',
         store=True)
     margin_non_recurrent = fields.Float(
         string="Margem do Avulso (%)",
+        track_visibility='onchange',
         compute='_compute_margin_percentage',
         store=True)
+    next_month = fields.Date(string="Next Month", compute='_get_next_month')
+    is_contract= fields.Boolean("Just Contract")
 
     @api.onchange('order_line')
-    def _onchange_sale_order_contract_order_line(self):
-        recurring = False
-        for item in self.order_line:
-            if item.recurring_line:
-                recurring = True
-                break
-        self.recurring_contract = recurring
+    def _onchange_product_id(self):
+        if filter(lambda item:item.recurring_line==True,self.order_line):
+            self.recurring_contract=True
 
-    @api.onchange('active_contract')
+    @api.onchange('active_contract','invoice_period')
     def _onchange_active_contract(self):
-        if self.active_contract and not self.next_invoice:
-            self.next_invoice = parser.parse(self.start_contract) + \
-                relativedelta(months=1)
+        if self.invoice_period:
+            add = relativedelta(months=int(self.invoice_period))
+            self.next_invoice = parser.parse(self.start_contract) + add
+        if not self.active_contract: self.next_invoice=False
+
+    def _create_contract(self):
+        payment_term=self.env['account.payment.term']
+        new_order = self.copy({
+            'origin': self.name,
+            'client_order_ref': 'Contrato ' + self.name,
+            'payment_term_id':payment_term.search(['indPag','=','0']).id[0],
+            'is_contract':True,
+        })
+        non_recurrent_lines = filter(lambda line: not line.recurring_line,
+                                     new_order.order_line)
+        map(lambda line: line.unlink(), non_recurrent_lines)
 
     @api.multi
     def action_confirm(self):
+        '''
+            Verifica se possui venda de produto recorrente.
+            Caso positivo, duplica a cotação e leva os proudutos com recorrencia para a nova cotação.
+        '''
         res = super(SaleOrder, self).action_confirm()
-        self.write({'active_contract': True})
-        return res
 
-    @api.multi
-    def action_view_contract_orders(self):
-        orders = self.search([('origin', '=', self.name)])
-        action = self.env.ref('sale.action_orders').read()[0]
-        if len(orders) > 0:
-            action['domain'] = [('id', 'in', orders.ids)]
+        recurrent_lines=map(lambda line:line.recurring_line, self.order_line)
+        if recurrent_lines and False in recurrent_lines:
+            self._create_contract()
         else:
-            raise UserError('Nenhum pedido encontrado!')
-        return action
+            self.write({'is_contract':True})
+            self.env['account.payment.term'].payment_term.search(['indPag','=','0']).id[0]
+        return res
 
     @api.multi
     def action_invoice_contracts(self):
@@ -95,31 +118,12 @@ class SaleOrder(models.Model):
                 order.next_invoice = False
                 continue
 
-            new_order = order.copy({
-                'recurring_contract': False,
-                'active_contract': False,
-                'invoice_period': None,
-                'start_contract': None,
-                'end_contract': None,
-                'origin': order.name,
-                'client_order_ref': 'Contrato ' + order.name,
-            })
-            non_recurrent_lines = filter(lambda line: not line.recurring_line,
-                                         new_order.order_line)
-            map(lambda line: line.unlink(), non_recurrent_lines)
             last_invoice = fields.Date.from_string(order.next_invoice)
             order.next_invoice = date.today() + relativedelta(
                 months=1, day=last_invoice.day)
-            new_order.action_confirm()
-            new_order.action_invoice_create(final=True)
-            new_order.action_done()
-
-    @api.multi
-    def _get_next_month(self):
-        for order in self:
-            order.next_month = date.today() + relativedelta(months=1)
-
-    next_month = fields.Date(string="Next Month", compute='_get_next_month')
+            self.action_invoice_create(final=True)
+            # Set qty_invoiced as Null to possible invoicing again
+            for line in self.order_line:line.qty_invoiced=0
 
     @api.depends('order_line.margin', 'total_recurrent', 'total_non_recurrent')
     def _compute_margin_percentage(self):
@@ -141,11 +145,8 @@ class SaleOrder(models.Model):
 class SaleOrderLine(models.Model):
     _inherit = 'sale.order.line'
 
-    @api.onchange('product_id')
-    def _onchange_sale_order_contract_product_id(self):
-        self.recurring_line = self.product_id.recurring_product
-
-    recurring_line = fields.Boolean(string="Recorrente?")
+    recurring_line = fields.Boolean(string="Recorrente?",
+        related="product_id.recurring_product")
 
     @api.depends('product_id', 'purchase_price', 'product_uom_qty',
                  'price_unit', 'discount')
