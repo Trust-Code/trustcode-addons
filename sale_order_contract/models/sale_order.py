@@ -81,10 +81,10 @@ class SaleOrder(models.Model):
     def _create_contract(self):
         payment_term=self.env['account.payment.term']
         new_order = self.copy({
-            'origin': self.name,
-            'client_order_ref': 'Contrato ' + self.name,
-            'payment_term_id':payment_term.search(['indPag','=','0']).id[0],
-            'is_contract':True,
+        'origin': self.name,
+        'client_order_ref': 'Contrato ' + self.name,
+        'payment_term_id':payment_term.search([('indPag','=','0')], limit=1).id,
+        'is_contract':True,
         })
         non_recurrent_lines = filter(lambda line: not line.recurring_line,
                                      new_order.order_line)
@@ -97,13 +97,16 @@ class SaleOrder(models.Model):
             Caso positivo, duplica a cotação e leva os proudutos com recorrencia para a nova cotação.
         '''
         res = super(SaleOrder, self).action_confirm()
-
         recurrent_lines=map(lambda line:line.recurring_line, self.order_line)
         if recurrent_lines and False in recurrent_lines:
             self._create_contract()
         else:
-            self.write({'is_contract':True})
-            self.env['account.payment.term'].payment_term.search(['indPag','=','0']).id[0]
+            payment_term=self.env['account.payment.term']
+            self.env['account.payment.term'].search([('indPag','=','0')], limit=1).id
+            self.write({'is_contract':True,
+                        'payment_term_id':payment_term.search(
+                                        [('indPag','=','0')],
+                                        limit=1).id})
         return res
 
     @api.multi
