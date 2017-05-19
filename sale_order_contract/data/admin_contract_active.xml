@@ -2,7 +2,7 @@
 <odoo>
     <data noupdate="0">
         <record id="admin_contract_active" model="res.groups">
-            <field name="name">Admin. Contratos</field>
+            <field name="name">Visualiza Menu Contratos</field>
             <field name="category_id" ref="base.module_category_hidden" />
         </record>
     </data>

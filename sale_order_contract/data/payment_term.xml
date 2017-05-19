@@ -1,0 +1,9 @@
+<odoo>
+  <record id="account_payment_term_contract" model="account.payment.term">
+    <field name="name">'Mensalidade (Faturamento dia 1º)'</field>
+    <field name="indPag">3</field>
+    <field name="invoice_day">1</field>
+    <field name="note">'Prazo de pagamento: 10 Dias'</field>
+    <field name="line_ids" eval="[(0, 0, {'value': 'balance', 'value_amount': 0.0, 'sequence': 500, 'days': 10, 'option': 'day_after_invoice_date'})]" />
+  </record>
+</odoo>

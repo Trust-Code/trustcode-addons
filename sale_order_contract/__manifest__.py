@@ -22,9 +22,12 @@
     ],
     'data': [
         'data/admin_contract_active.xml',
+        'data/payment_term.xml',
+        'data/ir_cron.xml',
         'views/sale_order_contract.xml',
         'views/sale_order.xml',
         'views/product.xml',
+        'views/payment_term.xml',
         'wizard/sale_contract_renew.xml',
         'data/admin_contract_active.xml',
     ],
