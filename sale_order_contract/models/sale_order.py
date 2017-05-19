@@ -13,11 +13,6 @@ from odoo.exceptions import UserError
 class SaleOrder(models.Model):
     _inherit = 'sale.order'
 
-    @api.multi
-    def _get_next_month(self):
-        for order in self:
-            order.next_month = date.today() + relativedelta(months=1)
-
     @api.depends('order_line.price_subtotal')
     def _compute_total_values(self):
         for order in self:
@@ -63,7 +58,6 @@ class SaleOrder(models.Model):
         track_visibility='onchange',
         compute='_compute_margin_percentage',
         store=True)
-    next_month = fields.Date(string="Next Month", compute='_get_next_month')
     is_contract= fields.Boolean("Just Contract")
 
     @api.onchange('order_line')
@@ -71,42 +65,50 @@ class SaleOrder(models.Model):
         if filter(lambda item:item.recurring_line==True,self.order_line):
             self.recurring_contract=True
 
-    @api.onchange('active_contract','invoice_period')
+    @api.onchange('active_contract','invoice_period','payment_term_id')
     def _onchange_active_contract(self):
-        if self.invoice_period:
-            add = relativedelta(months=int(self.invoice_period))
-            self.next_invoice = parser.parse(self.start_contract) + add
+        if self.active_contract and self.invoice_period:
+            if self.payment_term_id.indPag=='3':
+                add=relativedelta(months=int(self.invoice_period))
+                inv_day=self.payment_term_id.invoice_day
+                start_date=parser.parse((self.start_contract))
+                self.next_invoice = start_date.replace(day=inv_day) + add
+            else:
+                raise UserError("Condição de Pagamento Inválida")
         if not self.active_contract: self.next_invoice=False
 
     def _create_contract(self):
-        payment_term=self.env['account.payment.term']
+        #pgto=self.env['account.payment.term']
         new_order = self.copy({
-        'origin': self.name,
-        'client_order_ref': 'Contrato ' + self.name,
-        'payment_term_id':payment_term.search([('indPag','=','0')], limit=1).id,
-        'is_contract':True,
+            'origin': self.name,
+            'client_order_ref': 'Contrato ' + self.name,
+        #    'payment_term_id':pgto.search([('indPag','=','3')],limit=1).id or False,
+            'is_contract':True,
         })
         non_recurrent_lines = filter(lambda line: not line.recurring_line,
                                      new_order.order_line)
         map(lambda line: line.unlink(), non_recurrent_lines)
 
+        return new_order
+
     @api.multi
     def action_confirm(self):
         '''
-            Verifica se possui venda de produto recorrente.
-            Caso positivo, duplica a cotação e leva os proudutos com recorrencia para a nova cotação.
+            Verifica se possui venda de produto recorrente. Caso possua somente
+            produtos com recorrenciavserá apenas marcado como "is_contract",
+            caso tenha produtos mistos será duplica a cotação separando os
+            produtos com recorrência.
         '''
         res = super(SaleOrder, self).action_confirm()
         recurrent_lines=map(lambda line:line.recurring_line, self.order_line)
+        contract_id=self
         if recurrent_lines and False in recurrent_lines:
-            self._create_contract()
-        else:
-            payment_term=self.env['account.payment.term']
-            self.env['account.payment.term'].search([('indPag','=','0')], limit=1).id
-            self.write({'is_contract':True,
-                        'payment_term_id':payment_term.search(
-                                        [('indPag','=','0')],
-                                        limit=1).id})
+            contract_id=self._create_contract()
+
+        pgto=self.env['account.payment.term']
+        payment_term_id=pgto.search([('indPag','=','3')],limit=1)
+        contract_id.write({'is_contract':True,
+                    'payment_term_id':payment_term_id.id or False,})
         return res
 
     @api.multi

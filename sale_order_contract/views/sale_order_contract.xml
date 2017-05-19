@@ -7,8 +7,7 @@
         <field name="priority">3</field>
         <field name="arch" type="xml">
             <tree string="Contracts" decoration-bf="message_needaction==True" decoration-muted="state=='cancel'"
-                colors="red:end_contract &lt; current_date; green:next_month &gt; end_contract;" >
-                <field name="next_month" invisible="1" />
+                colors="green:not active_contract" >
                 <field name="message_needaction" invisible="1"/>
                 <field name="name" string="Order Number"/>
                 <field name="start_contract"/>
@@ -46,17 +45,5 @@
     <menuitem action="action_sale_order_contracts"
         id="menu_sale_order_contract" parent="sale.menu_sale_invoicing"
         groups="sale_order_contract.admin_contract_active" sequence="2"/>
-
-    <record id="ir_cron_sale_contract_generate_invocie" model="ir.cron" forcecreate="True">
-        <field name="name">Faturamento Recorrente de Contratos</field>
-        <field name="user_id" ref="base.user_root" />
-        <field name="interval_number">1</field>
-        <field name="interval_type">minutes</field>
-        <field name="numbercall">-1</field>
-        <field eval="False" name="doall" />
-        <field eval="'sale.order'" name="model" />
-        <field eval="'action_invoice_contracts'" name="function" />
-        <field eval="'()'" name="args" />
-    </record>
 
 </odoo>
