@@ -24,8 +24,10 @@ class SaleOrder(models.Model):
     recurring_contract = fields.Boolean(string="Possui Contrato?")
     active_contract = fields.Boolean(string="Contrato Ativo?", copy=False)
 
+    payment_mode_id = fields.Many2one(
+        'payment.mode', string=u"Modo de pagamento")
     invoice_period = fields.Selection(
-        [('1', 'Mensal'),('6','Semestral'),('12', 'Anual')],
+        [('1', 'Mensal'), ('6', 'Semestral'), ('12', 'Anual')],
         string="Período Faturamento",
         default='1',
         track_visibility='onchange')
@@ -58,32 +60,37 @@ class SaleOrder(models.Model):
         track_visibility='onchange',
         compute='_compute_margin_percentage',
         store=True)
-    is_contract= fields.Boolean("Just Contract")
+    is_contract = fields.Boolean("Apenas Contrato")
+
+    @api.multi
+    def _prepare_invoice(self):
+        res = super(SaleOrder, self)._prepare_invoice()
+        res['payment_mode_id'] = self.payment_mode_id.id
+        return res
 
     @api.onchange('order_line')
     def _onchange_product_id(self):
-        if filter(lambda item:item.recurring_line==True,self.order_line):
-            self.recurring_contract=True
+        if filter(lambda item: item.recurring_line, self.order_line):
+            self.recurring_contract = True
 
-    @api.onchange('active_contract','invoice_period','payment_term_id')
+    @api.onchange('active_contract', 'invoice_period', 'payment_term_id')
     def _onchange_active_contract(self):
         if self.active_contract and self.invoice_period:
-            if self.payment_term_id.indPag=='3':
-                add=relativedelta(months=int(self.invoice_period))
-                inv_day=self.payment_term_id.invoice_day
-                start_date=parser.parse((self.start_contract))
+            if self.payment_term_id.indPag == '3':
+                add = relativedelta(months=int(self.invoice_period))
+                inv_day = self.payment_term_id.invoice_day
+                start_date = parser.parse((self.start_contract))
                 self.next_invoice = start_date.replace(day=inv_day) + add
             else:
                 raise UserError("Condição de Pagamento Inválida")
-        if not self.active_contract: self.next_invoice=False
+        if not self.active_contract:
+            self.next_invoice = False
 
     def _create_contract(self):
-        #pgto=self.env['account.payment.term']
         new_order = self.copy({
             'origin': self.name,
             'client_order_ref': 'Contrato ' + self.name,
-        #    'payment_term_id':pgto.search([('indPag','=','3')],limit=1).id or False,
-            'is_contract':True,
+            'is_contract': True,
         })
         non_recurrent_lines = filter(lambda line: not line.recurring_line,
                                      new_order.order_line)
@@ -100,15 +107,18 @@ class SaleOrder(models.Model):
             produtos com recorrência.
         '''
         res = super(SaleOrder, self).action_confirm()
-        recurrent_lines=map(lambda line:line.recurring_line, self.order_line)
-        contract_id=self
+        recurrent_lines = map(
+            lambda line: line.recurring_line, self.order_line)
+        contract_id = self
         if recurrent_lines and False in recurrent_lines:
-            contract_id=self._create_contract()
+            contract_id = self._create_contract()
 
-        pgto=self.env['account.payment.term']
-        payment_term_id=pgto.search([('indPag','=','3')],limit=1)
-        contract_id.write({'is_contract':True,
-                    'payment_term_id':payment_term_id.id or False,})
+        pgto = self.env['account.payment.term']
+        payment_term_id = pgto.search([('indPag', '=', '3')], limit=1)
+        contract_id.write({
+            'is_contract': True,
+            'payment_term_id': payment_term_id.id or False
+        })
         return res
 
     @api.multi
@@ -128,7 +138,8 @@ class SaleOrder(models.Model):
                 months=1, day=last_invoice.day)
             self.action_invoice_create(final=True)
             # Set qty_invoiced as Null to possible invoicing again
-            for line in self.order_line:line.qty_invoiced=0
+            for line in self.order_line:
+                line.qty_invoiced = 0
 
     @api.depends('order_line.margin', 'total_recurrent', 'total_non_recurrent')
     def _compute_margin_percentage(self):
@@ -150,8 +161,8 @@ class SaleOrder(models.Model):
 class SaleOrderLine(models.Model):
     _inherit = 'sale.order.line'
 
-    recurring_line = fields.Boolean(string="Recorrente?",
-        related="product_id.recurring_product")
+    recurring_line = fields.Boolean(
+        string="Recorrente?", related="product_id.recurring_product")
 
     @api.depends('product_id', 'purchase_price', 'product_uom_qty',
                  'price_unit', 'discount')

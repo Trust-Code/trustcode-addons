@@ -10,6 +10,9 @@
                 <attribute name="states">draft,sent,sale,done</attribute>
                 <attribute name="groups">sale_order_contract.admin_contract_active</attribute>
             </button>
+            <field name="payment_term_id" position="after">
+                <field name="payment_mode_id" />
+            </field>
             <xpath expr="//page[1]" position="after">
               <page string="Contrato"  attrs="{'invisible':[('recurring_contract','=',False)]}">
                 <group name="contract" string="Faturamento Recorrente">

@@ -1,9 +1,24 @@
 <odoo>
-  <record id="account_payment_term_contract" model="account.payment.term">
-    <field name="name">'Mensalidade (Faturamento dia 1º)'</field>
-    <field name="indPag">3</field>
-    <field name="invoice_day">1</field>
-    <field name="note">'Prazo de pagamento: 10 Dias'</field>
-    <field name="line_ids" eval="[(0, 0, {'value': 'balance', 'value_amount': 0.0, 'sequence': 500, 'days': 10, 'option': 'day_after_invoice_date'})]" />
-  </record>
+    <data noupdate="1">
+
+        <record id="account_payment_term_sale_contract" model="account.payment.term">
+            <field name="name">Mensalidade (Faturamento dia 1º)</field>
+            <field name="indPag">3</field>
+            <field name="invoice_day">1</field>
+            <field name="note">Prazo de pagamento: 10 Dias</field>
+        </record>
+
+        <record id="account_payment_term_sale_line" model="account.payment.term.line">
+            <field name="value">balance</field>
+            <field name="value_amount">0.0</field>
+            <field name="sequence">500</field>
+            <field name="days">15</field>
+            <field name="option">day_after_invoice_date</field>
+            <field name="payment_id" ref="account_payment_term_sale_contract" />
+        </record>
+
+        <record id="account_payment_term_sale_contract" model="account.payment.term">
+            <field name="line_ids" eval="[(6, 0, [ref('account_payment_term_sale_line')])]"/>
+        </record>
+    </data>
 </odoo>
