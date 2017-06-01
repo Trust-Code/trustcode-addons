@@ -66,6 +66,7 @@ class SaleOrder(models.Model):
     def _prepare_invoice(self):
         res = super(SaleOrder, self)._prepare_invoice()
         res['payment_mode_id'] = self.payment_mode_id.id
+        res['date_invoice'] = self.next_invoice
         return res
 
     @api.onchange('order_line')
@@ -134,12 +135,9 @@ class SaleOrder(models.Model):
                 continue
 
             last_invoice = fields.Date.from_string(order.next_invoice)
-            order.next_invoice = date.today() + relativedelta(
-                months=1, day=last_invoice.day)
             order.action_invoice_create(final=True)
-            # Set qty_invoiced as Null to possible invoicing again
-            for line in order.order_line:
-                line.qty_invoiced = 0
+            order.next_invoice = last_invoice + relativedelta(
+                months=1, day=last_invoice.day)
 
     @api.depends('order_line.margin', 'total_recurrent', 'total_non_recurrent')
     def _compute_margin_percentage(self):
@@ -168,3 +166,15 @@ class SaleOrderLine(models.Model):
                  'price_unit', 'discount')
     def _product_margin(self):
         return super(SaleOrderLine, self)._product_margin()
+
+    @api.depends('qty_invoiced', 'qty_delivered',
+                 'product_uom_qty', 'order_id.state')
+    def _get_to_invoice_qty(self):
+        super(SaleOrderLine, self)._get_to_invoice_qty()
+
+        for line in self:
+            if line.order_id.state in ['sale', 'done'] and \
+               line.order_id.recurring_contract:
+
+                if line.product_id.invoice_policy == 'order':
+                    line.qty_to_invoice = line.product_uom_qty
