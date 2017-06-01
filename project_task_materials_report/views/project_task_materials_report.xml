@@ -27,7 +27,7 @@
                                 <table class="table infoTable border-div">
                                     <thead>
                                         <tr>
-                                            <th colspan="5"><h2>Ordem de Manutenção 
+                                            <th colspan="5"><h2>Ordem de Manutenção
                                                 <span t-field="o.name"/></h2>
                                             </th>
                                         </tr>
@@ -78,6 +78,7 @@
                                 <table class="table productsTable table-bordered border-div">
                                     <thead>
                                         <tr>
+                                            <th>#</th>
                                             <th>Peças</th>
                                             <th>Quantidade</th>
                                             <th>Unidade de Medida</th>
@@ -87,6 +88,7 @@
                                     <tbody>
                                         <t t-foreach="o.material_project_task_ids" t-as="l">
                                             <tr>
+                                                <td><span t-esc="l.product_id.default_code"></span></td>
                                                 <td><span t-esc="l.product_id.name"></span></td>
                                                 <td><span t-field="l.quantity"></span></td>
                                                 <td><span t-field="l.product_id.uom_id"></span></td>
