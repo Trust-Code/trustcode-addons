@@ -124,8 +124,8 @@ class SaleOrder(models.Model):
     @api.multi
     def action_invoice_contracts(self):
         sale_orders = self.search([('active_contract', '=', True),
-                                   ('next_invoice', '=', date.today()),
-                                   ('state', '=', 'sale')])
+                                   ('next_invoice', '<=', date.today()),
+                                   ('state', 'in', ('sale', 'done'))])
         for order in sale_orders:
             end_contract = fields.Date.from_string(order.end_contract)
             if end_contract < date.today():  # Cancelar contrato
@@ -136,9 +136,9 @@ class SaleOrder(models.Model):
             last_invoice = fields.Date.from_string(order.next_invoice)
             order.next_invoice = date.today() + relativedelta(
                 months=1, day=last_invoice.day)
-            self.action_invoice_create(final=True)
+            order.action_invoice_create(final=True)
             # Set qty_invoiced as Null to possible invoicing again
-            for line in self.order_line:
+            for line in order.order_line:
                 line.qty_invoiced = 0
 
     @api.depends('order_line.margin', 'total_recurrent', 'total_non_recurrent')
