@@ -17,17 +17,6 @@
                 <xpath expr="//field[@name='order_line']" position="attributes">
                     <attribute name="options">{'reload_on_button': true}</attribute>
                 </xpath>
-                <xpath expr="//field[@name='order_line']/tree//field[@name='price_subtotal']"
-                       position="after">
-                    <field name="order_state" invisible="1"/>
-                    <button name="action_duplicate"
-                            state="draft"
-                            string="Duplicate"
-                            type="object"
-                            icon="STOCK_COPY"
-                            attrs="{'invisible': [('state', 'not in', ['draft', 'sent'])]}"
-                            help="Duplicate line" />
-                </xpath>
                 <xpath expr="//field[@name='order_line']/form//field[@name='product_id']"
                        position="before">
                     <field name="product_tmpl_id" />
@@ -35,13 +24,6 @@
                            context="{'default_owner_model': 'sale.order.line', 'default_owner_id': id}"
                            attrs="{'invisible':[('product_attribute_ids','=',[])]}"
                     />
-                </xpath>
-                <xpath expr="//field[@name='order_line']//form//field[@name='price_unit']"
-                       position="after">
-                    <button name="update_price_unit"
-                            states="draft" string="(update)" type="object"
-                            class="oe_edit_only oe_link" colspan="2"
-                            attrs="{'invisible':[('product_id','!=',False)]}"/>
                 </xpath>
             </field>
         </record>

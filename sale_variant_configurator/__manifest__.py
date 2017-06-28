@@ -6,12 +6,12 @@
 {
     "name": "Sale - Product variants",
     "summary": "Product variants in sale management",
+    "description": "Product variants in sale management",
     "version": "10.0.1.0.0",
     "license": "AGPL-3",
     "depends": [
         "product",
         "sale",
-        "product_variants_no_automatic_creation",
     ],
     "author": "OdooMRP team, "
               "AvanzOSC, "
@@ -21,11 +21,14 @@
         "Oihane Crucelaegui <oihanecrucelaegi@avanzosc.es>",
         "Pedro M. Baeza <pedro.baeza@serviciosbaeza.com>",
         "Ana Juaristi <ajuaristio@gmail.com>",
+        "Danimar Ribeiro <danimaribeiro@gmail.com>",
     ],
     "category": "Sales Management",
-    "website": "http://www.odoomrp.com",
+    "website": "http://www.trustcode.com.br",
     "data": [
-        "views/sale_view.xml",
+        "security/ir.model.access.csv",
+        "views/product_configurator.xml",
+        "views/sale_order.xml",
     ],
     "installable": True,
 }
