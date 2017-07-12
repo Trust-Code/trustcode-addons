@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# © 2017 Fillipe Ramos, Trustcode
+# © 2017 Mackilem Van der Laan, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 from odoo import api, fields, models
@@ -10,45 +10,47 @@ class AccountInvoice(models.Model):
 
     @api.multi
     def invoice_validate(self):
-        for invoice in self:
-            qty_to_invoice = 0.0
-            for line in invoice.invoice_line_ids:
-                line.commission_total = 0.0
-                if not line.product_id.contract_ids:
-                    continue
-                line.commission_invoiced_ids.unlink()
-                for contract in line.product_id.contract_ids:
-                    if contract.validity_date < invoice.date_invoice:
-                        continue
-                    comm_ids = contract.commission_ids.sorted(
-                        key=lambda r: r.min_qty, reverse=True)
-                    for commission_id in comm_ids:
-                        qty_to_invoice = line.quantity
-                        if qty_to_invoice >= commission_id.min_qty:
-                            product_value = 0.0
-                            if contract.partner_id.government:
-                                product_value = line.product_id.standard_price
-                            else:
-                                product_value = line.product_id.list_price
-                            comm_perc = (commission_id.commission / 100)
-                            qty_sold = (product_value * qty_to_invoice)
-                            commission_line = (qty_sold * comm_perc)
-                            vals = {
-                                'commission': commission_line,
-                                'partner_id': contract.partner_id.id,
-                                'invoice_line_id': line.id,
-                                'contract_id': contract.id,
-                            }
-                            line.commission_total += commission_line
-                            self.env['royalties.commission.invoiced'].create(
-                                vals)
+        self.invoice_line_ids.validate_royalties()
         return super(AccountInvoice, self).invoice_validate()
 
 
 class AccountInvoiceLine(models.Model):
-    _inherit = 'account.invoice.line'
+    _inherit = "account.invoice.line"
 
-    commission_invoiced_ids = fields.One2many(
-        'royalties.commission.invoiced', 'invoice_line_id')
-    commission_total = fields.Float(
-        string="Commissions")
+    @api.multi
+    def validate_royalties(self):
+        '''
+        Essa função busca os contratos de royalties corretos para cada linha da
+        fatura. O objetivo é deixar vinculado o contrato ativo no dia em que foi
+        faturado para posterior faturamento da comissão.
+        '''
+        for line in self:
+            domain = [
+            ('product_id', '=', line.product_id.id),
+            ('royalties_id.state', '=', 'in_progress'),
+            '|',('royalties_id.company_id', '=', line.invoice_id.company_id.id),
+            ('royalties_id.company_id', '=', False)
+            ]
+            royalties_line_ids = self.env['royalties.lines'].search(domain)
+            if royalties_line_ids:
+                line_payment = self.env['account.royalties.payment']
+                line_payment.create_line_payment(royalties_line_ids,line)
+
+
+class AccountRoyaltiesPayment(models.Model):
+    _name = "account.royalties.payment"
+
+    inv_line_id = fields.Many2one('account.invoice.line', ondelete='set null')
+    product_id = fields.Many2one('product.product', required=True,
+        string="Product", ondelete='set null')
+    royalties_id = fields.Many2one('royalties', required=True,
+        string='Royalties', ondelete='restrict')
+    voucher_id = fields.Many2one('account.voucher', ondelete='set null')
+
+    @api.multi
+    def create_line_payment(self,royalties_line_ids,inv_line_id):
+        for line in royalties_line_ids:
+            vals = {'inv_line_id': inv_line_id.id,
+                    'royalties_id': line.royalties_id.id,
+                    'product_id': line.product_id.id}
+            self.create(vals)
