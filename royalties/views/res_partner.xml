@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_partner_form_government" model="ir.ui.view">
+        <field name="name">res.partner.form.government</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form" />
+        <field name="priority" eval="18"/>
+        <field name="groups_id" eval="[(4, ref('sales_team.group_sale_salesman'))]"/>
+        <field name="arch" type="xml">
+            <field name="user_id" position="after">
+                <field name="government" string="Government" />
+                <field name="receive_royalties" />
+            </field>
+        </field>
+    </record>
+
+   <record id="view_res_partner_filter" model="ir.ui.view">
+       <field name="name">res.partner.select</field>
+       <field name="model">res.partner</field>
+       <field name="inherit_id" ref="base.view_res_partner_filter"/>
+       <field name="arch" type="xml">
+           <filter name="supplier" position="after">
+               <filter string="Governments" name="government" domain="[('government', '=', 1)]" help="Government Partners"/>
+               <filter string="Receive Royalties?" name="receive_royalties" domain="[('receive_royalties', '=', 1)]" help="Partner that receice royalties"/>
+           </filter>
+        </field>
+   </record>
+
+
+</odoo>
