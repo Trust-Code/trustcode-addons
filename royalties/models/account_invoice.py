@@ -21,20 +21,19 @@ class AccountInvoiceLine(models.Model):
     def validate_royalties(self):
         '''
         Essa função busca os contratos de royalties corretos para cada linha da
-        fatura. O objetivo é deixar vinculado o contrato ativo no dia em que foi
-        faturado para posterior faturamento da comissão.
+        fatura. O objetivo é deixar vinculado o contrato ativo no dia em que
+        foi faturado para posterior faturamento da comissão.
         '''
         for line in self:
-            domain = [
-            ('product_id', '=', line.product_id.id),
-            ('royalties_id.state', '=', 'in_progress'),
-            '|',('royalties_id.company_id', '=', line.invoice_id.company_id.id),
-            ('royalties_id.company_id', '=', False)
-            ]
+            domain = [('product_id', '=', line.product_id.id),
+                      ('royalties_id.state', '=', 'in_progress'), '|',
+                      ('royalties_id.company_id', '=',
+                      line.invoice_id.company_id.id),
+                      ('royalties_id.company_id', '=', False)]
             royalties_line_ids = self.env['royalties.lines'].search(domain)
             if royalties_line_ids:
                 line_payment = self.env['account.royalties.payment']
-                line_payment.create_line_payment(royalties_line_ids,line)
+                line_payment.create_line_payment(royalties_line_ids, line)
 
 
 class AccountRoyaltiesPayment(models.Model):
@@ -42,13 +41,13 @@ class AccountRoyaltiesPayment(models.Model):
 
     inv_line_id = fields.Many2one('account.invoice.line', ondelete='set null')
     product_id = fields.Many2one('product.product', required=True,
-        string="Product", ondelete='set null')
+                                 string="Product", ondelete='set null')
     royalties_id = fields.Many2one('royalties', required=True,
-        string='Royalties', ondelete='restrict')
+                                   string='Royalties', ondelete='restrict')
     voucher_id = fields.Many2one('account.voucher', ondelete='set null')
 
     @api.multi
-    def create_line_payment(self,royalties_line_ids,inv_line_id):
+    def create_line_payment(self, royalties_line_ids, inv_line_id):
         for line in royalties_line_ids:
             vals = {'inv_line_id': inv_line_id.id,
                     'royalties_id': line.royalties_id.id,
