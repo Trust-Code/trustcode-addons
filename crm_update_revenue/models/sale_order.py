@@ -22,8 +22,8 @@ class SaleOrder(models.Model):
     @api.multi
     def write(self, vals):
         if self.update_option_recurrent_revenue is False:
-            raise UserError(u"Selecione uma opção para atualização "
-                            "da receita recorrente!")
+            raise UserError(u'Selecione uma opção para atualização \
+                            da receita recorrente!')
 
         res = super(SaleOrder, self).write(vals)
 
