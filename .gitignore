@@ -2,3 +2,4 @@
 *.py~
 *.po~
 *.xml~
+.vscode/tags
