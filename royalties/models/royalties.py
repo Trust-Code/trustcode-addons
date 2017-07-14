@@ -46,6 +46,7 @@ class Royalties(models.Model):
                                     "years"))
 
     @api.multi
+    @api.depends('atived', 'done', 'validity_date', 'payment_ids')
     def _compute_state(self):
         inv_royalties_obj = self.env['account.royalties.payment']
         for item in self:
@@ -128,15 +129,16 @@ class Royalties(models.Model):
 
                 for line in royalties_line_ids.mapped('inv_line_id'):
                     if item.partner_id.government:
-                        amount = line.price_subtotal
+                        unit_price = line.price_subtotal / line.quantity
                     else:
-                        amount = line.product_id.list_price * line.quantity
+                        unit_price = line.product_id.list_price
 
                     line_vals = {
                         'product_id': line.product_id.id,
+                        'quantity': line.quantity,
                         'name': 'Royalties (%s) :: %s' %
-                            (item.name, line.invoice_id.number),
-                        'price_unit': amount * tax,
+                                (item.name, line.invoice_id.number),
+                        'price_unit': unit_price * tax,
                         'account_id':
                             voucher_id.journal_id.default_debit_account_id.id,
                         'company_id': line.company_id.id,
@@ -144,7 +146,7 @@ class Royalties(models.Model):
                         }
 
                 voucher_id.write({'line_ids': [(0, 0, line_vals)]})
-                line.write({'voucher_id': voucher_id.id})
+                royalties_line_ids.write({'voucher_id': voucher_id.id})
 
     def _get_royalties_tax(self, royalties_line_ids, product_id):
         self.ensure_one()

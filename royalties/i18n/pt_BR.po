@@ -387,7 +387,7 @@ msgstr "Aguardando Pagamento"
 #. module: royalties
 #: model:ir.model,name:royalties.model_account_royalties_payment
 msgid "account.royalties.payment"
-msgstr "account.royalties.payment"
+msgstr "Pagamento de Royalties"
 
 #. module: royalties
 #: selection:royalties,state:0
@@ -407,17 +407,17 @@ msgstr "royalties"
 #. module: royalties
 #: model:ir.model,name:royalties.model_royalties_commission_invoiced
 msgid "royalties.commission.invoiced"
-msgstr "royalties.commission.invoiced"
+msgstr "Comissão de Royalties Faturadas"
 
 #. module: royalties
 #: model:ir.model,name:royalties.model_royalties_contract
 msgid "royalties.contract"
-msgstr "royalties.contract"
+msgstr "Contratos de Royalties"
 
 #. module: royalties
 #: model:ir.model,name:royalties.model_royalties_contract_commission_rule
 msgid "royalties.contract.commission.rule"
-msgstr "royalties.contract.commission.rule"
+msgstr "Regra de Comissão de Contrato de Royalties"
 
 #. module: royalties
 #: model:ir.model,name:royalties.model_royalties_lines

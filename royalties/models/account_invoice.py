@@ -13,6 +13,16 @@ class AccountInvoice(models.Model):
         self.invoice_line_ids.validate_royalties()
         return super(AccountInvoice, self).invoice_validate()
 
+    @api.multi
+    def action_invoice_cancel_paid(self):
+        res = super(AccountInvoice, self).action_invoice_cancel_paid()
+
+        if res is True:
+            self.env['account.royalties.payment'].search(
+                [['inv_line_id', 'in', self.invoice_line_ids.ids]]).unlink()
+
+        return res
+
 
 class AccountInvoiceLine(models.Model):
     _inherit = "account.invoice.line"
