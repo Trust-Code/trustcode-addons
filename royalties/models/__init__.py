@@ -8,3 +8,4 @@ from . import account_voucher
 from . import account_journal
 from . import royalties
 from . import product
+from . import fiscal_position

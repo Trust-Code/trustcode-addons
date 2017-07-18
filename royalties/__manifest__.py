@@ -26,6 +26,7 @@
         'views/res_partner.xml',
         'views/royalties.xml',
         'views/account_voucher.xml',
+        'views/fiscal_position.xml',
         'views/account_journal.xml',
         'wizard/royalties.xml',
         'data/ir_sequence.xml',
