@@ -124,36 +124,48 @@ class Royalties(models.Model):
                     [('voucher_id', '=', False),
                      ('royalties_id', '=', item.id),
                      ('product_id', '=', prod_id.id)])
-                tax = (item._get_royalties_tax(royalties_line_ids, prod_id)
+                fee = (item._get_royalties_fee(royalties_line_ids, prod_id)
                        / 100)
 
-                for line in royalties_line_ids.mapped('inv_line_id'):
+                for roy_line in royalties_line_ids:
+                    inv_line = roy_line.inv_line_id
+
+                    if roy_line.is_devolution:
+                        msg = ' \n'
+                        voucher_id.write({'':msg})
+                        continue
+
                     if item.partner_id.government:
-                        unit_price = line.price_subtotal / line.quantity
+                        unit_price = inv_line.price_subtotal / inv_line.quantity
                     else:
-                        unit_price = line.product_id.list_price
+                        unit_price = inv_line.product_id.list_price
 
                     line_vals = {
-                        'product_id': line.product_id.id,
-                        'quantity': line.quantity,
+                        'product_id': inv_line.product_id.id,
+                        'quantity': inv_line.quantity,
                         'name': 'Royalties (%s) :: %s' %
-                                (item.name, line.invoice_id.number),
-                        'price_unit': unit_price * tax,
+                                (item.name, inv_line.invoice_id.number),
+                        'price_unit': unit_price * fee,
                         'account_id':
                             voucher_id.journal_id.default_debit_account_id.id,
-                        'company_id': line.company_id.id,
-                        'inv_line_id': line.id,
+                        'company_id': inv_line.company_id.id,
+                        'inv_line_id': inv_line.id,
                         }
 
-                voucher_id.write({'line_ids': [(0, 0, line_vals)]})
-                royalties_line_ids.write({'voucher_id': voucher_id.id})
+                    voucher_id.write({'line_ids': [(0, 0, line_vals)]})
+                    royalties_line_ids.write({'voucher_id': voucher_id.id})
 
-    def _get_royalties_tax(self, royalties_line_ids, product_id):
+    def _get_royalties_fee(self, royalties_line_ids, product_id):
         self.ensure_one()
         result = False
 
-        royalties_line_ids = royalties_line_ids.mapped('inv_line_id')
-        qty = sum([x.quantity for x in royalties_line_ids])
+        royalties_line_sold_ids = royalties_line_ids.filtered(
+            lambda x: x.is_devolution == False).mapped('inv_line_id')
+        royalties_line_devol_ids = royalties_line_ids.filtered(
+            'is_devolution').mapped('inv_line_id')
+        qty_sold = sum([x.quantity for x in royalties_line_sold_ids])
+        qty_dev = sum( [x.quantity for x in royalties_line_devol_ids])
+        qty = qty_sold - qty_dev
         for line in self.line_ids.sorted(key=lambda r: r.min_qty,
                                          reverse=True):
             if line.product_id.id == product_id.id and qty >= line.min_qty:
