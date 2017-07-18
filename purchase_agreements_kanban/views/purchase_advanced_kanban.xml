@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<record id="trustcode_purchase_advanced_kanban" model="ir.ui.view">
+  <field name="name">trustcode.purchase.advanced.Kanban</field>
+  <field name="model">purchase.requisition</field>
+  <field name="arch" type="xml">
+    <kanban  class="o_kanban_mobile" default_group_by="state_kanban" default_order="sequence asc">
+        <header>
+          <field name="state_kanban" widget="statusbar" />
+        </header>
+
+        <field name="name"/>
+        <field name="origin"/>
+        <field name="image"/>
+        <field name="date_end"/>
+        <field name="state_kanban"/>
+        <field name="ordering_date"/>
+        <field name="schedule_date"/>
+        <templates>
+            <t t-name="kanban-box">
+                <div t-attf-class="oe_kanban_card oe_kanban_global_click">
+                    <div class="row">
+                        <div class="col-xs-3">
+                            <strong><field name="name"/></strong>
+                        </div>
+                        <span t-if="state_kanban in ['req','req_pdc','req_concl']">
+                            <div class="col-xs-9 pull-right text-left" style="padding-right:5px">
+                                <div class="row">
+                                  <t>Data Limite </t>
+                                  <t t-esc="record.date_end.value and record.date_end.value.split(' ')[0] or False"/>
+                                  <t> :: </t><field name="days_end"/><t> Dias</t>
+                                </div>
+                                <div class="row">
+                                  <t>Data Ordenação </t>
+                                  <t t-esc="record.ordering_date.value and record.ordering_date.value.split(' ')[0] or False"/>
+                                  <t> :: </t><field name="days_ordering"/><t> Dias</t>
+                                </div>
+                              </div>
+                          </span>
+                        <div class="col-xs-9 pull-right text-left" style="padding-right:5px">
+                            <div class="row">
+                              <t>Data Entrega </t>
+                              <t t-esc="record.schedule_date.value and record.schedule_date.value.split(' ')[0] or False"/>
+                              <t> :: </t><field name="days_schedule"/><t> Dias</t>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                      <div t-if="record.image.value" style="padding:5%">
+                        <field name="image" widget="attachment_image"/>
+                      </div>
+                    </div>
+                </div>
+            </t>
+        </templates>
+
+    </kanban>
+  </field>
+</record>
+
+<record id="purchase_advanced_kanban" model="ir.actions.act_window">
+    <field name="name">Purchase Advanced Kanban</field>
+    <field name="type">ir.actions.act_window</field>
+    <field name="res_model">purchase.requisition</field>
+    <field name="view_mode">kanban,form</field>
+    <field name="context">{}</field>
+    <field name="domain">[]</field>
+    <field name="search_view_id" ref=""/>
+      <field name="view_id" eval="trustcode_purchase_advanced_kanban"/>
+    <field name="help" type="html">
+      <p class="oe_view_nocontent_create">
+        Click to create a quotation that will be converted into a purchase order.
+      </p>
+      <p>
+
+      </p>
+    </field>
+</record>
+
+<!-- Top menu item -->
+<menuitem name="Controle de Compras"
+  action="purchase_advanced_kanban"
+  id="menu_purchase_advanced_kanban"
+  parent="purchase.menu_purchase_control"
+  sequence="1"/>
+
+</odoo>
