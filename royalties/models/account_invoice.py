@@ -13,7 +13,7 @@ class AccountInvoice(models.Model):
         if self.fiscal_position_id.royalties:
             self.invoice_line_ids.validate_royalties()
         elif self.fiscal_position_id.finalidade_emissao == '4' and \
-            len(self.fiscal_document_related_ids) > 0:
+                len(self.fiscal_document_related_ids) > 0:
             self.invoice_line_ids.validate_royalties(True)
 
         return super(AccountInvoice, self).invoice_validate()
@@ -49,7 +49,8 @@ class AccountInvoiceLine(models.Model):
             for r in royalties:
                 lines = r.line_ids.filtered(
                     lambda l: l.product_id.id == line.product_id.id)
-                if len(lines) > 0: royalties_ids += r
+                if len(lines) > 0:
+                    royalties_ids += r
             if royalties_ids:
                 line_payment = self.env['account.royalties.payment']
                 line_payment.create_line_payment(royalties_ids, line, devol)

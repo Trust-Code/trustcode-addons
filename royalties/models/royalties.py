@@ -124,15 +124,16 @@ class Royalties(models.Model):
                     [('voucher_id', '=', False),
                      ('royalties_id', '=', item.id),
                      ('product_id', '=', prod_id.id)])
-                fee = (item._get_royalties_fee(royalties_line_ids, prod_id)
-                       / 100)
+                fee = item._get_royalties_fee(royalties_line_ids, prod_id)
 
                 for roy_line in royalties_line_ids:
                     inv_line = roy_line.inv_line_id
 
                     if roy_line.is_devolution:
-                        msg = ' \n'
-                        voucher_id.write({'':msg})
+                        msg = (voucher_id['narration'], 'Royalties (%s) :: %s'
+                               % (item.name, inv_line.invoice_id.number),
+                               ' \n')
+                        voucher_id.write({'narration': msg})
                         continue
 
                     if item.partner_id.government:
@@ -169,7 +170,7 @@ class Royalties(models.Model):
         for line in self.line_ids.sorted(key=lambda r: r.min_qty,
                                          reverse=True):
             if line.product_id.id == product_id.id and qty >= line.min_qty:
-                    return line.commission
+                    return line.commission / 100
         return result
 
 
