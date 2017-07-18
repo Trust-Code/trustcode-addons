@@ -6,7 +6,7 @@
 from odoo import api, fields, models
 
 
-class StockMove(models.Model):
+class StockMoveDemand(models.Model):
     _inherit = 'stock.move'
 
 
@@ -14,7 +14,7 @@ class StockMove(models.Model):
 
     @api.multi
     def action_confirm(self):
-        res = super(StockMove,self).action_confirm()
+        res = super(StockMoveDemand,self).action_confirm()
         procurement_obj = self.env['procurement.order']
 
         for move in self:
@@ -30,7 +30,7 @@ class StockMove(models.Model):
                if move.route_ids:
                    vals = move._prepare_procurement_from_move()
                    vals['product_qty'] = move.product_uom_qty - qty_available
-                   vals['name'] = vals['name'] + " (Stock on demand rule)"
+                   vals['name'] = vals['name'] + ' (Stock on demand rule)'
                    proc = procurement_obj.create(vals)
                #Marca se a aquisição foi gerada por esta regra para corrigir a função get_ancestors()
                move.is_procurement_on_demand = True
