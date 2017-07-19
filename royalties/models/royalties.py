@@ -48,7 +48,7 @@ class Royalties(models.Model):
     @api.multi
     @api.depends('atived', 'done', 'validity_date', 'payment_ids')
     def _compute_state(self):
-        inv_royalties_obj = self.env['account.royalties.payment']
+        inv_royalties_obj = self.env['account.royalties.line']
         for item in self:
             line_ids = inv_royalties_obj.search([('voucher_id', '=', False),
                                                 ('royalties_id', '!=', False)])
@@ -92,7 +92,7 @@ class Royalties(models.Model):
 
     @api.multi
     def royalties_payment(self):
-        inv_royalties_obj = self.env['account.royalties.payment']
+        inv_royalties_obj = self.env['account.royalties.line']
         voucher_obj = self.env['account.voucher']
         journal_id = self.env['account.journal'].search([
             ('special_royalties', '=', True)])
@@ -124,26 +124,34 @@ class Royalties(models.Model):
                     [('voucher_id', '=', False),
                      ('royalties_id', '=', item.id),
                      ('product_id', '=', prod_id.id)])
-                fee = item._get_royalties_fee(royalties_line_ids, prod_id)
+
+                qty = item._get_roayalties_qty(royalties_line_ids)
+                fee = item._get_royalties_fee(qty, prod_id)
+                dev_value = 0
 
                 for roy_line in royalties_line_ids:
                     inv_line = roy_line.inv_line_id
 
-                    if roy_line.is_devolution:
-                        msg = (voucher_id['narration'], 'Royalties (%s) :: %s'
-                               % (item.name, inv_line.invoice_id.number),
-                               ' \n')
-                        voucher_id.write({'narration': msg})
+                    if roy_line.inv_line_id_related:
+                        inv_number = inv_line.invoice_id.number
+                        self.royalties_repayment(roy_line, voucher_id,
+                                                 inv_number)
+                        #msg = voucher_id['narration'] + \
+                        #       u'Devolução Royalties (%s) :: %s' % \
+                        #       (item.name, inv_line.invoice_id.number)
+                        #voucher_id.write({'narration': msg})
+                        #dev_value = inv_line.quantity
                         continue
 
                     if item.partner_id.government:
-                        unit_price = inv_line.price_subtotal / inv_line.quantity
+                        unit_price = (inv_line.price_subtotal /
+                                      inv_line.quantity)
                     else:
                         unit_price = inv_line.product_id.list_price
 
                     line_vals = {
                         'product_id': inv_line.product_id.id,
-                        'quantity': inv_line.quantity,
+                        'quantity': inv_line.quantity - dev_value,
                         'name': 'Royalties (%s) :: %s' %
                                 (item.name, inv_line.invoice_id.number),
                         'price_unit': unit_price * fee,
@@ -155,23 +163,43 @@ class Royalties(models.Model):
 
                     voucher_id.write({'line_ids': [(0, 0, line_vals)]})
                     royalties_line_ids.write({'voucher_id': voucher_id.id})
+                    dev_value = 0
 
-    def _get_royalties_fee(self, royalties_line_ids, product_id):
+    def _get_royalties_fee(self, qty, product_id):
         self.ensure_one()
         result = False
 
-        royalties_line_sold_ids = royalties_line_ids.filtered(
-            lambda x: x.is_devolution == False).mapped('inv_line_id')
-        royalties_line_devol_ids = royalties_line_ids.filtered(
-            'is_devolution').mapped('inv_line_id')
-        qty_sold = sum([x.quantity for x in royalties_line_sold_ids])
-        qty_dev = sum( [x.quantity for x in royalties_line_devol_ids])
-        qty = qty_sold - qty_dev
         for line in self.line_ids.sorted(key=lambda r: r.min_qty,
                                          reverse=True):
             if line.product_id.id == product_id.id and qty >= line.min_qty:
                     return line.commission / 100
         return result
+
+    def _get_roayalties_qty(self, royalties_line_ids):
+        import ipdb
+        ipdb.set_trace()
+        royalties_line_sold_ids = royalties_line_ids.filtered(
+            lambda x: len(x.inv_line_id_related) > 0).mapped('inv_line_id')
+        royalties_line_devol_ids = royalties_line_ids.filtered(
+            'inv_line_id_related').mapped('inv_line_id')
+        qty_sold = sum([x.quantity for x in royalties_line_sold_ids])
+        qty_dev = sum([x.quantity for x in royalties_line_devol_ids])
+        return qty_sold - qty_dev
+
+    def royalties_repayment(self, roy_line, voucher_id, inv_number):
+        domain = [('inv_line_id', '=', roy_line.inv_line_id_related.id)]
+        import ipdb
+        ipdb.set_trace()
+        voucher_line_id = self.env['account.voucher.line'].search(domain)
+        qty = (voucher_line_id.quantity - roy_line.inv_line_id.quantity)
+
+        name = (voucher_line_id['name'] +
+                u'Devolução Royalties (%s) :: %s' %
+                (self.name, inv_number))
+
+        vals = {'name': name, 'quantity': qty}
+        voucher_line_id.write(vals)
+        return None
 
 
 class RoyaltiesLines(models.Model):
