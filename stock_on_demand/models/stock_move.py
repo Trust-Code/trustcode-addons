@@ -17,23 +17,24 @@ class StockMoveDemand(models.Model):
         procurement_obj = self.env['procurement.order']
 
         for move in self:
-            if isinstance(move, models.BaseModel):
-                return res
-            qty_available = move.product_id.qty_available
-            if (move.location_dest_id.usage == 'customer' or \
-                    move.location_dest_id.usage == 'production') and \
-                    move.procure_method == 'make_to_stock' and \
-                    move.bom_line_id.type != 'phantom' and \
-                    move.product_id.nbr_reordering_rules == 0 and \
-                    move.state == 'confirmed' and \
-                    qty_available < move.product_uom_qty:
+            try:
+                qty_available = move.product_id.qty_available
+                if (move.location_dest_id.usage == 'customer' or \
+                        move.location_dest_id.usage == 'production') and \
+                        move.procure_method == 'make_to_stock' and \
+                        move.bom_line_id.type != 'phantom' and \
+                        move.product_id.nbr_reordering_rules == 0 and \
+                        move.state == 'confirmed' and \
+                        qty_available < move.product_uom_qty:
 
-               move.route_ids = move.product_id.mapped('route_ids')
-               if move.route_ids:
-                   vals = move._prepare_procurement_from_move()
-                   vals['product_qty'] = move.product_uom_qty - qty_available
-                   vals['name'] = vals['name'] + ' (Stock on demand rule)'
-                   proc = procurement_obj.create(vals)
-               #Marca se a aquisição foi gerada por esta regra para corrigir a função get_ancestors()
-               move.is_procurement_on_demand = True
+                   move.route_ids = move.product_id.mapped('route_ids')
+                   if move.route_ids:
+                       vals = move._prepare_procurement_from_move()
+                       vals['product_qty'] = move.product_uom_qty - qty_available
+                       vals['name'] = vals['name'] + ' (Stock on demand rule)'
+                       proc = procurement_obj.create(vals)
+                   #Marca se a aquisição foi gerada por esta regra para corrigir a função get_ancestors()
+                   move.is_procurement_on_demand = True
+            except:
+                continue
         return res
