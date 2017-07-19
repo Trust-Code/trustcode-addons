@@ -9,7 +9,6 @@ from odoo import api, fields, models
 class StockMoveDemand(models.Model):
     _inherit = 'stock.move'
 
-
     is_procurement_on_demand = fields.Boolean(name="is proc. on demand?")
 
     @api.multi
@@ -18,10 +17,13 @@ class StockMoveDemand(models.Model):
         procurement_obj = self.env['procurement.order']
 
         for move in self:
+            if isinstance(move, models.BaseModel):
+                return res
             qty_available = move.product_id.qty_available
             if (move.location_dest_id.usage == 'customer' or \
                     move.location_dest_id.usage == 'production') and \
                     move.procure_method == 'make_to_stock' and \
+                    move.bom_line_id.type != 'phantom' and \
                     move.product_id.nbr_reordering_rules == 0 and \
                     move.state == 'confirmed' and \
                     qty_available < move.product_uom_qty:
