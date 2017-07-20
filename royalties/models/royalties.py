@@ -103,9 +103,11 @@ class Royalties(models.Model):
         for item in self:
             voucher_id = voucher_obj.search([
                 ('royalties_id', '=', item.id),
-                ('state', '=', 'draft')], limit=1)
+                ('state', '=', 'draft'),
+                ('partner_id', '=', item.partner_id.id)], limit=1)
+
             if not voucher_id:
-                voucher_id = {
+                values = {
                     'partner_id': item.partner_id.id,
                     'account_id':
                         item.partner_id.property_account_payable_id.id,
@@ -116,6 +118,7 @@ class Royalties(models.Model):
                     'royalties_id': item.id,
                     'reference': 'Royalties Payment(%s)' % item.name,
                     }
+                voucher_id = voucher_obj.create(values)
 
             product_ids = item.line_ids.mapped('product_id')
             line_vals = []
@@ -162,8 +165,7 @@ class Royalties(models.Model):
                     }
                 line_vals.append((0, 0, vals))
 
-            voucher_id['line_ids'] = line_vals
-            voucher_id = voucher_obj.create(voucher_id)
+            voucher_id.write({'line_ids': line_vals})
             royalties_line_ids.write({'voucher_id': voucher_id.id})
 
     def _get_royalties_fee(self, qty, product_id):

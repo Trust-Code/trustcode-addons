@@ -19,8 +19,10 @@ class AccountInvoice(models.Model):
         return super(AccountInvoice, self).invoice_validate()
 
     @api.multi
-    def action_invoice_cancel_paid(self):
-        res = super(AccountInvoice, self).action_invoice_cancel_paid()
+    def action_cancel(self):
+        import ipdb
+        ipdb.set_trace()
+        res = super(AccountInvoice, self).action_cancel()
 
         if res is True:
             self.env['account.royalties.line'].search(
