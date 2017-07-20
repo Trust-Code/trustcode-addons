@@ -4,19 +4,19 @@
 
 {
     'name': 'Stock on Demand',
-    'version': '1.0',
+    'version': '10.0.1.0.0',
     'category': 'Stock',
     'sequence': 5,
     'summary': 'New stock rule for especial case',
     'description': """
 The
 ====================================================
-
 """,
+    'author': 'Trustcode',
+    'license': 'AGPL-3',
     'website': 'https://www.trustcode.com.br',
-    'depends': ['stock',
+    'depends': [
+        'stock'
     ],
     'installable': True,
-    'application': False,
-    'auto_install': False,
 }
