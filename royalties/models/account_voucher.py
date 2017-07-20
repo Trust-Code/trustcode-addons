@@ -8,9 +8,8 @@ from odoo import fields, models
 class AccountVoucher(models.Model):
     _inherit = "account.voucher"
 
-    royalties_id = fields.Many2one('royalties',
-        string='Contrato Royalties',
-        ondelete='restrict',
+    royalties_id = fields.Many2one(
+        'royalties', string='Contrato Royalties', ondelete='restrict',
         domain="[('partner_id','=',partner_id),\
                  ('state','=','in_progress')]")
 
