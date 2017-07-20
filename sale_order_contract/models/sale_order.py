@@ -160,7 +160,8 @@ class SaleOrderLine(models.Model):
     _inherit = 'sale.order.line'
 
     recurring_line = fields.Boolean(
-        string="Recorrente?", related="product_id.recurring_product")
+        string="Recorrente?", related="product_id.recurring_product",
+        readonly=True)
 
     @api.depends('product_id', 'purchase_price', 'product_uom_qty',
                  'price_unit', 'discount')
