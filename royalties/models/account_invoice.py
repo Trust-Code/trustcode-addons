@@ -56,7 +56,8 @@ class AccountInvoiceLine(models.Model):
                     royalties_ids += r
             if royalties_ids:
                 line_payment = self.env['account.royalties.line']
-                line_payment.create_account_royalties_line(royalties_ids, line, devol)
+                line_payment.create_account_royalties_line(
+                    royalties_ids, line, devol)
 
 
 class AccountRoyaltiesPayment(models.Model):
@@ -72,10 +73,11 @@ class AccountRoyaltiesPayment(models.Model):
     inv_line_dev_ids = fields.Many2many('account.invoice.line')
 
     @api.multi
-    def create_account_royalties_line(self, royalties_ids, inv_line_id, devol=False):
+    def create_account_royalties_line(
+            self, royalties_ids, inv_line_id, devol=False):
         for r in royalties_ids:
             vals = {'inv_line_id': inv_line_id.id,
                     'royalties_id': r.id,
                     'product_id': inv_line_id.product_id.id,
-                    'is_devol':devol}
+                    'is_devol': devol}
             self.create(vals)
