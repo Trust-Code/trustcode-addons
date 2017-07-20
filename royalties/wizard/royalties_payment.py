@@ -14,8 +14,7 @@ class Royalties(models.TransientModel):
                                      ['in_progress','done'])]",)
 
     def run_royalties_payment(self):
+        account_royalties_line = self.env['account.royalties.line']
+        account_royalties_line.get_invoice_royalties(self.royalties_ids)
         if self.royalties_ids:
             self.royalties_ids.royalties_payment()
-        else:
-            self.royalties_ids.search([('state', 'in',
-                                       ['in_progress', 'done'])])
