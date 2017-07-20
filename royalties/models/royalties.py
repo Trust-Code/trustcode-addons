@@ -95,7 +95,7 @@ class Royalties(models.Model):
         inv_royalties_obj = self.env['account.royalties.line']
         voucher_obj = self.env['account.voucher']
         journal_id = self.env['account.journal'].search([
-            ('special_royalties', '=', True)])
+            ('special_royalties', '=', True)], limit=1)
         if not journal_id:
             raise Warning(_("The system didn't find the especific Account "
                             "Journal"))
@@ -105,7 +105,7 @@ class Royalties(models.Model):
                 ('royalties_id', '=', item.id),
                 ('state', '=', 'draft')], limit=1)
             if not voucher_id:
-                voucher_vals = {
+                voucher_id = {
                     'partner_id': item.partner_id.id,
                     'account_id':
                         item.partner_id.property_account_payable_id.id,
@@ -129,31 +129,42 @@ class Royalties(models.Model):
                 for line in royalties_line_ids:
                     if not line.is_devol:
                         qty += line.inv_line_id.quantity
-                    elif is_devol:
+                    else:
                         qty -= line.inv_line_id.quantity
 
                 fee = item._get_royalties_fee(qty, prod_id)
                 amount = 0
-                for inv_line in royalties_line_ids.mapped('inv_line_id'):
-                    if item.partner_id.government:
-                        amount += inv_line.price_subtotal * fee
+                company_id = None
+                for roy_line in royalties_line_ids:
+                    company_id = roy_line.inv_line_id.company_id.id
+                    list_price = roy_line.inv_line_id.product_id.list_price
+                    quantity = roy_line.inv_line_id.quantity
+                    price_subtotal = roy_line.inv_line_id.price_subtotal
+
+                    if roy_line.is_devol:
+                        if item.partner_id.government:
+                            amount -= price_subtotal * fee
+                        else:
+                            amount -= (list_price * quantity) * fee
                     else:
-                        amount += (inv_line.product_id.list_price * inv_line.quantity) * fee
+                        if item.partner_id.government:
+                            amount += price_subtotal * fee
+                        else:
+                            amount += (list_price * quantity) * fee
 
                 vals = {
                     'product_id': prod_id.id,
                     'quantity': 1,
-                    'name': 'Royalties (%s)' %(item.name),
+                    'name': 'Royalties (%s)' % (item.name),
                     'price_unit': amount,
-                    'account_id':
-                        voucher_id.journal_id.default_debit_account_id.id,
-                    'company_id': inv_line.company_id.id,
+                    'account_id': journal_id.id,
+                    'company_id': company_id,
                     }
-                line_vals.apped(vals)
-                royalties_line_ids.write({'voucher_id': voucher_id.id})
+                line_vals.append((0, 0, vals))
 
-            voucher_vals['line_ids'] = [(0, 0, line_vals)]
-            voucher_id = voucher_obj.create(voucher_vals)
+            voucher_id['line_ids'] = line_vals
+            voucher_id = voucher_obj.create(voucher_id)
+            royalties_line_ids.write({'voucher_id': voucher_id.id})
 
     def _get_royalties_fee(self, qty, product_id):
         self.ensure_one()
