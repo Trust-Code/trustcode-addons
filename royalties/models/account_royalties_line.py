@@ -26,7 +26,8 @@ class AccountRoyaltiesPayment(models.Model):
                     'product_id': l.product_id.id,
                     'is_devol': devol}
             result = self.create(vals)
-        inv_line_ids.Write({'account_royalties_line_ids': [4, royalties_id.id]})
+
+        inv_line_ids.write({'royalties_ids': [(4, royalties_id.id)]})
         return result
 
     def get_invoice_royalties(self, royalties_ids):
@@ -35,9 +36,9 @@ class AccountRoyaltiesPayment(models.Model):
         for roy in royalties_ids:
             product_ids = roy.mapped('line_ids.product_id')
             inv_line_ids = invoice_line_obj.search([
-                ('invoice_id.fiscal_position_id.royalties','=', True),
+                ('invoice_id.fiscal_position_id.royalties', '=', True),
                 ('product_id', 'in', product_ids.ids),
-                ('account_royalties_line_ids', 'not in', roy.id)])
+                ('royalties_ids', 'not in', roy.id)])
 
             inv_line_sell_ids = inv_line_ids.filtered(
                 lambda l:
