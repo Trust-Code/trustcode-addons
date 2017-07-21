@@ -99,7 +99,6 @@ class Royalties(models.Model):
         if not journal_id:
             raise Warning(_("The system didn't find the especific Account "
                             "Journal"))
-
         for item in self:
             voucher_id = voucher_obj.search([
                 ('royalties_id', '=', item.id),
@@ -155,18 +154,19 @@ class Royalties(models.Model):
                         else:
                             amount += (list_price * quantity) * fee
 
-                vals = {
-                    'product_id': prod_id.id,
-                    'quantity': 1,
-                    'name': 'Royalties (%s)' % (item.name),
-                    'price_unit': amount,
-                    'account_id': journal_id.default_debit_account_id.id,
-                    'company_id': company_id,
-                    }
-                line_vals.append((0, 0, vals))
+                if royalties_line_ids:
+                    vals = {
+                        'product_id': prod_id.id,
+                        'quantity': 1,
+                        'name': 'Royalties (%s)' % (item.name),
+                        'price_unit': amount,
+                        'account_id': journal_id.default_debit_account_id.id,
+                        'company_id': company_id,
+                        }
+                    line_vals.append((0, 0, vals))
+                    royalties_line_ids.write({'voucher_id': voucher_id.id})
 
             voucher_id.write({'line_ids': line_vals})
-            royalties_line_ids.write({'voucher_id': voucher_id.id})
 
     def _get_royalties_fee(self, qty, product_id):
         self.ensure_one()
