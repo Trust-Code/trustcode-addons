@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+  <record id="view_royalties_form" model="ir.ui.view">
+      <field name="name">view.royalties.form</field>
+      <field name="model">royalties</field>
+      <field name="arch" type="xml">
+          <form>
+            <header>
+              <button name="button_confirm" type='object' states="draft" string="Confirm" class="oe_highlight" />
+              <button name="button_back_draft" type='object' states="in_progress" string="Back Draft" groups="sales_team.group_sale_manager" />
+              <button name="button_done" type='object' states="in_progress" string="Done" groups="sales_team.group_sale_manager" class="oe_highlight" />
+              <field name="state" widget="statusbar" />
+            </header>
+            <sheet>
+              <group>
+                  <h1>
+                      <field name="name" readonly="1"/>
+                  </h1>
+              </group>
+              <group>
+                <group>
+                  <field name="partner_id" attrs="{'readonly':[('state','=','in_progress')]}" />
+                  <field name="region" attrs="{'readonly':[('state','=','in_progress')]}" />
+                  <field name="start_date" readonly="1" />
+                  <field name="validity_date" required="1" attrs="{'readonly':[('state','=','in_progress')]}" />
+                </group>
+                <group attrs="{'readonly':[('state','=','in_progress')]}">
+                  <field name="royalty_type" attrs="{'readonly':[('state','=','in_progress')]}"/>
+                  <field name="company_id" attrs="{'readonly':[('state','=','in_progress')]}" />
+                </group>
+              </group>
+              <notebook>
+                <page string="Rules" >
+                  <field name="line_ids" attrs="{'readonly':[('state','=','in_progress')]}" />
+                </page>
+              </notebook>
+              <notebook>
+                <page string="Payments" >
+                  <field name="payment_ids" />
+                </page>
+              </notebook>
+            </sheet>
+          </form>
+      </field>
+  </record>
+
+  <record id="view_royalties_tree" model="ir.ui.view">
+      <field name="name">view.royalties.tree</field>
+      <field name="model">royalties</field>
+      <field name="arch" type="xml">
+          <tree string="Contract">
+            <field name="name" readonly="1" />
+            <field name="partner_id" />
+            <field name="region" />
+            <field name="validity_date" />
+            <field name="royalty_type" />
+            <field name="state" />
+          </tree>
+      </field>
+  </record>
+
+  <record id="view_royalties_lines_tree" model="ir.ui.view">
+      <field name="name">view.royalties.line.tree</field>
+      <field name="model">royalties.lines</field>
+      <field name="arch" type="xml">
+          <tree string="Invoice" editable="bottom">
+              <field name="product_id" />
+              <field name="commission"/>
+              <field name="min_qty"/>
+          </tree>
+      </field>
+  </record>
+
+  <record id="royaties_action" model="ir.actions.act_window">
+    <field name="name">Royalties Contracts</field>
+    <field name="res_model">royalties</field>
+    <field name="view_mode">tree,form</field>
+    <field name="help" type="html">
+      <p class="oe_view_nocontent_create">
+        <!-- Add Text Here -->
+      </p>
+      <p>
+        <!-- More details about what a user can do -->
+      </p>
+    </field>
+  </record>
+
+  <menuitem
+    id="menu_sale_royaties"
+    name="Royalties Contracts"
+    parent="account.menu_finance_entries"
+    action="royaties_action"
+    sequence="21" />
+
+</odoo>

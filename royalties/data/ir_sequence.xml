@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- Sequences for Royalties -->
+        <record id="seq_royalties" model="ir.sequence">
+            <field name="name">Royalties</field>
+            <field name="code">royalties</field>
+            <field name="prefix">RO/</field>
+            <field name="padding">4</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+    </data>
+</odoo>

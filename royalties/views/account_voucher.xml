@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_account_voucher_royalties_form" model="ir.ui.view">
+        <field name="name">account_voucher.royalty.form</field>
+        <field name="model">account.voucher</field>
+        <field name="inherit_id" ref="account_voucher.view_purchase_receipt_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//group/group/field[@name='journal_id']" position="before">
+              <field name="royalties_id" />
+            </xpath>
+        </field>
+    </record>
+
+</odoo>
