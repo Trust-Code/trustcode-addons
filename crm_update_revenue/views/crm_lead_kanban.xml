@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="crm_case_kanban_view_oppor" model="ir.ui.view">
+        <field name="name">Trustcode - Receita Recorrente Kanban</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_case_kanban_view_leads"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@class='text-muted']" position="replace">
+                <div class="text-muted">
+                    <t t-if="record.planned_revenue.raw_value">Rec=<strong><field name="recurrent_revenue" widget="monetary" options="{'currency_field': 'company_currency'}"/></strong> // Avu=<field name="planned_revenue" widget="monetary" options="{'currency_field': 'company_currency'}"/><span t-if="record.partner_id.value"> >> </span></t> <span t-if="record.partner_id.value"> Fech. previsto = <field name="date_deadline"/> , <t t-esc="record.partner_id.value"/></span>
+                </div>
+            </xpath>
+        </field>
+    </record>
+</odoo>
