@@ -160,7 +160,7 @@ class Royalties(models.Model):
                     'quantity': 1,
                     'name': 'Royalties (%s)' % (item.name),
                     'price_unit': amount,
-                    'account_id': journal_id.id,
+                    'account_id': journal_id.default_debit_account_id.id,
                     'company_id': company_id,
                     }
                 line_vals.append((0, 0, vals))
