@@ -1,29 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <record id="paperformat_royalties_report" model="report.paperformat">
-        <field name="name">Formato Relatorio de Royalties</field>
-        <field name="default" eval="True" />
-        <field name="orientation">Portrait</field>
-        <field name="margin_top">35.0</field>
-        <field name="margin_left">7.0</field>
-        <field name="margin_right">7.0</field>
-        <field name="margin_bottom">60.0</field>
-        <field name="header_line" eval="False"/>
-        <field name="header_spacing">25</field>
-    </record>
-
     <report
         id="royalties_report.action_royalties_report"
         model="account.voucher"
         report_type="qweb-pdf"
-        string="Royalties Report"
+        string="Relatório de Royalties"
         name="royalties_report.main_template_royalties_report"
-        file="royalties_report.main_template_royalties_report"
-        paperformat="paperformat_royalties_report"
-        />
+        file="royalties_report.main_template_royalties_report" />
 
-    <template id="royalties_report_assets_backend" name="Royalties assets" inherit_id="report.assets_common">
+    <!-- <template id="royalties_report_assets_backend" name="Royalties assets" inherit_id="report.assets_common">
         <xpath expr="." position="inside">
             <link rel="stylesheet" type="text/css" href="/royalties_report/static/css/royalties_report.css"/>
         </xpath>
@@ -72,7 +58,7 @@
                                 <td><span t-esc="l.product_id.name"/></td>
                                 <td><span t-esc="l.product_id.description or 'Royalties'"/></td>
                                 <td><span t-esc="l.inv_line_id.quantity"></span></td>
-                                <td><span t-esc="cids.commission"></span></td>
+                                 <td><span t-esc="cids.commission"></span></td> 
                             </tr>
                         </t>
                         </tbody>
@@ -80,7 +66,7 @@
                 </div>
             </div>
         </div>
-    </template>
+    </template> -->
 
     <template id="main_template_royalties_report">
         <t t-call="report.html_container">
