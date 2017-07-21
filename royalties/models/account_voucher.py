@@ -15,7 +15,6 @@ class AccountVoucher(models.Model):
                                             ('state','=','in_progress')]")
 
 
-
 class AccountVoucherLine(models.Model):
     _inherit = "account.voucher.line"
 
