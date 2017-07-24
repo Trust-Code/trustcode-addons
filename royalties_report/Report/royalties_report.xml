@@ -6,8 +6,8 @@
         model="account.voucher"
         report_type="qweb-pdf"
         string="Relatório de Royalties"
-        name="royalties_report.main_template_royalties_report"
-        file="royalties_report.main_template_royalties_report" />
+        name="royalties_report.template_royalties_report_main"
+        file="royalties_report.template_royalties_report_main" />
 
     <!-- <template id="royalties_report_assets_backend" name="Royalties assets" inherit_id="report.assets_common">
         <xpath expr="." position="inside">
