@@ -1,0 +1,431 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+#	* royalties
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 10.0+e\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-07-13 19:26+0000\n"
+"PO-Revision-Date: 2017-07-13 19:26+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: royalties
+#: model:ir.model.fields,field_description:royalties.field_royalties_lines_commission
+msgid "% Commission"
+msgstr "% Comissão"
+
+#. module: royalties
+#: model:ir.model,name:royalties.model_account_voucher
+msgid "Accounting Voucher"
+msgstr "Comprovante Contábil"
+
+#. module: royalties
+#: model:ir.model.fields,field_description:royalties.field_royalties_atived
+msgid "Active"
+msgstr "Ativo"
+
+#. module: royalties
+#: model:ir.ui.view,arch_db:royalties.view_royalties_form
+msgid "Back Draft"
+msgstr "Voltar Provisório"
+
+#. module: royalties
+#: model:ir.ui.view,arch_db:royalties.view_royalties_wizard_form
+msgid "Calculate comissions"
+msgstr "Calcular Comissões"
+
+#. module: royalties
+#: model:ir.ui.view,arch_db:royalties.view_royalties_wizard_form
+msgid "Cancel"
+msgstr "Cancelar"
+
+#. module: royalties
+#: model:ir.ui.view,arch_db:royalties.view_product_royalties_form
+msgid "Commissão"
+msgstr "Commissão"
+
+#. module: royalties
+#: model:ir.model.fields,field_description:royalties.field_royalties_company_id
+msgid "Company"
+msgstr "Empresa"
+
+#. module: royalties
+#: model:ir.ui.view,arch_db:royalties.view_royalties_form
+msgid "Confirm"
+msgstr "Confirmar"
+
+#. module: royalties
+#: model:ir.ui.view,arch_db:royalties.view_royalties_tree
+msgid "Contract"
+msgstr "Contrato"
+
+#. module: royalties
+#: model:ir.model.fields,field_description:royalties.field_royalties_done
+msgid "Contract Done"
+msgstr "Contrato Feito"
+
+#. module: royalties
+#: model:ir.model.fields,field_description:royalties.field_delivery_carrier_contract_ids
+#: model:ir.model.fields,field_description:royalties.field_product_product_contract_ids
+msgid "Contract ids"
+msgstr "ids Contrato"
+
+#. module: royalties
+#: model:ir.model.fields,field_description:royalties.field_royalties_lines_royalties_id
+msgid "Contracts"
+msgstr "Contratos"
+
+#. module: royalties
+#: model:ir.model.fields,field_description:royalties.field_account_voucher_royalties_id
+msgid "Contrato Royalties"
+msgstr "Contrato Royalties"
+
+#. module: royalties
+#: model:ir.model.fields,field_description:royalties.field_royalties_wizard_royalties_ids
+msgid "Contratos"
+msgstr "Contratos"
+
+#. module: royalties
+#: model:ir.model.fields,field_description:royalties.field_account_royalties_payment_create_uid
+#: model:ir.model.fields,field_description:royalties.field_royalties_create_uid
+#: model:ir.model.fields,field_description:royalties.field_royalties_lines_create_uid
+#: model:ir.model.fields,field_description:royalties.field_royalties_wizard_create_uid
+msgid "Created by"
+msgstr "Criado por"
+
+#. module: royalties
+#: model:ir.model.fields,field_description:royalties.field_account_royalties_payment_create_date
+#: model:ir.model.fields,field_description:royalties.field_royalties_create_date
+#: model:ir.model.fields,field_description:royalties.field_royalties_lines_create_date
+#: model:ir.model.fields,field_description:royalties.field_royalties_wizard_create_date
+msgid "Created on"
+msgstr "Criado em"
+
+#. module: royalties
+#: model:ir.model.fields,field_description:royalties.field_account_royalties_payment_display_name
+#: model:ir.model.fields,field_description:royalties.field_royalties_display_name
+#: model:ir.model.fields,field_description:royalties.field_royalties_lines_display_name
+#: model:ir.model.fields,field_description:royalties.field_royalties_wizard_display_name
+msgid "Display Name"
+msgstr "Nome para Exibição"
+
+#. module: royalties
+#: model:ir.ui.view,arch_db:royalties.view_royalties_form
+#: selection:royalties,state:0
+msgid "Done"
+msgstr "Concluído"
+
+#. module: royalties
+#: selection:royalties,state:0
+msgid "Draft"
+msgstr "Provisório"
+
+#. module: royalties
+#: model:ir.ui.view,arch_db:royalties.view_partner_form_government
+msgid "Government"
+msgstr "Governo"
+
+#. module: royalties
+#: model:ir.ui.view,arch_db:royalties.view_res_partner_filter
+msgid "Government Partners"
+msgstr "Parceiros Governamentais"
+
+#. module: royalties
+#: model:ir.ui.view,arch_db:royalties.view_res_partner_filter
+msgid "Governments"
+msgstr "Governos"
+
+#. module: royalties
+#: model:ir.model.fields,field_description:royalties.field_res_partner_government
+#: model:ir.model.fields,field_description:royalties.field_res_users_government
+msgid "Governo"
+msgstr "Governo"
+
+#. module: royalties
+#: model:ir.model.fields,field_description:royalties.field_account_royalties_payment_id
+#: model:ir.model.fields,field_description:royalties.field_royalties_id
+#: model:ir.model.fields,field_description:royalties.field_royalties_lines_id
+#: model:ir.model.fields,field_description:royalties.field_royalties_wizard_id
+msgid "ID"
+msgstr "ID"
+
+#. module: royalties
+#: model:ir.model.fields,field_description:royalties.field_account_royalties_payment_inv_line_id
+#: model:ir.model.fields,field_description:royalties.field_account_voucher_line_inv_line_id
+msgid "Inv line id"
+msgstr "id linha da fatura"
+
+#. module: royalties
+#: model:ir.model,name:royalties.model_account_invoice
+#: model:ir.ui.view,arch_db:royalties.view_royalties_lines_tree
+msgid "Invoice"
+msgstr "Fatura"
+
+#. module: royalties
+#: model:ir.model,name:royalties.model_account_invoice_line
+msgid "Invoice Line"
+msgstr "Linha da Fatura"
+
+#. module: royalties
+#: model:ir.model,name:royalties.model_account_journal
+msgid "Journal"
+msgstr "Diário"
+
+#. module: royalties
+#: model:ir.model.fields,field_description:royalties.field_account_royalties_payment___last_update
+#: model:ir.model.fields,field_description:royalties.field_royalties___last_update
+#: model:ir.model.fields,field_description:royalties.field_royalties_lines___last_update
+#: model:ir.model.fields,field_description:royalties.field_royalties_wizard___last_update
+msgid "Last Modified on"
+msgstr "Última Modificação em"
+
+#. module: royalties
+#: model:ir.model.fields,field_description:royalties.field_account_royalties_payment_write_uid
+#: model:ir.model.fields,field_description:royalties.field_royalties_lines_write_uid
+#: model:ir.model.fields,field_description:royalties.field_royalties_wizard_write_uid
+#: model:ir.model.fields,field_description:royalties.field_royalties_write_uid
+msgid "Last Updated by"
+msgstr "Última atualização por"
+
+#. module: royalties
+#: model:ir.model.fields,field_description:royalties.field_account_royalties_payment_write_date
+#: model:ir.model.fields,field_description:royalties.field_royalties_lines_write_date
+#: model:ir.model.fields,field_description:royalties.field_royalties_wizard_write_date
+#: model:ir.model.fields,field_description:royalties.field_royalties_write_date
+msgid "Last Updated on"
+msgstr "Última atualização em"
+
+#. module: royalties
+#: model:ir.model.fields,field_description:royalties.field_royalties_line_ids
+msgid "Line ids"
+msgstr "Ids da Linha"
+
+#. module: royalties
+#: model:ir.model.fields,help:royalties.field_res_partner_government
+#: model:ir.model.fields,help:royalties.field_res_users_government
+msgid "Marque este campo se o parceiro é uma instituição governamental"
+msgstr "Marque este campo se o parceiro é uma instituição governamental"
+
+#. module: royalties
+#: model:ir.model.fields,help:royalties.field_res_partner_receive_royalties
+#: model:ir.model.fields,help:royalties.field_res_users_receive_royalties
+msgid "Marque este campo se o parceiro é uma pessoa que recebe Royalties"
+msgstr "Marque este campo se o parceiro é uma pessoa que recebe Royalties"
+
+#. module: royalties
+#: model:ir.model.fields,field_description:royalties.field_royalties_name
+msgid "Name"
+msgstr "Nome"
+
+#. module: royalties
+#: model:ir.model,name:royalties.model_res_partner
+#: model:ir.model.fields,field_description:royalties.field_royalties_partner_id
+msgid "Partner"
+msgstr "Parceiro"
+
+#. module: royalties
+#: model:ir.ui.view,arch_db:royalties.view_res_partner_filter
+msgid "Partner that receice royalties"
+msgstr "Parceiro que recebe royalties"
+
+#. module: royalties
+#: model:ir.model.fields,field_description:royalties.field_royalties_payment_ids
+msgid "Payment ids"
+msgstr "ids de Pagamentos"
+
+#. module: royalties
+#: model:ir.ui.view,arch_db:royalties.view_royalties_form
+msgid "Payments"
+msgstr "Pagamentos"
+
+#. module: royalties
+#: model:ir.model,name:royalties.model_product_product
+#: model:ir.model.fields,field_description:royalties.field_account_royalties_payment_product_id
+#: model:ir.model.fields,field_description:royalties.field_royalties_lines_product_id
+msgid "Product"
+msgstr "Produto"
+
+#. module: royalties
+#: model:ir.model,name:royalties.model_product_template
+msgid "Product Template"
+msgstr "Modelo de Produto"
+
+#. module: royalties
+#: model:ir.model.fields,field_description:royalties.field_royalties_lines_min_qty
+msgid "Qty. minimum"
+msgstr "Qtd. mínima"
+
+#. module: royalties
+#: code:addons/royalties/models/royalties.py:180
+#, python-format
+msgid "Quantity must be bigger than 1"
+msgstr "Quantidade deve ser maior que 1"
+
+#. module: royalties
+#: model:ir.model.fields,field_description:royalties.field_res_partner_receive_royalties
+#: model:ir.model.fields,field_description:royalties.field_res_users_receive_royalties
+msgid "Receive Royalties"
+msgstr "Royalties Recebidos"
+
+#. module: royalties
+#: model:ir.ui.view,arch_db:royalties.view_res_partner_filter
+msgid "Receive Royalties?"
+msgstr "Royalties Recebidos?"
+
+#. module: royalties
+#: model:ir.model.fields,field_description:royalties.field_royalties_region
+msgid "Region"
+msgstr "Região"
+
+#. module: royalties
+#: model:ir.model.fields,field_description:royalties.field_account_royalties_payment_royalties_id
+msgid "Royalties"
+msgstr "Royalties"
+
+#. module: royalties
+#: model:ir.actions.act_window,name:royalties.royaties_action
+#: model:ir.ui.menu,name:royalties.menu_sale_royaties
+msgid "Royalties Contracts"
+msgstr "Contratos de Royalties"
+
+#. module: royalties
+#: model:ir.actions.act_window,name:royalties.action_royalties_wizard_form
+#: model:ir.ui.menu,name:royalties.menu_royalties_wizard
+msgid "Royalties Payment"
+msgstr "Pagamentos de Royalties"
+
+#. module: royalties
+#: model:ir.ui.view,arch_db:royalties.view_royalties_form
+msgid "Rules"
+msgstr "Regras"
+
+#. module: royalties
+#: model:ir.model.fields,field_description:royalties.field_account_journal_special_royalties
+msgid "Special Royaltires?"
+msgstr "Royalties Especiais?"
+
+#. module: royalties
+#: model:ir.model.fields,field_description:royalties.field_royalties_start_date
+msgid "Start Date"
+msgstr "Data de Início"
+
+#. module: royalties
+#: model:ir.model.fields,field_description:royalties.field_royalties_state
+msgid "State"
+msgstr "Estado"
+
+#. module: royalties
+#: code:addons/royalties/models/royalties.py:170
+#, python-format
+msgid "The commission rate must be bigger than 0"
+msgstr "A comissão deve ser maior que 0"
+
+#. module: royalties
+#: code:addons/royalties/models/royalties.py:173
+#, python-format
+msgid "The commission rate must be smaller than 100"
+msgstr "A comissão deve ser menor que 100"
+
+#. module: royalties
+#: code:addons/royalties/models/royalties.py:97
+#, python-format
+msgid "Non-configured royalty payment journal!"
+msgstr "Diário para pagamento de royalties não configurado!"
+
+#. module: royalties
+#: code:addons/royalties/models/royalties.py:44
+#, python-format
+msgid "The validity date can't be more than 12 years"
+msgstr "A data de validade não pode ser maior que 12 anos"
+
+#. module: royalties
+#: code:addons/royalties/models/royalties.py:42
+#, python-format
+msgid "The validity date must be bigger than today"
+msgstr "A data de validade deve ser maior que hoje"
+
+#. module: royalties
+#: model:ir.model.fields,field_description:royalties.field_royalties_royalty_type
+msgid "Type"
+msgstr "Tipo"
+
+#. module: royalties
+#: model:ir.ui.view,arch_db:royalties.view_royalties_wizard_form
+msgid "Um pagamento será criado para todos os contratos selecionados.\n"
+"                  Cada contrato criará um pagamento no menu (Contabilidade/Compras/Recebimento de Compras)\n"
+"                  e poderão ser filtados pela Referência 'Royalties'"
+msgstr "Um pagamento será criado para todos os contratos selecionados.\n"
+"                  Cada contrato criará um pagamento no menu (Contabilidade/Compras/Recebimento de Compras)\n"
+"                  e poderão ser filtados pela Referência 'Royalties'"
+
+#. module: royalties
+#: model:ir.model.fields,field_description:royalties.field_royalties_validity_date
+msgid "Validity Date"
+msgstr "Data de validade"
+
+#. module: royalties
+#: model:ir.model,name:royalties.model_account_voucher_line
+msgid "Voucher Lines"
+msgstr "Linhas do Comprovante"
+
+#. module: royalties
+#: model:ir.model.fields,field_description:royalties.field_account_royalties_payment_voucher_id
+msgid "Voucher id"
+msgstr "id Comprovante"
+
+#. module: royalties
+#: selection:royalties,state:0
+msgid "Waiting Payment"
+msgstr "Aguardando Pagamento"
+
+#. module: royalties
+#: model:ir.model,name:royalties.model_account_royalties_payment
+msgid "account.royalties.payment"
+msgstr "Pagamento de Royalties"
+
+#. module: royalties
+#: selection:royalties,state:0
+msgid "in Progress"
+msgstr "em Progresso"
+
+#. module: royalties
+#: model:ir.ui.view,arch_db:royalties.view_royalties_wizard_form
+msgid "or"
+msgstr "ou"
+
+#. module: royalties
+#: model:ir.model,name:royalties.model_royalties
+msgid "royalties"
+msgstr "royalties"
+
+#. module: royalties
+#: model:ir.model,name:royalties.model_royalties_commission_invoiced
+msgid "royalties.commission.invoiced"
+msgstr "Comissão de Royalties Faturadas"
+
+#. module: royalties
+#: model:ir.model,name:royalties.model_royalties_contract
+msgid "royalties.contract"
+msgstr "Contratos de Royalties"
+
+#. module: royalties
+#: model:ir.model,name:royalties.model_royalties_contract_commission_rule
+msgid "royalties.contract.commission.rule"
+msgstr "Regra de Comissão de Contrato de Royalties"
+
+#. module: royalties
+#: model:ir.model,name:royalties.model_royalties_lines
+msgid "royalties.lines"
+msgstr "royalties.lines"
+
+#. module: royalties
+#: model:ir.model,name:royalties.model_royalties_wizard
+msgid "royalties.wizard"
+msgstr "royalties.wizard"
+

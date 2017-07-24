@@ -12,3 +12,7 @@ class ResPartner(models.Model):
     government = fields.Boolean(
         string="Governo",
         help="Marque este campo se o parceiro é uma instituição governamental")
+    receive_royalties = fields.Boolean(
+        string="Receive Royalties",
+        help="Marque este campo se o parceiro é uma pessoa que recebe"
+             "Royalties")
