@@ -31,7 +31,7 @@ class Royalties(models.Model):
         default='draft',
         store=True,
         compute='_compute_state')
-    active = fields.Boolean("Active")
+    actived = fields.Boolean("active")
     done = fields.Boolean("Contract Done")
 
     @api.one
@@ -47,45 +47,42 @@ class Royalties(models.Model):
                                     "years"))
 
     @api.multi
-    @api.depends('active', 'done', 'validity_date', 'payment_ids')
+    @api.depends('actived', 'done', 'validity_date', 'payment_ids')
     def _compute_state(self):
-        import ipdb
-        ipdb.set_trace()
-        # TODO criar filtro para validar mostrar os contratos que não estão ativos
         inv_royalties_obj = self.env['account.royalties.line']
         for item in self:
             line_ids = inv_royalties_obj.search([('voucher_id', '=', False),
                                                 ('royalties_id', '!=', False)])
             royalties_ids = line_ids.mapped('royalties_id')
-            if item.active and item.validity_date <= fields.Date.today():
+            if item.actived and item.validity_date <= fields.Date.today():
                 if royalties_ids and item.id in royalties_ids.ids:
                     item.state = 'waiting'
                 else:
-                    item.active = False
+                    item.actived = False
                     item.done = True
                     item.state = 'done'
-            elif item.active:
+            elif item.actived:
                 item.state = 'in_progress'
             elif item.done:
                 item.state = 'done'
-            elif not item.active and not item.done:
+            elif not item.actived and not item.done:
                 item.state = 'draft'
 
     @api.multi
     def button_confirm(self):
         for item in self:
             item.start_date = fields.Date.today()
-            item.active = True
+            item.actived = True
 
     @api.multi
     def button_back_draft(self):
         for item in self:
-            item.active = False
+            item.actived = False
 
     @api.multi
     def button_done(self):
         for item in self:
-            item.active = False
+            item.actived = False
             item.done = True
 
     @api.model
