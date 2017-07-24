@@ -6,13 +6,15 @@ from odoo import api, models
 
 
 class RoyaltiesReport(models.AbstractModel):
-    _name = 'report.royalties_report.report_royalties_main'
+    _name = 'report.royalties_report.royalties_report_main'
 
     @api.model
     def render_html(self, docids, data=None):
+        import ipdb
+        ipdb.set_trace()
         report_obj = self.env['report']
         report = report_obj._get_report_from_name(
-            'royalties_report.template_royalties_report_main')
+            'royalties_report.main_template_royalties_report')
         royalties = self.env['royalties'].search([('id', 'in', docids)])
 
         docargs = {
@@ -21,4 +23,4 @@ class RoyaltiesReport(models.AbstractModel):
             'docs': royalties,
         }
         return report_obj.render(
-            'royalties_report.template_royalties_report_main', docargs)
+            'royalties_report.main_template_royalties_report', docargs)

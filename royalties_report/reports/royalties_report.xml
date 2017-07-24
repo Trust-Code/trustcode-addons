@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="paperformat_royalties" model="report.paperformat">
+        <field name="name">Formato Relatório Royalties</field>
+        <field name="default" eval="True" />
+        <field name="orientation">Landscape</field>
+        <field name="margin_top">30.0</field>
+        <field name="margin_left">3.0</field>
+        <field name="margin_right">3.0</field>
+        <field name="margin_bottom">15.0</field>
+        <field name="header_spacing">25</field>
+    </record>
+
+    <report id="royalties_report.action_royalties_report" model="account.voucher" report_type="qweb-pdf" string="Relatório de Royalties"
+        name="royalties_report.royalties_report_main" file="royalties_report.royalties_report_main" paperformat="paperformat_royalties"/>
+
+    <template id="royalties_report_document">
+        <t t-set="o" t-value="o.with_context({'lang':o.partner_id.lang})" />
+        <div class="header">
+            <h1 style="text-align: center;"><span t-field="docs.company_id"/></h1>
+            <h4 style="text-align: center;"><span>Prestação de Contas de Direitos Autorais</span></h4>
+        </div>
+        <div class="page">
+            <div class="row">
+                <div class="col-xs-12">
+                    <p style="text-align: right;">Direitos Autorais - Royalties</p>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <template id="royalties_report_main">
+        <t t-call="report.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="royalties_report.royalties_report_document" t-lang="o.partner_id.lang" />
+            </t>
+        </t>
+    </template>
+</odoo>
+
+<!-- <table class="table productsTable table-bordered border-div"> 
+        <thead>
+            <tr>
+                <th>Produto</th>
+                <th>Descrição</th>
+                <th>Quantidade</th>
+                <th>Comissão</th>
+            </tr>
+        </thead>
+        <tbody >
+        <t t-set="last_partner" t-value="None" />
+        <t t-foreach="o.line_ids" t-as="l">
+            <tr>
+                <td colspan="5">
+                    <span t-field="l.inv_line_id.partner_id.name"/></td>
+            </tr>
+            <tr>
+                <td><span t-esc="l.product_id.name"/></td>
+                <td><span t-esc="l.product_id.description or 'Royalties'"/></td>
+                <td><span t-esc="l.inv_line_id.quantity"></span></td>
+            </tr>
+        </t>
+        </tbody>
+    </table> -->
