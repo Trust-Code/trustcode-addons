@@ -37,20 +37,21 @@ class Royalties(models.Model):
     @api.one
     @api.constrains('validity_date')
     def _check_date(self):
-        import ipdb
-        ipdb.set_trace()
         today = fields.date.today()
         validity_date = fields.Date.from_string(self.validity_date)
         if validity_date < today:
             raise ValidationError(_("The validity date must be bigger than "
                                     "today"))
-        elif validity_date > (today + timedelta(days=365)):
+        elif validity_date > (today + timedelta(days=365) * 12):
             raise ValidationError(_("The validity date can't be more than 12 "
                                     "years"))
 
     @api.multi
     @api.depends('active', 'done', 'validity_date', 'payment_ids')
     def _compute_state(self):
+        import ipdb
+        ipdb.set_trace()
+        # TODO criar filtro para validar mostrar os contratos que não estão ativos
         inv_royalties_obj = self.env['account.royalties.line']
         for item in self:
             line_ids = inv_royalties_obj.search([('voucher_id', '=', False),
@@ -100,7 +101,7 @@ class Royalties(models.Model):
         journal_id = self.env['account.journal'].search([
             ('special_royalties', '=', True)], limit=1)
         if not journal_id:
-            raise Warning(_("Non-configured royalty payment journal "))
+            raise Warning(_("Non-configured royalty payment journal!"))
         for item in self:
             voucher_id = voucher_obj.search([
                 ('royalties_id', '=', item.id),

@@ -264,7 +264,7 @@ msgstr "Qtd. mínima"
 #. module: royalties
 #: code:addons/royalties/models/royalties.py:180
 #, python-format
-msgid "Quantity must be bigger them 1"
+msgid "Quantity must be bigger than 1"
 msgstr "Quantidade deve ser maior que 1"
 
 #. module: royalties
@@ -323,31 +323,31 @@ msgstr "Estado"
 #. module: royalties
 #: code:addons/royalties/models/royalties.py:170
 #, python-format
-msgid "The commission rate must be bigger them 0"
+msgid "The commission rate must be bigger than 0"
 msgstr "A comissão deve ser maior que 0"
 
 #. module: royalties
 #: code:addons/royalties/models/royalties.py:173
 #, python-format
-msgid "The commission rate must be smaller them 100"
+msgid "The commission rate must be smaller than 100"
 msgstr "A comissão deve ser menor que 100"
 
 #. module: royalties
 #: code:addons/royalties/models/royalties.py:97
 #, python-format
-msgid "The system didn't find the especific Account Journal"
-msgstr "O sistema não encontrou o diário específico"
+msgid "Non-configured royalty payment journal!"
+msgstr "Diário para pagamento de royalties não configurado!"
 
 #. module: royalties
 #: code:addons/royalties/models/royalties.py:44
 #, python-format
-msgid "The validity date can't be more then 12 years"
+msgid "The validity date can't be more than 12 years"
 msgstr "A data de validade não pode ser maior que 12 anos"
 
 #. module: royalties
 #: code:addons/royalties/models/royalties.py:42
 #, python-format
-msgid "The validity date must be bigger then today"
+msgid "The validity date must be bigger than today"
 msgstr "A data de validade deve ser maior que hoje"
 
 #. module: royalties
