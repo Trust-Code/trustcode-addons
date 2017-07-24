@@ -6,6 +6,7 @@
 
 from odoo import api, fields, models, _
 from odoo.exceptions import ValidationError, Warning
+from datetime import timedelta
 
 
 class Royalties(models.Model):
@@ -30,58 +31,58 @@ class Royalties(models.Model):
         default='draft',
         store=True,
         compute='_compute_state')
-    atived = fields.Boolean("Active")
+    actived = fields.Boolean("active")
     done = fields.Boolean("Contract Done")
 
     @api.one
     @api.constrains('validity_date')
     def _check_date(self):
-        year, month, day = map(int, self.validity_date.split('-'))
-        today = fields.Date.today()
-        if self.validity_date < str(today):
-            raise ValidationError(_("The validity date must be bigger then "
+        today = fields.date.today()
+        validity_date = fields.Date.from_string(self.validity_date)
+        if validity_date < today:
+            raise ValidationError(_("The validity date must be bigger than "
                                     "today"))
-        elif year > int(today.split('-')[0]) + 12:
-            raise ValidationError(_("The validity date can't be more then 12 "
+        elif validity_date > (today + timedelta(days=365) * 12):
+            raise ValidationError(_("The validity date can't be more than 12 "
                                     "years"))
 
     @api.multi
-    @api.depends('atived', 'done', 'validity_date', 'payment_ids')
+    @api.depends('actived', 'done', 'validity_date', 'payment_ids')
     def _compute_state(self):
         inv_royalties_obj = self.env['account.royalties.line']
         for item in self:
             line_ids = inv_royalties_obj.search([('voucher_id', '=', False),
                                                 ('royalties_id', '!=', False)])
             royalties_ids = line_ids.mapped('royalties_id')
-            if item.atived and item.validity_date <= str(fields.Date.today()):
+            if item.actived and item.validity_date <= fields.Date.today():
                 if royalties_ids and item.id in royalties_ids.ids:
                     item.state = 'waiting'
                 else:
-                    item.atived = False
+                    item.actived = False
                     item.done = True
                     item.state = 'done'
-            elif item.atived:
+            elif item.actived:
                 item.state = 'in_progress'
             elif item.done:
                 item.state = 'done'
-            elif not item.atived and not item.done:
+            elif not item.actived and not item.done:
                 item.state = 'draft'
 
     @api.multi
     def button_confirm(self):
         for item in self:
             item.start_date = fields.Date.today()
-            item.atived = True
+            item.actived = True
 
     @api.multi
     def button_back_draft(self):
         for item in self:
-            item.atived = False
+            item.actived = False
 
     @api.multi
     def button_done(self):
         for item in self:
-            item.atived = False
+            item.actived = False
             item.done = True
 
     @api.model
@@ -97,9 +98,7 @@ class Royalties(models.Model):
         journal_id = self.env['account.journal'].search([
             ('special_royalties', '=', True)], limit=1)
         if not journal_id:
-            raise Warning(_("The system didn't find the especific Account "
-                            "Journal"))
-
+            raise Warning(_("Non-configured royalty payment journal!"))
         for item in self:
             voucher_id = voucher_obj.search([
                 ('royalties_id', '=', item.id),
@@ -116,7 +115,7 @@ class Royalties(models.Model):
                     'voucher_type': 'purchase',
                     'journal_id': journal_id.id,
                     'royalties_id': item.id,
-                    'reference': 'Royalties Payment(%s)' % item.name,
+                    'reference': 'Pagamento de Royalties(%s)' % item.name,
                     }
                 voucher_id = voucher_obj.create(values)
 
@@ -155,18 +154,19 @@ class Royalties(models.Model):
                         else:
                             amount += (list_price * quantity) * fee
 
-                vals = {
-                    'product_id': prod_id.id,
-                    'quantity': 1,
-                    'name': 'Royalties (%s)' % (item.name),
-                    'price_unit': amount,
-                    'account_id': journal_id.default_debit_account_id.id,
-                    'company_id': company_id,
-                    }
-                line_vals.append((0, 0, vals))
+                if royalties_line_ids:
+                    vals = {
+                        'product_id': prod_id.id,
+                        'quantity': 1,
+                        'name': 'Royalties (%s)' % (item.name),
+                        'price_unit': amount,
+                        'account_id': journal_id.default_debit_account_id.id,
+                        'company_id': company_id,
+                        }
+                    line_vals.append((0, 0, vals))
+                    royalties_line_ids.write({'voucher_id': voucher_id.id})
 
             voucher_id.write({'line_ids': line_vals})
-            royalties_line_ids.write({'voucher_id': voucher_id.id})
 
     def _get_royalties_fee(self, qty, product_id):
         self.ensure_one()
@@ -193,14 +193,14 @@ class RoyaltiesLines(models.Model):
     def _check_value(self):
         if self.commission < 0:
             raise ValidationError(
-                _("The commission rate must be bigger them 0"))
+                _("The commission rate must be bigger than 0"))
         if self.commission > 100:
             raise ValidationError(
-                _("The commission rate must be smaller them 100"))
+                _("The commission rate must be smaller than 100"))
 
     @api.one
     @api.constrains('commission')
     def _check_positive(self):
         if self.min_qty < 1:
             raise ValidationError(
-                _("Quantity must be bigger them 1"))
+                _("Quantity must be bigger than 1"))

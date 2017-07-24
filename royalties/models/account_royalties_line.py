@@ -7,7 +7,7 @@
 from odoo import api, fields, models
 
 
-class AccountRoyaltiesPayment(models.Model):
+class AccountRoyaltiesLine(models.Model):
     _name = "account.royalties.line"
 
     inv_line_id = fields.Many2one('account.invoice.line', ondelete='set null')

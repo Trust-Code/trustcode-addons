@@ -5,7 +5,7 @@
 from odoo import fields, models
 
 
-class ProductTemplate(models.Model):
+class ProductProduct(models.Model):
     _inherit = 'product.product'
 
     contract_ids = fields.One2many(
