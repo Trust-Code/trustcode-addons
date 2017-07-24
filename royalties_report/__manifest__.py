@@ -21,6 +21,6 @@
         'account',
     ],
     'data': [
-        'views/royalties_report.xml',
+        'reports/royalties_report.xml',
     ],
 }
