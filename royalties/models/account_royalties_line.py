@@ -20,9 +20,6 @@ class AccountRoyaltiesLine(models.Model):
 
     @api.multi
     def _create_royalties_line(self, royalties_id, inv_line_ids, devol=False):
-        import ipdb
-        ipdb.set_trace()
-
         for l in inv_line_ids:
             vals = {'inv_line_id': l.id,
                     'royalties_id': royalties_id.id,
