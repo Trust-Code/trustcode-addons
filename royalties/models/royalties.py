@@ -127,9 +127,22 @@ class Royalties(models.Model):
                      ('royalties_id', '=', item.id),
                      ('product_id', '=', prod_id.id)])
 
+                royalties_line_total_ids = inv_royalties_obj.search(
+                    [('royalties_id', '=', item.id),
+                     ('product_id', '=', prod_id.id)])
+
+                quantity_total_fee = 0
+
+                for line in royalties_line_total_ids:
+                    if line.is_devol:
+                        quantity_total_fee -= line.inv_line_id.quantity
+                    else:
+                        quantity_total_fee += line.inv_line_id.quantity
+
+                fee = item._get_royalties_fee(quantity_total_fee, prod_id)
+
                 amount = 0
                 company_id = None
-                quantity_total = 0
                 for roy_line in royalties_line_ids:
                     if (roy_line.inv_line_id.invoice_id.state == 'paid' or
                             roy_line.inv_line_id.invoice_id.state == 'open'):
@@ -140,25 +153,22 @@ class Royalties(models.Model):
                         price_subtotal = roy_line.inv_line_id.price_subtotal
 
                         if roy_line.is_devol:
-                            quantity_total -= quantity
                             if item.partner_id.government:
                                 amount -= price_subtotal
                             else:
                                 amount -= (list_price * quantity)
                         else:
-                            quantity_total += quantity
                             if item.partner_id.government:
                                 amount += price_subtotal
                             else:
                                 amount += (list_price * quantity)
 
-                fee = item._get_royalties_fee(quantity_total, prod_id)
                 if royalties_line_ids:
                     vals = {
                         'product_id': prod_id.id,
-                        'quantity': quantity_total,
+                        'quantity': 1,
                         'name': 'Royalties (%s)' % (item.name),
-                        'price_unit': list_price * fee,
+                        'price_unit': amount * fee,
                         'account_id': journal_id.default_debit_account_id.id,
                         'company_id': company_id,
                         }
