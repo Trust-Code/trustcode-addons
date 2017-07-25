@@ -13,7 +13,6 @@ class SaleOrder(models.Model):
         ('2', 'Somar'),
         ('3', 'Não modificar')],
         string='Atual. Oportunidade',
-        required=True,
         help="1 - Substitui o valor da oportunidade com o valor total desta "
         "cotação \n 2 - Soma os valores de todas as cotações vinculadas "
         "a oportunidade e sobrescreve o valor da mesma \n 3 - Não modifica "
