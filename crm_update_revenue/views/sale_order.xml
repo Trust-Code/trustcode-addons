@@ -6,9 +6,7 @@
         <field name="inherit_id" ref="sale_crm.sale_view_inherit123"/>
         <field name="arch" type="xml">
             <field name="opportunity_id" position="after">
-                <field name="update_option_recurrent_revenue" widget="radio">
-                    <attribute name="required"/>
-                </field>
+                <field name="update_option_recurrent_revenue" />
             </field>
         </field>
     </record>
