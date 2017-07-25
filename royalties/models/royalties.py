@@ -122,44 +122,43 @@ class Royalties(models.Model):
             product_ids = item.line_ids.mapped('product_id')
             line_vals = []
             for prod_id in product_ids:
-                qty = 0
                 royalties_line_ids = inv_royalties_obj.search(
                     [('voucher_id', '=', False),
                      ('royalties_id', '=', item.id),
                      ('product_id', '=', prod_id.id)])
 
-                for line in royalties_line_ids:
-                    if not line.is_devol:
-                        qty += line.inv_line_id.quantity
-                    else:
-                        qty -= line.inv_line_id.quantity
-
-                fee = item._get_royalties_fee(qty, prod_id)
                 amount = 0
                 company_id = None
+                quantity_total = 0
                 for roy_line in royalties_line_ids:
-                    company_id = roy_line.inv_line_id.company_id.id
-                    list_price = roy_line.inv_line_id.product_id.list_price
-                    quantity = roy_line.inv_line_id.quantity
-                    price_subtotal = roy_line.inv_line_id.price_subtotal
+                    if (roy_line.inv_line_id.invoice_id.state == 'paid' or
+                            roy_line.inv_line_id.invoice_id.state == 'open'):
 
-                    if roy_line.is_devol:
-                        if item.partner_id.government:
-                            amount -= price_subtotal * fee
-                        else:
-                            amount -= (list_price * quantity) * fee
-                    else:
-                        if item.partner_id.government:
-                            amount += price_subtotal * fee
-                        else:
-                            amount += (list_price * quantity) * fee
+                        company_id = roy_line.inv_line_id.company_id.id
+                        list_price = roy_line.inv_line_id.product_id.list_price
+                        quantity = roy_line.inv_line_id.quantity
+                        price_subtotal = roy_line.inv_line_id.price_subtotal
 
+                        if roy_line.is_devol:
+                            quantity_total -= quantity
+                            if item.partner_id.government:
+                                amount -= price_subtotal
+                            else:
+                                amount -= (list_price * quantity)
+                        else:
+                            quantity_total += quantity
+                            if item.partner_id.government:
+                                amount += price_subtotal
+                            else:
+                                amount += (list_price * quantity)
+
+                fee = item._get_royalties_fee(quantity_total, prod_id)
                 if royalties_line_ids:
                     vals = {
                         'product_id': prod_id.id,
-                        'quantity': 1,
+                        'quantity': quantity_total,
                         'name': 'Royalties (%s)' % (item.name),
-                        'price_unit': amount,
+                        'price_unit': list_price * fee,
                         'account_id': journal_id.default_debit_account_id.id,
                         'company_id': company_id,
                         }
