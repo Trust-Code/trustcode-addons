@@ -10,3 +10,4 @@ from . import royalties
 from . import product
 from . import fiscal_position
 from . import account_royalties_line
+from . import account_voucher_line

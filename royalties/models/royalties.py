@@ -171,6 +171,7 @@ class Royalties(models.Model):
                         'price_unit': amount * fee,
                         'account_id': journal_id.default_debit_account_id.id,
                         'company_id': company_id,
+                        'fee': fee
                         }
                     line_vals.append((0, 0, vals))
                     royalties_line_ids.write({'voucher_id': voucher_id.id})
