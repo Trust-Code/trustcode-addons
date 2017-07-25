@@ -6,7 +6,7 @@ from odoo import api, models
 
 
 class RoyaltiesReport(models.AbstractModel):
-    _name = 'report.royalties_report.royalties_report_main'
+    _name = 'report.royalties_report.royalties_report'
 
     @api.model
     def render_html(self, docids, data=None):
@@ -14,13 +14,17 @@ class RoyaltiesReport(models.AbstractModel):
         ipdb.set_trace()
         report_obj = self.env['report']
         report = report_obj._get_report_from_name(
-            'royalties_report.main_template_royalties_report')
-        royalties = self.env['royalties'].search([('id', 'in', docids)])
+            'royalties_report.royalties_report')
+        account_voucher = self.env['account.voucher'].search(
+                            [('id', 'in', docids)])
+        royalties_lines = self.env['account.royalties.line'].search(
+                            [('voucher_id', '=', account_voucher.id)])
 
         docargs = {
             'doc_ids': docids,
             'doc_model': report.model,
-            'docs': royalties,
+            'docs': account_voucher,
+            'royalties_lines': royalties_lines,
         }
         return report_obj.render(
-            'royalties_report.main_template_royalties_report', docargs)
+            'royalties_report.royalties_report', docargs)

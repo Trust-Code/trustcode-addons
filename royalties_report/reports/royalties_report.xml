@@ -13,7 +13,7 @@
     </record>
 
     <report id="royalties_report.action_royalties_report" model="account.voucher" report_type="qweb-pdf" string="Relatório de Royalties"
-        name="royalties_report.royalties_report_main" file="royalties_report.royalties_report_main" paperformat="paperformat_royalties"
+        name="royalties_report.royalties_report" file="royalties_report.royalties_report" paperformat="paperformat_royalties"
     />
 
     <template id="royalties_report_document">
@@ -93,23 +93,25 @@
                     <label>Royalties earned</label>
                 </div>
             </div>
-            <div class="row" style="border-bottom: 1px solid grey;">
-                <div class="col-xs-3" style="text-align: left;">
-                    <span>INV</span>
+            <t t-foreach="royalties_lines" t-as="l">
+                <div class="row" style="border-bottom: 1px solid grey;">
+                    <div class="col-xs-3" style="text-align: left;">
+                        <span t-field="l.inv_line_id.invoice_id.name"></span>
+                    </div>
+                    <div class="col-xs-3" style="text-align: center;">
+                        <span t-field="l.inv_line_id.quantity"></span>
+                    </div>
+                    <div class="col-xs-2" style="text-align: left;">
+                        <span t-field="l.inv_line_id.price_subtotal"></span>
+                    </div>
+                    <div class="col-xs-1" style="text-align: left;">
+                        <span>10</span>
+                    </div>
+                    <div class="col-xs-3" style="text-align: center;">
+                        <span>10</span>
+                    </div>
                 </div>
-                <div class="col-xs-3" style="text-align: center;">
-                    <span>1</span>
-                </div>
-                <div class="col-xs-2" style="text-align: left;">
-                    <span>100,00</span>
-                </div>
-                <div class="col-xs-1" style="text-align: left;">
-                    <span>10</span>
-                </div>
-                <div class="col-xs-3" style="text-align: center;">
-                    <span>10</span>
-                </div>
-            </div>
+            </t>
             <div class="row" style="border-bottom: 1px solid grey;">
                 <div class="col-xs-6">
                     <label>Total:</label>
@@ -137,7 +139,7 @@
         </div>
     </template>
 
-    <template id="royalties_report_main">
+    <template id="royalties_report">
         <t t-call="report.html_container">
             <t t-foreach="docs" t-as="o">
                 <t t-call="royalties_report.royalties_report_document" t-lang="o.partner_id.lang" />
@@ -145,28 +147,3 @@
         </t>
     </template>
 </odoo>
-
-<!-- <table class="table productsTable table-bordered border-div"> 
-        <thead>
-            <tr>
-                <th>Produto</th>
-                <th>Descrição</th>
-                <th>Quantidade</th>
-                <th>Comissão</th>
-            </tr>
-        </thead>
-        <tbody >
-        <t t-set="last_partner" t-value="None" />
-        <t t-foreach="o.line_ids" t-as="l">
-            <tr>
-                <td colspan="5">
-                    <span t-field="l.inv_line_id.partner_id.name"/></td>
-            </tr>
-            <tr>
-                <td><span t-esc="l.product_id.name"/></td>
-                <td><span t-esc="l.product_id.description or 'Royalties'"/></td>
-                <td><span t-esc="l.inv_line_id.quantity"></span></td>
-            </tr>
-        </t>
-        </tbody>
-    </table> -->
