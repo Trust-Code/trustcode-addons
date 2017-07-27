@@ -22,8 +22,7 @@ class Royalties(models.Model):
     line_ids = fields.One2many(
         'royalties.lines', 'royalties_id')
     partner_id = fields.Many2one('res.partner',
-                                 string=u"Partner",
-                                 required="1")
+                                 string=u"Partner")
     region = fields.Char(string=u"Region", size=20)
     state = fields.Selection(
         [('draft', 'Draft'), ('in_progress', 'in Progress'),
