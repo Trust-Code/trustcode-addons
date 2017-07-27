@@ -30,23 +30,44 @@
                         <label>Royalties</label>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-xs-2">
-                        <label>Period:</label>
-                    </div>
-                    <div class="col-xs-6">
-                        <span t-esc="initial_date"></span> to
-                        <span t-esc="final_date"></span>
-                    </div>
-                </div>
                 <div class="row" style="border-bottom: 1px solid grey;">
-                    <div class="col-xs-2">
-                        <label>Publication Month:</label>
+                    <div class="col-xs-8">
+                        <div class="row">
+                            <div class="col-xs-2">
+                                <label>Period:</label>
+                            </div>
+                            <div class="col-xs-6">
+                                <span t-esc="initial_date"></span> to
+                                <span t-esc="final_date"></span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-2">
+                                <label>Publication Month:</label>
+                            </div>
+                            <div class="col-xs-6">
+                                <span t-field="royalties_lines[0].royalties_id.start_date"></span>
+                            </div>
+                        </div>
                     </div>
-                    <div class="col-xs-6">
-                        <span t-field="royalties_lines[0].royalties_id.start_date"></span>
+                    <div class="col-xs-4">
+                        <t t-set="first" t-value="True" />
+                        <t t-foreach="royalties_lines[0].royalties_id.line_ids" t-as="rl">
+                            <div class="row" style="text-align:right;">
+                                <t t-if="rl.product_id == l.product_id">
+                                    <t t-if="first">
+                                        <span t-field="rl.commission" />% up to <span t-esc="'%.0f' % rl.min_qty" />
+                                        <t t-set="first" t-value="False" />
+                                    </t>
+                                    <t t-else="">
+                                        <span t-field="rl.commission" />% thereafter <span t-esc="'%.0f' % rl.min_qty" />
+                                    </t>
+                                </t>
+                            </div>
+                        </t>
                     </div>
                 </div>
+
                 <div class="row">
                     <div class="col-xs-2">
                         <label>Author:</label>
