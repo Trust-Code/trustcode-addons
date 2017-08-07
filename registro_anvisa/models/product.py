@@ -8,6 +8,6 @@ from odoo import fields, models
 class ProductProduct(models.Model):
     _inherit = 'product.product'
 
-    registro_anvisa = fields.Char(string='Registro Anvisa', size=30)
-    validade_anvisa = fields.Date(string='Validade Anvisa')
-    esterilizacao = fields.Char(string="Método Esterilizacao", size=100)
+    registro_anvisa = fields.Char(string=u'Registro Anvisa', size=30)
+    validade_anvisa = fields.Date(string=u'Validade Anvisa')
+    esterilizacao = fields.Char(string=u"Método Esterilizacao", size=100)

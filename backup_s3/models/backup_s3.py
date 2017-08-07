@@ -18,7 +18,7 @@ try:
     from boto.s3.connection import S3Connection
     from boto.s3.key import Key
 except ImportError:
-    _logger.debug('Cannot import boto and or odoorpc')
+    _logger.debug(u'Cannot import boto and or odoorpc')
 
 
 def execute(connector, method, *args):
@@ -37,18 +37,19 @@ class BackupExecuted(models.Model):
     def _generate_s3_link(self):
         return self.s3_id
 
-    name = fields.Char('Arquivo', size=100)
-    configuration_id = fields.Many2one('backup.config', string="Configuração")
-    backup_date = fields.Datetime(string="Data")
-    local_path = fields.Char(string="Caminho Local", readonly=True)
-    s3_id = fields.Char(string="S3 Id", readonly=True)
-    s3_url = fields.Char("Link S3", compute='_generate_s3_link', readonly=True)
+    name = fields.Char(u'Arquivo', size=100)
+    configuration_id = fields.Many2one('backup.config', string=u"Configuração")
+    backup_date = fields.Datetime(string=u"Data")
+    local_path = fields.Char(string=u"Caminho Local", readonly=True)
+    s3_id = fields.Char(string=u"S3 Id", readonly=True)
+    s3_url = fields.Char(
+        u"Link S3", compute='_generate_s3_link', readonly=True)
     state = fields.Selection(
-        string="Estado", default='not_started',
-        selection=[('not_started', 'Não iniciado'),
-                   ('executing', 'Executando'),
-                   ('sending', 'Enviando'),
-                   ('error', 'Erro'), ('concluded', 'Concluído')])
+        string=u"Estado", default='not_started',
+        selection=[('not_started', u'Não iniciado'),
+                   ('executing', u'Executando'),
+                   ('sending', u'Enviando'),
+                   ('error', u'Erro'), ('concluded', u'Concluído')])
 
 
 class BackupConfig(models.Model):
@@ -71,18 +72,18 @@ class BackupConfig(models.Model):
             item.backup_count = self.env['backup.executed'].search_count(
                 [('configuration_id', '=', item.id)])
 
-    host = fields.Char(string="Endereço", size=200, default='localhost')
-    port = fields.Char(string="Porta", size=10, default='8069')
-    database_name = fields.Char(string='Banco de dados', size=100)
-    admin_password = fields.Char(string='Senha Admin', size=100)
+    host = fields.Char(string=u"Endereço", size=200, default='localhost')
+    port = fields.Char(string=u"Porta", size=10, default='8069')
+    database_name = fields.Char(string=u'Banco de dados', size=100)
+    admin_password = fields.Char(string=u'Senha Admin', size=100)
     interval = fields.Selection(
         string=u"Período",
-        selection=[('hora', '1 hora'), ('seis', '6 horas'),
-                   ('doze', '12 horas'), ('diario', u'Diário')])
+        selection=[('hora', u'1 hora'), ('seis', u'6 horas'),
+                   ('doze', u'12 horas'), ('diario', u'Diário')])
 
-    send_to_s3 = fields.Boolean('Enviar Amazon S3 ?')
-    aws_access_key = fields.Char(string="Chave API S3", size=100)
-    aws_secret_key = fields.Char(string="Chave Secreta API S3", size=100)
+    send_to_s3 = fields.Boolean(u'Enviar Amazon S3 ?')
+    aws_access_key = fields.Char(string=u"Chave API S3", size=100)
+    aws_secret_key = fields.Char(string=u"Chave Secreta API S3", size=100)
     backup_dir = fields.Char(string=u"Diretório", size=300,
                              default="/opt/backups/database/")
 
@@ -107,8 +108,9 @@ class BackupConfig(models.Model):
             self.write({'next_backup': datetime.now()})
             self.schedule_backup()
         except Exception:
-            _logger.error('Erro ao efetuar backup', exc_info=True)
-            raise Warning('Erro ao executar backup - Verifique o log de erros')
+            _logger.error(u'Erro ao efetuar backup', exc_info=True)
+            raise Warning(
+                u'Erro ao executar backup - Verifique o log de erros')
 
     @api.model
     def schedule_backup(self):
@@ -141,7 +143,7 @@ class BackupConfig(models.Model):
                                                  rec.database_name)
                     loc = ''
                     if not key:
-                        key = 'Erro ao enviar para o Amazon S3'
+                        key = u'Erro ao enviar para o Amazon S3'
                         loc = zip_file
                     else:
                         loc = 'https://s3.amazonaws.com/%s_bkp_pelican/%s' % (
@@ -180,4 +182,4 @@ class BackupConfig(models.Model):
                     u'Configurações do Amazon S3 não setadas, \
                     pulando armazenamento de backup')
         except Exception:
-            _logger.error('Erro ao enviar dados para S3', exc_info=True)
+            _logger.error(u'Erro ao enviar dados para S3', exc_info=True)
