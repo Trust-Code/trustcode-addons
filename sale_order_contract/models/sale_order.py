@@ -21,46 +21,46 @@ class SaleOrder(models.Model):
             order.total_recurrent = sum(l.price_subtotal for l in recurrent)
             order.total_non_recurrent = sum(l.price_subtotal for l in non_rec)
 
-    recurring_contract = fields.Boolean(string="Possui Contrato?")
-    active_contract = fields.Boolean(string="Contrato Ativo?", copy=False)
+    recurring_contract = fields.Boolean(string=u"Possui Contrato?")
+    active_contract = fields.Boolean(string=u"Contrato Ativo?", copy=False)
 
     payment_mode_id = fields.Many2one(
         'payment.mode', string=u"Modo de pagamento")
     invoice_period = fields.Selection(
-        [('1', 'Mensal'), ('6', 'Semestral'), ('12', 'Anual')],
-        string="Período Faturamento",
+        [('1', u'Mensal'), ('6', u'Semestral'), ('12', u'Anual')],
+        string=u"Período Faturamento",
         default='1',
         track_visibility='onchange')
     start_contract = fields.Date(
-        string="Inicio Contrato",
+        string=u"Inicio Contrato",
         track_visibility='onchange',
         default=date.today())
     end_contract = fields.Date(
-        string="Final Contrato",
+        string=u"Final Contrato",
         track_visibility='onchange',
         default=date.today() + relativedelta(years=1))
-    next_invoice = fields.Date(string="Próximo Faturamento", copy=False)
+    next_invoice = fields.Date(string=u"Próximo Faturamento", copy=False)
     total_recurrent = fields.Monetary(
-        string="Total Recorrente",
+        string=u"Total Recorrente",
         store=True,
         compute='_compute_total_values',
         track_visibility='onchange')
     total_non_recurrent = fields.Monetary(
-        string="Total Avulso",
+        string=u"Total Avulso",
         store=True,
         compute='_compute_total_values',
         track_visibility='onchange')
     margin_recurrent = fields.Float(
-        string="Margem do Recorrente (%)",
+        string=u"Margem do Recorrente (%)",
         compute='_compute_margin_percentage',
         track_visibility='onchange',
         store=True)
     margin_non_recurrent = fields.Float(
-        string="Margem do Avulso (%)",
+        string=u"Margem do Avulso (%)",
         track_visibility='onchange',
         compute='_compute_margin_percentage',
         store=True)
-    is_contract = fields.Boolean("Apenas Contrato")
+    is_contract = fields.Boolean(u"Apenas Contrato")
 
     @api.multi
     def _prepare_invoice(self):
@@ -83,14 +83,14 @@ class SaleOrder(models.Model):
                 start_date = parser.parse((self.start_contract))
                 self.next_invoice = start_date.replace(day=inv_day) + add
             else:
-                raise UserError("Condição de Pagamento Inválida")
+                raise UserError(u"Condição de Pagamento Inválida")
         if not self.active_contract:
             self.next_invoice = False
 
     def _create_contract(self):
         new_order = self.copy({
             'origin': self.name,
-            'client_order_ref': 'Contrato ' + self.name,
+            'client_order_ref': u'Contrato ' + self.name,
             'is_contract': True,
         })
         non_recurrent_lines = filter(lambda line: not line.recurring_line,
@@ -160,7 +160,7 @@ class SaleOrderLine(models.Model):
     _inherit = 'sale.order.line'
 
     recurring_line = fields.Boolean(
-        string="Recorrente?", related="product_id.recurring_product",
+        string=u"Recorrente?", related="product_id.recurring_product",
         readonly=True)
 
     @api.depends('product_id', 'purchase_price', 'product_uom_qty',

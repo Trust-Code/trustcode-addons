@@ -25,7 +25,7 @@ class StockPackOperation(models.Model):
                 rec.product_qty, rec.product_id.name)))
         return result
 
-    track_ref = fields.Char(string="Etiqueta de Rastreamento")
+    track_ref = fields.Char(string=u"Etiqueta de Rastreamento")
 
     def tracking_qrcode(self):
         origem = self.picking_id.company_id
