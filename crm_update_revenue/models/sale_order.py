@@ -9,14 +9,14 @@ class SaleOrder(models.Model):
     _inherit = 'sale.order'
 
     update_option_recurrent_revenue = fields.Selection([
-        ('1', 'Substituir'),
-        ('2', 'Somar'),
-        ('3', 'Não modificar')],
-        string='Atual. Oportunidade',
-        help="1 - Substitui o valor da oportunidade com o valor total desta "
-        "cotação \n 2 - Soma os valores de todas as cotações vinculadas "
-        "a oportunidade e sobrescreve o valor da mesma \n 3 - Não modifica "
-        "o valor da oportunidade",)
+        ('1', u'Substituir'),
+        ('2', u'Somar'),
+        ('3', u'Não modificar')],
+        string=u'Atual. Oportunidade',
+        help=u"1 - Substitui o valor da oportunidade com o valor total desta "
+        u"cotação \n 2 - Soma os valores de todas as cotações vinculadas "
+        u"a oportunidade e sobrescreve o valor da mesma \n 3 - Não modifica "
+        u"o valor da oportunidade",)
 
     @api.multi
     def write(self, vals):

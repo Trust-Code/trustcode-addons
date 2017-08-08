@@ -10,9 +10,10 @@ class ResPartner(models.Model):
     _inherit = "res.partner"
 
     government = fields.Boolean(
-        string="Governo",
-        help="Marque este campo se o parceiro é uma instituição governamental")
+        string=u"Governo",
+        help=u"Marque este campo se o parceiro é uma instituição "
+        "governamental")
     receive_royalties = fields.Boolean(
-        string="Receive Royalties",
-        help="Marque este campo se o parceiro é uma pessoa que recebe"
+        string=u"Receive Royalties",
+        help=u"Marque este campo se o parceiro é uma pessoa que recebe"
              "Royalties")
