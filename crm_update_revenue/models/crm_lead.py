@@ -8,5 +8,5 @@ from odoo import models, fields
 class CrmLead(models.Model):
     _inherit = 'crm.lead'
 
-    recurrent_revenue = fields.Float(string='Receita Recorrente',
+    recurrent_revenue = fields.Float(string=u'Receita Recorrente',
                                      oldname="x_receita_recorrente")

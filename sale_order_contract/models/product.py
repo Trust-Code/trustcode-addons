@@ -9,4 +9,4 @@ from odoo import fields, models
 class ProductTemplate(models.Model):
     _inherit = 'product.template'
 
-    recurring_product = fields.Boolean(string="Produto Recorrente?")
+    recurring_product = fields.Boolean(string=u"Produto Recorrente?")

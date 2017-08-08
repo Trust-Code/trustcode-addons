@@ -72,12 +72,12 @@ class ProjectTask (models.Model):
 class ProjectTaskType(models.Model):
     _inherit = 'project.task.type'
 
-    tracking_time = fields.Boolean('Registrar Tempo neste estágio?')
+    tracking_time = fields.Boolean(u'Registrar Tempo neste estágio?')
 
 
 class AccountAnalyticLine(models.Model):
     _inherit = 'account.analytic.line'
 
-    start_date = fields.Datetime('Inicio Atividade')
-    end_date = fields.Datetime('Fim Atividade')
-    running_time = fields.Boolean('Em execução')
+    start_date = fields.Datetime(u'Inicio Atividade')
+    end_date = fields.Datetime(u'Fim Atividade')
+    running_time = fields.Boolean(u'Em execução')

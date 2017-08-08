@@ -8,4 +8,4 @@ from odoo import fields, models
 class AccountVoucherLine(models.Model):
     _inherit = "account.voucher.line"
 
-    fee = fields.Float(string="fee")
+    fee = fields.Float(string=u"fee")

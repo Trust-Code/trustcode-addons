@@ -8,7 +8,7 @@ from odoo import fields, models
 class ProductTemplate(models.Model):
     _inherit = 'product.template'
 
-    altura = fields.Float(string='Altura')
-    largura = fields.Float(string='Largura')
-    diametro = fields.Float(string='Diametro')
-    comprimento = fields.Float(string='Comprimento')
+    altura = fields.Float(string=u'Altura')
+    largura = fields.Float(string=u'Largura')
+    diametro = fields.Float(string=u'Diâmetro')
+    comprimento = fields.Float(string=u'Comprimento')

@@ -8,4 +8,4 @@ from openerp import fields, models
 class project_task(models.Model):
     _inherit = "project.task"
 
-    commercial_description = fields.Html(string="Descrição Comercial")
+    commercial_description = fields.Html(string=u"Descrição Comercial")
