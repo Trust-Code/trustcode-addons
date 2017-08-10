@@ -8,4 +8,4 @@ from odoo import fields, models
 class AccountJournal(models.Model):
     _inherit = 'account.journal'
 
-    special_royalties = fields.Boolean('Special Royaltires?')
+    special_royalties = fields.Boolean(u'Special Royalties?')

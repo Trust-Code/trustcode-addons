@@ -9,7 +9,7 @@ from odoo import api, fields, models
 class ResPartner(models.Model):
     _inherit = 'res.partner'
 
-    invoiceto_id = fields.Many2one('res.partner', string="Faturar para")
+    invoiceto_id = fields.Many2one('res.partner', string=u"Faturar para")
 
     @api.multi
     def address_get(self, adr_pref=None):

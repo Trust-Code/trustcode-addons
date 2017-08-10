@@ -29,22 +29,23 @@ def check_for_correio_error(method):
 class DeliveryCarrier(models.Model):
     _inherit = 'delivery.carrier'
 
-    correio_login = fields.Char(string="Login Correios", size=30)
-    correio_password = fields.Char(string="Senha do Correio", size=30)
-    cod_administrativo = fields.Char(string="Código Administrativo", size=20)
-    num_contrato = fields.Char(string="Número de Contrato", size=20)
+    correio_login = fields.Char(string=u"Login Correios", size=30)
+    correio_password = fields.Char(string=u"Senha do Correio", size=30)
+    cod_administrativo = fields.Char(string=u"Código Administrativo", size=20)
+    num_contrato = fields.Char(string=u"Número de Contrato", size=20)
     cartao_postagem = fields.Char(
-        string="Número do cartão de Postagem", size=20)
+        string=u"Número do cartão de Postagem", size=20)
 
-    delivery_type = fields.Selection(selection_add=[('correios', 'Correios')])
-    service_id = fields.Many2one('delivery.correios.service', string="Serviço")
-    mao_propria = fields.Selection([('S', 'Sim'), ('N', 'Não')],
-                                   string='Entregar em Mão Própria')
-    valor_declarado = fields.Boolean('Valor Declarado')
-    aviso_recebimento = fields.Selection([('S', 'Sim'), ('N', 'Não')],
-                                         string='Receber Aviso de Entrega')
-    ambiente = fields.Selection([(1, 'Homologação'), (2, 'Produção')],
-                                default=1, string="Ambiente")
+    delivery_type = fields.Selection(selection_add=[('correios', u'Correios')])
+    service_id = fields.Many2one(
+        'delivery.correios.service', string=u"Serviço")
+    mao_propria = fields.Selection([('S', u'Sim'), ('N', u'Não')],
+                                   string=u'Entregar em Mão Própria')
+    valor_declarado = fields.Boolean(u'Valor Declarado')
+    aviso_recebimento = fields.Selection([('S', u'Sim'), ('N', u'Não')],
+                                         string=u'Receber Aviso de Entrega')
+    ambiente = fields.Selection([(1, u'Homologação'), (2, u'Produção')],
+                                default=1, string=u"Ambiente")
 
     @api.one
     def action_get_correio_services(self):
@@ -178,7 +179,7 @@ class DeliveryCarrier(models.Model):
                 if len(etiqueta) > 0:
                     etiqueta = etiqueta[0]
                 else:
-                    raise UserError('Nenhuma etiqueta recebida')
+                    raise UserError(u'Nenhuma etiqueta recebida')
                 pack.track_ref = etiqueta
                 tags.append(etiqueta)
                 self.env['delivery.correios.postagem.objeto'].create({

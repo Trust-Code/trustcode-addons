@@ -20,7 +20,7 @@
               </group>
               <group>
                 <group>
-                  <field name="partner_id" attrs="{'readonly':[('state','=','in_progress')]}" />
+                  <field name="partner_id" domain="[('receive_royalties', '=', True)]" attrs="{'readonly':[('state','=','in_progress')]}" />
                   <field name="region" attrs="{'readonly':[('state','=','in_progress')]}" />
                   <field name="start_date" readonly="1" />
                   <field name="validity_date" required="1" attrs="{'readonly':[('state','=','in_progress')]}" />

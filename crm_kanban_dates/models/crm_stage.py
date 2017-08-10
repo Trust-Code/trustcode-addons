@@ -8,4 +8,4 @@ from odoo import fields, models
 class CrmStage(models.Model):
     _inherit = 'crm.stage'
 
-    maximum_days = fields.Integer(string="Máximo de dias neste estágio")
+    maximum_days = fields.Integer(string=u"Máximo de dias neste estágio")

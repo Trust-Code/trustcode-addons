@@ -10,5 +10,6 @@ class PaymentTerm(models.Model):
     _inherit = 'account.payment.term'
 
     invoice_day = fields.Integer(
-        string="Data da Fatura", help='Define o dia que será criado a fatura')
-    indPag = fields.Selection(selection_add=[('3', 'Mensalidade')])
+        string=u"Data da Fatura",
+        help=u'Define o dia que será criado a fatura')
+    indPag = fields.Selection(selection_add=[('3', u'Mensalidade')])

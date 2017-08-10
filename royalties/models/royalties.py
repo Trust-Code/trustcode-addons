@@ -15,24 +15,23 @@ class Royalties(models.Model):
     name = fields.Char()
     validity_date = fields.Date(string=u"Validity Date")
     start_date = fields.Date(string=u"Start Date")
-    royalty_type = fields.Char(string="Type")
-    company_id = fields.Many2one("res.company", string="Company")
+    royalty_type = fields.Char(string=u"Type")
+    company_id = fields.Many2one("res.company", string=u"Company")
     payment_ids = fields.One2many("account.voucher", "royalties_id",
                                   readonly=True)
     line_ids = fields.One2many(
         'royalties.lines', 'royalties_id')
     partner_id = fields.Many2one('res.partner',
-                                 string=u"Partner",
-                                 required="1")
+                                 string=u"Partner")
     region = fields.Char(string=u"Region", size=20)
     state = fields.Selection(
-        [('draft', 'Draft'), ('in_progress', 'in Progress'),
-         ('waiting', 'Waiting Payment'), ('done', 'Done')],
+        [('draft', u'Draft'), ('in_progress', u'in Progress'),
+         ('waiting', u'Waiting Payment'), ('done', u'Done')],
         default='draft',
         store=True,
         compute='_compute_state')
-    actived = fields.Boolean("active")
-    done = fields.Boolean("Contract Done")
+    actived = fields.Boolean(u"active")
+    done = fields.Boolean(u"Contract Done")
 
     @api.one
     @api.constrains('validity_date')
@@ -40,10 +39,10 @@ class Royalties(models.Model):
         today = fields.date.today()
         validity_date = fields.Date.from_string(self.validity_date)
         if validity_date < today:
-            raise ValidationError(_("The validity date must be bigger than "
+            raise ValidationError(_(u"The validity date must be bigger than "
                                     "today"))
         elif validity_date > (today + timedelta(days=365) * 12):
-            raise ValidationError(_("The validity date can't be more than 12 "
+            raise ValidationError(_(u"The validity date can't be more than 12 "
                                     "years"))
 
     @api.multi
@@ -98,7 +97,7 @@ class Royalties(models.Model):
         journal_id = self.env['account.journal'].search([
             ('special_royalties', '=', True)], limit=1)
         if not journal_id:
-            raise Warning(_("Non-configured royalty payment journal!"))
+            raise Warning(_(u"Non-configured royalty payment journal!"))
         for item in self:
             voucher_id = voucher_obj.search([
                 ('royalties_id', '=', item.id),
@@ -115,7 +114,7 @@ class Royalties(models.Model):
                     'voucher_type': 'purchase',
                     'journal_id': journal_id.id,
                     'royalties_id': item.id,
-                    'reference': 'Pagamento de Royalties(%s)' % item.name,
+                    'reference': u'Pagamento de Royalties(%s)' % item.name,
                     }
                 voucher_id = voucher_obj.create(values)
 
@@ -167,7 +166,7 @@ class Royalties(models.Model):
                     vals = {
                         'product_id': prod_id.id,
                         'quantity': 1,
-                        'name': 'Royalties (%s)' % (item.name),
+                        'name': u'Royalties (%s)' % (item.name),
                         'price_unit': amount * fee,
                         'account_id': journal_id.default_debit_account_id.id,
                         'company_id': company_id,
@@ -193,24 +192,24 @@ class RoyaltiesLines(models.Model):
     _name = 'royalties.lines'
 
     product_id = fields.Many2one(
-        'product.product', string="Product", required=False)
-    commission = fields.Float(string="% Commission")
-    min_qty = fields.Float(string="Qty. minimum", default=1)
-    royalties_id = fields.Many2one('royalties', string="Contracts")
+        'product.product', string=u"Product", required=False)
+    commission = fields.Float(string=u"% Commission")
+    min_qty = fields.Float(string=u"Qty. minimum", default=1)
+    royalties_id = fields.Many2one('royalties', string=u"Contracts")
 
     @api.one
     @api.constrains('commission')
     def _check_value(self):
         if self.commission < 0:
             raise ValidationError(
-                _("The commission rate must be bigger than 0"))
+                _(u"The commission rate must be bigger than 0"))
         if self.commission > 100:
             raise ValidationError(
-                _("The commission rate must be smaller than 100"))
+                _(u"The commission rate must be smaller than 100"))
 
     @api.one
     @api.constrains('commission')
     def _check_positive(self):
         if self.min_qty < 1:
             raise ValidationError(
-                _("Quantity must be bigger than 1"))
+                _(u"Quantity must be bigger than 1"))

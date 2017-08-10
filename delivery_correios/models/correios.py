@@ -23,21 +23,21 @@ class CorreiosServicos(models.Model):
     identifier = fields.Char(string=u"Identificador", size=20)
     name = fields.Char(string=u"Descrição", size=70, required=True)
     delivery_id = fields.Many2one('delivery.carrier', string=u"Método entrega")
-    chancela = fields.Binary(string='Chancela')
-    ano_assinatura = fields.Char(string="Ano Assinatura")
+    chancela = fields.Binary(string=u'Chancela')
+    ano_assinatura = fields.Char(string=u"Ano Assinatura")
 
 
 class CorreiosPostagemPlp(models.Model):
     _name = 'delivery.correios.postagem.plp'
 
     name = fields.Char(string=u"Descrição", size=20, required=True)
-    company_id = fields.Many2one("res.company", string="Empresa")
-    state = fields.Selection([('draft', 'Rascunho'), ('done', 'Enviado')],
+    company_id = fields.Many2one("res.company", string=u"Empresa")
+    state = fields.Selection([('draft', u'Rascunho'), ('done', u'Enviado')],
                              string="Status", default='draft')
     delivery_id = fields.Many2one('delivery.carrier', string=u"Método entrega")
     total_value = fields.Float(string=u"Valor Total")
-    sent_date = fields.Date(string="Data Envio")
-    carrier_tracking_ref = fields.Char(string="Referência", size=30)
+    sent_date = fields.Date(string=u"Data Envio")
+    carrier_tracking_ref = fields.Char(string=u"Referência", size=30)
     postagem_ids = fields.One2many('delivery.correios.postagem.objeto',
                                    'plp_id', string=u'Postagens')
 
@@ -143,24 +143,24 @@ src="/report/barcode/Code128/' + self.carrier_tracking_ref + '" />'
 class CorreiosPostagemObjeto(models.Model):
     _name = 'delivery.correios.postagem.objeto'
 
-    name = fields.Char(string="Descrição", size=20, required=True)
+    name = fields.Char(string=u"Descrição", size=20, required=True)
     delivery_id = fields.Many2one('delivery.carrier', string=u"Método entrega")
     stock_pack_id = fields.Many2one(
-        'stock.pack.operation', string="Item Entrega")
-    plp_id = fields.Many2one('delivery.correios.postagem.plp', 'PLP')
+        'stock.pack.operation', string=u"Item Entrega")
+    plp_id = fields.Many2one('delivery.correios.postagem.plp', u'PLP')
     evento_ids = fields.One2many(
         'delivery.correios.postagem.eventos',
-        'postagem_id', 'Eventos')
+        'postagem_id', u'Eventos')
 
 
 class CorreiosEventosObjeto(models.Model):
     _name = 'delivery.correios.postagem.eventos'
 
-    etiqueta = fields.Char(string='Etiqueta')
+    etiqueta = fields.Char(string=u'Etiqueta')
     postagem_id = fields.Many2one(
-        'delivery.correios.postagem.objeto', 'Postagem')
-    status = fields.Char(string='Status')
-    data = fields.Date(string='Data')
-    local_destino = fields.Char(string='Local Destino')
-    local_origem = fields.Char(string='Local Origem')
-    descricao = fields.Char(string='Descrição')
+        'delivery.correios.postagem.objeto', u'Postagem')
+    status = fields.Char(string=u'Status')
+    data = fields.Date(string=u'Data')
+    local_destino = fields.Char(string=u'Local Destino')
+    local_origem = fields.Char(string=u'Local Origem')
+    descricao = fields.Char(string=u'Descrição')
