@@ -1,3 +1,4 @@
+dist: precise
 language: python
 
 python:
@@ -8,11 +9,12 @@ sudo: false
 addons:
   apt:
     packages:
+      - python-dev
       - expect-dev  # provides unbuffer utility
-      - python-lxml  # because pip installation is slow
       - libxml2-dev
       - libxmlsec1-dev
       - libxslt-dev
+      - python-libxml2
 
 env:
   global:

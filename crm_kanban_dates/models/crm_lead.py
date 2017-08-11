@@ -11,13 +11,13 @@ from odoo import api, fields, models
 class CrmLead(models.Model):
     _inherit = 'crm.lead'
 
-    days_in_current_stage = fields.Integer(string="Dias no estágio atual",
+    days_in_current_stage = fields.Integer(string=u"Dias no estágio atual",
                                            compute="_days_in_current_stage",
                                            store=True)
-    days_since_creation = fields.Integer(string="Dias desde a criação",
+    days_since_creation = fields.Integer(string=u"Dias desde a criação",
                                          compute="_days_since_creation",
                                          store=True)
-    is_late = fields.Boolean(string="Atrasada?", compute="_is_late",
+    is_late = fields.Boolean(string=u"Atrasada?", compute="_is_late",
                              store=True)
 
     @api.depends('date_last_stage_update')

@@ -10,8 +10,8 @@ class SaleContractRenew(models.TransientModel):
     _name = 'sale.contract.renew'
 
     addition_discount = fields.Float(
-        string="% Acréscimo/Desc.",
-        help="Adicione um valor negativo para desconto")
+        string=u"% Acréscimo/Desc.",
+        help=u"Adicione um valor negativo para desconto")
 
     @api.multi
     def action_update_contracts(self):

@@ -307,7 +307,7 @@ msgstr "Regras"
 
 #. module: royalties
 #: model:ir.model.fields,field_description:royalties.field_account_journal_special_royalties
-msgid "Special Royaltires?"
+msgid "Special Royalties?"
 msgstr "Royalties Especiais?"
 
 #. module: royalties
@@ -428,4 +428,3 @@ msgstr "royalties.lines"
 #: model:ir.model,name:royalties.model_royalties_wizard
 msgid "royalties.wizard"
 msgstr "royalties.wizard"
-
