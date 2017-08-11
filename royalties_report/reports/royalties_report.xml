@@ -136,7 +136,12 @@
                                 <span t-esc="'%.0f' % r.inv_line_id.quantity"></span>
                             </div>
                             <div class="col-xs-2" style="text-align: center;">
-                                <span t-field="r.inv_line_id.price_subtotal"></span>
+                                <t t-if="r.inv_line_id.invoice_id.partner_id.government">
+                                    <span t-field="r.inv_line_id.price_subtotal"></span>
+                                </t>
+                                <t t-else="not r.inv_line_id.invoice_id.partner_id.government">
+                                    <span t-field="r.product_id.list_price"></span>
+                                </t>
                             </div>
                             <div class="col-xs-2" style="text-align: center;">
                                 <t t-set="fee" t-value="l.fee * 100" />
@@ -144,7 +149,12 @@
                             </div>
                             <div class="col-xs-2" style="text-align: center;">
                                 <t t-if="r.is_devol">-</t>
-                                <t t-set="royalties_earned" t-value="r.inv_line_id.price_subtotal * r.inv_line_id.quantity * l.fee" /> R$
+                                <t t-if="r.inv_line_id.invoice_id.partner_id.government">
+                                    <t t-set="royalties_earned" t-value="r.inv_line_id.price_subtotal * r.inv_line_id.quantity * l.fee" /> R$
+                                </t>
+                                <t t-else="not r.inv_line_id.invoice_id.partner_id.government">
+                                    <t t-set="royalties_earned" t-value="r.product_id.list_price * r.inv_line_id.quantity * l.fee" /> R$
+                                </t>
                                 <span t-esc="'%.2f' % royalties_earned"></span>
                             </div>
                         </div>
@@ -162,7 +172,7 @@
                         <label>Total:</label>
                     </div>
                     <div class="col-xs-6" style="text-align: right">
-                        <span t-esc="total"></span>
+                        R$ <span t-esc="'%.2f' % total"></span>
                     </div>
                 </div>
                 <div class="row" style="border-bottom: 1px solid grey;">
@@ -170,7 +180,7 @@
                         <label>Advance or Balance:</label>
                     </div>
                     <div class="col-xs-6" style="text-align: right">
-                        <span t-esc="balance"></span>
+                        R$ <span t-esc="'%.2f' % balance"></span>
                     </div>
                 </div>
                 <div class="row" style="border-bottom: 1px solid grey;">
@@ -178,7 +188,7 @@
                         <label>Amount due:</label>
                     </div>
                     <div class="col-xs-6" style="text-align: right">
-                        <span t-esc="amount_due"></span>
+                        R$ <span t-esc="'%.2f' % amount_due"></span>
                     </div>
                 </div>
             </t>
