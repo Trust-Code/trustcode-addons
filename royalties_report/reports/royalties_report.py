@@ -17,7 +17,8 @@ class RoyaltiesReport(models.AbstractModel):
         account_voucher = self.env['account.voucher'].search(
             [('id', 'in', docids)])
         royalties_lines = self.env['account.royalties.line'].search(
-            [('voucher_id', '=', account_voucher.id)])
+            [('voucher_id', '=', account_voucher.id),
+             ('inv_line_id.invoice_id.state', 'in', ['paid', 'open'])])
 
         period = self._get_period(royalties_lines[0].royalties_id,
                                   account_voucher)
