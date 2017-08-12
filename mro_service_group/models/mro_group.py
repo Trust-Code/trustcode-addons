@@ -21,7 +21,7 @@ class SaleOrder(models.Model):
 
     mro_group_id = fields.Many2one('mro.group', string=u'Agrupador')
     maintenance_count = fields.Integer(
-        'Maintenance', compute='_compute_maintenance_count')
+        u'Maintenance', compute='_compute_maintenance_count')
 
     def _compute_maintenance_count(self):
         for item in self:

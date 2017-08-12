@@ -11,11 +11,11 @@ class AccountRoyaltiesLine(models.Model):
     _name = "account.royalties.line"
 
     inv_line_id = fields.Many2one('account.invoice.line', ondelete='set null')
-    is_devol = fields.Boolean('Is Devolution?')
+    is_devol = fields.Boolean(u'Is Devolution?')
     product_id = fields.Many2one('product.product', required=True,
-                                 string="Product", ondelete='set null')
+                                 string=u"Product", ondelete='set null')
     royalties_id = fields.Many2one('royalties', required=True,
-                                   string='Royalties', ondelete='restrict')
+                                   string=u'Royalties', ondelete='restrict')
     voucher_id = fields.Many2one('account.voucher', ondelete='set null')
 
     @api.multi
