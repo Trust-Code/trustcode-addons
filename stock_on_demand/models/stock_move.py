@@ -23,6 +23,7 @@ class StockMoveDemand(models.Model):
                move.procure_method == 'make_to_stock' and \
                move.product_id.nbr_reordering_rules == 0 and \
                move.state == 'confirmed' and \
+               move.is_procurement_on_demand == False and \
                vrt_available < move.product_uom_qty:
 
                 move.route_ids = move.product_id.mapped('route_ids')
