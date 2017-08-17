@@ -23,5 +23,6 @@
     ],
     'data': [
         'reports/royalties_report.xml',
+        'reports/synthetic_royalties_report.xml',
     ],
 }
