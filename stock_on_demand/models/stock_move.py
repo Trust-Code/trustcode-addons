@@ -12,7 +12,7 @@ class StockMoveDemand(models.Model):
     is_procurement_on_demand = fields.Boolean(name="is proc. on demand?")
 
     @api.multi
-    def action_assign(self):
+    def action_assign(self, no_prepare=False):
         res = super(StockMoveDemand, self).action_assign()
         procurement_obj = self.env['procurement.order']
 
