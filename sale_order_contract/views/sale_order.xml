@@ -49,8 +49,4 @@
         <field name="domain">[('is_contract','=',False)]</field>
     </record>
 
-    <record id="sale.action_orders" model="ir.actions.act_window">
-        <field name="domain">[('is_contract', '=', False), ('state', 'not in', ('draft', 'sent', 'cancel'))]</field>
-    </record>
-
 </odoo>
