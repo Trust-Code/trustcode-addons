@@ -1,4 +1,8 @@
 id,name,model_id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_royalties_manager,access_royalties,royalties,account.group_account_manager,1,1,1,1
+access_royalties_invoice,access_royalties,royalties,account.group_account_invoice,1,0,0,0
 access_royalties_user,access_royalties,royalties,account.group_account_user,1,0,0,0
+access_royalties_line_manager,access_royalties_line,royalties.lines,account.group_account_manager,1,1,1,1
+access_royalties_line_invoice,access_royalties_line,royalties.lines,account.group_account_user,1,0,0,0
 access_royalties_line_user,access_royalties_line,royalties.lines,account.group_account_invoice,1,0,0,0
 access_royalties_line__payment_user,access_royalties_payment,account.royalties.line,base.group_user,1,1,1,0
