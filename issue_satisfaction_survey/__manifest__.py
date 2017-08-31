@@ -17,6 +17,7 @@
     'depends': ['project_issue',],
     'data': [
         'wizard/project_issue.xml',
+        'security/ir.model.access.csv'
     ],
     'installable': True,
     'application': False,

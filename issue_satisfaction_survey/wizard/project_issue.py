@@ -37,8 +37,7 @@ class ProjectIssue(models.Model):
 
     def action_close_issue(self):
         action = self.env.ref(
-            'issue_satisfaction_survey \
-            .action_issue_satifaction_survey').read()[0]
+         'issue_satisfaction_survey.action_issue_satifaction_survey').read()[0]
 
         return action
 
