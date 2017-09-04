@@ -50,8 +50,9 @@ class Royalties(models.Model):
     def _compute_state(self):
         inv_royalties_obj = self.env['account.royalties.line']
         for item in self:
-            line_ids = inv_royalties_obj.search([('voucher_id', '=', False),
-                                                 ('royalties_id', '!=', False)])
+            line_ids = inv_royalties_obj.search(
+                [('voucher_id', '=', False),
+                 ('royalties_id', '!=', False)])
             royalties_ids = line_ids.mapped('royalties_id')
             if item.actived and item.validity_date <= fields.Date.today():
                 if royalties_ids and item.id in royalties_ids.ids:
