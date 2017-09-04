@@ -11,8 +11,6 @@ class RoyaltiesReportSynthetic(models.AbstractModel):
 
     @api.model
     def render_html(self, docids, data=None):
-        import ipdb
-        ipdb.set_trace()
         report_obj = self.env['report']
         report = report_obj._get_report_from_name(
             'royalties_report.synthetic_royalties_report')
