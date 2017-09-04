@@ -2,24 +2,18 @@
 # © 2017 Mackilem Van der Laan, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-{
+{  # pylint: disable=C8101,C8103
     'name': 'Issue Satisfaction Survey',
-    'version': '1.0',
-    'category': '',
-    'sequence': 5,
+    'version': '10.0.1.0.0',
+    'category': 'Project',
     'summary': 'Pesquisa de satisfação em tarefas',
-    'description': """
-
-====================================================
-
-""",
+    'description': "Pesquisa de satisfação em tarefas",
     'website': 'https://www.trustcode.com.br',
-    'depends': ['project_issue',],
+    'depends': ['project_issue'],
+    'author': 'Trustcode',
+    'license': 'AGPL-3',
     'data': [
-        'wizard/project_issue.xml',
-        'security/ir.model.access.csv'
+        'views/project_issue.xml',
+        'wizard/project_issue_close.xml',
     ],
-    'installable': True,
-    'application': False,
-    'auto_install': False,
 }
