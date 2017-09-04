@@ -50,8 +50,9 @@ class Royalties(models.Model):
     def _compute_state(self):
         inv_royalties_obj = self.env['account.royalties.line']
         for item in self:
-            line_ids = inv_royalties_obj.search([('voucher_id', '=', False),
-                                                ('royalties_id', '!=', False)])
+            line_ids = inv_royalties_obj.search(
+                [('voucher_id', '=', False),
+                 ('royalties_id', '!=', False)])
             royalties_ids = line_ids.mapped('royalties_id')
             if item.actived and item.validity_date <= fields.Date.today():
                 if royalties_ids and item.id in royalties_ids.ids:
@@ -115,7 +116,7 @@ class Royalties(models.Model):
                     'journal_id': journal_id.id,
                     'royalties_id': item.id,
                     'reference': u'Pagamento de Royalties(%s)' % item.name,
-                    }
+                }
                 voucher_id = voucher_obj.create(values)
 
             product_ids = item.line_ids.mapped('product_id')
@@ -124,7 +125,9 @@ class Royalties(models.Model):
                 royalties_line_ids = inv_royalties_obj.search(
                     [('voucher_id', '=', False),
                      ('royalties_id', '=', item.id),
-                     ('product_id', '=', prod_id.id)])
+                     ('product_id', '=', prod_id.id),
+                     ('inv_line_id.invoice_id.date_invoice', '>=',
+                      item.start_date)])
 
                 royalties_line_total_ids = inv_royalties_obj.search(
                     [('royalties_id', '=', item.id),
@@ -171,7 +174,7 @@ class Royalties(models.Model):
                         'account_id': journal_id.default_debit_account_id.id,
                         'company_id': company_id,
                         'fee': fee
-                        }
+                    }
                     line_vals.append((0, 0, vals))
                     royalties_line_ids.write({'voucher_id': voucher_id.id})
 
@@ -184,7 +187,7 @@ class Royalties(models.Model):
         for line in self.line_ids.sorted(key=lambda r: r.min_qty,
                                          reverse=True):
             if line.product_id.id == product_id.id and qty >= line.min_qty:
-                    return line.commission / 100
+                return line.commission / 100
         return result
 
 

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_button_close_form" model="ir.ui.view">
+        <field name="name">Botao de Encerramento</field>
+        <field name="model">project.issue</field>
+        <field name="inherit_id" ref="project_issue.project_issue_form_view"/>
+        <field name="arch" type="xml">
+            <header>
+                <button type="object" class="oe_stat_button" icon="fa-angellist"
+                    name="action_close_issue" string="Encerrar"
+                    group="project_issue.grupo_cliente_externo" />
+            </header>
+            <xpath expr="//page[@name='extra_info']" position="inside">
+              <group string="Avaliação">
+                <field name="pergunta1" string="Cumpriu com as Obrigações?"/>
+                <field name="pergunta2" string="Tempo de Atendimento?"/>
+                <field name="pergunta3" string="Qualidade do atendimento?"/>
+                <field name="pergunta4" string="Indicação"/>
+              </group>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>
