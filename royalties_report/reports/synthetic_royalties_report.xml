@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="paperformat_royalties" model="report.paperformat">
+        <field name="name">Formato Relatório Royalties</field>
+        <field name="default" eval="True" />
+        <field name="orientation">Landscape</field>
+        <field name="margin_top">30.0</field>
+        <field name="margin_left">3.0</field>
+        <field name="margin_right">3.0</field>
+        <field name="margin_bottom">15.0</field>
+        <field name="header_spacing">25</field>
+    </record>
+    <report id="royalties_report.action_synthetic_royalties_report" model="account.voucher" report_type="qweb-pdf" string="Relatório Sintético de Royalties"
+        name="royalties_report.royalties_report" file="royalties_report.royalties_report" paperformat="paperformat_royalties"
+    />
+    <template id="royalties_report_document">
+        <t t-set="o" t-value="o.with_context({'lang':o.partner_id.lang})" />
+        <div class="header">
+            <h1 style="text-align: center;">
+                <span t-field="docs.company_id" />
+            </h1>
+            <h4 style="text-align: center;">
+                <span>Prestação de Contas de Direitos Autorais</span>
+            </h4>
+        </div>
+        <div class="page">
+            <t t-foreach="o.line_ids" t-as="l">
+                <div class="row" style="margin-top: 65px;">
+                    <div class="col-xs-12" style="text-align: right;">
+                        <label>Royalties</label>
+                    </div>
+                </div>
+                <div class="row" style="border-bottom: 1px solid grey;">
+                    <div class="col-xs-8">
+                        <div class="row">
+                            <div class="col-xs-3">
+                                <label>Period:</label>
+                            </div>
+                            <div class="col-xs-6">
+                                <span t-esc="initial_date"></span> to
+                                <span t-esc="final_date"></span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-3">
+                                <label>Publication Month:</label>
+                            </div>
+                            <div class="col-xs-6">
+                                <span t-field="royalties_lines[0].royalties_id.start_date"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-4">
+                        <t t-set="first" t-value="True" />
+                        <t t-foreach="royalties_lines[0].royalties_id.line_ids" t-as="rl">
+                            <div class="row" style="text-align:right;">
+                                <t t-if="rl.product_id == l.product_id">
+                                    <t t-if="first">
+                                        <span t-field="rl.commission" />% up to <span t-esc="'%.0f' % rl.min_qty" />
+                                        <t t-set="first" t-value="False" />
+                                    </t>
+                                    <t t-else="">
+                                        <span t-field="rl.commission" />% thereafter <span t-esc="'%.0f' % rl.min_qty" />
+                                    </t>
+                                </t>
+                            </div>
+                        </t>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-xs-2">
+                        <label>Author:</label>
+                    </div>
+                    <div class="col-xs-6">
+                        <span t-field="l.voucher_id.partner_id"></span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-2">
+                        <label>Original title:</label>
+                    </div>
+                    <div class="col-xs-6">
+                        <span t-field="l.product_id.name"></span>
+                    </div>
+                </div>
+                <div class="row" style="border-bottom: 1px solid grey;">
+                    <div class="col-xs-2">
+                        <label>Portuguese title:</label>
+                    </div>
+                    <div class="col-xs-6">
+                        <span t-field="l.product_id.name"></span>
+                    </div>
+                </div>
+                <div class="row" style="border-bottom: 1px solid grey;">
+                    <div class="col-xs-2">
+                        <label>Sales in the period:</label>
+                    </div>
+                    <div class="col-xs-6">
+                        <t t-set="total_sales" t-value="0" />
+                        <t t-set="total" t-value='0' />
+                        <t t-set="balance" t-value="0" />
+                        <t t-foreach="royalties_lines" t-as="r">
+                            <t t-if="r.product_id == l.product_id">
+                                <t t-if="r.inv_line_id.invoice_id.partner_id.government">
+                                    <t t-set="royalties_earned" t-value="r.inv_line_id.price_subtotal * r.inv_line_id.quantity * l.fee" />
+                                </t>
+                                <t t-else="not r.inv_line_id.invoice_id.partner_id.government">
+                                    <t t-set="royalties_earned" t-value="r.product_id.list_price * r.inv_line_id.quantity * l.fee" />
+                                </t>
+                                <t t-if="not r.is_devol">
+                                    <t t-set="total" t-value="total + royalties_earned" />
+                                </t>
+                                <t t-if="r.is_devol">
+                                    <t t-set="balance" t-value="balance + royalties_earned" />
+                                </t>
+                                <t t-if="not r.is_devol">
+                                    <t t-set="total_sales" t-value="total_sales + int(r.inv_line_id.quantity)" />
+                                </t>
+                            </t>
+                        </t>
+                        <span t-esc="total_sales"></span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-3" style="text-align: center;">
+                        <label>Quantity</label>
+                    </div>
+                    <div class="col-xs-3" style="text-align: center;">
+                        <label>Price</label>
+                    </div>
+                    <div class="col-xs-3" style="text-align: center;">
+                        <label>%</label>
+                    </div>
+                    <div class="col-xs-3" style="text-align: center;">
+                        <label>Royalties earned</label>
+                    </div>
+                </div>
+                <div class="row" style="border-bottom: 1px solid grey;">
+                    <div class="col-xs-3" style="text-align: center;">
+                        <span t-esc="total_sales"></span>
+                    </div>
+                    <div class="col-xs-3" style="text-align: center;">
+                        <span t-esc="l.product_id.list_price"></span>
+                    </div>
+                    <div class="col-xs-3" style="text-align: center;">
+                        <span t-esc="l.fee * 100"></span>
+                    </div>
+                    <div class="col-xs-3" style="text-align: center;">
+                        <span t-esc="l.price_subtotal"></span>
+                    </div>
+                </div>
+                <t t-set="amount_due" t-value="total - balance" />
+                <div class="row" style="border-bottom: 1px solid grey;">
+                    <div class="col-xs-6">
+                        <label>Total:</label>
+                    </div>
+                    <div class="col-xs-6" style="text-align: right">
+                        R$ <span t-esc="'%.2f' % total"></span>
+                    </div>
+                </div>
+                <div class="row" style="border-bottom: 1px solid grey;">
+                    <div class="col-xs-6">
+                        <label>Advance or Balance:</label>
+                    </div>
+                    <div class="col-xs-6" style="text-align: right">
+                        R$ <span t-esc="'%.2f' % balance"></span>
+                    </div>
+                </div>
+                <div class="row" style="border-bottom: 1px solid grey;">
+                    <div class="col-xs-6">
+                        <label>Amount due:</label>
+                    </div>
+                    <div class="col-xs-6" style="text-align: right">
+                        R$ <span t-esc="'%.2f' % amount_due"></span>
+                    </div>
+                </div>
+            </t>
+            <br />
+            <br />
+            <br />
+        </div>
+    </template>
+    <template id="royalties_report">
+        <t t-call="report.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="royalties_report.royalties_report_document" t-lang="o.partner_id.lang" /></t>
+        </t>
+    </template>
+</odoo>
