@@ -29,7 +29,7 @@ class ProjectIssue(models.Model):
     @api.multi
     def write(self, vals):
         res = super(ProjectIssue, self).write(vals)
-        if "stage_id" in vals and vals['stage_id'] == 40 and \
+        if "stage_id" in vals and vals['stage_id'] == STAGE_ID_CLOSED and \
            not self.can_close:
             raise UserError(u'Por favor, utilize o botão localizado dentro do \
             ticket para encerrar o chamado.')
