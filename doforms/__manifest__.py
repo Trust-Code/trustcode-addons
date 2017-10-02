@@ -15,7 +15,7 @@
 
 """,
     'website': 'https://www.trustcode.com.br',
-    'depends': ['mail'],
+    'depends': ['mail', 'project'],
     'data': ['views/doforms.xml',
              'data/ir_sequence.xml',
              'security/security.xml',
