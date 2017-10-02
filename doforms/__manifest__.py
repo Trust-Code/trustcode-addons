@@ -4,6 +4,7 @@
 
 {
     'name': 'doforms',
+    'author': 'Mackilem Van der Laan',
     'version': '1.0',
     'category': '',
     'sequence': 5,
@@ -19,8 +20,8 @@
              'data/ir_sequence.xml',
              'security/security.xml',
              'security/ir.model.access.csv'
-    ],
+             ],
     'installable': True,
     'application': False,
     'auto_install': False,
-}
+    }
