@@ -17,6 +17,8 @@
     'depends': ['mail'],
     'data': ['views/doforms.xml',
              'data/ir_sequence.xml',
+             'security/security.xml',
+             'security/ir.model.access.csv'
     ],
     'installable': True,
     'application': False,
