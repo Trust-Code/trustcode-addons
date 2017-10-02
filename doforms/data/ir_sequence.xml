@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <record id="seq_doforms" model="ir.sequence">
+            <field name="name">DoForms</field>
+            <field name="code">doforms</field>
+            <field name="prefix">DF/</field>
+            <field name="padding">4</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+    </data>
+</odoo>

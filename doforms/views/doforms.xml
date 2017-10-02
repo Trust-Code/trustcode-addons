@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+  <record id="doforms_view_form" model="ir.ui.view">
+    <field name="name">doforms.form</field>
+    <field name="model">doforms</field>
+    <field name="arch" type="xml">
+      <form string="Formulario">
+        <header>
+            <field name="stage_id" widget="statusbar" clickable="True" />
+        </header>
+        <sheet>
+          <group>
+            <field name="name" readonly="True"/>
+            <field name="origin" />
+          </group>
+        </sheet>
+        <div class="oe_chatter">
+            <field name="message_follower_ids" widget="mail_followers" groups="base.group_user"/>
+            <field name="message_ids" widget="mail_thread"/>
+        </div>
+      </form>
+    </field>
+  </record>
+
+  <record id="doforms_view_tree" model="ir.ui.view">
+    <field name="name">doforms.tree</field>
+    <field name="model">doforms</field>
+    <field name="arch" type="xml">
+        <tree>
+          <field name="name" />
+          <field name="origin" />
+          <field name="stage_id" />
+        </tree>
+    </field>
+  </record>
+
+  <record id="doforms_stage_view_form" model="ir.ui.view">
+    <field name="name">doforms.stage.form</field>
+    <field name="model">doforms.stage</field>
+    <field name="arch" type="xml">
+      <form string="Estagios">
+        <sheet>
+          <group>
+            <field name="name"/>
+          </group>
+        </sheet>
+      </form>
+    </field>
+  </record>
+
+  <record id="doforms_action_form" model="ir.actions.act_window">
+    <field name="name">doforms_action</field>
+    <field name="res_model">doforms</field>
+    <field name="view_mode">tree,form</field>
+    <field name="help" type="html">
+      <p class="oe_view_nocontent_create">
+        <!-- Add Text Here -->
+      </p>
+      <p>
+        <!-- More details about what a user can do -->
+      </p>
+    </field>
+  </record>
+
+  <record id="doforms_stage_action_form" model="ir.actions.act_window">
+    <field name="name">doforms_stage_action</field>
+    <field name="res_model">doforms.stage</field>
+    <field name="view_mode">tree,form</field>
+    <field name="help" type="html">
+      <p class="oe_view_nocontent_create">
+        <!-- Add Text Here -->
+      </p>
+      <p>
+        <!-- More details about what a user can do -->
+      </p>
+    </field>
+  </record>
+
+  <menuitem id="menu_doforms"
+            name="DoForms"
+            parent="project.menu_project_report"
+            action="doforms_action_form"
+            sequence="1"/>
+
+  <menuitem id="menu_doforms_stage"
+            name="DoForms Stage"
+            parent="project.menu_project_report"
+            action="doforms_stage_action_form"
+            sequence="1"/>
+</odoo>
