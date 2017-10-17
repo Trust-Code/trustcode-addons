@@ -1,17 +1,6 @@
 <?xml version="1.0" ?>
 <odoo>
 
-    <!-- <record id="ir_cron_trust_backup_scheduler" model="ir.cron" forcecreate="True">
-        <field name="name">Trust Backup Scheduler</field>
-        <field name="user_id" ref="base.user_root" />
-        <field name="interval_number">30</field>
-        <field name="interval_type">minutes</field>
-        <field name="numbercall">-1</field>
-        <field eval="False" name="doall" />
-        <field eval="'backup.config'" name="model" />
-        <field eval="'schedule_backup'" name="function" />
-        <field eval="'()'" name="args" />
-    </record> -->
     <record id="ir_cron_trust_backup_scheduler" model="ir.cron">
         <field name="name">Trust Backup Scheduler</field>
         <field name="model_id" ref="model_backup_config"/>
