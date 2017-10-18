@@ -1,6 +1,0 @@
-id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_mro_group_normal_user,access_mro_group,model_mro_group,base.group_user,1,0,0,0
-access_mro_group_salesman,access_mro_group,model_mro_group,sales_team.group_sale_salesman,1,1,1,0
-access_mro_group_maintenance_customer,access_mro_group,model_mro_group,asset.group_mro_customer,1,0,0,0
-access_mro_group_maintenance_user,access_mro_group,model_mro_group,asset.group_mro_user,1,1,1,0
-access_mro_group_maintenance_manager,access_mro_group,model_mro_group,asset.group_mro_manager,1,1,1,1
