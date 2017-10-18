@@ -26,7 +26,7 @@
                     </div>
                     <div class="oe_right oe_button_box" name="buttons">
                         <button class="oe_inline oe_stat_button" type="action"
-                            name="602" icon="fa-cubes">
+                            name="%(action_backups_form)d" icon="fa-cubes">
                             <field string="Backups" name="backup_count" widget="statinfo" />
                         </button>
                         <button class="oe_inline oe_stat_button" type="object"
