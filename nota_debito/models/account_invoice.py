@@ -45,10 +45,8 @@ class AccountInvoice(models.Model):
             'max': max,
             'sum': sum,
             'filter': filter,
-            'reduce': reduce,
             'map': map,
             'round': round,
-            'cmp': cmp,
             # dateutil.relativedelta is an old-style class and cannot be
             # instanciated wihtin a jinja2 expression, so a lambda "proxy" is
             # is needed, apparently.
