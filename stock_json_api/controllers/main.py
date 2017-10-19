@@ -21,22 +21,17 @@ def cnpj_cpf_format(cnpj_cpf):
 
 class ApiStock(http.Controller):
 
-    @http.route('/api/stock/incoming', type='http', auth="public", methods=['GET'])
+    @http.route('/api/stock/incoming', type='json', auth="public",
+                methods=['POST'], csrf=False)
     def api_stock_incoming(self, **kwargs):
-        compra = open('/home/danimar/Downloads/json-compra.json', 'r').read()
-
-        compraJson = json.loads(compra)
-
-        picking_id = self._save_incoming_order(compraJson)
+        picking_id = self._save_incoming_order(request.jsonrequest)
 
         return json.dumps({"picking_id": picking_id})
 
-    @http.route('/api/stock/outgoing', type='http', auth="public", methods=['GET'])
+    @http.route('/api/stock/outgoing', type='json', auth="public",
+                methods=['POST'], csrf=False)
     def api_stock_outgoing(self, **kwargs):
-        venda = open('/home/danimar/Downloads/ordem-venda.json', 'r').read()
-
-        vendaJson = json.loads(venda)
-        picking_id = self._save_outgoing_order(vendaJson)
+        picking_id = self._save_outgoing_order(request.jsonrequest)
 
         return json.dumps({"picking_id": picking_id})
 
@@ -97,8 +92,7 @@ class ApiStock(http.Controller):
         else:
             location_dest_id, dummy = env_stock._get_partner_locations()
 
-
-        picking = request.env['stock.picking'].create({
+        picking = request.env['stock.picking'].sudo().create({
             'name': pick_type.sequence_id.next_by_id(),
             'partner_id': partner[0].id,
             'picking_type_id': pick_type.id,
@@ -174,8 +168,7 @@ class ApiStock(http.Controller):
         else:
             location_dest_id, dummy = env_stock._get_partner_locations()
 
-
-        picking = request.env['stock.picking'].create({
+        picking = request.env['stock.picking'].sudo().create({
             'name': pick_type.sequence_id.next_by_id(),
             'partner_id': partner[0].id,
             'picking_type_id': pick_type.id,
