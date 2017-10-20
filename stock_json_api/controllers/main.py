@@ -63,6 +63,7 @@ class ApiStock(http.Controller):
                 'list_price': item['valor'],
                 'uom_id': uom.id,
                 'type': 'product',
+                'default_code': item['id'],
             }
             if not product:
                 product = env_product.create(vals)
@@ -139,6 +140,7 @@ class ApiStock(http.Controller):
                 'uom_id': uom.id,
                 'uom_po_id': uom.id,
                 'type': 'product',
+                'default_code': item['product_id'],
             }
             if not product:
                 product = env_product.create(vals)
