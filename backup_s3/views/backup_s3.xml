@@ -14,6 +14,53 @@
         <field eval="False" name="doall" />
     </record>
 
+    <record model="ir.ui.view" id="view_backups_form">
+        <field name="name">Backup</field>
+        <field name="model">backup.executed</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="Backup">
+                <header>
+                    <field name="state" widget="statusbar"
+                        statusbar_colors="{'error':'red','concluded':'blue'}" />
+                </header>
+                <group>
+                    <field name="configuration_id" />
+                    <field name="backup_date" />
+                    <field name="local_path" />
+                    <field name="s3_id" />
+                    <field name="s3_url" widget="url" />
+                </group>
+            </form>
+        </field>
+    </record>
+    <record model="ir.ui.view" id="view_backups_tree">
+        <field name="name">Lista de Backups</field>
+        <field name="model">backup.executed</field>
+        <field name="type">tree</field>
+        <field name="arch" type="xml">
+            <tree string="Backups">
+                <field name='configuration_id' />
+                <field name='backup_date' />
+                <field name='state' />
+                <field name='s3_id' />
+            </tree>
+        </field>
+    </record>
+    <record model="ir.actions.act_window" id="action_backups_form">
+        <field name="name">Backups</field>
+        <field name="res_model">backup.executed</field>
+        <field name="view_type">form</field>
+        <field name='view_mode'>tree,form</field>
+        <field name='view_id' ref='view_backups_tree' />
+    </record>
+
+    <menuitem parent="base.menu_custom" name="Backups"
+        id="backup_conf_parent_menu" />
+
+    <menuitem parent="backup_conf_parent_menu" action="action_backups_form"
+        id="backups_menu" sequence="60" />
+
     <record model="ir.ui.view" id="view_backup_conf_form">
         <field name="name">Configure Backup</field>
         <field name="model">backup.config</field>
@@ -70,53 +117,7 @@
         <field name='view_id' ref='view_backup_conf_tree' />
     </record>
 
-    <menuitem parent="base.menu_custom" name="Backups"
-        id="backup_conf_parent_menu" />
     <menuitem parent="backup_conf_parent_menu" action="action_backup_conf_form"
         id="backup_conf_menu" />
-
-    <record model="ir.ui.view" id="view_backups_form">
-        <field name="name">Backup</field>
-        <field name="model">backup.executed</field>
-        <field name="type">form</field>
-        <field name="arch" type="xml">
-            <form string="Backup">
-                <header>
-                    <field name="state" widget="statusbar"
-                        statusbar_colors="{'error':'red','concluded':'blue'}" />
-                </header>
-                <group>
-                    <field name="configuration_id" />
-                    <field name="backup_date" />
-                    <field name="local_path" />
-                    <field name="s3_id" />
-                    <field name="s3_url" widget="url" />
-                </group>
-            </form>
-        </field>
-    </record>
-    <record model="ir.ui.view" id="view_backups_tree">
-        <field name="name">Lista de Backups</field>
-        <field name="model">backup.executed</field>
-        <field name="type">tree</field>
-        <field name="arch" type="xml">
-            <tree string="Backups">
-                <field name='configuration_id' />
-                <field name='backup_date' />
-                <field name='state' />
-                <field name='s3_id' />
-            </tree>
-        </field>
-    </record>
-    <record model="ir.actions.act_window" id="action_backups_form">
-        <field name="name">Backups</field>
-        <field name="res_model">backup.executed</field>
-        <field name="view_type">form</field>
-        <field name='view_mode'>tree,form</field>
-        <field name='view_id' ref='view_backups_tree' />
-    </record>
-
-    <menuitem parent="backup_conf_parent_menu" action="action_backups_form"
-        id="backups_menu" sequence="60" />
 
 </odoo>
