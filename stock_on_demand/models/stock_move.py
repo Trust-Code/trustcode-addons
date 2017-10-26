@@ -28,8 +28,20 @@ class StockMoveDemand(models.Model):
 
                 move.route_ids = move.product_id.mapped('route_ids')
                 if move.route_ids:
+                    quants = self.env['stock.quant'].search(
+                        [('location_id.usage', '=', 'internal'),
+                         ('product_id', '=', move.product_id.id),
+                         ('reservation_id', '!=', False),
+                         ('reservation_id', '!=', move.id)])
+
+                    reserved_total = 0.0
+                    for quant in quants:
+                        reserved_total += quant.qty
+
                     vals = move._prepare_procurement_from_move()
-                    vals['product_qty'] = move.product_uom_qty - vrt_available
+                    vals['product_qty'] = (move.product_uom_qty -
+                                           move.product_id.qty_available +
+                                           reserved_total)
                     vals['name'] = vals['name'] + ' (Stock on demand rule)'
                     procurement_obj.create(vals)
                 move.is_procurement_on_demand = True
