@@ -113,6 +113,7 @@ class ProjectTask(models.Model):
                     }
                     procurement = self.env['procurement.order'].create(vals)
                     line.procurement_id = procurement.id
+                    procurement.mapped('move_ids.picking_id').action_assign()
 
 
 class ProcurementOrder(models.Model):
