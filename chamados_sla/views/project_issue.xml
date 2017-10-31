@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_project_issue_SLA_form" model="ir.ui.view">
+        <field name="name">project.issue.sla</field>
+        <field name="model">project.issue</field>
+        <field name="inherit_id" ref="project_issue.project_issue_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//group/group/field[@name='task_id']" position="after">
+                <field name="tempo_resposta"/>
+                <field name="tempo_resolucao"/>
+            </xpath>
+            <xpath expr="//group/group/field[@name='day_close']" position="after">
+                <field name="tempo_excedido"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>
