@@ -6,7 +6,7 @@
     'name': 'Stock picking wave by product',
     'description': "",
     'summary': "",
-    'version': '10.0.1.0.0',
+    'version': '11.0.1.0.0',
     'category': "",
     'author': 'Trustcode',
     'license': 'AGPL-3',
