@@ -4,7 +4,7 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 
-from odoo import api, fields, models
+from odoo import fields, models
 
 
 class StockPickingBatch(models.Model):
@@ -13,7 +13,8 @@ class StockPickingBatch(models.Model):
     picking_batch_id = fields.One2many(
         'picking.wave.rule', 'location_id', string='Picking Batch Rule')
 
-class StockPickingBatch(models.Model):
+
+class StockMove(models.Model):
     _inherit = 'stock.move'
 
     created_wave = fields.Boolean('Criado Onda')
@@ -52,7 +53,7 @@ class BatchProduct(models.Model):
                     ('picking_type_id', '=', rule.picking_type_dest.id),
                     ('state', 'in', ['draft', 'confirmed',
                                      'partially_available'])
-                    ], limit=1)
+                ], limit=1)
                 if move:
                     new_origin = move.origin + '; ' + l[2]
                     new_qty = move.product_uom_qty + l[1]
@@ -63,12 +64,14 @@ class BatchProduct(models.Model):
                 else:
                     product_id = product_obj.browse(l[0])
                     product_uom_id = product_id.uom_id
-                    lines.append([0, 0, {'name': product_id.name,
-                                         'origin': l[2],
-                                         'product_id': l[0],
-                                         'product_uom_qty': l[1],
-                                         'product_uom': product_uom_id.id,
-                                         }])
+                    lines.append([0, 0, {
+                        'name': product_id.name,
+                        'origin': l[2],
+                        'product_id': l[0],
+                        'product_uom_qty': l[1],
+                        'product_uom': product_uom_id.id,
+                        'picking_type_id': rule.picking_type_dest.id,
+                    }])
                     origin += l[2] + "; "
                 for x in l[3].split(','):
                     move_ids.append(int(x))
