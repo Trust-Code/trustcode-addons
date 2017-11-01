@@ -18,7 +18,6 @@
     'depends': ['stock'],
     'data': [
         'views/stock_location.xml',
-        #'security/security.xml',
-        #'security/ir.model.access.csv'
+        'security/ir.model.access.csv'
     ],
 }
