@@ -57,7 +57,9 @@ class ApiStock(http.Controller):
         picking_items = []
         for item in compra['products']:
             product = env_product.search([('default_code', '=', item['id'])])
-            uom = env_uom.search([('name', '=ilike', item['weightClass'])])
+            uom = env_uom.with_context(
+                {'lang': 'us_EN'}).search(
+                    [('name', '=ilike', item['weight_class'])])
             vals = {
                 'name': item['name'],
                 'list_price': item['valor'],
@@ -133,7 +135,9 @@ class ApiStock(http.Controller):
         for item in venda['products']:
             product = env_product.search(
                 [('default_code', '=', item['product_id'])])
-            uom = env_uom.search([('name', '=ilike', item['weight_class'])])
+            uom = env_uom.with_context(
+                {'lang': 'us_EN'}).search(
+                    [('name', '=ilike', item['weight_class'])])
             vals = {
                 'name': item['name'],
                 'list_price': item['price'],
