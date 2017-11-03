@@ -10,8 +10,9 @@ class SaleOrder(models.Model):
 
     @api.multi
     def _prepare_invoice(self):
+        currency = self.env['res.currency'].search([('name', '=', 'BRL')])
         inv = super(SaleOrder, self)._prepare_invoice()
-        inv['currency_id']=7
+        inv['currency_id']=currency.id
         return inv
 
 class SaleOrderLine(models.Model):
@@ -20,9 +21,11 @@ class SaleOrderLine(models.Model):
 
     @api.multi
     def _prepare_invoice_line(self, qty):
-        currency = self.env['res.currency.rate'].search([('id', '=', 3)])
+        currency = self.env['res.currency'].search([('name', '=', 'BRL')])
         res = super(SaleOrderLine, self)._prepare_invoice_line(qty)
-        res['price_unit']=res['price_unit']*currency.rate
+        import ipdb; ipdb.set_trace()
+        if currency.id != self.order_id.pricelist_id.currency_id.id:
+            res['price_unit']=res['price_unit']*currency.rate
         return res
 
 
