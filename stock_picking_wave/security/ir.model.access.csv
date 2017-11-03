@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+picking_wave_master,Picking Wave Master,stock_picking_wave.model_picking_wave_rule,stock.group_stock_manager,1,1,1,1
+picking_wave_user,Picking Wave User,stock_picking_wave.model_picking_wave_rule,stock.group_stock_user,1,0,0,0
