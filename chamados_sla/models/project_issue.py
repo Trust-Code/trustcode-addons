@@ -39,7 +39,6 @@ class ProjectIssue(models.Model):
     tempo_excedido = fields.Boolean(string="Tempo Excedido",
                                     compute="_compute_excedido")
 
-
     @api.multi
     @api.depends("create_date", "priority", "x_impacto")
     def _compute_tempo(self):
