@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
-# © 2016 Danimar Ribeiro, Trustcode
+# © 2017 Danimar Ribeiro, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 {  # pylint: disable=C8101,C8103
-    'name': 'Nota de Débito',
-    'description': "Nota de Débito Odoo",
-    'summary': "Layout de Nota de Débito Simples do Odoo",
+    'name': 'Control Stock via API',
+    'description': "Control Stock via API",
+    'summary': "Control the incoming",
     'version': '11.0.1.0.0',
-    'category': "account",
+    'category': "stock",
     'author': 'Trustcode',
     'license': 'AGPL-3',
     'website': 'http://www.trustcode.com.br',
@@ -15,9 +15,8 @@
         'Danimar Ribeiro <danimaribeiro@gmail.com>',
     ],
     'depends': [
-        'br_account',
+        'stock', 'purchase', 'sale'
     ],
     'data': [
-        'reports/nota_debito.xml',
     ],
 }

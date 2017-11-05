@@ -1,5 +1,0 @@
-id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_project_task_material,access_project_task_material,model_project_task_material,base.group_user,1,0,0,0
-access_project_task_material_manager,access_project_task_material,model_project_task_material,project.group_project_user,1,1,1,1
-access_project_task_material_stock_user,access_project_task_material,model_project_task_material,stock.group_stock_user,1,1,1,1
-access_project_task_material_stock_manager,access_project_task_material,model_project_task_material,stock.group_stock_manager,1,1,1,1

@@ -1,2 +1,0 @@
-"id","name","model_id:id","group_id:id","perm_read","perm_write","perm_create","perm_unlink"
-"access_sale_order_report","access_sale_order_report","model_sale_order_report","sales_team.group_sale_salesman",1,0,0,0
