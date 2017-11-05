@@ -25,6 +25,6 @@ class SaleOrderLine(models.Model):
         currency = self.env['res.currency'].search([('name', '=', 'BRL')])
         res = super(SaleOrderLine, self)._prepare_invoice_line(qty)
         if currency.id != self.order_id.pricelist_id.currency_id.id:
-            res['price_unit'] = res['price_unit'] *\
-                currency.rate / self.order_id.pricelist_id.currency_id.rate
+            res['price_unit'] = self.order_id.pricelist_id.currency_id.compute(
+                res['price_unit'], currency)
         return res
