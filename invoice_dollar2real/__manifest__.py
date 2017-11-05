@@ -3,15 +3,12 @@
 # © 2017 Johny Chen Jy <johnychenjy@gmail.com>, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-{
-    'name': "invoice_dollar2real",
-
+{  # pylint: disable=C8101,C8103
+    'name': "Faturamento em BRL",
     'summary': """
-        Short (1 phrase/line) summary of the module's purpose, used as
-        subtitle on modules listing or apps.openerp.com""",
-
+        Fixa o faturamento no Odoo em reais""",
     'description': """
-        Long description of module's purpose
+        Ao criar a fatura sempre modifica a moeda para reais.
     """,
     'author': "Trustcode",
     'website': "http://www.trustcode.com.br",
@@ -23,7 +20,7 @@
         'Johny Chen Jy <johnychenjy@gmail.com>',
         'Fabio Luna <fabiocluna@hotmail.com>'
     ],
-    'depends': ['account', 'sale'],
-    'data': [
+    'depends': [
+        'account', 'sale'
     ],
 }
