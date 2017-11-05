@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_invoice_rules_res_partner_form" model="ir.ui.view">
+        <field name="name">view.invoice.rules.res.partner.form</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@class='o_row']" position="before">
+                <h3>
+                    <field name="branch_id" placeholder="Matriz" nolabel="1" attrs="{'invisible': [('is_company', '=', False)]}"/>
+                </h3>
+            </xpath>
+            <page name="internal_notes" position="before">
+                <page name="branchs" string="Rateio de Faturamento" >
+                    <group>
+                        <field name="company_invoice_id" attrs="{'invisible': [('branch_id', '!=', False)]}" />
+                        <field name="percentual_nota_debito" attrs="{'invisible': [('branch_id', '!=', False)]}" />
+                        <field name="percentual_faturamento" attrs="{'invisible': [('branch_id', '=', False)]}" />
+                    </group>
+                    <field name="branch_ids" attrs="{'invisible': [('branch_id', '!=', False)]}" widget="many2many"/>
+                </page>
+            </page>
+        </field>
+    </record>
+
+</odoo>
