@@ -1,4 +1,4 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 # © 2017 Mackilem Van der Laan, Trustcode
 # © 2017 Danimar Ribeiro, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
@@ -39,11 +39,15 @@ class ProjectIssue(models.Model):
     tempo_excedido = fields.Boolean(string="Tempo Excedido",
                                     compute="_compute_excedido")
 
+    impacto = fields.Selection(
+        [('0', 'Baixo'), ('1', 'Médio'), ('2', 'Alto')],
+        string="Impacto sobre negócios", oldname='x_impacto')
+
     @api.multi
-    @api.depends("create_date", "priority", "x_impacto")
+    @api.depends("create_date", "priority", "impacto")
     def _compute_tempo(self):
         for item in self:
-            valor = PRIORITY_TABLE[item.priority][item.x_impacto]
+            valor = PRIORITY_TABLE[item.priority][item.impacto]
             data_python = fields.Datetime.from_string(item.create_date)
             item.tempo_resposta = data_python + timedelta(hours=valor[0])
             item.tempo_resolucao = data_python + timedelta(hours=valor[1])
