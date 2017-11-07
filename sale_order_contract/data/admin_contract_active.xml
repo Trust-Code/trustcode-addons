@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<odoo>
-    <data noupdate="0">
-        <record id="admin_contract_active" model="res.groups">
-            <field name="name">Visualiza Menu Contratos</field>
-            <field name="category_id" ref="base.module_category_hidden" />
-        </record>
-    </data>
-</odoo>

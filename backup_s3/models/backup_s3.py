@@ -56,13 +56,13 @@ class BackupConfig(models.Model):
     _name = 'backup.config'
 
     @api.multi
-    @api.depends('interval', 'database_name')
+    @api.depends('interval')
     def name_get(self):
         result = []
         for backup in self:
             result.append(
                 (backup.id,
-                 backup.database_name +
+                 self.env.cr.dbname +
                  " - " +
                  backup.interval))
         return result
@@ -128,26 +128,26 @@ class BackupConfig(models.Model):
                 if not os.path.isdir(rec.backup_dir):
                         os.makedirs(rec.backup_dir)
 
-                zip_name = '%s_%s.zip' % (rec.database_name,
+                zip_name = '%s_%s.zip' % (self.env.cr.dbname,
                                           time.strftime('%Y%m%d_%H_%M_%S'))
                 zip_file = '%s/%s' % (rec.backup_dir, zip_name)
 
                 with open(zip_file, 'wb') as dump_zip:
                     odoo.service.db.dump_db(
-                        rec.database_name, dump_zip, 'zip')
+                        self.env.cr.dbname, dump_zip, 'zip')
 
                 backup_env = self.env['backup.executed']
 
                 if rec.send_to_s3:
                     key = rec.send_for_amazon_s3(zip_file, zip_name,
-                                                 rec.database_name)
+                                                 self.env.cr.dbname)
                     loc = ''
                     if not key:
                         key = u'Erro ao enviar para o Amazon S3'
                         loc = zip_file
                     else:
                         loc = 'https://s3.amazonaws.com/%s_bkp_pelican/%s' % (
-                            rec.database_name, key
+                            self.env.cr.dbname, key
                         )
                     backup_env.create({'backup_date': datetime.now(),
                                        'configuration_id': rec.id,
