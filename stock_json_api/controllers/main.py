@@ -64,6 +64,7 @@ class ApiStock(http.Controller):
                 'name': item['name'],
                 'list_price': item['valor'],
                 'uom_id': uom.id,
+                'uom_po_id': uom.id,
                 'type': 'product',
                 'default_code': item['id'],
             }
