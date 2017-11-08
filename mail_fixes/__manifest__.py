@@ -9,7 +9,7 @@
     'summary': """
         Ajustes de e-mail 550 e 553
     """,
-    'version': '10.0.1.0.0',
+    'version': '11.0.1.0.0',
     'category': 'Messaging',
     'author': 'Trustcode',
     'license': 'AGPL-3',
@@ -20,5 +20,4 @@
     'depends': [
         'mail'
     ],
-    'application': False,
 }
