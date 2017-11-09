@@ -19,6 +19,7 @@
     ],
     'depends': [
         'sale',
+        'sale_order_contract',
     ],
     'data': [
         'views/res_partner.xml',
