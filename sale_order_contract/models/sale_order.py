@@ -97,6 +97,11 @@ class SaleOrder(models.Model):
                                      new_order.order_line)
         map(lambda line: line.unlink(), non_recurrent_lines)
 
+        exclude_recurrent_lines = filter(lambda line: line.recurring_line,
+                                     self.order_line)
+        map(lambda line: line.unlink(), exclude_recurrent_lines)
+
+        new_order.action_confirm()
         return new_order
 
     @api.multi
