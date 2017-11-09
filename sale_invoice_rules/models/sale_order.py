@@ -68,9 +68,12 @@ class SaleOrder(models.Model):
 
         inv_obj = self.env['account.invoice']
         inv_data = order._prepare_invoice()
+
         if partner:
             inv_data['account_id'] = partner.property_account_receivable_id.id
             inv_data['partner_id'] = partner.id
+            inv_data['company_id'] = partner.company_invoice_id.id or inv_data['company_id']
+            
 
         invoice = inv_obj.create(inv_data)
 
@@ -78,7 +81,7 @@ class SaleOrder(models.Model):
         return invoice
 
     @api.multi
-    def action_invoice_create(self, grouped=False, final=False):
+    def action_invoice_create_rateio(self, grouped=False, final=False):
         """
         Create the invoice associated to the SO.
         :param grouped: if True, invoices are grouped by SO id. If False, 
@@ -94,11 +97,11 @@ class SaleOrder(models.Model):
 
         # Lista de invoices
         invoices = []
-
         # Dicionario que tem a forma {invoice:[ordem1, ordem2, ...]}
         references = {}
         for order in self:
-
+            if order.state == 'draft':
+                continue
             # Caso o parceiro já tenha invoices criadas, irá procurar 
             # estas invoices e adicionar a ordem para invoices com 
             # mais de uma ordem de origem
@@ -135,14 +138,13 @@ class SaleOrder(models.Model):
                     rateio -= partner.percentual_faturamento
 
                 # Cria faturas para a matriz
-
                 inv = self.create_invoices_rateio(order, invoice_lines[order.partner_invoice_id.id]['recorrente'], rateio * (
-                    100 - order.partner_id.percentual_nota_debito) / 100)
+                    100 - order.partner_id.percentual_nota_debito) / 100, order.partner_invoice_id)
                 invoices.append(inv)
                 references.update({inv: [order]})
 
                 inv = self.create_invoices_rateio(
-                    order, invoice_lines[order.partner_invoice_id.id]['avulso'], rateio)
+                    order, invoice_lines[order.partner_invoice_id.id]['avulso'], rateio, order.partner_invoice_id)
                 invoices.append(inv)
                 references.update({inv: [order]})
 
@@ -182,7 +184,7 @@ class SaleOrder(models.Model):
 
             # Define o atributo origin da invoice
             origin = [order.name for order in references[invoice]]
-            invoice.origin = '; '.join(origin)
+            invoice.origin = ', '.join(origin)
 
             # If invoice is negative, do a refund invoice instead
             if invoice.amount_untaxed < 0:
@@ -204,3 +206,33 @@ class SaleOrder(models.Model):
             #                                subtype_id=self.env.ref('mail.mt_note').id)
 
         return [inv.id for inv in invoices]
+
+
+class SaleAdvancePaymentInv(models.TransientModel):
+    _inherit = "sale.advance.payment.inv"
+
+    @api.multi
+    def create_invoices(self):
+
+        sale_orders = self.env['sale.order'].browse(
+            self._context.get('active_ids', []))
+
+        orders = sale_orders.filtered(lambda x: len(
+            x.partner_id.branch_ids) > 0)
+
+        sale_orders = sale_orders.filtered(lambda x: len(
+            x.partner_id.branch_ids) <= 0)
+
+        if len(orders):
+            orders.action_invoice_create_rateio()
+        
+        if len(sale_orders):
+            self = self.with_context({'active_ids': sale_orders.ids})
+            super(SaleAdvancePaymentInv, self).create_invoices()
+
+        if self._context.get('open_invoices', False):
+            return (orders | sale_orders).action_view_invoice()
+        return {'type': 'ir.actions.act_window_close'}
+
+        
+
