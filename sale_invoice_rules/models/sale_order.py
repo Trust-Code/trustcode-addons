@@ -43,6 +43,8 @@ class SaleOrder(models.Model):
 
         order_lines_groups = {}
         for order in self:
+            if order.state == 'draft':
+                continue
             if order.partner_invoice_id.id not in order_lines_groups.keys():
                 order_lines_groups.update(
                     {order.partner_invoice_id.id: {'recorrente': [], 'avulso': [], 'produto': []}})
