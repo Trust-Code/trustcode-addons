@@ -20,8 +20,12 @@
     'depends': [
         'sale',
         'sale_order_contract',
+        'account',
+        'mail',
     ],
     'data': [
         'views/res_partner.xml',
+        'views/account_fiscal_position_view.xml',
+        'views/mail_template.xml'
     ],
 }

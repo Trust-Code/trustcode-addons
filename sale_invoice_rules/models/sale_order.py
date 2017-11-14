@@ -15,7 +15,7 @@ class SaleOrderLine(models.Model):
     @api.multi
     def invoice_line_create(self, invoice_id, qty, rateio=100):
         """
-        Create an invoice line. The quantity to invoice can be positive 
+        Create an invoice line. The quantity to invoice can be positive
         (invoice) or negative
         (refund).
 
@@ -36,18 +36,19 @@ class SaleOrderLine(models.Model):
 class SaleOrder(models.Model):
     _inherit = 'sale.order'
 
-    # Separa itens em uma dict, keys são order.partner_invoice_id.id e value é 
+    # Separa itens em uma dict, keys são order.partner_invoice_id.id e value é
     # dict de lista de recorrente/avulso/produto
     @api.multi
     def separate_invoice_types(self):
-
         order_lines_groups = {}
         for order in self:
             if order.state == 'draft':
                 continue
             if order.partner_invoice_id.id not in order_lines_groups.keys():
                 order_lines_groups.update(
-                    {order.partner_invoice_id.id: {'recorrente': [], 'avulso': [], 'produto': []}})
+                    {order.partner_invoice_id.id: {'recorrente': [],
+                                                   'avulso': [],
+                                                   'produto': []}})
             for line in order.order_line:
                 if line.product_id.fiscal_type == 'product':
                     (order_lines_groups[order.partner_invoice_id.id]
@@ -66,16 +67,14 @@ class SaleOrder(models.Model):
             qty = line.product_uom_qty
             line.invoice_line_create(invoice.id, qty, rateio)
 
-    def create_invoices_rateio(self, order, invoice_lines, rateio=100, partner=0):
-
+    def create_invoices_rateio(self, order, invoice_lines, rateio=100,
+                               partner=0):
         inv_obj = self.env['account.invoice']
         inv_data = order._prepare_invoice()
 
         if partner:
             inv_data['account_id'] = partner.property_account_receivable_id.id
             inv_data['partner_id'] = partner.id
-            inv_data['company_id'] = partner.company_invoice_id.id or inv_data['company_id']
-            
 
         invoice = inv_obj.create(inv_data)
 
@@ -86,7 +85,7 @@ class SaleOrder(models.Model):
     def action_invoice_create_rateio(self, grouped=False, final=False):
         """
         Create the invoice associated to the SO.
-        :param grouped: if True, invoices are grouped by SO id. If False, 
+        :param grouped: if True, invoices are grouped by SO id. If False,
                     invoices are grouped by (partner_invoice_id, currency)
         :param final: if True, refunds will be generated if necessary
         :returns: list of created invoices
@@ -104,8 +103,8 @@ class SaleOrder(models.Model):
         for order in self:
             if order.state == 'draft':
                 continue
-            # Caso o parceiro já tenha invoices criadas, irá procurar 
-            # estas invoices e adicionar a ordem para invoices com 
+            # Caso o parceiro já tenha invoices criadas, irá procurar
+            # estas invoices e adicionar a ordem para invoices com
             # mais de uma ordem de origem
             if order.partner_id in partner_ready:
                 invs = [inv for inv in invoices if inv.partner_id.id ==
@@ -116,7 +115,7 @@ class SaleOrder(models.Model):
                             invs.append(inv)
                 for invoice in invs:
                     references[invoice].append(order)
-                    # Impede que sejam adicionados ordens repetidas à lista 
+                    # Impede que sejam adicionados ordens repetidas à lista
                     # references
                     references[invoice] = list(set(references[invoice]))
             else:
@@ -127,50 +126,68 @@ class SaleOrder(models.Model):
                 for partner in order.partner_invoice_id.branch_ids:
 
                     # Para recorrendo, rateio = %ND*%NF, para avulso rateio=%NF
-                    inv = self.create_invoices_rateio(order, invoice_lines[order.partner_invoice_id.id]['recorrente'], partner.percentual_faturamento * (
-                        100 - order.partner_id.percentual_nota_debito) / 100, partner)
+                    inv = self.create_invoices_rateio(
+                        order, invoice_lines[order.partner_invoice_id.id][
+                            'recorrente'], (partner.percentual_faturamento * (
+                                100 - order.partner_id.percentual_nota_debito)
+                            / 100), partner)
                     invoices.append(inv)
                     references.update({inv: [order]})
 
                     inv = self.create_invoices_rateio(
-                        order, invoice_lines[order.partner_invoice_id.id]['avulso'], partner.percentual_faturamento, partner)
+                        order, invoice_lines[order.partner_invoice_id.id][
+                            'avulso'], partner.percentual_faturamento, partner)
                     invoices.append(inv)
                     references.update({inv: [order]})
 
                     rateio -= partner.percentual_faturamento
 
                 # Cria faturas para a matriz
-                inv = self.create_invoices_rateio(order, invoice_lines[order.partner_invoice_id.id]['recorrente'], rateio * (
-                    100 - order.partner_id.percentual_nota_debito) / 100, order.partner_invoice_id)
+                inv = self.create_invoices_rateio(
+                    order, invoice_lines[order.partner_invoice_id.id][
+                        'recorrente'], rateio * (100 - order.partner_id.
+                                                 percentual_nota_debito) / 100,
+                    order.partner_invoice_id)
                 invoices.append(inv)
                 references.update({inv: [order]})
 
                 inv = self.create_invoices_rateio(
-                    order, invoice_lines[order.partner_invoice_id.id]['avulso'], rateio, order.partner_invoice_id)
+                    order, invoice_lines[order.partner_invoice_id.id][
+                        'avulso'], rateio, order.partner_invoice_id)
                 invoices.append(inv)
                 references.update({inv: [order]})
+                for inv in invoices:
+                    inv.fiscal_document_id = \
+                        inv.fiscal_position_id.documento_nota_servico_id
 
                 # Cria fatura para produtos sem rateio
                 inv = self.create_invoices_rateio(
-                    order, invoice_lines[order.partner_invoice_id.id]['produto'])
+                    order, invoice_lines[order.partner_invoice_id.id][
+                        'produto'])
                 invoices.append(inv)
                 references.update({inv: [order]})
+                inv.fiscal_document_id = \
+                    inv.fiscal_position_id.documento_produto_id
 
-                # Cria notas de debito
-                # Seleciona o tipo de documento. Coloquei generico pra ver como funciona, ainda n sei o tipo de documento que sera colocado
-                doc = self.env['br_account.fiscal.document'].search(
-                    [('name', '=', 'Nota Fiscal Avulsa')])
+                # Notas de débito
                 for partner in order.partner_invoice_id.branch_ids:
 
-                    inv = self.create_invoices_rateio(order, invoice_lines[order.partner_invoice_id.id]['recorrente'], partner.percentual_faturamento * (
-                        order.partner_id.percentual_nota_debito) / 100, partner)
-                    inv.fiscal_document_id = doc
+                    inv = self.create_invoices_rateio(
+                        order, invoice_lines[order.partner_invoice_id.id][
+                            'recorrente'], partner.percentual_faturamento * (
+                            order.partner_id.percentual_nota_debito) / 100,
+                        partner)
+                    inv.fiscal_document_id = (inv.fiscal_position_id.
+                                              documento_nota_debito_id)
                     invoices.append(inv)
                     references.update({inv: [order]})
 
                 inv = self.create_invoices_rateio(
-                    order, invoice_lines[order.partner_invoice_id.id]['recorrente'], rateio * (order.partner_id.percentual_nota_debito) / 100)
-                inv.fiscal_document_id = doc
+                    order, invoice_lines[order.partner_invoice_id.id][
+                        'recorrente'], rateio * (order.partner_id.
+                                                 percentual_nota_debito) / 100)
+                inv.fiscal_document_id = (inv.fiscal_position_id.
+                                          documento_nota_debito_id)
                 invoices.append(inv)
                 references.update({inv: [order]})
 
@@ -198,16 +215,19 @@ class SaleOrder(models.Model):
             for line in invoice.invoice_line_ids:
                 line._set_additional_fields(invoice)
 
-            # Necessary to force computation of taxes. In account_invoice, they are triggered
-            # by onchanges, which are not triggered when doing a create.
+            # Necessary to force computation of taxes. In account_invoice,
+            # they are triggered by onchanges, which are not triggered
+            # when doing a create.
             invoice.compute_taxes()
 
-            # invoice.message_post_with_view('mail.message_origin_link',
-            #                                values={'self': invoice,
-            #                                        'origin': references[invoice]},
-            #                                subtype_id=self.env.ref('mail.mt_note').id)
+            invoice.message_post_with_view('mail.message_origin_link_view',
+                                           values={'self': invoice,
+                                                   'origin':
+                                                   references[invoice]},
+                                           subtype_id=self.env.ref(
+                                                'mail.mt_note').id)
 
-        return [inv.id for inv in invoices]
+        return [invo.id for invo in invoices]
 
 
 class SaleAdvancePaymentInv(models.TransientModel):
@@ -227,7 +247,7 @@ class SaleAdvancePaymentInv(models.TransientModel):
 
         if len(orders):
             orders.action_invoice_create_rateio()
-        
+
         if len(sale_orders):
             self = self.with_context({'active_ids': sale_orders.ids})
             super(SaleAdvancePaymentInv, self).create_invoices()
@@ -235,6 +255,3 @@ class SaleAdvancePaymentInv(models.TransientModel):
         if self._context.get('open_invoices', False):
             return (orders | sale_orders).action_view_invoice()
         return {'type': 'ir.actions.act_window_close'}
-
-        
-

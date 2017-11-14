@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="document_account_fiscal_position_form" model="ir.ui.view">
+        <field name="name">view.document.account.fiscal.position.form</field>
+        <field name="model">account.fiscal.position</field>
+        <field name="inherit_id" ref="account.view_account_position_form"/>
+        <field name="arch" type="xml">
+            <page name="other_information" string="Outras Informações">
+                <group>
+                  <field name="documento_produto_id" string="Documento Produto"/>
+                  <field name="documento_nota_servico_id" string="Documento Nota de Serviço"/>
+                  <field name="documento_nota_debito_id" string="Documento Nota de Débito"/>
+                </group>
+            </page>
+        </field>
+    </record>
+</odoo>

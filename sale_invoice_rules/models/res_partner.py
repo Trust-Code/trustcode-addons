@@ -11,7 +11,5 @@ class ResPartner(models.Model):
 
     branch_id = fields.Many2one('res.partner', string="Matriz")
     branch_ids = fields.One2many('res.partner', 'branch_id', string="Filiais")
-    company_invoice_id = fields.Many2one(
-        'res.company', string="Empresa Faturamento")
     percentual_nota_debito = fields.Float(string="% Nota débito")
     percentual_faturamento = fields.Float(string="Percentual Faturamento")
