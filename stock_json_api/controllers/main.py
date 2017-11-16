@@ -5,6 +5,7 @@
 import json
 from odoo import http
 from odoo.http import request
+from odoo.exceptions import AccessDenied
 
 
 def cnpj_cpf_format(cnpj_cpf):
@@ -22,12 +23,10 @@ def cnpj_cpf_format(cnpj_cpf):
 class ApiStock(http.Controller):
 
     def _validate_key(self, json):
-        import ipdb
-        ipdb.set_trace()
         key = json['api_key']
         user = request.env['res.users'].sudo().search([('api_key', '=', key)])
         if not user:
-            raise ('Incorrect API Key')
+            raise AccessDenied()
 
         return user
 
@@ -188,50 +187,43 @@ class ApiStock(http.Controller):
 
         ids = []
 
-        try:
-            picking_ref = request.env.ref('picking.a').sudo(user)
-            picking = request.env['stock.picking'].sudo(user).create({
-                'name': pick_type.sequence_id.next_by_id(),
-                'partner_id': partner[0].id,
-                'picking_type_id': picking_ref.id,
-                'move_lines': picking_items,
-                'location_id': picking_ref.default_location_src_id.id,
-                'location_dest_id': picking_ref.default_location_dest_id.id,
-            })
-            ids.append(picking.id)
-        except:
-            print()
+        picking_ref = request.env.ref('picking.a').sudo(user)
 
-        try:
-            packing_ref = request.env.ref('packing.b').sudo(user)
-            packing = request.env['stock.picking'].sudo(user).create({
-                'name': pick_type.sequence_id.next_by_id(),
-                'partner_id': partner[0].id,
-                'picking_type_id': packing_ref.id,
-                'move_lines': picking_items,
-                'location_id': packing_ref.default_location_src_id.id,
-                'location_dest_id': packing_ref.default_location_dest_id.id,
-            })
-            ids.append(packing.id)
+        picking = request.env['stock.picking'].sudo(user).create({
+            'name': pick_type.sequence_id.next_by_id(),
+            'partner_id': partner[0].id,
+            'picking_type_id': picking_ref.id,
+            'move_lines': picking_items,
+            'location_id': picking_ref.default_location_src_id.id,
+            'location_dest_id': picking_ref.default_location_dest_id.id,
+        })
+        ids.append(picking.id)
 
-        except:
-            print()
+        packing_ref = request.env.ref('packing.b').sudo(user)
 
-        try:
-            requested_order_ref = request.env.ref('received_order.c').sudo(
-                user)
-            requested_order = request.env['stock.picking'].sudo(user).create({
-                'name': pick_type.sequence_id.next_by_id(),
-                'partner_id': partner[0].id,
-                'picking_type_id': requested_order_ref.id,
-                'move_lines': picking_items,
-                'location_id': requested_order_ref.default_location_src_id.id,
-                'location_dest_id': (requested_order_ref
-                                     .default_location_dest_id.id),
-            })
-            ids.append(requested_order.id)
-        except:
-            print()
+        packing = request.env['stock.picking'].sudo(user).create({
+            'name': pick_type.sequence_id.next_by_id(),
+            'partner_id': partner[0].id,
+            'picking_type_id': packing_ref.id,
+            'move_lines': picking_items,
+            'location_id': packing_ref.default_location_src_id.id,
+            'location_dest_id': packing_ref.default_location_dest_id.id,
+        })
+        ids.append(packing.id)
+
+        requested_order_ref = request.env.ref('received_order.c').sudo(user)
+
+        requested_order = request.env['stock.picking'].sudo(user).create({
+            'name': pick_type.sequence_id.next_by_id(),
+            'partner_id': partner[0].id,
+            'picking_type_id': requested_order_ref.id,
+            'move_lines': picking_items,
+            'location_id': requested_order_ref.default_location_src_id.id,
+            'location_dest_id': (requested_order_ref
+                                    .default_location_dest_id.id),
+        })
+        ids.append(requested_order.id)
+
 
         if len(ids) > 0:
             return ids
