@@ -22,30 +22,31 @@ def cnpj_cpf_format(cnpj_cpf):
 class ApiStock(http.Controller):
 
     def _validate_key(self, json):
-
         key = json['api_key']
         user = request.env['res.users'].sudo().search([('api_key', '=', key)])
         if not user:
             raise ('Incorrect API Key')
 
+        return user
+
     @http.route('/api/stock/incoming', type='json', auth="public",
                 methods=['POST'], csrf=False)
     def api_stock_incoming(self, **kwargs):
-        self._validate_key(request.jsonrequest)
-        picking_id = self._save_incoming_order(request.jsonrequest)
+        user = self._validate_key(request.jsonrequest)
+        picking_id = self._save_incoming_order(request.jsonrequest, user)
 
         return json.dumps({"picking_id": picking_id})
 
     @http.route('/api/stock/outgoing', type='json', auth="public",
                 methods=['POST'], csrf=False)
     def api_stock_outgoing(self, **kwargs):
-        self._validate_key(request.jsonrequest)
-        picking_id = self._save_outgoing_order(request.jsonrequest)
+        user = self._validate_key(request.jsonrequest)
+        picking_id = self._save_outgoing_order(request.jsonrequest, user)
 
         return json.dumps({"picking_id": picking_id})
 
-    def _save_incoming_order(self, compra):
-        env_partner = request.env['res.partner'].sudo()
+    def _save_incoming_order(self, compra, user):
+        env_partner = request.env['res.partner'].sudo(user)
         cnpj = cnpj_cpf_format(compra['provider']['cnpj'])
         partner = env_partner.search([('cnpj_cpf', '=', cnpj)])
 
@@ -58,10 +59,10 @@ class ApiStock(http.Controller):
         if not partner:
             partner = env_partner.create(vals)
 
-        env_picking_type = request.env['stock.picking.type'].sudo()
-        env_stock = request.env['stock.warehouse'].sudo()
-        env_product = request.env['product.product'].sudo()
-        env_uom = request.env['product.uom'].sudo()
+        env_picking_type = request.env['stock.picking.type'].sudo(user)
+        env_stock = request.env['stock.warehouse'].sudo(user)
+        env_product = request.env['product.product'].sudo(user)
+        env_uom = request.env['product.uom'].sudo(user)
 
         picking_items = []
         for item in compra['products']:
@@ -105,7 +106,7 @@ class ApiStock(http.Controller):
         else:
             location_dest_id, dummy = env_stock._get_partner_locations()
 
-        picking = request.env['stock.picking'].sudo().create({
+        picking = request.env['stock.picking'].sudo(user).create({
             'name': pick_type.sequence_id.next_by_id(),
             'partner_id': partner[0].id,
             'picking_type_id': pick_type.id,
@@ -115,9 +116,9 @@ class ApiStock(http.Controller):
         })
         return picking.id
 
-    def _save_outgoing_order(self, venda):
+    def _save_outgoing_order(self, venda, user):
         venda = venda['body']['orders'][0]
-        env_partner = request.env['res.partner'].sudo()
+        env_partner = request.env['res.partner'].sudo(user)
         cnpj = cnpj_cpf_format(venda['cpf'])
         partner = env_partner.search([('cnpj_cpf', '=', cnpj)])
 
@@ -136,10 +137,10 @@ class ApiStock(http.Controller):
         if not partner:
             partner = env_partner.create(vals)
 
-        env_picking_type = request.env['stock.picking.type'].sudo()
-        env_stock = request.env['stock.warehouse'].sudo()
-        env_product = request.env['product.product'].sudo()
-        env_uom = request.env['product.uom'].sudo()
+        env_picking_type = request.env['stock.picking.type'].sudo(user)
+        env_stock = request.env['stock.warehouse'].sudo(user)
+        env_product = request.env['product.product'].sudo(user)
+        env_uom = request.env['product.uom'].sudo(user)
 
         picking_items = []
         for item in venda['products']:
@@ -176,7 +177,8 @@ class ApiStock(http.Controller):
             location_id = partner[0].property_stock_supplier.id
         else:
             dummy, location_id = env_stock._get_partner_locations()
-
+        import ipdb
+        ipdb.set_trace()
         if pick_type.default_location_dest_id:
             location_dest_id = pick_type.default_location_dest_id.id
         elif partner:
@@ -184,12 +186,45 @@ class ApiStock(http.Controller):
         else:
             location_dest_id, dummy = env_stock._get_partner_locations()
 
-        picking = request.env['stock.picking'].sudo().create({
+        ids = []
+
+        ref_picking = request.env.ref('picking.a')
+
+        picking = request.env['stock.picking'].sudo(user).create({
             'name': pick_type.sequence_id.next_by_id(),
             'partner_id': partner[0].id,
-            'picking_type_id': pick_type.id,
+            'picking_type_id': ref_picking.id,
             'move_lines': picking_items,
-            'location_id': location_id,
-            'location_dest_id': location_dest_id,
+            'location_id': ref_picking.location_id,
+            'location_dest_id': ref_picking.location_dest_id,
         })
-        return picking.id
+
+        ids.append(picking.id)
+
+        ref_packing = request.env.ref('packing.b')
+
+        packing = request.env['stock.picking'].sudo(user).create({
+            'name': pick_type.sequence_id.next_by_id(),
+            'partner_id': partner[0].id,
+            'picking_type_id': ref_packing.id,
+            'move_lines': picking_items,
+            'location_id': ref_packing.location_id,
+            'location_dest_id': ref_packing.location_dest_id,
+        })
+
+        ids.append(packing.id)
+
+        ref_pedidos_recebidos = request.env.ref('pedidos_recebidos.c')
+
+        pedidos_recebidos = request.env['stock.picking'].sudo(user).create({
+            'name': pick_type.sequence_id.next_by_id(),
+            'partner_id': partner[0].id,
+            'picking_type_id': ref_pedidos_recebidos.id,
+            'move_lines': picking_items,
+            'location_id': ref_pedidos_recebidos.location_id,
+            'location_dest_id': ref_pedidos_recebidos.location_dest_id,
+        })
+
+        ids.append(pedidos_recebidos.id)
+
+        return ids
