@@ -21,9 +21,17 @@ def cnpj_cpf_format(cnpj_cpf):
 
 class ApiStock(http.Controller):
 
+    def _validate_key(self, json):
+
+        key = json['api_key']
+        user = request.env['res.users'].sudo().search([('api_key', '=', key)])
+        if not user:
+            raise ('Incorrect API Key')
+
     @http.route('/api/stock/incoming', type='json', auth="public",
                 methods=['POST'], csrf=False)
     def api_stock_incoming(self, **kwargs):
+        self._validate_key(request.jsonrequest)
         picking_id = self._save_incoming_order(request.jsonrequest)
 
         return json.dumps({"picking_id": picking_id})
@@ -31,6 +39,7 @@ class ApiStock(http.Controller):
     @http.route('/api/stock/outgoing', type='json', auth="public",
                 methods=['POST'], csrf=False)
     def api_stock_outgoing(self, **kwargs):
+        self._validate_key(request.jsonrequest)
         picking_id = self._save_outgoing_order(request.jsonrequest)
 
         return json.dumps({"picking_id": picking_id})
