@@ -22,7 +22,6 @@ def cnpj_cpf_format(cnpj_cpf):
 class ApiStock(http.Controller):
 
     def _validate_key(self, json):
-
         key = json['api_key']
         user = request.env['res.users'].sudo().search([('api_key', '=', key)])
         if not user:
@@ -176,7 +175,8 @@ class ApiStock(http.Controller):
             location_id = partner[0].property_stock_supplier.id
         else:
             dummy, location_id = env_stock._get_partner_locations()
-
+        import ipdb
+        ipdb.set_trace()
         if pick_type.default_location_dest_id:
             location_dest_id = pick_type.default_location_dest_id.id
         elif partner:
@@ -184,12 +184,45 @@ class ApiStock(http.Controller):
         else:
             location_dest_id, dummy = env_stock._get_partner_locations()
 
+        ids = []
+
+        ref_picking = request.env.ref('picking.a')
+
         picking = request.env['stock.picking'].sudo().create({
             'name': pick_type.sequence_id.next_by_id(),
             'partner_id': partner[0].id,
-            'picking_type_id': pick_type.id,
+            'picking_type_id': ref_picking.id,
             'move_lines': picking_items,
-            'location_id': location_id,
-            'location_dest_id': location_dest_id,
+            'location_id': ref_picking.location_id,
+            'location_dest_id': ref_picking.location_dest_id,
         })
-        return picking.id
+
+        ids.append(picking.id)
+
+        ref_packing = request.env.ref('packing.b')
+
+        packing = request.env['stock.picking'].sudo().create({
+            'name': pick_type.sequence_id.next_by_id(),
+            'partner_id': partner[0].id,
+            'picking_type_id': ref_packing.id,
+            'move_lines': picking_items,
+            'location_id': ref_packing.location_id,
+            'location_dest_id': ref_packing.location_dest_id,
+        })
+
+        ids.append(packing.id)
+
+        ref_pedidos_recebidos = request.env.ref('pedidos_recebidos.c')
+
+        pedidos_recebidos = request.env['stock.picking'].sudo().create({
+            'name': pick_type.sequence_id.next_by_id(),
+            'partner_id': partner[0].id,
+            'picking_type_id': ref_pedidos_recebidos.id,
+            'move_lines': picking_items,
+            'location_id': ref_pedidos_recebidos.location_id,
+            'location_dest_id': ref_pedidos_recebidos.location_dest_id,
+        })
+
+        ids.append(pedidos_recebidos.id)
+
+        return ids
