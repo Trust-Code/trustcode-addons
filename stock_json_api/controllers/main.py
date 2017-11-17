@@ -46,6 +46,14 @@ class ApiStock(http.Controller):
 
         return json.dumps({"picking_id": picking_id})
 
+    @http.route('/api/stock/cancel_outgoing', type='json', auth="public",
+                methods=['POST'], csrf=False)
+    def api_stock_cnacel_outgoing(self, **kwargs):
+        user = self._validate_key(request.jsonrequest)
+        picking_id = self._cancel_outgoing_order(request.jsonrequest, user)
+
+        return json.dumps({"picking_id": picking_id})
+
     def _save_incoming_order(self, compra, user):
         env_partner = request.env['res.partner'].sudo(user)
         cnpj = cnpj_cpf_format(compra['provider']['cnpj'])
@@ -196,6 +204,7 @@ class ApiStock(http.Controller):
             'move_lines': picking_items,
             'location_id': picking_ref.default_location_src_id.id,
             'location_dest_id': picking_ref.default_location_dest_id.id,
+            'origin': venda['order_id'],
         })
         ids.append(picking.id)
 
@@ -208,6 +217,7 @@ class ApiStock(http.Controller):
             'move_lines': picking_items,
             'location_id': packing_ref.default_location_src_id.id,
             'location_dest_id': packing_ref.default_location_dest_id.id,
+            'origin': venda['order_id'],
         })
         ids.append(packing.id)
 
@@ -220,12 +230,32 @@ class ApiStock(http.Controller):
             'move_lines': picking_items,
             'location_id': requested_order_ref.default_location_src_id.id,
             'location_dest_id': (requested_order_ref
-                                    .default_location_dest_id.id),
+                                 .default_location_dest_id.id),
+            'origin': venda['order_id'],
         })
         ids.append(requested_order.id)
 
         if len(ids) > 0:
             return ids
         else:
-            raise Exception("""Os ids externos para os pickings referenciados não foram
-            encontrados.""")
+            raise Exception("Os ids externos para os pickings referenciados não foram\
+ encontrados.")
+
+    def _cancel_outgoing_order(self, venda, user):
+        venda = venda['body']['orders'][0]
+        cancel_requested_order = request.env['stock.picking'].sudo(user)\
+            .search([('origin', '=', venda['order_id']), (
+                'state', '!=', 'cancel')])
+        if any(stock_picking['state'] == 'done' for stock_picking
+               in cancel_requested_order):
+            raise Exception("Não é possível cancelar pickings que já estão\
+ concluídos.")
+        cancelled_orders = []
+        for stock_picking in cancel_requested_order:
+            stock_picking.sudo(user).action_cancel()
+            cancelled_orders.append(stock_picking['id'])
+        if len(cancelled_orders) > 0:
+            return cancelled_orders
+        else:
+            raise Exception("Não existem pickings relacionados\
+ à este order_id para serem cancelados.")
