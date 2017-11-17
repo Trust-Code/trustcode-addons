@@ -224,7 +224,6 @@ class ApiStock(http.Controller):
         })
         ids.append(requested_order.id)
 
-
         if len(ids) > 0:
             return ids
         else:
