@@ -129,8 +129,8 @@ class SaleOrder(models.Model):
                     inv = self.create_invoices_rateio(
                         order, invoice_lines[order.partner_invoice_id.id][
                             'recorrente'], (partner.percentual_faturamento * (
-                                100 - order.partner_id.percentual_nota_debito)
-                            / 100), partner)
+                                100 - order.partner_id.
+                                percentual_nota_debito) / 100), partner)
                     invoices.append(inv)
                     references.update({inv: [order]})
 
@@ -220,12 +220,11 @@ class SaleOrder(models.Model):
             # when doing a create.
             invoice.compute_taxes()
 
-            invoice.message_post_with_view('mail.message_origin_link_view',
-                                           values={'self': invoice,
-                                                   'origin':
-                                                   references[invoice]},
-                                           subtype_id=self.env.ref(
-                                                'mail.mt_note').id)
+            invoice.message_post_with_view(
+                'mail.message_origin_link_view',
+                values={'self': invoice, 'origin': references[invoice]},
+                subtype_id=self.env.ref('mail.mt_note').id
+            )
 
         return [invo.id for invo in invoices]
 
