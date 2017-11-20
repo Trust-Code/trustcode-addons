@@ -26,7 +26,8 @@ class StockPicking(models.Model):
         date = date.isoformat()
 
         for item in self:
-            if self.get_external_id() != "stock.delivery":
+            dest_id = self.picking_type_id.default_location_dest_id
+            if dest_id.usage != "customer":
                 continue
 
             vals = dict(
