@@ -33,7 +33,6 @@ class SaleOrderLine(models.Model):
                 self.env['account.invoice.line'].create(vals)
 
 
-
 class SaleOrder(models.Model):
     _inherit = 'sale.order'
 
@@ -189,7 +188,7 @@ class SaleOrder(models.Model):
 
                     inv, total_price = self.create_invoices_rateio(
                         order, invoice_lines[order.partner_invoice_id.id][
-                            'recorrente'], total_price, 
+                            'recorrente'], total_price,
                         partner.percentual_faturamento * (
                             order.partner_id.percentual_nota_debito) / 100,
                         partner)
