@@ -71,8 +71,7 @@ class SaleOrder(models.Model):
             if rateio == 100:
                 priceUnit = total_price[line]
             line.invoice_line_create(invoice.id, qty, rateio, priceUnit)
-            for inv_line in invoice.invoice_line_ids:
-                total_price[line] -= inv_line.price_unit
+            total_price[line] -= invoice.invoice_line_ids[-1].price_unit
         return total_price
 
     def create_invoices_rateio(self, order, invoice_lines, total_price,
