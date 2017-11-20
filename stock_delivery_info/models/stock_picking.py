@@ -17,10 +17,11 @@ class StockPicking(models.Model):
     @api.multi
     def button_validate(self):
         res = super(StockPicking, self).button_validate()
-        url = ""
+        param = self.env["ir.config_parameter"]
+        url = param.sudo().get_param('stock.endpoint_stock_delivery')
         headers = {
             'Content-Type': 'application/json',
-            'apikey': ''}
+            'apikey': self.env.user.api_key}
         date = datetime.now()
         date = date.isoformat()
 
