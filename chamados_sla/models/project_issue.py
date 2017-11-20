@@ -47,10 +47,11 @@ class ProjectIssue(models.Model):
     @api.depends("create_date", "priority", "impacto")
     def _compute_tempo(self):
         for item in self:
-            valor = PRIORITY_TABLE[item.priority][item.impacto]
-            data_python = fields.Datetime.from_string(item.create_date)
-            item.tempo_resposta = data_python + timedelta(hours=valor[0])
-            item.tempo_resolucao = data_python + timedelta(hours=valor[1])
+            if item.create_date and item.priority and item.impacto:
+                valor = PRIORITY_TABLE[item.priority][item.impacto]
+                data_python = fields.Datetime.from_string(item.create_date)
+                item.tempo_resposta = data_python + timedelta(hours=valor[0])
+                item.tempo_resolucao = data_python + timedelta(hours=valor[1])
 
     @api.multi
     def _compute_excedido(self):
