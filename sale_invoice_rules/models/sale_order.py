@@ -138,9 +138,9 @@ class SaleOrder(models.Model):
                     inv, total_price = self.create_invoices_rateio(
                         order, invoice_lines[order.partner_invoice_id.id][
                             'recorrente'], total_price, (
-                                partner.percentual_faturamento
-                                * (100 - order.partner_id.
-                                   percentual_nota_debito) / 100), partner)
+                                partner.percentual_faturamento * (
+                                    100 - order.partner_id.
+                                    percentual_nota_debito) / 100), partner)
                     invoices.append(inv)
                     avulsas.append(inv)
                     references.update({inv: [order]})
