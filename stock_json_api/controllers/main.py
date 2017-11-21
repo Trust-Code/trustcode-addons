@@ -5,6 +5,7 @@
 import json
 from odoo import http
 from odoo.http import request
+from odoo.exceptions import AccessDenied
 
 
 def cnpj_cpf_format(cnpj_cpf):
@@ -21,22 +22,40 @@ def cnpj_cpf_format(cnpj_cpf):
 
 class ApiStock(http.Controller):
 
+    def _validate_key(self, json):
+        key = json['api_key']
+        user = request.env['res.users'].sudo().search([('api_key', '=', key)])
+        if not user:
+            raise AccessDenied()
+
+        return user
+
     @http.route('/api/stock/incoming', type='json', auth="public",
                 methods=['POST'], csrf=False)
     def api_stock_incoming(self, **kwargs):
-        picking_id = self._save_incoming_order(request.jsonrequest)
+        user = self._validate_key(request.jsonrequest)
+        picking_id = self._save_incoming_order(request.jsonrequest, user)
 
         return json.dumps({"picking_id": picking_id})
 
     @http.route('/api/stock/outgoing', type='json', auth="public",
                 methods=['POST'], csrf=False)
     def api_stock_outgoing(self, **kwargs):
-        picking_id = self._save_outgoing_order(request.jsonrequest)
+        user = self._validate_key(request.jsonrequest)
+        picking_id = self._save_outgoing_order(request.jsonrequest, user)
 
         return json.dumps({"picking_id": picking_id})
 
-    def _save_incoming_order(self, compra):
-        env_partner = request.env['res.partner'].sudo()
+    @http.route('/api/stock/cancel_outgoing', type='json', auth="public",
+                methods=['POST'], csrf=False)
+    def api_stock_cnacel_outgoing(self, **kwargs):
+        user = self._validate_key(request.jsonrequest)
+        picking_id = self._cancel_outgoing_order(request.jsonrequest, user)
+
+        return json.dumps({"picking_id": picking_id})
+
+    def _save_incoming_order(self, compra, user):
+        env_partner = request.env['res.partner'].sudo(user)
         cnpj = cnpj_cpf_format(compra['provider']['cnpj'])
         partner = env_partner.search([('cnpj_cpf', '=', cnpj)])
 
@@ -49,10 +68,10 @@ class ApiStock(http.Controller):
         if not partner:
             partner = env_partner.create(vals)
 
-        env_picking_type = request.env['stock.picking.type'].sudo()
-        env_stock = request.env['stock.warehouse'].sudo()
-        env_product = request.env['product.product'].sudo()
-        env_uom = request.env['product.uom'].sudo()
+        env_picking_type = request.env['stock.picking.type'].sudo(user)
+        env_stock = request.env['stock.warehouse'].sudo(user)
+        env_product = request.env['product.product'].sudo(user)
+        env_uom = request.env['product.uom'].sudo(user)
 
         picking_items = []
         for item in compra['products']:
@@ -96,7 +115,7 @@ class ApiStock(http.Controller):
         else:
             location_dest_id, dummy = env_stock._get_partner_locations()
 
-        picking = request.env['stock.picking'].sudo().create({
+        picking = request.env['stock.picking'].sudo(user).create({
             'name': pick_type.sequence_id.next_by_id(),
             'partner_id': partner[0].id,
             'picking_type_id': pick_type.id,
@@ -106,9 +125,9 @@ class ApiStock(http.Controller):
         })
         return picking.id
 
-    def _save_outgoing_order(self, venda):
+    def _save_outgoing_order(self, venda, user):
         venda = venda['body']['orders'][0]
-        env_partner = request.env['res.partner'].sudo()
+        env_partner = request.env['res.partner'].sudo(user)
         cnpj = cnpj_cpf_format(venda['cpf'])
         partner = env_partner.search([('cnpj_cpf', '=', cnpj)])
 
@@ -127,10 +146,10 @@ class ApiStock(http.Controller):
         if not partner:
             partner = env_partner.create(vals)
 
-        env_picking_type = request.env['stock.picking.type'].sudo()
-        env_stock = request.env['stock.warehouse'].sudo()
-        env_product = request.env['product.product'].sudo()
-        env_uom = request.env['product.uom'].sudo()
+        env_picking_type = request.env['stock.picking.type'].sudo(user)
+        env_stock = request.env['stock.warehouse'].sudo(user)
+        env_product = request.env['product.product'].sudo(user)
+        env_uom = request.env['product.uom'].sudo(user)
 
         picking_items = []
         for item in venda['products']:
@@ -167,7 +186,6 @@ class ApiStock(http.Controller):
             location_id = partner[0].property_stock_supplier.id
         else:
             dummy, location_id = env_stock._get_partner_locations()
-
         if pick_type.default_location_dest_id:
             location_dest_id = pick_type.default_location_dest_id.id
         elif partner:
@@ -175,12 +193,69 @@ class ApiStock(http.Controller):
         else:
             location_dest_id, dummy = env_stock._get_partner_locations()
 
-        picking = request.env['stock.picking'].sudo().create({
+        ids = []
+
+        picking_ref = request.env.ref('picking.a').sudo(user)
+
+        picking = request.env['stock.picking'].sudo(user).create({
             'name': pick_type.sequence_id.next_by_id(),
             'partner_id': partner[0].id,
-            'picking_type_id': pick_type.id,
+            'picking_type_id': picking_ref.id,
             'move_lines': picking_items,
-            'location_id': location_id,
-            'location_dest_id': location_dest_id,
+            'location_id': picking_ref.default_location_src_id.id,
+            'location_dest_id': picking_ref.default_location_dest_id.id,
+            'origin': venda['order_id'],
         })
-        return picking.id
+        ids.append(picking.id)
+
+        packing_ref = request.env.ref('packing.b').sudo(user)
+
+        packing = request.env['stock.picking'].sudo(user).create({
+            'name': pick_type.sequence_id.next_by_id(),
+            'partner_id': partner[0].id,
+            'picking_type_id': packing_ref.id,
+            'move_lines': picking_items,
+            'location_id': packing_ref.default_location_src_id.id,
+            'location_dest_id': packing_ref.default_location_dest_id.id,
+            'origin': venda['order_id'],
+        })
+        ids.append(packing.id)
+
+        requested_order_ref = request.env.ref('received_order.c').sudo(user)
+
+        requested_order = request.env['stock.picking'].sudo(user).create({
+            'name': pick_type.sequence_id.next_by_id(),
+            'partner_id': partner[0].id,
+            'picking_type_id': requested_order_ref.id,
+            'move_lines': picking_items,
+            'location_id': requested_order_ref.default_location_src_id.id,
+            'location_dest_id': (requested_order_ref
+                                 .default_location_dest_id.id),
+            'origin': venda['order_id'],
+        })
+        ids.append(requested_order.id)
+
+        if len(ids) > 0:
+            return ids
+        else:
+            raise Exception("Os ids externos para os pickings referenciados não foram\
+ encontrados.")
+
+    def _cancel_outgoing_order(self, venda, user):
+        venda = venda['body']['orders'][0]
+        cancel_requested_order = request.env['stock.picking'].sudo(user)\
+            .search([('origin', '=', venda['order_id']), (
+                'state', '!=', 'cancel')])
+        if any(stock_picking['state'] == 'done' for stock_picking
+               in cancel_requested_order):
+            raise Exception("Não é possível cancelar pickings que já estão\
+ concluídos.")
+        cancelled_orders = []
+        for stock_picking in cancel_requested_order:
+            stock_picking.sudo(user).action_cancel()
+            cancelled_orders.append(stock_picking['id'])
+        if len(cancelled_orders) > 0:
+            return cancelled_orders
+        else:
+            raise Exception("Não existem pickings relacionados\
+ à este order_id para serem cancelados.")
