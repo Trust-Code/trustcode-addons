@@ -13,7 +13,7 @@ class SaleOrderLine(models.Model):
 
     # Sobrecarga no neste metodo para inserir o rateio no price_unit
     @api.multi
-    def invoice_line_create(self, invoice_id, qty, rateio, priceUnit=0):
+    def invoice_line_create(self, invoice_id, qty, rateio=100, priceUnit=0):
         """
         Create an invoice line. The quantity to invoice can be positive
         (invoice) or negative
@@ -64,11 +64,11 @@ class SaleOrder(models.Model):
                             ['avulso'].append(line))
         return order_lines_groups, total_price
 
-    def insert_invoice_lines(self, invoice, lines, total_price, rateio=100):
+    def insert_invoice_lines(self, invoice, lines, total_price=0, rateio=100):
         for line in lines:
             priceUnit = 0
             qty = line.product_uom_qty
-            if rateio == 100:
+            if rateio == 100 and total_price:
                 priceUnit = total_price[line]
             line.invoice_line_create(invoice.id, qty, rateio, priceUnit)
             total_price[line] -= invoice.invoice_line_ids[-1].price_unit
