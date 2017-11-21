@@ -153,11 +153,36 @@ class SaleOrder(models.Model):
                     avulsas.append(inv)
                     references.update({inv: [order]})
                     rateio -= partner.percentual_faturamento
+
+                # Notas de débito
+                if order.partner_id.percentual_nota_debito:
+                    for partner in order.partner_invoice_id.branch_ids:
+
+                        inv, total_price = self.create_invoices_rateio(
+                            order, invoice_lines[order.partner_invoice_id.id][
+                                'recorrente'], total_price,
+                            partner.percentual_faturamento * (
+                                order.partner_id.percentual_nota_debito) / 100,
+                            partner)
+                        inv.fiscal_document_id = (inv.fiscal_position_id.
+                                                  documento_nota_debito_id)
+                        invoices.append(inv)
+                        references.update({inv: [order]})
+
+                    inv, total_price = self.create_invoices_rateio(
+                        order, invoice_lines[order.partner_invoice_id.id][
+                            'recorrente'], total_price, rateio * (
+                                order.partner_id.percentual_nota_debito / 100
+                            ))
+                    inv.fiscal_document_id = (inv.fiscal_position_id.
+                                              documento_nota_debito_id)
+                    invoices.append(inv)
+                    references.update({inv: [order]})
+
                 # Cria faturas para a matriz
                 inv, total_price = self.create_invoices_rateio(
-                    order, invoice_lines[order.partner_invoice_id.id][
-                        'recorrente'], total_price, rateio*(
-                            100 - order.partner_id.percentual_nota_debito)/100)
+                        order, invoice_lines[order.partner_invoice_id.id][
+                            'recorrente'], total_price)
                 invoices.append(inv)
                 avulsas.append(inv)
                 references.update({inv: [order]})
@@ -181,28 +206,6 @@ class SaleOrder(models.Model):
                 references.update({inv: [order]})
                 inv.fiscal_document_id = \
                     inv.fiscal_position_id.documento_produto_id
-
-                # Notas de débito
-                for partner in order.partner_invoice_id.branch_ids:
-
-                    inv, total_price = self.create_invoices_rateio(
-                        order, invoice_lines[order.partner_invoice_id.id][
-                            'recorrente'], total_price,
-                        partner.percentual_faturamento * (
-                            order.partner_id.percentual_nota_debito) / 100,
-                        partner)
-                    inv.fiscal_document_id = (inv.fiscal_position_id.
-                                              documento_nota_debito_id)
-                    invoices.append(inv)
-                    references.update({inv: [order]})
-
-                inv, total_price = self.create_invoices_rateio(
-                    order, invoice_lines[order.partner_invoice_id.id][
-                        'recorrente'], total_price)
-                inv.fiscal_document_id = (inv.fiscal_position_id.
-                                          documento_nota_debito_id)
-                invoices.append(inv)
-                references.update({inv: [order]})
 
         if not invoices:
             raise UserError(_('There is no invoicable line.'))
