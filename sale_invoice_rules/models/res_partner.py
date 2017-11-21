@@ -6,6 +6,7 @@
 from odoo import fields, models, api
 from odoo.exceptions import Warning
 
+
 class ResPartner(models.Model):
     _inherit = 'res.partner'
 
