@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="res_config_settings_json_api" model="ir.ui.view">
+        <field name="name">res_config_settings.json_api</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="stock.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <h2 id="schedule_info" position="before">
+
+                <h2>Configuração API Json</h2>
+                <div class="row mt16 o_settings_container">
+                    <div class="col-xs-12 col-md-6 o_setting_box">
+                       <div class="o_setting_right_pane">
+                           <label for="pick_type_incoming_id"/>
+                           <div class="content-group">
+                               <div class="mt16">
+                                   <field name="pick_type_incoming_id" class="o_light_label" />
+                               </div>
+                           </div>
+                       </div>
+                   </div>
+
+                   <div class="col-xs-12 col-md-6 o_setting_box">
+                       <div class="o_setting_right_pane">
+                           <label for="pick_type_stock_id"/>
+                           <div class="content-group">
+                               <div class="mt16">
+                                   <field name="pick_type_stock_id" class="o_light_label" />
+                               </div>
+                           </div>
+                       </div>
+                   </div>
+               </div>
+
+               <div class="row mt16 o_settings_container">
+                   <div class="col-xs-12 col-md-6 o_setting_box">
+                      <div class="o_setting_right_pane">
+                          <label for="pick_type_order_id"/>
+                          <div class="content-group">
+                              <div class="mt16">
+                                  <field name="pick_type_order_id" class="o_light_label" />
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+
+                  <div class="col-xs-12 col-md-6 o_setting_box">
+                      <div class="o_setting_right_pane">
+                          <label for="pick_type_pack_id"/>
+                          <div class="content-group">
+                              <div class="mt16">
+                                  <field name="pick_type_pack_id" class="o_light_label" />
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+
+              <div class="row mt16 o_settings_container">
+                  <div class="col-xs-12 col-md-6 o_setting_box">
+                     <div class="o_setting_right_pane">
+                         <label for="pick_type_outgoing_id"/>
+                         <div class="content-group">
+                             <div class="mt16">
+                                 <field name="pick_type_outgoing_id" class="o_light_label" />
+                             </div>
+                         </div>
+                     </div>
+                 </div>
+             </div>
+
+            </h2>
+        </field>
+    </record>
+</odoo>
