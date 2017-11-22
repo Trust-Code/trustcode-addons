@@ -56,7 +56,8 @@ class BatchProduct(models.Model):
                                      'partially_available'])
                 ], limit=1)
                 if move:
-                    new_origin = move.origin + '; ' + l[2]
+                    if l[2] not in move.origin:
+                        new_origin = move.origin + '; ' + l[2]
                     new_qty = move.product_uom_qty + l[1]
                     new_pick_origin = move.picking_id.origin + "; " + l[2]
                     move.write({'origin': new_origin,
