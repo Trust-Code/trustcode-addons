@@ -6,6 +6,7 @@ import json
 from odoo import http
 from odoo.http import request
 from odoo.exceptions import AccessDenied
+from datetime import datetime, timedelta
 
 
 def cnpj_cpf_format(cnpj_cpf):
@@ -54,6 +55,23 @@ class ApiStock(http.Controller):
 
         return json.dumps({"picking_id": picking_id})
 
+    def _get_locations(self, user, partner, pick_type):
+        env_stock = request.env['stock.warehouse'].sudo(user)
+        if pick_type.default_location_src_id:
+            location_id = pick_type.default_location_src_id.id
+        elif partner:
+            location_id = partner[0].property_stock_supplier.id
+        else:
+            dummy, location_id = env_stock._get_partner_locations()
+
+        if pick_type.default_location_dest_id:
+            location_dest_id = pick_type.default_location_dest_id.id
+        elif partner:
+            location_dest_id = partner.property_stock_customer.id
+        else:
+            location_dest_id, dummy = env_stock._get_partner_locations()
+        return location_id, location_dest_id
+
     def _save_incoming_order(self, compra, user):
         env_partner = request.env['res.partner'].sudo(user)
         cnpj = cnpj_cpf_format(compra['provider']['cnpj'])
@@ -68,11 +86,10 @@ class ApiStock(http.Controller):
         if not partner:
             partner = env_partner.create(vals)
 
-        env_picking_type = request.env['stock.picking.type'].sudo(user)
-        env_stock = request.env['stock.warehouse'].sudo(user)
         env_product = request.env['product.product'].sudo(user)
         env_uom = request.env['product.uom'].sudo(user)
 
+        ids = []
         picking_items = []
         for item in compra['products']:
             product = env_product.search([('default_code', '=', item['id'])])
@@ -98,32 +115,56 @@ class ApiStock(http.Controller):
                 'product_uom': uom.id,
             }))
 
-        pick_type = env_picking_type.search(
-            [('code', '=', 'incoming')], limit=1)
+        schedule = datetime.strptime(
+            compra['date'], '%Y-%m-%d')
+        schedule += timedelta(hours=23)
 
-        if pick_type.default_location_src_id:
-            location_id = pick_type.default_location_src_id.id
-        elif partner:
-            location_id = partner[0].property_stock_supplier.id
-        else:
-            dummy, location_id = env_stock._get_partner_locations()
+        params = request.env['ir.config_parameter'].sudo()
+        pick_type_env = request.env['stock.picking.type'].sudo(user)
 
-        if pick_type.default_location_dest_id:
-            location_dest_id = pick_type.default_location_dest_id.id
-        elif partner:
-            location_dest_id = partner.property_stock_customer.id
-        else:
-            location_dest_id, dummy = env_stock._get_partner_locations()
+        pick_incoming_type_id = int(params.get_param(
+            'json_api.pick_type_incoming_id', default=False))
+        picking_incoming_ref = pick_type_env.browse(pick_incoming_type_id)
+        if not picking_incoming_ref:
+            raise Exception("Configure os tipos de separação.")
+
+        src_id, dest_id = self._get_locations(
+            user, partner, picking_incoming_ref)
 
         picking = request.env['stock.picking'].sudo(user).create({
-            'name': pick_type.sequence_id.next_by_id(),
+            'name': picking_incoming_ref.sequence_id.next_by_id(),
+            'scheduled_date': schedule,
+            'origin': compra['purchaseOrder'],
             'partner_id': partner[0].id,
-            'picking_type_id': pick_type.id,
+            'picking_type_id': picking_incoming_ref.id,
             'move_lines': picking_items,
-            'location_id': location_id,
-            'location_dest_id': location_dest_id,
+            'location_id': src_id,
+            'location_dest_id': dest_id,
         })
-        return picking.id
+        ids.append(picking.id)
+
+        pick_stock_type_id = int(params.get_param(
+            'json_api.pick_type_stock_id', default=False))
+        picking_stock_ref = pick_type_env.browse(pick_stock_type_id)
+        if not picking_stock_ref:
+            raise Exception("Configure os tipos de separação.")
+
+        src_id, dest_id = self._get_locations(
+            user, partner, picking_stock_ref)
+
+        picking = request.env['stock.picking'].sudo(user).create({
+            'name': picking_stock_ref.sequence_id.next_by_id(),
+            'scheduled_date': schedule,
+            'origin': compra['purchaseOrder'],
+            'partner_id': partner[0].id,
+            'picking_type_id': picking_stock_ref.id,
+            'move_lines': picking_items,
+            'location_id': src_id,
+            'location_dest_id': dest_id,
+        })
+        ids.append(picking.id)
+
+        return ids
 
     def _save_outgoing_order(self, venda, user):
         venda = venda['body']['orders'][0]
@@ -138,16 +179,15 @@ class ApiStock(http.Controller):
             'phone': venda['telephone'],
             'mobile': venda['cellphone'],
             'email': venda['email'],
-            'street': venda['shipping_address_1'],
-            'street2': venda['shipping_address_2'],
-            'zip': venda['shipping_postcode'],
-
         }
         if not partner:
             partner = env_partner.create(vals)
+            partner.zip_search(venda['shipping_postcode'])
+            partner.write({
+                'street': venda['shipping_address_1'],
+                'street2': venda['shipping_address_2'],
+            })
 
-        env_picking_type = request.env['stock.picking.type'].sudo(user)
-        env_stock = request.env['stock.warehouse'].sudo(user)
         env_product = request.env['product.product'].sudo(user)
         env_uom = request.env['product.uom'].sudo(user)
 
@@ -177,69 +217,73 @@ class ApiStock(http.Controller):
                 'product_uom': uom.id,
             }))
 
-        pick_type = env_picking_type.search(
-            [('code', '=', 'outgoing')], limit=1)
-
-        if pick_type.default_location_src_id:
-            location_id = pick_type.default_location_src_id.id
-        elif partner:
-            location_id = partner[0].property_stock_supplier.id
-        else:
-            dummy, location_id = env_stock._get_partner_locations()
-        if pick_type.default_location_dest_id:
-            location_dest_id = pick_type.default_location_dest_id.id
-        elif partner:
-            location_dest_id = partner.property_stock_customer.id
-        else:
-            location_dest_id, dummy = env_stock._get_partner_locations()
+        schedule = datetime.strptime(
+            venda['delivery_date_formatted'], '%Y-%m-%d')
+        schedule += timedelta(hours=23)
 
         ids = []
 
-        picking_ref = request.env.ref('picking.a').sudo(user)
+        params = request.env['ir.config_parameter'].sudo()
+        pick_type_env = request.env['stock.picking.type'].sudo(user)
 
+        pick_order_type_id = int(params.get_param(
+            'json_api.pick_type_order_id', default=False))
+        picking_type_ref = pick_type_env.browse(pick_order_type_id)
+        if not picking_type_ref:
+            raise Exception("Configure os tipos de picking.")
+
+        src_id, dest_id = self._get_locations(user, partner, picking_type_ref)
         picking = request.env['stock.picking'].sudo(user).create({
-            'name': pick_type.sequence_id.next_by_id(),
+            'name': picking_type_ref.sequence_id.next_by_id(),
+            'scheduled_date': schedule,
             'partner_id': partner[0].id,
-            'picking_type_id': picking_ref.id,
+            'picking_type_id': picking_type_ref.id,
             'move_lines': picking_items,
-            'location_id': picking_ref.default_location_src_id.id,
-            'location_dest_id': picking_ref.default_location_dest_id.id,
+            'location_id': src_id,
+            'location_dest_id': dest_id,
             'origin': venda['order_id'],
         })
         ids.append(picking.id)
 
-        packing_ref = request.env.ref('packing.b').sudo(user)
+        pack_type_id = int(params.get_param(
+            'json_api.pick_type_pack_id', default=False))
+        packing_type_ref = pick_type_env.browse(pack_type_id)
+        if not packing_type_ref:
+            raise Exception("Configure os tipos de picking.")
 
+        src_id, dest_id = self._get_locations(user, partner, packing_type_ref)
         packing = request.env['stock.picking'].sudo(user).create({
-            'name': pick_type.sequence_id.next_by_id(),
+            'name': packing_type_ref.sequence_id.next_by_id(),
+            'scheduled_date': schedule,
             'partner_id': partner[0].id,
-            'picking_type_id': packing_ref.id,
+            'picking_type_id': packing_type_ref.id,
             'move_lines': picking_items,
-            'location_id': packing_ref.default_location_src_id.id,
-            'location_dest_id': packing_ref.default_location_dest_id.id,
+            'location_id': src_id,
+            'location_dest_id': dest_id,
             'origin': venda['order_id'],
         })
         ids.append(packing.id)
 
-        requested_order_ref = request.env.ref('received_order.c').sudo(user)
+        outgoing_type_id = int(params.get_param(
+            'json_api.pick_type_outgoing_id', default=False))
+        requested_order_ref = pick_type_env.browse(outgoing_type_id)
+        if not requested_order_ref:
+            raise Exception("Configure os tipos de picking.")
 
+        src_id, dest_id = self._get_locations(
+            user, partner, requested_order_ref)
         requested_order = request.env['stock.picking'].sudo(user).create({
-            'name': pick_type.sequence_id.next_by_id(),
+            'name': requested_order_ref.sequence_id.next_by_id(),
+            'scheduled_date': schedule,
             'partner_id': partner[0].id,
             'picking_type_id': requested_order_ref.id,
             'move_lines': picking_items,
-            'location_id': requested_order_ref.default_location_src_id.id,
-            'location_dest_id': (requested_order_ref
-                                 .default_location_dest_id.id),
+            'location_id': src_id,
+            'location_dest_id': dest_id,
             'origin': venda['order_id'],
         })
         ids.append(requested_order.id)
-
-        if len(ids) > 0:
-            return ids
-        else:
-            raise Exception("Os ids externos para os pickings referenciados não foram\
- encontrados.")
+        return ids
 
     def _cancel_outgoing_order(self, venda, user):
         venda = venda['body']['orders'][0]

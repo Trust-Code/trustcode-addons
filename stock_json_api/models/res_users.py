@@ -8,4 +8,4 @@ from odoo import fields, models
 class ResUsers(models.Model):
     _inherit = 'res.users'
 
-    api_key = fields.Char()
+    api_key = fields.Char(size=100)
