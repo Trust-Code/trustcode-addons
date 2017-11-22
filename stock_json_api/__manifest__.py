@@ -18,5 +18,6 @@
         'stock', 'purchase', 'sale'
     ],
     'data': [
+        'views/res_users.xml',
     ],
 }

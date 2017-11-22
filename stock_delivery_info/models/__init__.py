@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
-# © 2017 Danimar Ribeiro, Trustcode
+# © 2017 Fábio Luna
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-
-from . import controllers
-from . import models
+from . import stock_picking
+from . import res_config_settings
