@@ -48,6 +48,7 @@ class BatchProduct(models.Model):
             move_ids = []
             origin = ""
             for l in self.env.cr.fetchall():
+                '''
                 move = move_obj.search([
                     ('product_id', '=', l[0]),
                     ('picking_type_id', '=', rule.picking_type_dest.id),
@@ -63,16 +64,18 @@ class BatchProduct(models.Model):
                                 'product_uom_qty': new_qty})
                     move.picking_id.write({'origin': new_pick_origin})
                 else:
-                    product_id = product_obj.browse(l[0])
-                    product_uom_id = product_id.uom_id
-                    lines.append([0, 0, {
-                        'name': product_id.name,
-                        'origin': l[2],
-                        'product_id': l[0],
-                        'product_uom_qty': l[1],
-                        'product_uom': product_uom_id.id,
-                        'picking_type_id': rule.picking_type_dest.id,
+                '''
+                product_id = product_obj.browse(l[0])
+                product_uom_id = product_id.uom_id
+                lines.append([0, 0, {
+                    'name': product_id.name,
+                    'origin': l[2],
+                    'product_id': l[0],
+                    'product_uom_qty': l[1],
+                    'product_uom': product_uom_id.id,
+                    'picking_type_id': rule.picking_type_dest.id,
                     }])
+                 
                     origin += l[2] + "; "
                 for x in l[3].split(','):
                     move_ids.append(int(x))
