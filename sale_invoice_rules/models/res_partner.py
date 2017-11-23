@@ -17,7 +17,7 @@ class ResPartner(models.Model):
 
     @api.multi
     def write(self, vals):
-        super(ResPartner, self).write(vals)
+        res = super(ResPartner, self).write(vals)
         if self.branch_id:
             soma = 0
             for filial in self.branch_id.branch_ids:
@@ -25,3 +25,5 @@ class ResPartner(models.Model):
             if soma > 100:
                 raise Warning(
                     u'Faturamento das filiais ultrapassa 100%')
+
+        return res
