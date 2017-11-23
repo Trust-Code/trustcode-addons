@@ -10,21 +10,18 @@ from odoo.addons.base.ir.ir_mail_server import extract_rfc2822_addresses
 class IrMailServer(models.Model):
     _inherit = 'ir.mail_server'
 
-    def send_email(self, message, mail_server_id=None,
-                   smtp_server=None, smtp_port=None, smtp_user=None,
-                   smtp_password=None, smtp_encryption=None,
-                   smtp_debug=False):
+    def send_email(self, message, mail_server_id=None, smtp_server=None,
+                   smtp_port=None, smtp_user=None, smtp_password=None,
+                   smtp_encryption=None, smtp_debug=False, smtp_session=None):
         from_rfc2822 = extract_rfc2822_addresses(message['From'])[-1]
         server_id = self.env['ir.mail_server'].search([
             ('smtp_user', '=', from_rfc2822)])
         if server_id and server_id[0]:
             if 'Return-Path' in message:
                 message.replace_header('Return-Path', from_rfc2822)
-        return super(IrMailServer, self).send_email(message, mail_server_id,
-                                                    smtp_server, smtp_port,
-                                                    smtp_user, smtp_password,
-                                                    smtp_encryption,
-                                                    smtp_debug)
+        return super(IrMailServer, self).send_email(
+            message, mail_server_id, smtp_server, smtp_port, smtp_user,
+            smtp_password, smtp_encryption, smtp_debug, smtp_session)
 
 
 class MailMail(models.Model):
