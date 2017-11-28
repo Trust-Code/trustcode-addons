@@ -28,12 +28,15 @@ class SaleOrder(models.Model):
         elif self.update_option_recurrent_revenue == '2':
             cotacoes = self.search([
                 ('opportunity_id', '=', self.opportunity_id.id)])
+
+            opportunity = 0
             total_recurrent = 0
             total_non_recurrent = 0
             for item in cotacoes:
+                opportunity = item.opportunity_id
                 total_recurrent += item.total_recurrent
                 total_non_recurrent += item.total_non_recurrent
-
-            item.opportunity_id.planned_revenue = total_non_recurrent
-            item.opportunity_id.recurrent_revenue = total_recurrent
+            if opportunity:
+                opportunity.planned_revenue = total_non_recurrent
+                opportunity.recurrent_revenue = total_recurrent
         return res
