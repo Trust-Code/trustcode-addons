@@ -2,8 +2,7 @@
 # © 2017 Johny Chen Jy, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-
-{
+{  # pylint: disable=C8101,C8103
     'name': 'Trustcode - Manufacturing availability checker',
     'description': 'Check stock availability for manufactured items',
     'summary': """
