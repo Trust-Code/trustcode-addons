@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<record id="discount_rules_configs" model="ir.ui.view">
+        <field name="name">discount.rules.config.view</field>
+        <field name="model">sale.config.settings</field>
+        <field name="inherit_id" ref="sale.view_sales_config"/>
+        <field name="arch" type="xml">
+        <group name="quotations_sales" position="after">
+            <group string="Regras de Desconto">
+                <field name="discount_rules_ids" />
+            </group>
+        </group>
+        </field>
+    </record>
+</odoo>
