@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="discount_rules_view_tree" model="ir.ui.view">
+        <field name="name">discount.rules.tree.view</field>
+        <field name="model">discount.rules</field>
+        <field name="arch" type="xml">
+        <field name="discount_rules_ids" string="">
+            <tree editable="bottom" >
+                <field name="group_id"/>
+                <field name="parcelas"/>
+                <field name="max_discount"/>
+            </tree>
+        </field>
+    </record>
+</odoo>
