@@ -14,16 +14,15 @@ class SaleOrderLine(models.Model):
     """
     def _check_routing(self):
         res = super(SaleOrderLine, self)._check_routing()
-        """ If availability(res) is true, returns true, since it
-        is already in stock.
-        """
+        # If availability(res) is true, returns true, since it
+        # is already in stock.
         if res:
             return res
 
-        """ Now, given that availability is false, it checks the
-        possibility of it being a manufacturable item, and checks for
-        the available quantity(in stock).
-        """
+        # Now, given that availability is false, it checks the
+        # possibility of it being a manufacturable item, and checks for
+        # the available quantity(in stock).
+
         # Searches for the necessary 'ingredients' list
         lista_manufatura = self.product_id.bom_ids
         # Checks if something(ingredient list) was found. If not,
