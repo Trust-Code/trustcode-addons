@@ -12,6 +12,7 @@ class SaleOrderLine(models.Model):
     Basicaly, it checks for the quantity of the 'ingredients' in stock and
     the quantity required for the manufacture.
     """
+
     def _check_routing(self):
         res = super(SaleOrderLine, self)._check_routing()
         # If availability(res) is true, returns true, since it
@@ -25,7 +26,7 @@ class SaleOrderLine(models.Model):
 
         # Searches for the necessary 'ingredients' list
         lista_manufatura = self.product_id.bom_ids
-        # Checks if something(ingredient list) was found. If not,
+        # Checks if an ingredient list was found. If not,
         # returns False
         if not lista_manufatura:
             return res
@@ -35,6 +36,6 @@ class SaleOrderLine(models.Model):
         # manufacture the main product. If there's not enough,
         # returns False; else, True.
         for item in lista_manufatura.bom_line_ids:
-            if item.product_id.qty_available < item.product_qty:
+            if item.product_id.qty_available < self.product_uom_qty:
                 return res
         return True
