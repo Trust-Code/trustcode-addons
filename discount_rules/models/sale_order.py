@@ -3,7 +3,6 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 from odoo import models, api
-from odoo.exceptions import UserError
 
 
 class SaleOrderLine(models.Model):
@@ -28,7 +27,6 @@ class SaleOrderLine(models.Model):
     def _check_discount(self):
         max_discount = self._get_max_discount()
         if self.discount > max_discount:
-
             return {
                 'warning': {
                     'title': 'Atenção!',
