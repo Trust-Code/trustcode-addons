@@ -24,7 +24,7 @@
         'base', 'sale'
     ],
     'data': [
-        # 'security/ir.model.access.csv',
+        'security/ir.model.access.csv',
         'views/sale_config_settings_view.xml',
     ],
 }
