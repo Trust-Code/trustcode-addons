@@ -18,7 +18,10 @@ class SaleConfiguration(models.TransientModel):
     def get_default_discount_rule_ids(self, fields):
         params = self.env['ir.config_parameter']
         discount_rules_ids = params.get_param('discount_rules_ids')
-        return {'discount_rules_ids': safe_eval(discount_rules_ids)}
+        if discount_rules_ids:
+            return {'discount_rules_ids': safe_eval(discount_rules_ids)}
+        else:
+            return {}
 
     @api.multi
     def set_default_discount_rule_ids(self):

@@ -3,26 +3,26 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 
-{
-    'name': "discount_rules",
-
+{  # pylint: disable=C8101,C8103
+    'name': "Regras de Desconto",
     'summary': """
-        Short (1 phrase/line) summary of the module's purpose, used as
-        subtitle on modules listing or apps.openerp.com""",
-
+        Este módulo aplica regras de desconto confome o grupo de usuário
+    """,
     'description': """
-        Long description of module's purpose
+        Este módulo aplica regras de desconto confome o grupo de usuário
     """,
     'author': "Trustcode",
     'website': "http://www.trustcode.com.br",
-    'category': 'Uncategorized',
+    'category': 'Sale',
     'version': '11.0.1.0.0',
     'license': 'AGPL-3',
     'contributors': [
-
+        'Johny Chen Jy <johnychenjy@gmail.com>',
+        'Danimar Ribeiro <danimaribeiro@gmail.com>'
     ],
-    'depends': ['base',
-                'sale'],
+    'depends': [
+        'base', 'sale'
+    ],
     'data': [
         # 'security/ir.model.access.csv',
         'views/sale_config_settings_view.xml',
