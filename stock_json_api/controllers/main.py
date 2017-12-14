@@ -5,7 +5,7 @@
 import json
 from odoo import http
 from odoo.http import request
-from odoo.exceptions import AccessDenied
+from odoo.exceptions import AccessDenied, UserError
 from datetime import datetime, timedelta
 
 
@@ -31,10 +31,23 @@ class ApiStock(http.Controller):
 
         return user
 
+    def check_repeated_json(self, json, user):
+        try:
+            order_id = json['body']['orders'][0]['order_id']
+            order_id = str(order_id)
+        except KeyError:
+            order_id = json['purchaseOrder']
+        total = request.env['stock.picking'].sudo(user).search_count([
+            ('origin', '=', order_id)
+        ])
+        if total > 0:
+            raise UserError('Este JSON já foi importado.')
+
     @http.route('/api/stock/incoming', type='json', auth="public",
                 methods=['POST'], csrf=False)
     def api_stock_incoming(self, **kwargs):
         user = self._validate_key(request.jsonrequest)
+        self.check_repeated_json(request.jsonrequest, user)
         picking_id = self._save_incoming_order(request.jsonrequest, user)
 
         return json.dumps({"picking_id": picking_id})
@@ -43,6 +56,7 @@ class ApiStock(http.Controller):
                 methods=['POST'], csrf=False)
     def api_stock_outgoing(self, **kwargs):
         user = self._validate_key(request.jsonrequest)
+        self.check_repeated_json(request.jsonrequest, user)
         picking_id = self._save_outgoing_order(request.jsonrequest, user)
 
         return json.dumps({"picking_id": picking_id})
