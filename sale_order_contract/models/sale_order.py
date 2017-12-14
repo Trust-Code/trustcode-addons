@@ -112,12 +112,13 @@ class SaleOrder(models.Model):
             caso tenha produtos mistos será duplica a cotação separando os
             produtos com recorrência.
         '''
-        res = super(SaleOrder, self).action_confirm()
         recurrent_lines = map(
             lambda line: line.recurring_line, self.order_line)
         contract_id = self
         if recurrent_lines and False in recurrent_lines:
             contract_id = self._create_contract()
+
+        res = super(SaleOrder, self).action_confirm()
 
         pgto = self.env['account.payment.term']
         payment_term_id = pgto.search([('indPag', '=', '3')], limit=1)
