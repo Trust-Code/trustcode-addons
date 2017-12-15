@@ -164,13 +164,16 @@ class SaleOrder(models.Model):
     def _check_merging_contracts(self, contracts):
         for item in contracts:
             if item.state != 'draft':
-                raise UserError(u'Apenas contratos em situação provisória podem ser mesclados!')
-            # if not item.is_contract:
-            #     raise UserError(u'Apenas contratos podem ser mesclados!')
+                error = u'Apenas contratos em situação provisória podem ser '
+                error += 'mesclados!'
+                raise UserError(error)
+            if not item.is_contract:
+                raise UserError(u'Apenas contratos podem ser mesclados!')
 
         partners = set([item.partner_id for item in contracts])
-        if len(partners)>1:
-            raise UserError(u'Apenas contratos de mesmo cliente podem ser mesclados!')
+        if len(partners) > 1:
+            error = u'Apenas contratos de mesmo cliente podem ser mesclados!'
+            raise UserError(error)
 
     def _get_so_lines_for_merge(self, vals):
         so_lines = []
@@ -192,7 +195,7 @@ class SaleOrder(models.Model):
             if item.start_contract > last_contract.start_contract:
                 last_contract = item
         last_contract.order_line = so_lines
-        contracts_to_cancel = vals.filtered( lambda x: x.id != last_contract.id)
+        contracts_to_cancel = vals.filtered(lambda x: x.id != last_contract.id)
         last_contract.origin = ', '.join(
             [item.name for item in contracts_to_cancel])
         self._cancel_merged_contracts(contracts_to_cancel)

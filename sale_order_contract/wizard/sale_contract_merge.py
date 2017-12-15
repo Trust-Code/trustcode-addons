@@ -4,6 +4,7 @@
 
 from odoo import models
 
+
 class SaleContractMerge(models.TransientModel):
     _name = 'sale.contract.merge'
 
