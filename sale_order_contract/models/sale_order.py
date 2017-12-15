@@ -161,6 +161,42 @@ class SaleOrder(models.Model):
                 order.margin_non_recurrent = (
                     non_rec / order.total_non_recurrent) * 100
 
+    def _check_merging_contracts(self, contracts):
+        for item in contracts:
+            if item.state != 'draft':
+                raise UserError(u'Apenas contratos em situação provisória podem ser mesclados!')
+            # if not item.is_contract:
+            #     raise UserError(u'Apenas contratos podem ser mesclados!')
+
+        partners = set([item.partner_id for item in contracts])
+        if len(partners)>1:
+            raise UserError(u'Apenas contratos de mesmo cliente podem ser mesclados!')
+
+    def _get_so_lines_for_merge(self, vals):
+        so_lines = []
+        for item in vals:
+            for line in item.order_line:
+                so_lines.append(line.id)
+        return so_lines
+
+    def _cancel_merged_contracts(self, contracts):
+        for item in contracts:
+            item.state = 'cancel'
+
+    def merge_contracts(self, active_ids):
+        vals = self.env['sale.order'].search([('id', 'in', active_ids)])
+        self._check_merging_contracts(vals)
+        so_lines = self._get_so_lines_for_merge(vals)
+        last_contract = vals[0]
+        for item in vals:
+            if item.start_contract > last_contract.start_contract:
+                last_contract = item
+        last_contract.order_line = so_lines
+        contracts_to_cancel = vals.filtered( lambda x: x.id != last_contract.id)
+        last_contract.origin = ', '.join(
+            [item.name for item in contracts_to_cancel])
+        self._cancel_merged_contracts(contracts_to_cancel)
+
 
 class SaleOrderLine(models.Model):
     _inherit = 'sale.order.line'

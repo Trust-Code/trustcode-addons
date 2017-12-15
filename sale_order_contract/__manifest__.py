@@ -29,6 +29,7 @@
         'views/product.xml',
         'views/payment_term.xml',
         'wizard/sale_contract_renew.xml',
+        'wizard/sale_contract_merge.xml',
         'data/admin_contract_active.xml',
     ],
     'application': True,
