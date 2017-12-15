@@ -93,14 +93,15 @@ class BackupConfig(models.Model):
         compute='_get_total_backups')
 
     def _set_next_backup(self):
+        last_backup = datetime.strptime(self.next_backup, '%Y-%m-%d %H:%M:%S')
         if self.interval == 'hora':
-            self.next_backup = datetime.now() + timedelta(hours=1)
+            self.next_backup = last_backup + timedelta(hours=1)
         elif self.interval == 'seis':
-            self.next_backup = datetime.now() + timedelta(hours=6)
+            self.next_backup = last_backup + timedelta(hours=6)
         elif self.interval == 'doze':
-            self.next_backup = datetime.now() + timedelta(hours=12)
+            self.next_backup = last_backup + timedelta(hours=12)
         else:
-            self.next_backup = datetime.now() + timedelta(days=1)
+            self.next_backup = last_backup + timedelta(days=1)
 
     @api.multi
     def execute_backup(self):
