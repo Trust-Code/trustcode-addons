@@ -1,0 +1,60 @@
+
+
+
+ -- Rodar script de instalação da EDX
+
+ansible-playbook -i producao run-edx.yml
+
+ -- Conectar na base de teste
+
+
+ssh -i "edx-teste.pem" ubuntu@ec2-34-227-148-187.compute-1.amazonaws.com
+ ssh -i "edx-teste.pem" ubuntu@54.164.167.243
+
+Alguns comandos basicos de docker
+
+
+sudo docker ps  - Lista os containers em execução
+sudo docker ps -a  - Lista até os containeres parados
+l
+
+Conectar dentro do docker
+
+sudo docker exec -ti trustcode-edx bash
+
+
+senha para reiniciar: trustocode
+sudo mongo start
+
+backup:
+Faz o comando
+ mongodump -d edxapp -o ~/backups/first_backup
+
+Depois aperta crtl+D
+
+
+_______________________________________
+
+Criar uma nova base
+
+
+[offline]
+
+[trustcode]
+base-teste1 ansible_host=54.164.167.243 ansible_user=ubuntu ansible_ssh_private_key_file=/home/danimar/key1.pem
+
+[producao:children]
+offline
+trustcode
+
+
+[desenvolvimento:children]
+trustcode-dev
+
+/home/mariana/projetos/odoo-automation
+
+No arquivo Produção, altera para a base acima.
+
+
+
+
