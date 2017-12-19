@@ -19,7 +19,7 @@
         <field name="model">backup.executed.edx</field>
         <field name="type">form</field>
         <field name="arch" type="xml">
-            <form string="Backup">
+            <form string="Backup EDX">
                 <header>
                     <field name="state" widget="statusbar"
                         statusbar_colors="{'error':'red','concluded':'blue'}" />
@@ -39,7 +39,7 @@
         <field name="model">backup.executed.edx</field>
         <field name="type">tree</field>
         <field name="arch" type="xml">
-            <tree string="Backups">
+            <tree string="Backups EDX">
                 <field name='configuration_id' />
                 <field name='backup_date' />
                 <field name='state' />

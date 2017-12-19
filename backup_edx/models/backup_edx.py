@@ -35,10 +35,13 @@ class BackupExecuteEDX(models.Model):
     _order = 'backup_date'
 
     def _generate_s3_link(self):
-        return self.s3_id
+        import ipdb
+        ipdb.set_trace()
+        # return self.s3_id
+        return 'BY THE POWER OF RAGNAROS, I HAVE THE POWER!'
 
     name = fields.Char(u'Arquivo', size=100)
-    configuration_id = fields.Many2one('backup.config', string=u"Configuração")
+    configuration_id = fields.Many2one('backup.config.edx', string=u"Configuração")
     backup_date = fields.Datetime(string=u"Data")
     local_path = fields.Char(string=u"Caminho Local", readonly=True)
     s3_id = fields.Char(string=u"S3 Id", readonly=True)
@@ -85,7 +88,7 @@ class BackupConfigEDX(models.Model):
     aws_access_key = fields.Char(string=u"Chave API S3", size=100)
     aws_secret_key = fields.Char(string=u"Chave Secreta API S3", size=100)
     backup_dir = fields.Char(string=u"Diretório", size=300,
-                             default="/home/ubuntu/")
+                             default="/home/johnychenjy/")
 
     next_backup = fields.Datetime(string=u"Próximo Backup")
     backup_count = fields.Integer(
@@ -127,25 +130,24 @@ class BackupConfigEDX(models.Model):
                 if not os.path.isdir(rec.backup_dir):
                     os.makedirs(rec.backup_dir)
 
-                zip_name = '%s_%s.tar.gz' % (self.env.cr.dbname,
-                                             time.strftime('%Y%m%d_%H_%M_%S'))
+                zip_name = 'edx_%s.tar.gz' % (time.strftime('%Y%m%d_%H_%M_%S'))
                 zip_file = '%s%s' % (rec.backup_dir, zip_name)
 
+                # Backup being done here! The file is renamed later.
                 local('fab backup -f ~/projetos/odoo11/trustcode-addons/backup_edx/models/fabfile.py')
                 local('mv ~/backup.tar.gz ~/' + zip_name)
 
                 backup_env = self.env['backup.executed.edx']
 
                 if rec.send_to_s3:
-                    key = rec.send_for_amazon_s3(zip_file, zip_name,
-                                                 self.env.cr.dbname)
+                    key = rec.send_for_amazon_s3(zip_file, zip_name, 'edx')
                     loc = ''
                     if not key:
                         key = u'Erro ao enviar para o Amazon S3'
                         loc = zip_file
                     else:
-                        loc = 'https://s3.amazonaws.com/%s_bkp_pelican/%s' % (
-                            self.env.cr.dbname, key
+                        loc = 'https://s3.amazonaws.com/edx_bkp_pelican/%s' % (
+                            key
                         )
                     backup_env.create({'backup_date': datetime.now(),
                                        'configuration_id': rec.id,
@@ -168,7 +170,7 @@ class BackupConfigEDX(models.Model):
                 secret_key = self.aws_secret_key
 
                 conexao = S3Connection(access_key, secret_key)
-                bucket_name = '%s_bkp_pelican' % database
+                bucket_name = 'edx_bkp_pelican'
                 bucket = conexao.create_bucket(bucket_name)
 
                 k = Key(bucket)
