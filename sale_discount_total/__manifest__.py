@@ -4,31 +4,24 @@
 
 
 {  # pylint: disable=C8101,C8103
-    'name': "sale_discount_total",
+    'name': "Desconto total",
 
     'summary': """
-        Short (1 phrase/line) summary of the module's purpose, used as
-        subtitle on modules listing or apps.openerp.com""",
+        Aplica desconto sobre o total da venda.""",
 
     'description': """
-        Long description of module's purpose
+        Desconto sobre o total da venda, o desconto pode ser do tipo
+        percentual ou uma quantia específica para ser descontada do 
+        total bruto da venda.
     """,
     'author': "Trustcode",
     'website': "http://www.trustcode.com.br",
     'category': 'Uncategorized',
     'version': '11.0.1.0.0',
     'license': 'AGPL-3',
-    'contributors': [
-    ],
-    'depends': ['sale',
-                'account'
-                ],
+    'contributors': [],
+    'depends': ['sale'],
     'data': [
-        'views/sale_view.xml',
-        'views/account_invoice_view.xml',
-        'views/invoice_report.xml',
-        'views/sale_order_report.xml',
-        'views/res_config_view.xml',
-
+        'views/sale_order_view.xml'
     ],
 }
