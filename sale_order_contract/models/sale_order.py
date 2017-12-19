@@ -186,6 +186,14 @@ class SaleOrder(models.Model):
         for item in contracts:
             item.state = 'cancel'
 
+    def _add_orders_name_to_origin(self, orders_names):
+        if orders_names:
+            if self.origin:
+                self.origin += ', '
+            else:
+                self.origin = ''
+            self.origin += ', '.join(orders_names)
+
     def merge_contracts(self, active_ids):
         vals = self.env['sale.order'].search([('id', 'in', active_ids)])
         self._check_merging_contracts(vals)
@@ -194,10 +202,13 @@ class SaleOrder(models.Model):
         for item in vals:
             if item.start_contract > last_contract.start_contract:
                 last_contract = item
+
         last_contract.order_line = so_lines
         contracts_to_cancel = vals.filtered(lambda x: x.id != last_contract.id)
-        last_contract.origin = ', '.join(
+
+        last_contract._add_orders_name_to_origin(
             [item.name for item in contracts_to_cancel])
+
         self._cancel_merged_contracts(contracts_to_cancel)
 
 
