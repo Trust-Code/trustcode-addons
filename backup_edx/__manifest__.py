@@ -23,7 +23,7 @@
     ],
     'data': [
         "views/backup_edx.xml",
-        # "security/ir.model.access.csv"
+        "security/ir.model.access.csv"
     ],
     'application': True,
     'auto_install': False
