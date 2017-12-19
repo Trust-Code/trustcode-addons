@@ -34,7 +34,7 @@ class BackupExecuteEDX(models.Model):
     _name = 'backup.executed.edx'
     _order = 'backup_date'
 
-    def _generate_s3_link(self):
+    def _compute_generate_s3_link(self):
         return self.s3_id
 
     name = fields.Char(u'Arquivo', size=100)
@@ -44,7 +44,7 @@ class BackupExecuteEDX(models.Model):
     local_path = fields.Char(string=u"Caminho Local", readonly=True)
     s3_id = fields.Char(string=u"S3 Id", readonly=True)
     s3_url = fields.Char(
-        u"Link S3", compute='_generate_s3_link', readonly=True)
+        u"Link S3", compute='_compute_generate_s3_link', readonly=True)
     state = fields.Selection(
         string=u"Estado", default='not_started',
         selection=[('not_started', u'Não iniciado'),
@@ -68,7 +68,7 @@ class BackupConfigEDX(models.Model):
                  backup.interval))
         return result
 
-    def _get_total_backups(self):
+    def _compute_get_total_backups(self):
         for item in self:
             item.backup_count = self.env['backup.executed.edx'].search_count(
                 [('configuration_id', '=', item.id)])
@@ -91,7 +91,7 @@ class BackupConfigEDX(models.Model):
     next_backup = fields.Datetime(string=u"Próximo Backup")
     backup_count = fields.Integer(
         string=u"Nº Backups",
-        compute='_get_total_backups')
+        compute='_compute_get_total_backups')
 
     def _set_next_backup(self):
         if self.interval == 'hora':
