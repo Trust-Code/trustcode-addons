@@ -35,13 +35,11 @@ class BackupExecuteEDX(models.Model):
     _order = 'backup_date'
 
     def _generate_s3_link(self):
-        import ipdb
-        ipdb.set_trace()
-        # return self.s3_id
-        return 'BY THE POWER OF RAGNAROS, I HAVE THE POWER!'
+        return self.s3_id
 
     name = fields.Char(u'Arquivo', size=100)
-    configuration_id = fields.Many2one('backup.config.edx', string=u"Configuração")
+    configuration_id = fields.Many2one('backup.config.edx',
+                                       string=u"Configuração")
     backup_date = fields.Datetime(string=u"Data")
     local_path = fields.Char(string=u"Caminho Local", readonly=True)
     s3_id = fields.Char(string=u"S3 Id", readonly=True)
@@ -134,7 +132,9 @@ class BackupConfigEDX(models.Model):
                 zip_file = '%s%s' % (rec.backup_dir, zip_name)
 
                 # Backup being done here! The file is renamed later.
-                local('fab backup -f ~/projetos/odoo11/trustcode-addons/backup_edx/models/fabfile.py')
+                local(
+                    'fab backup -f ~/projetos/odoo11/\
+                    trustcode-addons/backup_edx/models/fabfile.py')
                 local('mv ~/backup.tar.gz ~/' + zip_name)
 
                 backup_env = self.env['backup.executed.edx']
