@@ -134,7 +134,7 @@ class BackupConfigEDX(models.Model):
                 # Backup being done here! The file is renamed later.
                 local(
                     'fab backup -f ~/projetos/odoo11/\
-                    trustcode-addons/backup_edx/models/fabfile.py')
+trustcode-addons/backup_edx/models/fabfile.py')
                 local('mv ~/backup.tar.gz ~/' + zip_name)
 
                 backup_env = self.env['backup.executed.edx']
