@@ -2,7 +2,15 @@
 # © 2017 Johny Chen Jy, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-from fabric.api import *
+
+import logging
+
+_logger = logging.getLogger(__name__)
+
+try:
+    from fabric.api import local, env, run, get, put
+except ImportError:
+    _logger.debug(u'Cannot import fabric')
 
 
 def backup():
@@ -23,16 +31,22 @@ def host_to_backup():
 
 # Método na qual executa as funções do backup
 def get_backup():
-    # Faz um novo backup atraves do mongodump
+    # Faz um novo backup atraves do mongodump (Parte 1/2)
+    run('sudo docker exec trustcode-edx mongodump -d edxapp -o /edx/app/edxapp/edx-platform/backup')
+    # Backup do mysql (Parte 2/2)
     run('sudo docker exec trustcode-edx mysqldump -u root edxapp > edx.sql')
+    # Transfere o folder do docker para a maquina remota
+    run('sudo docker cp trustcode-edx:/edx/app/edxapp/edx-platform/backup ~/backup')
     # Comprime a pasta backup num arquivo tar.gz
-    run('tar -czvf backup.tar.gz edx.sql')
+    run('tar -czvf backup.tar.gz edx.sql backup')
     # Transfere o arquivo zip da maquina remota para a maquina local
     get('~/backup.tar.gz', '~/backup.tar.gz')
-    # Deleta pasta antiga de backup
-    run('rm -f edx.sql')
 
-    run('rm -f backup.tar.gz')
+    # Remove todos os arquivos remanescentes
+    run('sudo docker exec trustcode-edx rm -R /edx/app/edxapp/edx-platform/backup')
+    run('sudo rm -r backup')
+    run('sudo rm -f edx.sql')
+    run('sudo rm -f backup.tar.gz')
 
 
 # Define os parametros para a conecção na maquina na qual sera restaurada
@@ -47,9 +61,15 @@ def restore_backup():
     put('~/backup.tar.gz', '/home/ubuntu/backup.tar.gz', use_sudo=True)
     # Descompacta o arquivo transferido
     run('tar -vzxf backup.tar.gz')
-    # Faz o restore atraves do mongorestore
+    # Transfere o arquivo do backup da maquina virtual para o docker
+    run('sudo docker cp /home/ubuntu/backup trustcode-edx:/edx/app/edxapp/edx-platform/backup')
+    # Faz o restore atraves do mongorestore (1/2)
+    run('sudo docker exec trustcode-edx mongorestore --drop /edx/app/edxapp/edx-platform/backup')
+    # Faz restore do mysql (2/2)
     run('sudo docker exec -i trustcode-edx /usr/bin/mysql -u root edxapp < edx.sql')
-    # Deleta o arquivo de backup
-    run('rm -f edx.sql')
-    # Deleta o arquivo tar.gz
-    run('rm -f backup.tar.gz')
+
+    # Deleta os arquivos remanescentes
+    run('sudo docker exec trustcode-edx rm -R /edx/app/edxapp/edx-platform/backup')
+    run('sudo rm -r edx.sql')
+    run('sudo rm -r backup')
+    run('sudo rm -f backup.tar.gz')
