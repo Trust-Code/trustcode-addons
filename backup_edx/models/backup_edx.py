@@ -7,12 +7,16 @@ import time
 import socket
 import logging
 
-from odoo import api, fields, models
+from odoo import api, fields, models, _
 from odoo.exceptions import Warning
 from datetime import datetime, timedelta
-from fabric.api import local
 
 _logger = logging.getLogger(__name__)
+
+try:
+    from fabric.api import local
+except ImportError:
+    _logger.debug(u'Cannot import fabric')
 
 try:
     from boto.s3.connection import S3Connection
@@ -111,7 +115,7 @@ class BackupConfigEDX(models.Model):
         except Exception:
             _logger.error(u'Erro ao efetuar backup', exc_info=True)
             raise Warning(
-                u'Erro ao executar backup - Verifique o log de erros')
+                _(u'Erro ao executar backup - Verifique o log de erros'))
 
     @api.model
     def schedule_backup(self):

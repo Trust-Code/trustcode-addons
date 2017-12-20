@@ -3,7 +3,7 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 
-{
+{   # pylint: disable=C8101,C8103
     'name': 'Trustcode Backup EDX',
     'summary': """Trustcode - Backup EDX""",
     'version': '11.0.1.0.0',
@@ -21,6 +21,11 @@
     'depends': [
         'base',
     ],
+    'external_dependencies': {
+        'python': [
+            'fabric.api',
+        ],
+    },
     'data': [
         "views/backup_edx.xml",
         "security/ir.model.access.csv"
