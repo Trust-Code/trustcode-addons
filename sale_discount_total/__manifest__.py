@@ -11,7 +11,7 @@
 
     'description': """
         Desconto sobre o total da venda, o desconto pode ser do tipo
-        percentual ou uma quantia específica para ser descontada do 
+        percentual ou uma quantia específica para ser descontada do
         total bruto da venda.
     """,
     'author': "Trustcode",
