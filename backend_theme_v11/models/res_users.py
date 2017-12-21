@@ -17,11 +17,10 @@ class ResUsers(models.Model):
         and alias fields. Access rights are disabled by default, but allowed
         on some specific fields defined in self.SELF_{READ/WRITE}ABLE_FIELDS.
         """
-        init_res = super(ResUsers, self).__init__(pool, cr)
+        super(ResUsers, self).__init__(pool, cr)
         # duplicate list to avoid modifying the original reference
         type(self).SELF_WRITEABLE_FIELDS = list(self.SELF_WRITEABLE_FIELDS)
         type(self).SELF_WRITEABLE_FIELDS.extend(['sidebar_visible'])
         # duplicate list to avoid modifying the original reference
         type(self).SELF_READABLE_FIELDS = list(self.SELF_READABLE_FIELDS)
         type(self).SELF_READABLE_FIELDS.extend(['sidebar_visible'])
-        return init_res
