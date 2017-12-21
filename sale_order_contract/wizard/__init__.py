@@ -4,3 +4,4 @@
 
 
 from . import sale_contract_renew
+from . import sale_contract_merge
