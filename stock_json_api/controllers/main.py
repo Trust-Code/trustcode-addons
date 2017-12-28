@@ -107,18 +107,19 @@ class ApiStock(http.Controller):
         picking_items = []
         for item in compra['products']:
             product = env_product.search([('default_code', '=', item['id'])])
-            uom = env_uom.with_context(
-                {'lang': 'en_US'}).search(
-                    [('name', '=ilike', item['weight_class'])])
-            vals = {
-                'name': item['name'],
-                'list_price': item['valor'],
-                'uom_id': uom.id,
-                'uom_po_id': uom.id,
-                'type': 'product',
-                'default_code': item['id'],
-            }
+
             if not product:
+                uom = env_uom.with_context(
+                    {'lang': 'en_US'}).search(
+                    [('name', '=ilike', item['weight_class'])], limit=1)
+                vals = {
+                    'name': item['name'],
+                    'list_price': item['valor'],
+                    'uom_id': uom.id,
+                    'uom_po_id': uom.id,
+                    'type': 'product',
+                    'default_code': item['id'],
+                }
                 product = env_product.create(vals)
 
             picking_items.append((0, 0, {
@@ -126,7 +127,7 @@ class ApiStock(http.Controller):
                 'product_id': product[0].id,
                 'product_uom_qty': item['quantity'],
                 'ordered_qty': item['quantity'],
-                'product_uom': uom.id,
+                'product_uom': product[0].uom_id.id,
             }))
 
         schedule = datetime.strptime(
@@ -209,18 +210,19 @@ class ApiStock(http.Controller):
         for item in venda['products']:
             product = env_product.search(
                 [('default_code', '=', item['product_id'])])
-            uom = env_uom.with_context(
-                {'lang': 'en_US'}).search(
-                    [('name', '=ilike', item['weight_class'])])
-            vals = {
-                'name': item['name'],
-                'list_price': item['price'],
-                'uom_id': uom.id,
-                'uom_po_id': uom.id,
-                'type': 'product',
-                'default_code': item['product_id'],
-            }
+
             if not product:
+                uom = env_uom.with_context(
+                    {'lang': 'en_US'}).search(
+                    [('name', '=ilike', item['weight_class'])])
+                vals = {
+                    'name': item['name'],
+                    'list_price': item['price'],
+                    'uom_id': uom.id,
+                    'uom_po_id': uom.id,
+                    'type': 'product',
+                    'default_code': item['product_id'],
+                }
                 product = env_product.create(vals)
 
             picking_items.append((0, 0, {
@@ -228,7 +230,7 @@ class ApiStock(http.Controller):
                 'product_id': product[0].id,
                 'product_uom_qty': item['quantity'],
                 'ordered_qty': item['quantity'],
-                'product_uom': uom.id,
+                'product_uom': product[0].uom_id.id,
             }))
 
         schedule = datetime.strptime(
