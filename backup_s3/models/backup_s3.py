@@ -120,13 +120,12 @@ class BackupConfig(models.Model):
             last = datetime.strptime(
                 self.last_filestore_backup, DTFT)
             if datetime.now() - timedelta(days=7) > last:
-                date = datetime.now()
-                self.last_filestore_backup = date
-            else:
-                date = self.last_filestore_backup
+                self.last_filestore_backup = datetime.now()
+
         else:
-            date = datetime.now()
-            self.last_filestore_backup = date
+            self.last_filestore_backup = datetime.now()
+
+        date = self.last_filestore_backup
 
         method = 'aws s3 sync filestore/ s3://%s/filestores/%s/filestore/' % (
             bucket_name, date.strftime('%Y%m%d_%H_%M_%S')
