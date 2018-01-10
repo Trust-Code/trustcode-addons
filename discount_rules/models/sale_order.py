@@ -9,7 +9,7 @@ class SaleOrderLine(models.Model):
     _inherit = 'sale.order.line'
 
     def _get_max_discount(self):
-        group = self.order_id.user_id.groups_id
+        group = self.env.user.groups_id
         discount_rules = self.env['discount.rules'].search([]).filtered(
             lambda x: x.group_id in group)
         num_parcelas = len(self.order_id.payment_term_id.line_ids)
