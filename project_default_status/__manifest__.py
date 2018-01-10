@@ -13,11 +13,11 @@
     """,
     'author': "Trustcode",
     'website': "http://www.trustcode.com.br",
-    'category': 'Uncategorized',
+    'category': 'Project',
     'version': '11.0.1.0.0',
     'license': 'AGPL-3',
     'contributors': [
-
+        'Felipe Paloschi <paloschi.eca@gmail.com>'
     ],
     'depends': ['project'],
     'data': [
