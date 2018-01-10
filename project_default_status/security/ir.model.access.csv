@@ -1,0 +1,2 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_project_task_default_status_project_task_default_status,project_task_default_status.project_task_default_status,model_project_task_default_status_project_task_default_status,,1,0,0,0

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_project_task_type_default_status" model="ir.ui.view">
+        <field name="name">project.task.type.default.status</field>
+        <field name="model">project.task.type</field>
+        <field name="inherit_id" ref="project.task_type_edit"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='sequence']" position="after">
+                <field name="default"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>
