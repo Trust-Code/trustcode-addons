@@ -146,16 +146,17 @@ class ApiStock(http.Controller):
         src_id, dest_id = self._get_locations(
             user, partner, picking_incoming_ref)
 
-        picking = request.env['stock.picking'].sudo(user).create({
-            'name': picking_incoming_ref.sequence_id.next_by_id(),
-            'scheduled_date': schedule,
-            'origin': compra['purchaseOrder'],
-            'partner_id': partner[0].id,
-            'picking_type_id': picking_incoming_ref.id,
-            'move_lines': picking_items,
-            'location_id': src_id,
-            'location_dest_id': dest_id,
-        })
+        picking = request.env['stock.picking'].sudo(
+            user).with_context(planned_picking=True).create({
+                'name': picking_incoming_ref.sequence_id.next_by_id(),
+                'scheduled_date': schedule,
+                'origin': compra['purchaseOrder'],
+                'partner_id': partner[0].id,
+                'picking_type_id': picking_incoming_ref.id,
+                'move_lines': picking_items,
+                'location_id': src_id,
+                'location_dest_id': dest_id,
+            })
         ids.append(picking.id)
 
         pick_stock_type_id = int(params.get_param(
@@ -167,16 +168,17 @@ class ApiStock(http.Controller):
         src_id, dest_id = self._get_locations(
             user, partner, picking_stock_ref)
 
-        picking = request.env['stock.picking'].sudo(user).create({
-            'name': picking_stock_ref.sequence_id.next_by_id(),
-            'scheduled_date': schedule,
-            'origin': compra['purchaseOrder'],
-            'partner_id': partner[0].id,
-            'picking_type_id': picking_stock_ref.id,
-            'move_lines': picking_items,
-            'location_id': src_id,
-            'location_dest_id': dest_id,
-        })
+        picking = request.env['stock.picking'].sudo(
+            user).with_context(planned_picking=True).create({
+                'name': picking_stock_ref.sequence_id.next_by_id(),
+                'scheduled_date': schedule,
+                'origin': compra['purchaseOrder'],
+                'partner_id': partner[0].id,
+                'picking_type_id': picking_stock_ref.id,
+                'move_lines': picking_items,
+                'location_id': src_id,
+                'location_dest_id': dest_id,
+            })
         ids.append(picking.id)
 
         return ids
@@ -249,16 +251,17 @@ class ApiStock(http.Controller):
             raise Exception("Configure os tipos de picking.")
 
         src_id, dest_id = self._get_locations(user, partner, picking_type_ref)
-        picking = request.env['stock.picking'].sudo(user).create({
-            'name': picking_type_ref.sequence_id.next_by_id(),
-            'scheduled_date': schedule,
-            'partner_id': partner[0].id,
-            'picking_type_id': picking_type_ref.id,
-            'move_lines': picking_items,
-            'location_id': src_id,
-            'location_dest_id': dest_id,
-            'origin': venda['order_id'],
-        })
+        picking = request.env['stock.picking'].sudo(
+            user).with_context(planned_picking=True).create({
+                'name': picking_type_ref.sequence_id.next_by_id(),
+                'scheduled_date': schedule,
+                'partner_id': partner[0].id,
+                'picking_type_id': picking_type_ref.id,
+                'move_lines': picking_items,
+                'location_id': src_id,
+                'location_dest_id': dest_id,
+                'origin': venda['order_id'],
+            })
         ids.append(picking.id)
 
         pack_type_id = int(params.get_param(
@@ -268,16 +271,17 @@ class ApiStock(http.Controller):
             raise Exception("Configure os tipos de picking.")
 
         src_id, dest_id = self._get_locations(user, partner, packing_type_ref)
-        packing = request.env['stock.picking'].sudo(user).create({
-            'name': packing_type_ref.sequence_id.next_by_id(),
-            'scheduled_date': schedule,
-            'partner_id': partner[0].id,
-            'picking_type_id': packing_type_ref.id,
-            'move_lines': picking_items,
-            'location_id': src_id,
-            'location_dest_id': dest_id,
-            'origin': venda['order_id'],
-        })
+        packing = request.env['stock.picking'].sudo(
+            user).with_context(planned_picking=True).create({
+                'name': packing_type_ref.sequence_id.next_by_id(),
+                'scheduled_date': schedule,
+                'partner_id': partner[0].id,
+                'picking_type_id': packing_type_ref.id,
+                'move_lines': picking_items,
+                'location_id': src_id,
+                'location_dest_id': dest_id,
+                'origin': venda['order_id'],
+            })
         ids.append(packing.id)
 
         outgoing_type_id = int(params.get_param(
@@ -288,17 +292,19 @@ class ApiStock(http.Controller):
 
         src_id, dest_id = self._get_locations(
             user, partner, requested_order_ref)
-        requested_order = request.env['stock.picking'].sudo(user).create({
-            'name': requested_order_ref.sequence_id.next_by_id(),
-            'scheduled_date': schedule,
-            'partner_id': partner[0].id,
-            'picking_type_id': requested_order_ref.id,
-            'move_lines': picking_items,
-            'location_id': src_id,
-            'location_dest_id': dest_id,
-            'origin': venda['order_id'],
-        })
+        requested_order = request.env['stock.picking'].sudo(
+            user).with_context(planned_picking=True).create({
+                'name': requested_order_ref.sequence_id.next_by_id(),
+                'scheduled_date': schedule,
+                'partner_id': partner[0].id,
+                'picking_type_id': requested_order_ref.id,
+                'move_lines': picking_items,
+                'location_id': src_id,
+                'location_dest_id': dest_id,
+                'origin': venda['order_id'],
+            })
         ids.append(requested_order.id)
+
         return ids
 
     def _cancel_outgoing_order(self, venda, user):
