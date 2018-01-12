@@ -3,6 +3,7 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 import logging
+import requests
 
 from odoo.tools.translate import _
 from odoo.tools import email_split
@@ -46,8 +47,8 @@ class EdxWizard(models.TransientModel):
                 if contact.id not in contact_ids:
                     contact_ids.add(contact.id)
                     in_edx = False
-                    if contact.user_ids:
-                        in_edx = self.edx_id in contact.user_ids[0].groups_id
+                    # if contact.user_ids:
+                    #     in_edx = self.edx_id in contact.user_ids[0].groups_id
                     user_changes.append((0, 0, {
                         'partner_id': contact.id,
                         'email': contact.email,
@@ -125,6 +126,30 @@ class EdxWizardUser(models.TransientModel):
                   "- Grant access only to contacts with unique emails"))
         return error_msg
 
+    def create_edx_user(self):
+        import ipdb
+        ipdb.set_trace()
+        s = requests.Session()
+
+        payload = {
+            'email': '',
+            'name': '',
+            'username': '',
+            'password': '',
+            'level_of_education': 'none',
+            'gender': '',
+            'year_of_birth': '1998',
+            'mailing_address': '',
+            'goals': 'Be the best in Odoo',
+            'terms_of_service': 'true',
+            'honor_code': 'true'
+        }
+
+        url_api = ''
+
+        r = s.post(url_api, data=payload)
+        print(r.text)
+
     @api.multi
     def action_apply(self):
         self.env['res.partner'].check_access_rights('write')
@@ -134,9 +159,6 @@ class EdxWizardUser(models.TransientModel):
             raise UserError("\n\n".join(error_msg))
 
         for wizard_user in self.sudo().with_context(active_test=False):
-            group_edx = wizard_user.wizard_id.edx_id
-            if not group_edx.is_edx:
-                raise UserError(_('Group %s is not a edx') % group_edx.name)
             user = wizard_user.partner_id.user_ids[0] if \
                 wizard_user.partner_id.user_ids else None
             # update partner email, if a new one was introduced
@@ -157,17 +179,16 @@ class EdxWizardUser(models.TransientModel):
                 else:
                     user_edx = user
                 wizard_user.write({'user_id': user_edx.id})
-                if not wizard_user.user_id.active or group_edx \
-                        not in wizard_user.user_id.groups_id:
-                    wizard_user.user_id.write(
-                        {'active': True, 'groups_id': [(4, group_edx.id)]})
+                if not wizard_user.user_id.active:
+                    wizard_user.user_id.write({'active': True})
                     # prepare for the signup process
                     wizard_user.user_id.partner_id.signup_prepare()
                     wizard_user.with_context(active_test=True)._send_email()
                 wizard_user.refresh()
+                wizard_user.create_edx_user()
             else:
                 # remove the user (if it exists) from the edx group
-                if user and group_edx in user.groups_id:
+                if user in user.groups_id:
                     # if user belongs to edx only, deactivate it
                     if len(user.groups_id) <= 1:
                         user.write(
