@@ -16,4 +16,7 @@
     'depends': [
         'br_base',
     ],
+    'data': [
+        'wizard/edx_wizard_view.xml',
+    ],
 }
