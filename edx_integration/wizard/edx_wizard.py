@@ -4,6 +4,8 @@
 
 import logging
 import requests
+import random
+import string
 
 from odoo.tools.translate import _
 from odoo.tools import email_split
@@ -21,6 +23,13 @@ def extract_email(email):
     return addresses[0] if addresses else ''
 
 
+def gen_random_string(char_set, length):
+    if not hasattr(gen_random_string, "rng"):
+        gen_random_string.rng = random.SystemRandom()
+    return ''.join([gen_random_string.rng.choice(char_set)
+                    for _ in xrange(length)])
+
+
 class EdxWizard(models.TransientModel):
     """
         A wizard to manage the creation/removal of EDX users.
@@ -29,6 +38,11 @@ class EdxWizard(models.TransientModel):
     _name = 'edx.wizard'
     _description = 'EDX Access Management'
 
+    def _default_edx(self):
+        return self.env['res.groups'].search([('name', '=', 'EDX')], limit=1)
+
+    edx_group = fields.Many2one(
+        'res.groups', required=True, string='EDX', default=_default_edx)
     user_ids = fields.One2many('edx.wizard.user', 'wizard_id', string='Users')
     welcome_message = fields.Text(
         'Invitation Message',
@@ -37,6 +51,7 @@ class EdxWizard(models.TransientModel):
 
     @api.onchange('welcome_message')
     def onchange_welcome_message(self):
+        edx_group = self._default_edx()
         partner_ids = self.env.context.get('active_ids', [])
         contact_ids = set()
         user_changes = []
@@ -47,8 +62,9 @@ class EdxWizard(models.TransientModel):
                 if contact.id not in contact_ids:
                     contact_ids.add(contact.id)
                     in_edx = False
-                    # if contact.user_ids:
-                    #     in_edx = self.edx_id in contact.user_ids[0].groups_id
+                    if contact.user_ids:
+                        in_edx =\
+                            edx_group in contact.user_ids[0].groups_id
                     user_changes.append((0, 0, {
                         'partner_id': contact.id,
                         'email': contact.email,
@@ -127,15 +143,14 @@ class EdxWizardUser(models.TransientModel):
         return error_msg
 
     def create_edx_user(self):
-        import ipdb
-        ipdb.set_trace()
         s = requests.Session()
 
+        username = self.user_id.login.split('@')[0] + str(self.user_id.id)
         payload = {
-            'email': '',
-            'name': '',
-            'username': '',
-            'password': '',
+            'email': self.user_id.login,
+            'name': self.user_id.name,
+            'username': username,
+            'password': self.user_id.edx_password,
             'level_of_education': 'none',
             'gender': '',
             'year_of_birth': '1998',
@@ -145,8 +160,22 @@ class EdxWizardUser(models.TransientModel):
             'honor_code': 'true'
         }
 
-        url_api = ''
+        url_api = 'http://52.55.244.3:8080//user_api/v1/account/registration/'
 
+        r = s.post(url_api, data=payload)
+        print(r.text)
+        self.update_edx_user(username)
+
+    def update_edx_user(self, username):
+        import ipdb
+        ipdb.set_trace()
+        s = requests.Session()
+
+        payload = {
+            'active': True,
+        }
+
+        url_api = 'http://52.55.244.3:8080/api/user/v1/accounts/' + username
         r = s.post(url_api, data=payload)
         print(r.text)
 
@@ -159,6 +188,7 @@ class EdxWizardUser(models.TransientModel):
             raise UserError("\n\n".join(error_msg))
 
         for wizard_user in self.sudo().with_context(active_test=False):
+            edx_group = wizard_user.wizard_id.edx_group
             user = wizard_user.partner_id.user_ids[0] if \
                 wizard_user.partner_id.user_ids else None
             # update partner email, if a new one was introduced
@@ -179,23 +209,31 @@ class EdxWizardUser(models.TransientModel):
                 else:
                     user_edx = user
                 wizard_user.write({'user_id': user_edx.id})
-                if not wizard_user.user_id.active:
-                    wizard_user.user_id.write({'active': True})
+                if not wizard_user.user_id.active or \
+                        edx_group not in wizard_user.user_id.groups_id:
+                    wizard_user.user_id.write({
+                        'active': True,
+                        'groups_id': [(4, edx_group.id)]})
                     # prepare for the signup process
                     wizard_user.user_id.partner_id.signup_prepare()
+                    password_charset = string.ascii_letters + string.digits
+                    user_edx_password = gen_random_string(password_charset, 32)
+                    wizard_user.user_id.write({
+                        'edx_password': user_edx_password})
                     wizard_user.with_context(active_test=True)._send_email()
+
                 wizard_user.refresh()
                 wizard_user.create_edx_user()
             else:
                 # remove the user (if it exists) from the edx group
-                if user in user.groups_id:
+                if user and edx_group in user.groups_id:
                     # if user belongs to edx only, deactivate it
                     if len(user.groups_id) <= 1:
                         user.write(
-                            {'groups_id': [(3, group_edx.id)],
+                            {'groups_id': [(3, edx_group.id)],
                              'active': False})
                     else:
-                        user.write({'groups_id': [(3, group_edx.id)]})
+                        user.write({'groups_id': [(3, edx_group.id)]})
 
     @api.multi
     def _create_user(self):
@@ -222,7 +260,8 @@ class EdxWizardUser(models.TransientModel):
                 ' User Preferences to send emails.'))
 
         # determine subject and body in the edx user's language
-        template = self.env.ref('edx.mail_template_data_edx_welcome')
+        template = self.env.ref(
+            'edx_integration.mail_template_data_edx_welcome')
         for wizard_line in self:
             lang = wizard_line.user_id.lang
             partner = wizard_line.user_id.partner_id

@@ -15,8 +15,10 @@
     ],
     'depends': [
         'br_base',
+        'mail',
     ],
     'data': [
+        'data/edx_data.xml',
         'wizard/edx_wizard_view.xml',
     ],
 }
