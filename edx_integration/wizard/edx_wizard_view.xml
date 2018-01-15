@@ -36,4 +36,8 @@
                 </form>
             </field>
         </record>
+
+        <record id="group_edx" model="res.groups">
+            <field name="name">EDX</field>
+        </record>
 </odoo>
