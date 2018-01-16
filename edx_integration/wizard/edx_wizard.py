@@ -27,7 +27,7 @@ def gen_random_string(char_set, length):
     if not hasattr(gen_random_string, "rng"):
         gen_random_string.rng = random.SystemRandom()
     return ''.join([gen_random_string.rng.choice(char_set)
-                    for _ in xrange(length)])
+                    for _ in range(length)])
 
 
 class EdxWizard(models.TransientModel):
