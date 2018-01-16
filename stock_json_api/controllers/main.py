@@ -262,6 +262,9 @@ class ApiStock(http.Controller):
                 'location_dest_id': dest_id,
                 'origin': venda['order_id'],
             })
+        move = request.env['stock.move'].sudo().search([
+            ('picking_id', '=', picking.id)])
+        move.write({'picking_type_id': picking_type_ref.id})
         ids.append(picking.id)
 
         pack_type_id = int(params.get_param(
@@ -282,6 +285,9 @@ class ApiStock(http.Controller):
                 'location_dest_id': dest_id,
                 'origin': venda['order_id'],
             })
+        move = request.env['stock.move'].sudo().search([
+            ('picking_id', '=', packing.id)])
+        move.write({'picking_type_id': packing_type_ref.id})
         ids.append(packing.id)
 
         outgoing_type_id = int(params.get_param(
@@ -303,6 +309,9 @@ class ApiStock(http.Controller):
                 'location_dest_id': dest_id,
                 'origin': venda['order_id'],
             })
+        move = request.env['stock.move'].sudo().search([
+            ('picking_id', '=', requested_order.id)])
+        move.write({'picking_type_id': requested_order_ref.id})
         ids.append(requested_order.id)
 
         return ids
