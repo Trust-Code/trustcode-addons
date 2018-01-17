@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<odoo>
+
+    <record id="view_stock_picking_adicionais" model="ir.ui.view">
+        <field name="name">view.stock.picking.adicionais</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+                <xpath expr="//tree//field[@name='product_uom']" position='before'>
+                    <field name="valor_bruto" invisible="1"/>
+                </xpath>
+                <xpath expr="//page[@name='extra']" position='after'>
+                    <page string="Adicionais">
+                        <div class="col-xs-6">
+                            <group string="Pedido">
+                                <field name="discount" />
+                                <field name="transporte" />
+                                <field name="embalagem" />
+                                <field name="amount_total" invisible="1" />
+                            </group>
+                        </div>
+                        <div class="col-xs-6">
+                            <group string="Embalagem">
+                                <field name="caixa"/>
+                                <field name="cesta"/>
+                                <field name="sacola"/>
+                                <field name="caixa_ovo"/>
+                                <field name="morango"/>
+                                <field name="cesta_retornavel"/>
+                            </group>
+                        </div>
+                    </page>
+                </xpath>
+                
+        </field>
+    </record>
+
+</odoo>
