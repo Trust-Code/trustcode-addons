@@ -3,6 +3,7 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 import json
+import re
 from odoo import http
 from odoo.http import request
 from odoo.exceptions import AccessDenied, UserError
@@ -10,14 +11,18 @@ from datetime import datetime, timedelta
 
 
 def cnpj_cpf_format(cnpj_cpf):
+    cnpj_cpf = re.sub('[^0-9]', '', cnpj_cpf)
     if len(cnpj_cpf) == 14:
         cnpj_cpf = (cnpj_cpf[0:2] + '.' + cnpj_cpf[2:5] +
                     '.' + cnpj_cpf[5:8] +
                     '/' + cnpj_cpf[8:12] +
                     '-' + cnpj_cpf[12:14])
-    else:
+    elif len(cnpj_cpf) == 11:
         cnpj_cpf = (cnpj_cpf[0:3] + '.' + cnpj_cpf[3:6] +
                     '.' + cnpj_cpf[6:9] + '-' + cnpj_cpf[9:11])
+    else:
+        raise Exception('CNPJ ou CPF inválido!')
+
     return cnpj_cpf
 
 
@@ -93,12 +98,30 @@ class ApiStock(http.Controller):
 
         vals = {
             'name': compra['provider']['name'],
+            'legal_name': compra['provider']['name'],
             'cnpj_cpf': cnpj,
             'phone': compra['provider']['phone'],
             'email': compra['provider']['email'],
+            'supplier': True,
+            'customer': False,
         }
         if not partner:
             partner = env_partner.create(vals)
+
+        if 'contact' in compra['provider'].keys():
+            contact_ids = env_partner.search([('parent_id', '=', partner.id)])
+            contact = contact_ids.filtered(
+                lambda x: x.name == compra['provider']['contact'])
+
+            if not contact:
+                vals = {
+                    'name': compra['provider']['contact'],
+                    'supplier': True,
+                    'customer': False,
+                    'parent_id': partner.id,
+                }
+
+                env_partner.create(vals)
 
         env_product = request.env['product.product'].sudo(user)
         env_uom = request.env['product.uom'].sudo(user)
@@ -183,6 +206,12 @@ class ApiStock(http.Controller):
 
         return ids
 
+    def _calc_amount_total(self, picking_items):
+        total = 0
+        for line in picking_items:
+            total += line[2]['valor_bruto']
+        return total
+
     def _save_outgoing_order(self, venda, user):
         venda = venda['body']['orders'][0]
         env_partner = request.env['res.partner'].sudo(user)
@@ -233,6 +262,7 @@ class ApiStock(http.Controller):
                 'product_uom_qty': item['quantity'],
                 'ordered_qty': item['quantity'],
                 'product_uom': product[0].uom_id.id,
+                'valor_bruto': int(item['quantity']) * int(item['price'])
             }))
 
         schedule = datetime.strptime(
@@ -261,7 +291,11 @@ class ApiStock(http.Controller):
                 'location_id': src_id,
                 'location_dest_id': dest_id,
                 'origin': venda['order_id'],
+                'amount_total': self._calc_amount_total(picking_items),
             })
+        move = request.env['stock.move'].sudo().search([
+            ('picking_id', '=', picking.id)])
+        move.write({'picking_type_id': picking_type_ref.id})
         ids.append(picking.id)
 
         pack_type_id = int(params.get_param(
@@ -281,7 +315,11 @@ class ApiStock(http.Controller):
                 'location_id': src_id,
                 'location_dest_id': dest_id,
                 'origin': venda['order_id'],
+                'amount_total': self._calc_amount_total(picking_items),
             })
+        move = request.env['stock.move'].sudo().search([
+            ('picking_id', '=', packing.id)])
+        move.write({'picking_type_id': packing_type_ref.id})
         ids.append(packing.id)
 
         outgoing_type_id = int(params.get_param(
@@ -302,7 +340,11 @@ class ApiStock(http.Controller):
                 'location_id': src_id,
                 'location_dest_id': dest_id,
                 'origin': venda['order_id'],
+                'amount_total': self._calc_amount_total(picking_items),
             })
+        move = request.env['stock.move'].sudo().search([
+            ('picking_id', '=', requested_order.id)])
+        move.write({'picking_type_id': requested_order_ref.id})
         ids.append(requested_order.id)
 
         return ids
