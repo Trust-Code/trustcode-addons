@@ -27,9 +27,6 @@
                 <group>
                     <field name="configuration_id" />
                     <field name="backup_date" />
-                    <field name="local_path" />
-                    <field name="s3_id" />
-                    <field name="s3_url" widget="url" />
                 </group>
             </form>
         </field>
@@ -43,7 +40,6 @@
                 <field name='configuration_id' />
                 <field name='backup_date' />
                 <field name='state' />
-                <field name='s3_id' />
             </tree>
         </field>
     </record>
