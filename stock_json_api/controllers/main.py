@@ -206,6 +206,12 @@ class ApiStock(http.Controller):
 
         return ids
 
+    def _calc_amount_total(self, picking_items):
+        total = 0
+        for line in picking_items:
+            total += line[2]['valor_bruto']
+        return total
+
     def _save_outgoing_order(self, venda, user):
         venda = venda['body']['orders'][0]
         env_partner = request.env['res.partner'].sudo(user)
@@ -256,6 +262,7 @@ class ApiStock(http.Controller):
                 'product_uom_qty': item['quantity'],
                 'ordered_qty': item['quantity'],
                 'product_uom': product[0].uom_id.id,
+                'valor_bruto': int(item['quantity']) * int(item['price'])
             }))
 
         schedule = datetime.strptime(
@@ -284,6 +291,7 @@ class ApiStock(http.Controller):
                 'location_id': src_id,
                 'location_dest_id': dest_id,
                 'origin': venda['order_id'],
+                'amount_total': self._calc_amount_total(picking_items),
             })
         move = request.env['stock.move'].sudo().search([
             ('picking_id', '=', picking.id)])
@@ -307,6 +315,7 @@ class ApiStock(http.Controller):
                 'location_id': src_id,
                 'location_dest_id': dest_id,
                 'origin': venda['order_id'],
+                'amount_total': self._calc_amount_total(picking_items),
             })
         move = request.env['stock.move'].sudo().search([
             ('picking_id', '=', packing.id)])
@@ -331,6 +340,7 @@ class ApiStock(http.Controller):
                 'location_id': src_id,
                 'location_dest_id': dest_id,
                 'origin': venda['order_id'],
+                'amount_total': self._calc_amount_total(picking_items),
             })
         move = request.env['stock.move'].sudo().search([
             ('picking_id', '=', requested_order.id)])
