@@ -78,6 +78,7 @@
                     </div>
                     <group>
                         <field name="interval" />
+                        <field name="backup_dir" />
                         <field name="send_to_s3" />
                         <field name="aws_access_key"
                             attrs="{'invisible': [('send_to_s3', '=', False)],

@@ -33,9 +33,6 @@ class BackupExecuted(models.Model):
     _name = 'backup.executed'
     _order = 'backup_date'
 
-    def _generate_s3_link(self):
-        return self.s3_id
-
     name = fields.Char(u'Arquivo', size=100)
     configuration_id = fields.Many2one('backup.config', string=u"Configuração")
     backup_date = fields.Datetime(string=u"Data")
@@ -134,14 +131,12 @@ class BackupConfig(models.Model):
                 backup_env = self.env['backup.executed']
 
                 if rec.send_to_s3:
-                    key = rec.send_for_amazon_s3(zip_file, zip_name,
-                                                 self.env.cr.dbname)
+                    rec.send_for_amazon_s3(
+                        zip_file, zip_name, self.env.cr.dbname)
                     backup_env.create({'backup_date': datetime.now(),
                                        'configuration_id': rec.id,
                                        'name': zip_name,
                                        'state': 'concluded'})
-                    if key:
-                        os.remove(zip_file)
                 else:
                     backup_env.create(
                         {'backup_date': datetime.now(), 'name': zip_name,
