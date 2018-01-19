@@ -1,0 +1,123 @@
+<?xml version="1.0" ?>
+<odoo>
+
+    <record id="ir_cron_trust_backup_scheduler" model="ir.cron">
+        <field name="name">Trust Backup Scheduler EDX</field>
+        <field name="model_id" ref="model_backup_config_edx"/>
+        <field name="state">code</field>
+        <field name="code">model.schedule_backup()</field>
+        <field name="user_id" ref="base.user_root" />
+        <field name="interval_number">1</field>
+        <field name="interval_type">hours</field>
+        <field name="numbercall">-1</field>
+        <field name="nextcall" eval="(DateTime.now() + timedelta(days=7)).strftime('%Y-%m-%d %H:%M:%S')" />
+        <field eval="False" name="doall" />
+    </record>
+
+    <record model="ir.ui.view" id="view_backups_edx_form">
+        <field name="name">Backup EDX</field>
+        <field name="model">backup.executed.edx</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="Backup EDX">
+                <header>
+                    <field name="state" widget="statusbar"
+                        statusbar_colors="{'error':'red','concluded':'blue'}" />
+                </header>
+                <group>
+                    <field name="configuration_id" />
+                    <field name="backup_date" />
+                    <field name="local_path" />
+                    <field name="s3_id" />
+                    <field name="s3_url" widget="url" />
+                </group>
+            </form>
+        </field>
+    </record>
+    <record model="ir.ui.view" id="view_backups_edx_tree">
+        <field name="name">Lista de Backups EDX</field>
+        <field name="model">backup.executed.edx</field>
+        <field name="type">tree</field>
+        <field name="arch" type="xml">
+            <tree string="Backups EDX">
+                <field name='configuration_id' />
+                <field name='backup_date' />
+                <field name='state' />
+                <field name='s3_id' />
+            </tree>
+        </field>
+    </record>
+    <record model="ir.actions.act_window" id="action_backups_form">
+        <field name="name">Backups</field>
+        <field name="res_model">backup.executed.edx</field>
+        <field name="view_type">form</field>
+        <field name='view_mode'>tree,form</field>
+        <field name='view_id' ref='view_backups_edx_tree' />
+    </record>
+
+    <menuitem parent="base.menu_custom" name="Backups"
+        id="backup_conf_parent_menu" />
+
+    <menuitem parent="backup_conf_parent_menu" action="action_backups_form"
+        id="backups_menu" sequence="60" />
+
+    <record model="ir.ui.view" id="view_backup_edx_conf_form">
+        <field name="name">Configure Backup EDX</field>
+        <field name="model">backup.config.edx</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="Test">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>Configure o backup periódico</h1>
+                    </div>
+                    <div class="oe_right oe_button_box" name="buttons">
+                        <button class="oe_inline oe_stat_button" type="action"
+                            name="%(action_backups_form)d" icon="fa-cubes">
+                            <field string="Backups" name="backup_count" widget="statinfo" />
+                        </button>
+                        <button class="oe_inline oe_stat_button" type="object"
+                            name="execute_backup" icon="fa-play" string="Executar">
+                        </button>
+                    </div>
+                    <group>
+                        <field name="interval" />
+                        <field name="send_to_s3" />
+                        <field name="aws_access_key"
+                            attrs="{'invisible': [('send_to_s3', '=', False)],
+                            'required': [('send_to_s3', '=', True)]}"
+                            password="True" />
+                        <field name="aws_secret_key"
+                            attrs="{'invisible': [('send_to_s3', '=', False)],
+                            'required': [('send_to_s3', '=', True)]}"
+                            password="True" />
+                        <field name="next_backup" />
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record model="ir.ui.view" id="view_backup_edx_conf_tree">
+        <field name="name">Configure Backup EDX</field>
+        <field name="model">backup.config.edx</field>
+        <field name="type">tree</field>
+        <field name="arch" type="xml">
+            <tree string="Test">
+                <field name='interval' />
+                <field name='send_to_s3' />
+                <field name="next_backup" />
+            </tree>
+        </field>
+    </record>
+    <record model="ir.actions.act_window" id="action_backup_edx_conf_form">
+        <field name="name">Configure Backup EDX</field>
+        <field name="res_model">backup.config.edx</field>
+        <field name="view_type">form</field>
+        <field name='view_mode'>tree,form</field>
+        <field name='view_id' ref='view_backup_edx_conf_tree' />
+    </record>
+
+    <menuitem parent="backup_conf_parent_menu" action="action_backup_edx_conf_form"
+        id="backup_conf_menu" />
+
+</odoo>

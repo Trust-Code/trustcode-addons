@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="sale_order_discount_view" model="ir.ui.view">
+            <field name="name">sale.order.form.inherit</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//button[@name='print_quotation']" position="before">
+                    <button string="Atualizar Descontos" type="object" name="update_discount_lines" class="oe_highlight" 
+                        attrs="{'invisible': [('state', 'not in', ('draft', 'sent'))]}"/>
+                </xpath>
+                <xpath expr="//group[@name='sale_total']" position="after">
+                    <group class="footer oe_left" colspan="2" name="discount">
+                        <field name="discount_type" />
+                        <field name="discount_value" />
+                    </group>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Inherit Form view -->
+    <record id="delivery_info_form" model="ir.ui.view">
+        <field name="name">delivery.info.form</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="delivery.view_picking_withcarrier_out_form"/>
+        <field name="arch" type="xml">
+            <field name="carrier_id" position="after">
+                <field name="driver"/>
+                <field name="board"/>
+            </field>
+        </field>
+    </record>
+</odoo>
