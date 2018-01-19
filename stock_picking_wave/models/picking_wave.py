@@ -57,7 +57,7 @@ class BatchProduct(models.Model):
                                      'partially_available'])
                 ], limit=1)
                 if move:
-                    new_origin = move.origin + '; ' + l[2]
+                    new_origin = move.origin + l[2]
                     new_qty = move.product_uom_qty + l[1]
                     new_pick_origin = (move.picking_id.origin if
                                        move.picking_id else "")
@@ -65,6 +65,9 @@ class BatchProduct(models.Model):
                     move.write({'origin': new_origin,
                                 'product_uom_qty': new_qty})
                     move.picking_id.write({'origin': new_pick_origin})
+
+                    if move.picking_id not in picking_ids:
+                        picking_ids.append(move.picking_id)
                 else:
                     product_id = product_obj.browse(l[0])
                     product_uom_id = product_id.uom_id
@@ -85,11 +88,13 @@ class BatchProduct(models.Model):
                 vals = {
                     'picking_type_id': picking_dest.id,
                     'location_id': picking_dest.default_location_src_id.id,
-                    'location_dest_id': picking_dest.default_location_dest_id.id,
+                    'location_dest_id':
+                    picking_dest.default_location_dest_id.id,
                     'origin': origin,
                     'move_lines': lines}
                 picking_ids.append(self.env['stock.picking'].create(vals))
-                move_obj.browse(move_ids).write({'created_wave': True})
+
+            move_obj.browse(move_ids).write({'created_wave': True})
 
         if len(picking_ids) == 1:
             picking_id = picking_ids[0]
@@ -105,7 +110,7 @@ class BatchProduct(models.Model):
             vals['context'] = {
                 'default_picking_type_id': picking_id.picking_type_id.id}
             return vals
-        else:
+        elif len(picking_ids) > 1:
             picking_id = picking_ids[0]
             dummy, act_id = self.env['ir.model.data'].get_object_reference(
                 'stock', 'stock_picking_action_picking_type')
