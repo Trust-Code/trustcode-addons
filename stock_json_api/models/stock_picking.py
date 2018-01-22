@@ -24,6 +24,12 @@ class StockPicking(models.Model):
     morango = fields.Boolean(string='Morango')
     cesta_retornavel = fields.Boolean(string='Cesta Retornável')
 
+    rota = fields.Char(string="ROTA")
+    transportadora = fields.Char(string="Transportadora")
+    motorista = fields.Char(string="Motorista")
+    placa = fields.Char(string="Placa")
+    volumes = fields.Char(string="Volumes")
+
 
 class StockMove(models.Model):
     _inherit = 'stock.move'
