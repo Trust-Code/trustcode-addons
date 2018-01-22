@@ -10,6 +10,15 @@
                     <field name="valor_bruto" invisible="1"/>
                 </xpath>
                 <xpath expr="//page[@name='extra']" position='after'>
+                    <page string="Entrega">
+                        <group>
+                            <field name="rota" />
+                            <field name="transportadora" />
+                            <field name="motorista" />
+                            <field name="placa" />
+                            <field name="volumes" />
+                        </group>
+                    </page>
                     <page string="Adicionais">
                         <div class="col-xs-6">
                             <group string="Pedido">

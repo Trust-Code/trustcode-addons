@@ -296,6 +296,7 @@ class ApiStock(http.Controller):
         move = request.env['stock.move'].sudo().search([
             ('picking_id', '=', picking.id)])
         move.write({'picking_type_id': picking_type_ref.id})
+
         ids.append(picking.id)
 
         pack_type_id = int(params.get_param(
@@ -305,6 +306,7 @@ class ApiStock(http.Controller):
             raise Exception("Configure os tipos de picking.")
 
         src_id, dest_id = self._get_locations(user, partner, packing_type_ref)
+
         packing = request.env['stock.picking'].sudo(
             user).with_context(planned_picking=True).create({
                 'name': packing_type_ref.sequence_id.next_by_id(),
@@ -320,6 +322,7 @@ class ApiStock(http.Controller):
         move = request.env['stock.move'].sudo().search([
             ('picking_id', '=', packing.id)])
         move.write({'picking_type_id': packing_type_ref.id})
+
         ids.append(packing.id)
 
         outgoing_type_id = int(params.get_param(
@@ -330,6 +333,7 @@ class ApiStock(http.Controller):
 
         src_id, dest_id = self._get_locations(
             user, partner, requested_order_ref)
+
         requested_order = request.env['stock.picking'].sudo(
             user).with_context(planned_picking=True).create({
                 'name': requested_order_ref.sequence_id.next_by_id(),
@@ -345,6 +349,7 @@ class ApiStock(http.Controller):
         move = request.env['stock.move'].sudo().search([
             ('picking_id', '=', requested_order.id)])
         move.write({'picking_type_id': requested_order_ref.id})
+
         ids.append(requested_order.id)
 
         return ids
