@@ -21,11 +21,11 @@ class ProjectIssue(models.Model):
     pergunta3 = fields.Selection([('otimo', u'Ótimo'), ('bom', u'Bom'),
                                   ('regular', u'Regular'), ('ruim', u'Ruim'),
                                   ('pessimo', u'Péssimo')])
-    pergunta4 = fields.Selection([('0', '0 - Muito Instatisfeito'),
-                                  ('1', '1 - Insatisfeito'),
-                                  ('2', '2 - Indiferente'),
-                                  ('3', '3 - Satisfeito'),
-                                  ('4', '4 - Muito Satisfeito')])
+    pergunta4 = fields.Selection([('1', '1 - Muito Instatisfeito'),
+                                  ('2', '2 - Insatisfeito'),
+                                  ('3', '3 - Indiferente'),
+                                  ('4', '4 - Satisfeito'),
+                                  ('5', '5 - Muito Satisfeito')])
 
     @api.multi
     def write(self, vals):
