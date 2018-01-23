@@ -20,10 +20,12 @@ class ProjectIssueClose(models.TransientModel):
     pergunta3 = fields.Selection([('otimo', u'Ótimo'), ('bom', u'Bom'),
                                   ('regular', u'Regular'), ('ruim', u'Ruim'),
                                   ('pessimo', u'Péssimo')])
-    pergunta4 = fields.Selection([('1', '1'), ('2', '2'), ('3', '3'),
-                                  ('4', '4'), ('5', '5'), ('6', '6'),
-                                  ('7', '7'), ('8', '8'), ('9', '9'),
-                                  ('10', '10')])
+
+    pergunta4 = fields.Selection([('0', '0 - Muito Instatisfeito'),
+                                  ('1', '1 - Insatisfeito'),
+                                  ('2', '2 - Indiferente'),
+                                  ('3', '3 - Satisfeito'),
+                                  ('4', '4 - Muito Satisfeito')])
 
     def _validate_answer(self):
         result = True

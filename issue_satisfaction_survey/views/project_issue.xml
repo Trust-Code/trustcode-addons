@@ -16,7 +16,7 @@
                 <field name="pergunta1" string="Cumpriu com as Obrigações?"/>
                 <field name="pergunta2" string="Tempo de Atendimento?"/>
                 <field name="pergunta3" string="Qualidade do atendimento?"/>
-                <field name="pergunta4" string="Indicação"/>
+                <field name="pergunta4" string="Satisfação"/>
               </group>
             </xpath>
         </field>
