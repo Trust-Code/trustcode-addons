@@ -50,3 +50,51 @@ class Site(models.Model):
     )
 
     fabricante_id = fields.Many2one('fabricante.torre', string="Fabicante")
+
+    modelo = fields.Char('Modelo')
+
+    altura_total = fields.Float('Altura Total')
+
+    ampliada = fields.Boolean('Ampliada')
+
+    abertura_base = fields.Float('Abertura da Base')
+
+    perfil_montante = fields.Char(
+        [
+            ('cantoneira', 'Cantoneira (L)'),
+            ('cantoneira_dobrada', 'Cantoneira Dobrada 60º (S)'),
+            ('dobrada_l', 'Cantoneira Dobrada 60º (S) + Cantoneira (L)'),
+            ('dobrada_dubla', 'Cantoneira Dobrada 60º Dupla (2S)'),
+            ('cantoneira_dupla', 'Cantoneira Dupla (2L)'),
+            ('chapa_dobrada', 'Chapa Dobrada (V)'),
+            ('chapa_dob_cant_l', 'Chapa Dobrada (V) + Cantoneira (L)'),
+            ('chapa_dob_cant_dob', 'Chapa Dobrada (V) + Cantoneira Dobrada 60º (S)'),
+            ('chapa_dob_omega', 'Chapa Dobrada (V) + Ômega (O)'),
+            ('omega', 'Ômega (O)'),
+            ('omega_dupla', 'Ômega Dupla (2O)'),
+            ('tubular', 'Tubular (TB)'),
+            ('tubular_cantoneira', 'Tubular (TB) + Cantoneira (L)'),
+            ('perfil_u', 'Perfil U (U)'),
+            ('barra_redonda_macica', 'Barra Redonda Maciça (BR)')
+
+        ]
+        string='Perfil do Montante')
+
+    tipo_fundacao = fields.Selection(
+        [
+            ('estaca_raiz', 'Estaca Raiz'),
+            ('estaca_raiz_tirantes', 'Estaca Raiz + Tirantes'),
+            ('chapa_metal', 'Chapa Metálica'),
+            ('estaca_metal', 'Estaca Metálica'),
+            ('estaca_raiz', 'Estaca Raiz'),
+            ('estacao', 'Estacão'),
+            ('raider', 'Radier'),
+            ('sapata', 'Sapata'),
+            ('tirante', 'Tirante'),
+            ('tubo_metalico', 'Tubo Metálico'),
+            ('tubulao', 'Tubulão'),
+            ('tubulao_estaca', 'Tubulão + Estaca'),
+            ('viga', 'Viga'),
+        ],
+        string="Tipo de Fundação"
+    )
