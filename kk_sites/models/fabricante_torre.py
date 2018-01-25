@@ -6,6 +6,6 @@ from odoo import fields, models
 
 
 class FabricanteTorre(models.Model):
-    _name = 'fabricante.torre'
+    _name = 'site.fabricante.torre'
 
     name = fields.Char(string="Nome")

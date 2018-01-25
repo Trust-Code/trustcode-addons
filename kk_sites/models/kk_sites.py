@@ -6,7 +6,11 @@ from odoo import fields, models, api
 
 
 class Site(models.Model):
-    _name = 'site'
+    _name = 'kk.sites'
+
+    cod_site_kk = fields.Char(
+        string="Código Site KK",
+        required=True)
 
     partner_id = fields.Many2one(
         'res.partner',
@@ -16,6 +20,27 @@ class Site(models.Model):
     site_id = fields.Char(
         string="ID do Site",
         required=True)
+
+    street = fields.Char()
+    street2 = fields.Char()
+    zip = fields.Char()
+    city = fields.Char()
+    state_id = fields.Many2one(
+        "res.country.state",
+        string='State',
+        ondelete='restrict',
+        required=True)
+    country_id = fields.Many2one(
+        'res.country',
+        string='Country',
+        ondelete='restrict',
+        required=True)
+    number = fields.Char(string='Número')
+
+    referencia = fields.Char(string="Referência")
+
+    coordenadas = fields.Char(
+        string="Coodenadas em graus decimais (Latitude, Longitude)")
 
     tipo_acesso = fields.Char(string="Tipo de Acesso")
 
@@ -49,17 +74,30 @@ class Site(models.Model):
         string="Tipo de Estrutura"
     )
 
-    fabricante_id = fields.Many2one('fabricante.torre', string="Fabicante")
+    secao_transversal = fields.Selection(
+        [
+            ('circular', 'Circular'),
+            ('dodecagonal', 'Dodecagonal'),
+            ('quadrada', 'Quadrada'),
+            ('triangular', 'Triangular'),
+            ('triangular_quadrada', 'Triangular + Quadrada'),
+            ('retangular', 'Retangular'),
+        ],
+        string="Seção Transversal EV"
+    )
 
-    modelo = fields.Char('Modelo')
+    fabricante_id = fields.Many2one(
+        'site.fabricante.torre', string="Fabicante da EV")
 
-    altura_total = fields.Float('Altura Total')
+    modelo = fields.Char('Modelo EV')
 
-    ampliada = fields.Boolean('Ampliada')
+    altura_total = fields.Float('Altura Total EV (m)')
 
-    abertura_base = fields.Float('Abertura da Base')
+    ampliada = fields.Boolean('EV Ampliada?')
 
-    perfil_montante = fields.Char(
+    abertura_base = fields.Float('Abertura da Base (mm)')
+
+    perfil_montante = fields.Selection(
         [
             ('cantoneira', 'Cantoneira (L)'),
             ('cantoneira_dobrada', 'Cantoneira Dobrada 60º (S)'),
@@ -68,7 +106,8 @@ class Site(models.Model):
             ('cantoneira_dupla', 'Cantoneira Dupla (2L)'),
             ('chapa_dobrada', 'Chapa Dobrada (V)'),
             ('chapa_dob_cant_l', 'Chapa Dobrada (V) + Cantoneira (L)'),
-            ('chapa_dob_cant_dob', 'Chapa Dobrada (V) + Cantoneira Dobrada 60º (S)'),
+            ('chapa_dob_cant_dob', 'Chapa Dobrada (V) +\
+                 Cantoneira Dobrada 60º (S)'),
             ('chapa_dob_omega', 'Chapa Dobrada (V) + Ômega (O)'),
             ('omega', 'Ômega (O)'),
             ('omega_dupla', 'Ômega Dupla (2O)'),
@@ -76,9 +115,8 @@ class Site(models.Model):
             ('tubular_cantoneira', 'Tubular (TB) + Cantoneira (L)'),
             ('perfil_u', 'Perfil U (U)'),
             ('barra_redonda_macica', 'Barra Redonda Maciça (BR)')
-
-        ]
-        string='Perfil do Montante')
+        ],
+        string='Perfil do Montante EV')
 
     tipo_fundacao = fields.Selection(
         [
@@ -96,5 +134,23 @@ class Site(models.Model):
             ('tubulao_estaca', 'Tubulão + Estaca'),
             ('viga', 'Viga'),
         ],
-        string="Tipo de Fundação"
-    )
+        string="Tipo de Fundação")
+
+    dimensoes_fundacao = fields.Char(string="Dimensões da Fundação (cm x cm)")
+
+    profundidade_fundacao = fields.Float(
+        string='Profundidade da Fundação (cm)')
+
+    notes = fields.Text("Observações")
+
+    pasta_servidor = fields.Char("Pasta no Servidor")
+
+    @api.onchange('partner_id')
+    def onchange_partner_id(self):
+        self.street = self.partner_id.street
+        self.street2 = self.partner_id.street2
+        self.zip = self.partner_id.zip
+        self.city = self.partner_id.city
+        self.state_id = self.partner_id.state_id
+        self.country_id = self.partner_id.country_id
+        self.number = self.partner_id.number
