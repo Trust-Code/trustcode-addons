@@ -4,7 +4,7 @@
 
 
 {  # pylint: disable=C8101,C8103
-    'name': "Cadastro de Sites",
+    'name': "Cadastro de Sites KK",
 
     'summary': """
         Cadastro de sites """,
@@ -22,6 +22,8 @@
     ],
     'depends': ['sale'],
     'data': [
-        'views/site.xml',
+        'views/kk_sites.xml',
     ],
+    'post_init_hook': 'post_init',
+
 }
