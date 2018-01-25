@@ -97,10 +97,6 @@ class SaleOrder(models.Model):
                                      new_order.order_line)
         map(lambda line: line.unlink(), non_recurrent_lines)
 
-        exclude_recurrent_lines = filter(
-            lambda line: line.recurring_line, self.order_line)
-        map(lambda line: line.unlink(), exclude_recurrent_lines)
-
         new_order.action_confirm()
         return new_order
 
@@ -219,6 +215,16 @@ class SaleOrderLine(models.Model):
         string=u"Recorrente?", related="product_id.recurring_product",
         readonly=True)
 
+    change_line_collor = fields.Boolean(
+        string='Esconder', compute='_compute_line_collor')
+
+    @api.multi
+    def _compute_line_collor(self):
+        for item in self:
+            item.change_line_collor = False
+            if item.recurring_line and not item.order_id.is_contract:
+                item.change_line_collor = True
+
     @api.depends('product_id', 'purchase_price', 'product_uom_qty',
                  'price_unit', 'discount')
     def _product_margin(self):
@@ -235,3 +241,13 @@ class SaleOrderLine(models.Model):
 
                 if line.product_id.invoice_policy == 'order':
                     line.qty_to_invoice = line.product_uom_qty
+
+    @api.multi
+    def invoice_line_create(self, invoice_id, qty):
+        for item in self:
+            if item.recurring_line and not item.order_id.is_contract:
+                continue
+            elif item.qty_invoiced >= item.product_uom_qty:
+                continue
+            else:
+                super(SaleOrderLine, item).invoice_line_create(invoice_id, qty)
