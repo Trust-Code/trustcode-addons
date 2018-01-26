@@ -87,7 +87,7 @@ class Site(models.Model):
     )
 
     fabricante_id = fields.Many2one(
-        'site.fabricante.torre', string="Fabicante da EV")
+        'kk.fabricante.torre', string="Fabicante da EV")
 
     modelo = fields.Char('Modelo EV')
 
@@ -154,3 +154,11 @@ class Site(models.Model):
         self.state_id = self.partner_id.state_id
         self.country_id = self.partner_id.country_id
         self.number = self.partner_id.number
+
+    @api.multi
+    def name_get(self):
+        result = []
+        for rec in self:
+            result.append((rec.id, "%s - %s" % (
+                rec.cod_site_kk, rec.partner_id.name or '')))
+        return result
