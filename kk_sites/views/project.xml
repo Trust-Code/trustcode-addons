@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="project_kk_site_view" model="ir.ui.view">
+        <field name="name">project.kk.site.view</field>
+        <field name="model">project.project</field>
+        <field name="inherit_id" ref="project.edit_project"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='name']" position="after">
+                <field name="kk_site_id" />
+            </xpath>
+        </field>
+    </record>
+</odoo>

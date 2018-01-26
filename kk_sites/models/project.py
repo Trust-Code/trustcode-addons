@@ -5,7 +5,7 @@
 from odoo import fields, models
 
 
-class FabricanteTorre(models.Model):
-    _name = 'site.fabricante.torre'
+class Project(models.Model):
+    _inherit = 'project.project'
 
-    name = fields.Char(string="Nome")
+    kk_site_id = fields.Many2one('kk.sites', string="Site")

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="kk_fabricante_torre_form_view" model="ir.ui.view">
+        <field name="name">kk.fabricante.torre.form.view</field>
+        <field name="model">kk.fabricante.torre</field>
+        <field name="arch" type="xml">
+            <form string="Fabricante">
+                <group>
+                    <field name="name" />
+                </group>
+            </form>
+        </field>
+    </record>
+
+</odoo>
