@@ -27,10 +27,17 @@
             </xpath>
             <xpath expr="//field[@name='order_line']/tree/field[@name='price_total']" position="after">
                 <field name="recurring_line" />
+                <field name="change_line_collor" invisible="1" />
             </xpath>
             <xpath expr="//field[@name='order_line']/form/group/group/label[@for='product_uom_qty']" position="before">
                 <field name="recurring_line" />
+                <field name="change_line_collor" invisible="1" />
             </xpath>
+
+            <xpath expr="//field[@name='order_line']/tree" position="attributes">
+                <attribute name="colors">grey:change_line_collor==True;</attribute>
+            </xpath>
+
             <group name="sale_margin_grp" position="attributes">
                  <attribute name="invisible">1</attribute>
             </group>
