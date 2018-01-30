@@ -3,36 +3,44 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 from odoo import fields, models, api
+from odoo.exceptions import ValidationError
 
 
-class Site(models.Model):
+class KKSites(models.Model):
     _name = 'kk.sites'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
 
     cod_site_kk = fields.Char(
-        string="Código Site KK",
-        required=True)
+        string="Código do Site: ",
+        required=True,
+        track_visibility='always')
 
     partner_id = fields.Many2one(
         'res.partner',
         string="Cliente",
-        required=True)
+        required=True,
+        track_visibility='onchange')
 
     site_id = fields.Char(
-        string="ID do Site",
-        required=True)
+        string="ID do Site: ",
+        required=True,
+        track_visibility='onchange')
 
     street = fields.Char()
     street2 = fields.Char()
-    zip = fields.Char()
-    city = fields.Char()
+    zip = fields.Char(string='CEP')
+    city = fields.Char(
+        string="Cidade",
+        track_visibility='onchange')
     state_id = fields.Many2one(
         "res.country.state",
-        string='State',
+        string='Estado',
         ondelete='restrict',
-        required=True)
+        required=True,
+        track_visibility='onchange')
     country_id = fields.Many2one(
         'res.country',
-        string='Country',
+        string='País',
         ondelete='restrict',
         required=True)
     number = fields.Char(string='Número')
@@ -87,7 +95,7 @@ class Site(models.Model):
     )
 
     fabricante_id = fields.Many2one(
-        'kk.fabricante.torre', string="Fabicante da EV")
+        'res.partner', string="Fabicante da EV")
 
     modelo = fields.Char('Modelo EV')
 
@@ -95,7 +103,7 @@ class Site(models.Model):
 
     ampliada = fields.Boolean('EV Ampliada?')
 
-    abertura_base = fields.Float('Abertura da Base (mm)')
+    abertura_base = fields.Integer('Abertura da Base (mm)')
 
     perfil_montante = fields.Selection(
         [
@@ -138,12 +146,57 @@ class Site(models.Model):
 
     dimensoes_fundacao = fields.Char(string="Dimensões da Fundação (cm x cm)")
 
-    profundidade_fundacao = fields.Float(
+    profundidade_fundacao = fields.Integer(
         string='Profundidade da Fundação (cm)')
 
     notes = fields.Text("Observações")
 
-    pasta_servidor = fields.Char("Pasta no Servidor")
+    pasta_servidor = fields.Char(
+        string="Pasta no Servidor",
+        track_visibility='onchange')
+
+    def _mask_dimensoes_fundacao(self, dimensoes):
+        dimensoes = dimensoes.strip()
+        try:
+            dim = dimensoes.split('x')
+            if len(dim) != 2:
+                dim = dimensoes.split(' ')
+            if len(dim) != 2:
+                dim = dimensoes.split('-')
+            if len(dim) != 2:
+                raise Exception
+            comprimento, largura = [int(item.strip()) for item in dim]
+            return '{} x {}'.format(comprimento, largura)
+        except Exception:
+            raise ValidationError(
+                "Verifique se as dimensões da fundação são válidas.")
+
+    def _mask_coordenadas(self, coord):
+        try:
+            coord = coord.split(',')
+            coord = [float(item.strip()) for item in coord]
+            return '{}, {}'.format(coord[0], coord[1])
+        except Exception:
+            raise ValidationError("Verifique se as coordenadas são válidas.\
+                Formato padrão: -XX.XXXXX, -XX.XXXXX")
+
+    @api.multi
+    def write(self, vals):
+        if vals.get('coordenadas'):
+            vals['coordenadas'] = self._mask_coordenadas(vals['coordenadas'])
+        if vals.get('dimensoes_fundacao'):
+            vals['dimensoes_fundacao'] = self._mask_dimensoes_fundacao(
+                vals['dimensoes_fundacao'])
+        return super(KKSites, self).write(vals)
+
+    @api.model
+    def create(self, vals):
+        if vals.get('coordenadas'):
+            vals['coordenadas'] = self._mask_coordenadas(vals['coordenadas'])
+        if vals.get('dimensoes_fundacao'):
+            vals['dimensoes_fundacao'] = self._mask_dimensoes_fundacao(
+                vals['dimensoes_fundacao'])
+        return super(KKSites, self).create(vals)
 
     @api.onchange('partner_id')
     def onchange_partner_id(self):
