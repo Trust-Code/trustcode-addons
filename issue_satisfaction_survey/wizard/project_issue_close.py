@@ -21,11 +21,11 @@ class ProjectIssueClose(models.TransientModel):
                                   ('regular', u'Regular'), ('ruim', u'Ruim'),
                                   ('pessimo', u'Péssimo')])
 
-    pergunta4 = fields.Selection([('1', '1 - Muito Instatisfeito'),
-                                  ('2', '2 - Insatisfeito'),
-                                  ('3', '3 - Indiferente'),
-                                  ('4', '4 - Satisfeito'),
-                                  ('5', '5 - Muito Satisfeito')])
+    pergunta4 = fields.Selection([('1', '1'), ('2', '2'), ('3', '3'),
+                                  ('4', '4'), ('5', '5'), ('6', '6'),
+                                  ('7', '7'), ('8', '8'), ('9', '9'),
+                                  ('10', '10')])
+    pergunta5 = fields.Text(string="Comentários")
 
     def _validate_answer(self):
         result = True
@@ -44,6 +44,7 @@ class ProjectIssueClose(models.TransientModel):
                     'pergunta2': self.pergunta2,
                     'pergunta3': self.pergunta3,
                     'pergunta4': self.pergunta4,
+                    'pergunta5': self.pergunta5,
                     'can_close': True,
                     'stage_id': STAGE_ID_CLOSED}
             issue.write(vals)

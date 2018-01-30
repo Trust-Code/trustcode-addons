@@ -25,6 +25,7 @@ class ProjectIssue(models.Model):
                                   ('4', '4'), ('5', '5'), ('6', '6'),
                                   ('7', '7'), ('8', '8'), ('9', '9'),
                                   ('10', '10')])
+    pergunta5 = fields.Text(string="Comentários")
 
     @api.multi
     def write(self, vals):
