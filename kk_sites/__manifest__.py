@@ -20,15 +20,14 @@
     'contributors': [
         'Felipe Paloschi <paloschi.eca@gmail.com>',
     ],
-    'depends': ['sale', 'project', 'purchase'],
+    'depends': ['sale_timesheet', 'project', 'purchase'],
     'data': [
         'views/kk_sites.xml',
-        'views/kk_fabricante_torre.xml',
         'views/sale_order.xml',
         'views/project.xml',
         'views/purchase_order.xml',
         'security/ir.model.access.csv',
+        'views/res_partner.xml'
     ],
-    'post_init_hook': 'post_init',
 
 }

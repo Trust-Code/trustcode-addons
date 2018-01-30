@@ -5,7 +5,7 @@
 from odoo import fields, models
 
 
-class FabricanteTorre(models.Model):
-    _name = 'kk.fabricante.torre'
+class ResPartner(models.Model):
+    _inherit = 'res.partner'
 
-    name = fields.Char(string="Nome")
+    is_fabricante = fields.Boolean('É Fabricante')

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_partner_form_fabricante" model="ir.ui.view">
+        <field name="name">res.partner.form.fabricante</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form" />
+        <field name="arch" type="xml">
+            <field name="user_id" position="after">
+                <field name="is_fabricante"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="view_res_partner_filter_fabicante" model="ir.ui.view">
+        <field name="name">res.partner.filter.fabricante</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_res_partner_filter"/>
+        <field name="arch" type="xml">
+            <filter name="supplier" position="after">
+                <filter string="É Fabricante" name="is_fabricante" domain="[('is_fabricante', '=', 1)]"/>
+            </filter>
+        </field>
+    </record>
+
+</odoo>

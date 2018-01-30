@@ -7,11 +7,12 @@
         <field name="type">tree</field>
         <field name="arch" type="xml">
             <tree string="Sites">
-                <field name='site_id' />
-                <field name='partner_id' />
+                <field name="cod_site_kk" />
+                <field name="partner_id" />
+                <field name="site_id" />
+                <field name="city" />
+                <field name="state_id" />
                 <field name="tipo_site" />
-                <field name='tipo_estrutura' />
-                <field name='fabricante_id' />
             </tree>
         </field>
     </record>
@@ -23,20 +24,16 @@
             <form string="Sites">
                 <sheet>
                     <div class="col-xs-12">
-                        <div class="col-xs-7">
-                            <label for="cod_site_kk" style="font-size: 16pt" string="Código Site" />
+                        <div class="col-xs-6">
+                            <h1><label for="cod_site_kk" style="font-size: 16pt" />
+                            <field name="cod_site_kk" /></h1>
+                        </div>
+                        <div class="col-xs-6">
+                            <h1><label for="site_id" style="font-size: 16pt" />
+                            <field name="site_id" /></h1>
                         </div>
                         <div class="col-xs-7">
-                            <h1><field name="cod_site_kk" /></h1>
-                        </div>
-                        <div class="col-xs-7">
-                            <field name="partner_id" placeholder="Cliente Fantasia" />
-                        </div>
-                        <div class="col-xs-7">
-                            <label for="site_id" />
-                        </div>
-                        <div class="col-xs-7">
-                            <field name="site_id" />
+                            <h3><field name="partner_id" placeholder="Cliente Fantasia" /></h3>
                         </div>
                     </div>
                     <group>
@@ -59,7 +56,7 @@
                             <field name="tipo_site" />
                             <field name="tipo_estrutura" />
                             <field name="secao_transversal" />
-                            <field name="fabricante_id" />
+                            <field name="fabricante_id" domain="[('is_fabricante', '=', True)]" />
                             <field name="modelo" />
                             <field name="altura_total" />
                             <field name="ampliada" />
@@ -87,7 +84,27 @@
                     <label for="notes" />
                     <field name="notes" />
                 </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="activity_ids" widget="mail_activity"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
             </form>
+        </field>
+    </record>
+
+    <record id="view_kk_sites_search" model="ir.ui.view">
+        <field name="name">view.kk.sites.search</field>
+        <field name="model">kk.sites</field>
+        <field name="arch" type="xml">
+            <search string="Sites">
+                <field name="cod_site_kk"/>
+                <field name="partner_id"/>
+                <field name="site_id"/>
+                <field name="city" string="Cidade" />
+                <field name="state_id" string="Estado" />
+                <field name="pasta_servidor"/>
+            </search>
         </field>
     </record>
 
@@ -99,9 +116,16 @@
         <field name='view_id' ref='view_sites_tree' />
     </record>
 
-    <menuitem name="Sites"
-              action="action_open_sites"
-              id="menu_sites_all"
-              parent="sale.sale_order_menu"
-              sequence="15"/>
+  <menuitem id="menu_kk_sites"
+            name="Sites"
+            web_icon="kk_sites,static/description/icon.png"
+            action="action_open_sites"
+            sequence="5"/>
+
+  <menuitem id="menu_kk_sites_view" 
+            name="Sites" 
+            parent="kk_sites.menu_kk_sites"
+            action="action_open_sites" 
+            sequence="1"/>
+
 </odoo>
