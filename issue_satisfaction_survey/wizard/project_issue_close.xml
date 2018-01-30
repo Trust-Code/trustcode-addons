@@ -13,8 +13,9 @@
                           string="Favor avaliar o tempo do atendimento prestado:"/>
                   <field name="pergunta3" colspan="4" widget="radio"
                           string="Favor avaliar a qualidade do atendimento prestado:"/>
-                  <field name="pergunta4" colspan="4" widget="radio"
+                  <field name="pergunta4" colspan="4" widget="radio" options="{'horizontal': true}"
                           string="Numa escala de 1 a 10, quanto você indicaria a nossa empresa para outras empresas?"/>
+                  <field name="pergunta5" colspan="4" />
                 </group>
                 <footer>
                     <button name="close_issue" string="Encerrar Chamado" type="object" class="oe_highlight" />
