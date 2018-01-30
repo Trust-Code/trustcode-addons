@@ -15,7 +15,6 @@ class KKSites(models.Model):
         required=True,
         track_visibility='always')
 
-
     partner_id = fields.Many2one(
         'res.partner',
         string="Cliente",
@@ -97,7 +96,6 @@ class KKSites(models.Model):
 
     fabricante_id = fields.Many2one(
         'res.partner', string="Fabicante da EV")
-
 
     modelo = fields.Char('Modelo EV')
 
