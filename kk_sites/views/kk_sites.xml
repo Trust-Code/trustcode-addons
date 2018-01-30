@@ -34,6 +34,7 @@
                         </div>
                         <div class="col-xs-7">
                             <h3><field name="partner_id" placeholder="Cliente Fantasia" /></h3>
+
                         </div>
                     </div>
                     <group>
@@ -107,7 +108,6 @@
             </search>
         </field>
     </record>
-
     <record model="ir.actions.act_window" id="action_open_sites">
         <field name="name">Sites</field>
         <field name="res_model">kk.sites</field>

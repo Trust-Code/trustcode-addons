@@ -21,3 +21,4 @@ class Task(models.Model):
         'kk.sites',
         string="Site",
         store=True)
+

@@ -26,3 +26,4 @@ class SaleOrderLine(models.Model):
             task = result[so_line.id]
             task.write({'kk_site_id': so_line.order_id.kk_site_id.id})
         return result
+
