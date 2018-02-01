@@ -170,24 +170,6 @@ class EdxWizardUser(models.TransientModel):
         print(request.text)
         self.update_edx_user(username)
 
-    @api.multi
-    def update_edx_user(self, username):
-        token = self.get_token()
-        session = requests.Session()
-
-        header = {
-            'Content-Type': 'application/merge-patch+json',
-            'Authorization': 'JWT ' + token
-            }
-
-        payload = json.dumps({
-            'is_active': 'true',
-        })
-
-        url_api = 'http://52.55.244.3:8080/api/user/v1/accounts/' + username
-        request = session.patch(url_api, data=payload, headers=header)
-        print(request.text)
-
     def get_token(self):
         session = requests.Session()
 
@@ -206,6 +188,62 @@ class EdxWizardUser(models.TransientModel):
             return request.json().get('access_token')
 
         raise(request.text)
+
+    @api.multi
+    def update_edx_user(self, username):
+        token = self.get_token()
+        session = requests.Session()
+
+        header = {
+            'Content-Type': 'application/merge-patch+json',
+            'Authorization': 'JWT ' + token
+        }
+
+        payload = json.dumps({
+            'is_active': 'true',
+        })
+
+        url_api = 'http://52.55.244.3:8080/api/user/v1/accounts/' + username
+        request = session.patch(url_api, data=payload, headers=header)
+        print(request.text)
+
+    @api.multi
+    def get_courses(self):
+        session = requests.Session()
+        token = self.get_token()
+
+        header = {
+            'Authorization': 'JWT ' + token
+        }
+
+        url_api = 'http://52.55.244.3:8080/api/courses/v1/courses/'
+
+        request = session.post(url_api, headers=header)
+
+        if request.status_code == 200:
+            return request.json()
+
+        raise(request.text)
+
+    @api.multi
+    def enrollment(self, username):
+        session = requests.Session()
+        token = self.get_token()
+
+        header = {
+            'Authorization': 'JWT ' + token
+        }
+
+        url_api = 'http://52.55.244.3:8080/api/enrollment/v1/enrollment'
+
+        payload = {
+            'user': username,
+            'course_details': {
+                'course_id': 
+            }
+        }
+
+        request = session.post(url_api, headers=header)
 
     @api.multi
     def action_apply(self):
