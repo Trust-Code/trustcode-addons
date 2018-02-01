@@ -6,6 +6,7 @@ import logging
 import requests
 import random
 import string
+import json
 
 from odoo.tools.translate import _
 from odoo.tools import email_split
@@ -143,41 +144,68 @@ class EdxWizardUser(models.TransientModel):
         return error_msg
 
     def create_edx_user(self):
-        s = requests.Session()
-
+        session = requests.Session()
         username = self.user_id.login.split('@')[0] + str(self.user_id.id)
+        user_id = self.user_id
+        mailing_address = (user_id.street, ", ", user_id.street2, ", ",
+                           user_id.number, ", ", user_id.district, ", ",
+                           user_id.zip)
         payload = {
-            'email': self.user_id.login,
-            'name': self.user_id.name,
+            'email': user_id.login,
+            'name': user_id.name,
             'username': username,
-            'password': self.user_id.edx_password,
-            'level_of_education': 'none',
-            'gender': '',
-            'year_of_birth': '1998',
-            'mailing_address': '',
+            'password': user_id.edx_password,
+            'mailing_address': mailing_address,
+            'city': user_id.city_id.name,
+            'country': user_id.country_id.code,
             'goals': 'Be the best in Odoo',
             'terms_of_service': 'true',
             'honor_code': 'true'
         }
 
         url_api = 'http://52.55.244.3:8080//user_api/v1/account/registration/'
+        # url_api = 'http://104.156.230.114//user_api/v1/account/registration/'
 
-        r = s.post(url_api, data=payload)
-        print(r.text)
+        request = session.post(url_api, data=payload)
+        print(request.text)
         self.update_edx_user(username)
 
+    @api.multi
     def update_edx_user(self, username):
-        import ipdb
-        ipdb.set_trace()
-        s = requests.Session()
+        token = self.get_token()
+        session = requests.Session()
 
-        payload = {
-            'active': True,
-        }
+        header = {
+            'Content-Type': 'application/merge-patch+json',
+            'Authorization': 'JWT ' + token
+            }
+
+        payload = json.dumps({
+            'is_active': 'true',
+        })
 
         url_api = 'http://52.55.244.3:8080/api/user/v1/accounts/' + username
-        r = s.post(url_api, data=payload)
-        print(r.text)
+        request = session.patch(url_api, data=payload, headers=header)
+        print(request.text)
+
+    def get_token(self):
+        session = requests.Session()
+
+        url_api = 'http://52.55.244.3:8080/oauth2/access_token'
+
+        payload = {
+            'grant_type': 'client_credentials',
+            'client_id': '7f447db1ceffbf04410e',
+            'client_secret': 'c288965eefe735fe193932d658c464a426c73ce5',
+            'token_type': 'jwt'
+        }
+
+        request = session.post(url_api, data=payload)
+
+        if request.status_code == 200:
+            return request.json().get('access_token')
+
+        raise(request.text)
 
     @api.multi
     def action_apply(self):
