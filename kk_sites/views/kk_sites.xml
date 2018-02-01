@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record model="ir.ui.view" id="view_sites_tree">
+        <field name="name">Sites</field>
+        <field name="model">kk.sites</field>
+        <field name="type">tree</field>
+        <field name="arch" type="xml">
+            <tree string="Sites">
+                <field name="cod_site_kk" />
+                <field name="partner_id" />
+                <field name="site_id" />
+                <field name="city" />
+                <field name="state_id" />
+                <field name="tipo_site" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="site_form_view" model="ir.ui.view">
+        <field name="name">site.form.view</field>
+        <field name="model">kk.sites</field>
+        <field name="arch" type="xml">
+            <form string="Sites">
+                <sheet>
+                    <div class="col-xs-12">
+                        <div class="col-xs-6">
+                            <h1><label for="cod_site_kk" style="font-size: 16pt" />
+                            <field name="cod_site_kk" /></h1>
+                        </div>
+                        <div class="col-xs-6">
+                            <h1><label for="site_id" style="font-size: 16pt" />
+                            <field name="site_id" /></h1>
+                        </div>
+                        <div class="col-xs-7">
+                            <h3><field name="partner_id" placeholder="Cliente Fantasia" /></h3>
+
+                        </div>
+                    </div>
+                    <group>
+                        <group>
+                            <label for="street" string="Localização"/>
+                            <div class="o_address_format">
+                                <field name="zip" placeholder="CEP" class="o_address_zip"/>
+                                <field name="street" placeholder="Rua" class="o_address_street"/>
+                                <field name="number" placeholder="Número" />
+                                <field name="street2" placeholder="Complemento" class="o_address_street"/>
+                                <field name="city" placeholder="Cidade" class="o_address_city"/>
+                                <field name="state_id" class="o_address_state" placeholder="Estado" options='{"no_open": True}'/>
+                                <field name="country_id" placeholder="País" class="o_address_country" options='{"no_open": True, "no_create": True}'/>
+                                <field name="referencia" placeholder="Referência"/>
+                                <label for="coordenadas" />
+                                <field name="coordenadas" />
+                            </div>
+                        </group>
+                        <group>
+                            <field name="tipo_site" />
+                            <field name="tipo_estrutura" />
+                            <field name="secao_transversal" />
+                            <field name="fabricante_id" domain="[('is_fabricante', '=', True)]" />
+                            <field name="modelo" />
+                            <field name="altura_total" />
+                            <field name="ampliada" />
+                            <field name="abertura_base" />
+                            <field name="perfil_montante" />
+                        </group>
+                    </group>
+                    <group>
+                        <group>
+                            <label for="tipo_acesso" string="Acesso" />
+                            <div>
+                                <field name="tipo_acesso" nolabel="1" placeholder="Tipo de Acesso" />
+                                <field name="local_retirada_chave" nolabel="1" placeholder="Local de Retirada da Chave" />
+                            </div>
+                        </group>
+                        <group>
+                            <field name="tipo_fundacao" />
+                            <field name="dimensoes_fundacao" />
+                            <field name="profundidade_fundacao" />
+                        </group>
+                        <group>
+                            <field name="pasta_servidor" />
+                        </group>
+                    </group>
+                    <label for="notes" />
+                    <field name="notes" />
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="activity_ids" widget="mail_activity"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_kk_sites_search" model="ir.ui.view">
+        <field name="name">view.kk.sites.search</field>
+        <field name="model">kk.sites</field>
+        <field name="arch" type="xml">
+            <search string="Sites">
+                <field name="cod_site_kk"/>
+                <field name="partner_id"/>
+                <field name="site_id"/>
+                <field name="city" string="Cidade" />
+                <field name="state_id" string="Estado" />
+                <field name="pasta_servidor"/>
+            </search>
+        </field>
+    </record>
+    <record model="ir.actions.act_window" id="action_open_sites">
+        <field name="name">Sites</field>
+        <field name="res_model">kk.sites</field>
+        <field name="view_type">form</field>
+        <field name='view_mode'>tree,form</field>
+        <field name='view_id' ref='view_sites_tree' />
+    </record>
+
+  <menuitem id="menu_kk_sites"
+            name="Sites"
+            web_icon="kk_sites,static/description/icon.png"
+            action="action_open_sites"
+            sequence="5"/>
+
+  <menuitem id="menu_kk_sites_view" 
+            name="Sites" 
+            parent="kk_sites.menu_kk_sites"
+            action="action_open_sites" 
+            sequence="1"/>
+
+</odoo>
