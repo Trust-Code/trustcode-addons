@@ -15,7 +15,7 @@
         'Danimar Ribeiro <danimaribeiro@gmail.com>',
     ],
     'depends': [
-        'stock', 'purchase', 'sale', 'br_zip'
+        'stock', 'br_zip',
     ],
     'data': [
         'views/res_users.xml',
