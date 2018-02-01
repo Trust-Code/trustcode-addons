@@ -41,8 +41,4 @@
         <record id="group_edx" model="res.groups">
             <field name="name">EDX</field>
         </record>
-<<<<<<< HEAD
 </odoo>
-=======
-</odoo>
->>>>>>> 616553d7d5d14511c4cb37b32bc24779e7788c31
