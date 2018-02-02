@@ -11,6 +11,8 @@ from datetime import datetime
 class ProjectTask (models.Model):
     _inherit = 'project.task'
 
+    _order = "priority desc, date_deadline, sequence, date_start, name, id"
+
     def start_track_time(self, stage_name, user_id):
         df = tools.DEFAULT_SERVER_DATETIME_FORMAT
         self.env['account.analytic.line'].sudo().create(
