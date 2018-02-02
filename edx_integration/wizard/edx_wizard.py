@@ -79,6 +79,11 @@ class EdxWizard(models.TransientModel):
         self.user_ids.action_apply()
         return {'type': 'ir.actions.act_window_close'}
 
+    @api.multi
+    def update(self):
+        self.ensure_one()
+        self.user_ids.update_edx_user()
+
 
 class EdxWizardUser(models.TransientModel):
     """
@@ -167,8 +172,12 @@ class EdxWizardUser(models.TransientModel):
         # url_api = 'http://104.156.230.114//user_api/v1/account/registration/'
 
         request = session.post(url_api, data=payload)
-        print(request.text)
-        self.update_edx_user(username)
+
+        if request != 200:
+            raise UserError('Não foi possível registrar o usuário')
+
+        self.user_id.write({'edx_username': username})
+        self.update_edx_user()
 
     def get_token(self):
         session = requests.Session()
@@ -190,9 +199,10 @@ class EdxWizardUser(models.TransientModel):
         raise(request.text)
 
     @api.multi
-    def update_edx_user(self, username):
+    def update_edx_user(self):
         token = self.get_token()
         session = requests.Session()
+        username = self.user_id.edx_username
 
         header = {
             'Content-Type': 'application/merge-patch+json',
@@ -205,7 +215,11 @@ class EdxWizardUser(models.TransientModel):
 
         url_api = 'http://52.55.244.3:8080/api/user/v1/accounts/' + username
         request = session.patch(url_api, data=payload, headers=header)
-        print(request.text)
+
+        if request.status_code != 200:
+            raise UserError('Não foi possível ativar o usuário: ', username)
+
+        self.enrollment(username, self.get_courses())
 
     @api.multi
     def get_courses(self):
@@ -226,27 +240,36 @@ class EdxWizardUser(models.TransientModel):
         raise(request.text)
 
     @api.multi
-    def enrollment(self, username):
-        session = requests.Session()
-        token = self.get_token()
+    def enrollment(self, username, courses, active=True):
+        for course in courses:
+            session = requests.Session()
+            token = self.get_token()
 
-        header = {
-            'Authorization': 'JWT ' + token
-        }
-
-        url_api = 'http://52.55.244.3:8080/api/enrollment/v1/enrollment'
-
-        payload = {
-            'user': username,
-            'course_details': {
-                'course_id': 
+            header = {
+                'Authorization': 'JWT ' + token
             }
-        }
 
-        request = session.post(url_api, headers=header)
+            url_api = 'http://52.55.244.3:8080/api/enrollment/v1/enrollment'
+
+            payload = {
+                'user': username,
+                'is_active': active,
+                'course_details': {
+                    'course_id': course
+                }
+            }
+
+            request = session.post(url_api, headers=header, data=payload)
+
+            if request.status_code != 200:
+                raise UserError(
+                    'Não foi possível registrar o usuário:', username,
+                    ' no curso:', course)
 
     @api.multi
     def action_apply(self):
+        import ipdb
+        ipdb.set_trace()
         self.env['res.partner'].check_access_rights('write')
 
         error_msg = self.get_error_messages()
@@ -277,13 +300,18 @@ class EdxWizardUser(models.TransientModel):
                 wizard_user.write({'user_id': user_edx.id})
                 if not wizard_user.user_id.active or \
                         edx_group not in wizard_user.user_id.groups_id:
+                    password_charset = string.ascii_letters + string.digits
+                    #TODO Corrigir para pegar dados do parceiro
+                    user_edx_password = gen_random_string(password_charset, 32)
+                    edx_username = (wizard_user.user_id.login.split('@')[0] +
+                                    str(wizard_user.user_id.id))
                     wizard_user.user_id.write({
                         'active': True,
-                        'groups_id': [(4, edx_group.id)]})
+                        'groups_id': [(4, edx_group.id)],
+                        'edx_username': edx_username,
+                        'edx_password': user_edx_password})
                     # prepare for the signup process
                     wizard_user.user_id.partner_id.signup_prepare()
-                    password_charset = string.ascii_letters + string.digits
-                    user_edx_password = gen_random_string(password_charset, 32)
                     wizard_user.user_id.write({
                         'edx_password': user_edx_password})
                     wizard_user.with_context(active_test=True)._send_email()
