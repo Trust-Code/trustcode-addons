@@ -30,7 +30,8 @@ class ApiStock(http.Controller):
 
     def _validate_key(self, json):
         key = json['api_key']
-        user = request.env['res.users'].sudo().search([('api_key', '=', key)])
+        user = request.env['res.users'].sudo().search(
+            [('api_key', '=', key)], limit=1)
         if not user:
             raise AccessDenied()
 
