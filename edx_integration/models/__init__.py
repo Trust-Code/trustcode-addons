@@ -4,3 +4,4 @@
 
 
 from . import res_users
+from . import edx_users

@@ -5,8 +5,8 @@
 from odoo import fields, models
 
 
-class ResUsers(models.Model):
-    _inherit = 'edx.users'
+class EdxUsers(models.Model):
+    _name = 'edx.users'
 
     username = fields.Char()
     password = fields.Char()
@@ -15,4 +15,3 @@ class ResUsers(models.Model):
         comodel_name="res.partner",
         ondelete="set null",
     )
-
