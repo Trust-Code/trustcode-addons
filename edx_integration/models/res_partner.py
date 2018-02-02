@@ -5,7 +5,9 @@
 from odoo import fields, models
 
 
-class ResUsers(models.Model):
-    _inherit = 'res.users'
+class ResPartner(models.Model):
+    _inherit = 'res.partner'
 
+    edx_username = fields.Char()
     edx_password = fields.Char()
+    edx_active = fields.Boolean(string="Ativo no EDX")

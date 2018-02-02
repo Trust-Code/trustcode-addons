@@ -88,35 +88,30 @@ class EdxWizardUser(models.TransientModel):
     _name = 'edx.wizard.user'
     _description = 'EDX User Config'
 
-    def _default_in_edx(self):
-        return len(self.env['edx.users'].search([
-    ('partner_id', '=', partner_id.id)]) > 0
-
-    wizard_id=fields.Many2one(
+    wizard_id = fields.Many2one(
         'edx.wizard', string='Wizard', required=True, ondelete='cascade')
-    partner_id=fields.Many2one(
+    partner_id = fields.Many2one(
         'res.partner', string='Contact', required=True, readonly=True,
         ondelete='cascade')
-    email=fields.Char('Email')
-    in_edx=fields.Boolean('In EDX', default=_default_in_edx
-    user_id=fields.Many2one('edx.users', string='EDX User')
+    email = fields.Char('Email')
+    in_edx = fields.Boolean('In EDX')
 
     @api.multi
     def get_error_messages(self):
-        emails=[]
-        partners_error_empty=self.env['res.partner']
-        partners_error_emails=self.env['res.partner']
+        emails = []
+        partners_error_empty = self.env['res.partner']
+        partners_error_emails = self.env['res.partner']
 
         for wizard_user in self.with_context(active_test=False).filtered(
                 lambda w: w.in_edx):
-            email=extract_email(wizard_user.email)
+            email = extract_email(wizard_user.email)
             if not email:
                 partners_error_empty |= wizard_user.partner_id
             elif email in emails:
                 partners_error_emails |= wizard_user.partner_id
             emails.append(email)
 
-        error_msg=[]
+        error_msg = []
         if partners_error_empty:
             error_msg.append(
                 "%s\n- %s" % (_("Some contacts don't have a valid email: "),
@@ -135,49 +130,49 @@ class EdxWizardUser(models.TransientModel):
         return error_msg
 
     def create_edx_user(self):
-        session=requests.Session()
-        username=self.user_id.login.split('@')[0] + str(self.user_id.id)
-        user_id=self.user_id
-        mailing_address=(user_id.street, ", ", user_id.street2, ", ",
-                           user_id.number, ", ", user_id.district, ", ",
-                           user_id.zip)
-        payload={
-            'email': user_id.login,
-            'name': user_id.name,
+        session = requests.Session()
+        partner_id = self.partner_id
+        username = partner_id.email.split('@')[0] + str(partner_id.id)
+        mailing_address = (partner_id.street, ", ", partner_id.street2, ", ",
+                           partner_id.number, ", ", partner_id.district, ", ",
+                           partner_id.zip)
+        payload = {
+            'email': partner_id.email,
+            'name': partner_id.name,
             'username': username,
-            'password': user_id.edx_password,
+            'password': partner_id.edx_password,
             'mailing_address': mailing_address,
-            'city': user_id.city_id.name,
-            'country': user_id.country_id.code,
+            'city': partner_id.city_id.name,
+            'country': partner_id.country_id.code,
             'goals': 'Be the best in Odoo',
             'terms_of_service': 'true',
             'honor_code': 'true'
         }
 
-        url_api='http://52.55.244.3:8080//user_api/v1/account/registration/'
+        url_api = 'http://52.55.244.3:8080//user_api/v1/account/registration/'
         # url_api = 'http://104.156.230.114//user_api/v1/account/registration/'
 
-        request=session.post(url_api, data=payload)
+        request = session.post(url_api, data=payload)
 
         if request != 200:
             raise UserError('Não foi possível registrar o usuário')
 
-        self.user_id.write({'edx_username': username})
+        self.partner_id.write({'edx_username': username})
         self.update_edx_user()
 
     def get_token(self):
-        session=requests.Session()
+        session = requests.Session()
 
-        url_api='http://52.55.244.3:8080/oauth2/access_token'
+        url_api = 'http://52.55.244.3:8080/oauth2/access_token'
 
-        payload={
+        payload = {
             'grant_type': 'client_credentials',
             'client_id': '7f447db1ceffbf04410e',
             'client_secret': 'c288965eefe735fe193932d658c464a426c73ce5',
             'token_type': 'jwt'
         }
 
-        request=session.post(url_api, data=payload)
+        request = session.post(url_api, data=payload)
 
         if request.status_code == 200:
             return request.json().get('access_token')
@@ -186,21 +181,21 @@ class EdxWizardUser(models.TransientModel):
 
     @api.multi
     def update_edx_user(self):
-        token=self.get_token()
-        session=requests.Session()
-        username=self.user_id.edx_username
+        token = self.get_token()
+        session = requests.Session()
+        username = self.partner_id.edx_username
 
-        header={
+        header = {
             'Content-Type': 'application/merge-patch+json',
             'Authorization': 'JWT ' + token
         }
 
-        payload=json.dumps({
+        payload = json.dumps({
             'is_active': 'true',
         })
 
-        url_api='http://52.55.244.3:8080/api/user/v1/accounts/' + username
-        request=session.patch(url_api, data=payload, headers=header)
+        url_api = 'http://52.55.244.3:8080/api/user/v1/accounts/' + username
+        request = session.patch(url_api, data=payload, headers=header)
 
         if request.status_code != 200:
             raise UserError('Não foi possível ativar o usuário: ', username)
@@ -209,16 +204,16 @@ class EdxWizardUser(models.TransientModel):
 
     @api.multi
     def get_courses(self):
-        session=requests.Session()
-        token=self.get_token()
+        session = requests.Session()
+        token = self.get_token()
 
-        header={
+        header = {
             'Authorization': 'JWT ' + token
         }
 
-        url_api='http://52.55.244.3:8080/api/courses/v1/courses/'
+        url_api = 'http://52.55.244.3:8080/api/courses/v1/courses/'
 
-        request=session.post(url_api, headers=header)
+        request = session.post(url_api, headers=header)
 
         if request.status_code == 200:
             return request.json()
@@ -228,16 +223,16 @@ class EdxWizardUser(models.TransientModel):
     @api.multi
     def enrollment(self, username, courses, active=True):
         for course in courses:
-            session=requests.Session()
-            token=self.get_token()
+            session = requests.Session()
+            token = self.get_token()
 
-            header={
+            header = {
                 'Authorization': 'JWT ' + token
             }
 
-            url_api='http://52.55.244.3:8080/api/enrollment/v1/enrollment'
+            url_api = 'http://52.55.244.3:8080/api/enrollment/v1/enrollment'
 
-            payload={
+            payload = {
                 'user': username,
                 'is_active': active,
                 'course_details': {
@@ -245,7 +240,7 @@ class EdxWizardUser(models.TransientModel):
                 }
             }
 
-            request=session.post(url_api, headers=header, data=payload)
+            request = session.post(url_api, headers=header, data=payload)
 
             if request.status_code != 200:
                 raise UserError(
@@ -258,39 +253,31 @@ class EdxWizardUser(models.TransientModel):
         ipdb.set_trace()
         self.env['res.partner'].check_access_rights('write')
 
-        error_msg=self.get_error_messages()
+        error_msg = self.get_error_messages()
         if error_msg:
             raise UserError("\n\n".join(error_msg))
 
         for wizard_user in self.sudo().with_context(active_test=False):
-            user=self.env['edx.users'].search([
-                ('partner_id', '=', wizard_user.partner_id.id)])
-
-            if not user and wizard_user.in_edx:
+            if wizard_user.in_edx:
                 # add user edx
-                self._create_edx_user()
+                password_charset = string.ascii_letters + string.digits
+                password = gen_random_string(password_charset, 32)
+                username = (self.partner_id.email.split('@')[0] +
+                            str(self.partner_id.id))
+                self.partner_id.write({
+                    'edx_username': username,
+                    'edx_password': password,
+                    'edx_active': True
+                })
                 wizard_user.with_context(active_test=True)._send_email()
 
                 wizard_user.refresh()
                 # wizard_user.create_edx_user()
             else:
                 # remove the user (if it exists) from the edx group
-                user.unlink()
-
-    @api.multi
-    def _create_edx_user(self):
-        """ create a new edx user for wizard_user.partner_id
-            :returns record of edx.users
-        """
-        password_charset=string.ascii_letters + string.digits
-        password=gen_random_string(password_charset, 32)
-        username=(self.partner_id.email.split('@')[0] +
-                    str(self.partner_id.id))
-        return self.env['edx.users'].create({
-            'username': username,
-            'password': password,
-            'partner_id': self.partner_id.id,
-        })
+                self.partner_id.write({
+                    'edx_active': True,
+                })
 
     @api.multi
     def _send_email(self):
@@ -301,13 +288,13 @@ class EdxWizardUser(models.TransientModel):
                 ' User Preferences to send emails.'))
 
         # determine subject and body in the edx user's language
-        template=self.env.ref(
+        template = self.env.ref(
             'edx_integration.mail_template_data_edx_welcome')
         for wizard_line in self:
-            lang=wizard_line.partner_id.lang
-            partner=wizard_line.partner_id
+            lang = wizard_line.partner_id.lang
+            partner = wizard_line.partner_id
 
-            edx_url=partner.with_context(
+            edx_url = partner.with_context(
                 signup_force_type_in_url='',
                 lang=lang)._get_signup_url_for_action()[partner.id]
             partner.signup_prepare()
