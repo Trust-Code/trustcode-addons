@@ -106,15 +106,14 @@ class BackupConfig(models.Model):
     @api.multi
     def execute_backup(self):
         try:
-            self.write({'next_backup': datetime.now()})
-            self.schedule_backup()
+            self.schedule_backup(True)
         except Exception:
             _logger.error(u'Erro ao efetuar backup', exc_info=True)
             raise Warning(
                 u'Erro ao executar backup - Verifique o log de erros')
 
     @api.model
-    def schedule_backup(self):
+    def schedule_backup(self, manual_backup=False):
         confs = self.search([])
         for rec in confs:
 
@@ -124,7 +123,7 @@ class BackupConfig(models.Model):
                     '%Y-%m-%d %H:%M:%S')
             else:
                 next_backup = datetime.now()
-            if next_backup < datetime.now():
+            if (next_backup < datetime.now()) or manual_backup:
 
                 if not os.path.isdir(rec.backup_dir):
                         os.makedirs(rec.backup_dir)
@@ -162,7 +161,8 @@ class BackupConfig(models.Model):
                         {'backup_date': datetime.now(), 'name': zip_name,
                          'configuration_id': rec.id, 'state': 'concluded',
                          'local_path': zip_file})
-                rec._set_next_backup()
+                if not manual_backup:
+                    rec._set_next_backup()
 
     def send_for_amazon_s3(self, file_to_send, name_to_store, database):
         try:
