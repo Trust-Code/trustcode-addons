@@ -19,11 +19,9 @@
     ],
     'depends': [
         'base',
-        'delivery',
         'stock_json_api',
     ],
     'data': [
-        'views/stock_picking.xml',
         'views/res_config_settings.xml',
     ],
 }
