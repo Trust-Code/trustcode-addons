@@ -1,9 +1,8 @@
-# -*- coding: utf-8 -*-
 # © 2015 Danimar Ribeiro, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 
-{
+{  # pylint: disable=C8101,C8103
     'name': 'Controle de tempo das Tarefas',
     'description': 'Controle de tempo das Tarefas',
     'summary': """Automatiza a contagem de tempo nas tarefas
