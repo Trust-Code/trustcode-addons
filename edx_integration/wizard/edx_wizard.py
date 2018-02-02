@@ -77,7 +77,40 @@ class EdxWizard(models.TransientModel):
     @api.multi
     def update(self):
         self.ensure_one()
-        self.user_ids.update_edx_user()
+        self.partner_id.update_edx_user()
+
+    @api.multi
+    def action_apply(self):
+        import ipdb
+        ipdb.set_trace()
+        self.env['res.partner'].check_access_rights('write')
+
+        error_msg = self.get_error_messages()
+        if error_msg:
+            raise UserError("\n\n".join(error_msg))
+
+        for wizard_user in self.sudo().with_context(active_test=False):
+            if wizard_user.in_edx:
+                if not self.get_user():
+                    password_charset = string.ascii_letters + string.digits
+                    password = gen_random_string(password_charset, 32)
+                    username = (self.partner_id.email.split('@')[0] +
+                                str(self.partner_id.id))
+                    self.partner_id.write({
+                        'edx_username': username,
+                        'edx_password': password,
+                        'edx_active': True
+                    })
+                    wizard_user.with_context(active_test=True)._send_email()
+                    wizard_user.create_edx_user()
+                else:
+                    wizard_user.update_edx_user(True)
+                wizard_user.refresh()
+            else:
+                self.partner_id.write({
+                    'edx_active': True,
+                })
+                wizard_user.update_edx_user(False)
 
 
 class EdxWizardUser(models.TransientModel):
@@ -88,13 +121,22 @@ class EdxWizardUser(models.TransientModel):
     _name = 'edx.wizard.user'
     _description = 'EDX User Config'
 
+    def _get_in_edx(self):
+        import ipdb
+        ipdb.set_trace()
+        return self.partner_id.edx_active
+
+    def _set_in_edx(self):
+        self.partner_id.write({'edx_active': not self.in_edx})
+
     wizard_id = fields.Many2one(
         'edx.wizard', string='Wizard', required=True, ondelete='cascade')
     partner_id = fields.Many2one(
         'res.partner', string='Contact', required=True, readonly=True,
         ondelete='cascade')
     email = fields.Char('Email')
-    in_edx = fields.Boolean('In EDX')
+    in_edx = fields.Boolean(
+        'In EDX', compute='_get_in_edx', inverse="_set_in_edx")
 
     @api.multi
     def get_error_messages(self):
@@ -129,6 +171,25 @@ class EdxWizardUser(models.TransientModel):
                   "- Grant access only to contacts with unique emails"))
         return error_msg
 
+    def get_user(self):
+        token = self.get_token()
+        session = requests.Session()
+        username = self.partner_id.edx_username
+        url_api = 'http://52.55.244.3:8080/api/user/v1/accounts/' + username
+
+        header = {
+            'Content-Type': 'application/merge-patch+json',
+            'Authorization': 'JWT ' + token
+        }
+
+        url_api = 'http://52.55.244.3:8080//user_api/v1/account/registration/'
+        request = session.patch(url_api, headers=header)
+
+        if request.status_code == 200:
+            return True
+        else:
+            return False
+
     def create_edx_user(self):
         session = requests.Session()
         partner_id = self.partner_id
@@ -158,7 +219,7 @@ class EdxWizardUser(models.TransientModel):
             raise UserError('Não foi possível registrar o usuário')
 
         self.partner_id.write({'edx_username': username})
-        self.update_edx_user()
+        self.update_edx_user(True)
 
     def get_token(self):
         session = requests.Session()
@@ -180,7 +241,7 @@ class EdxWizardUser(models.TransientModel):
         raise(request.text)
 
     @api.multi
-    def update_edx_user(self):
+    def update_edx_user(self, active):
         token = self.get_token()
         session = requests.Session()
         username = self.partner_id.edx_username
@@ -191,7 +252,7 @@ class EdxWizardUser(models.TransientModel):
         }
 
         payload = json.dumps({
-            'is_active': 'true',
+            'is_active': active,
         })
 
         url_api = 'http://52.55.244.3:8080/api/user/v1/accounts/' + username
@@ -259,25 +320,26 @@ class EdxWizardUser(models.TransientModel):
 
         for wizard_user in self.sudo().with_context(active_test=False):
             if wizard_user.in_edx:
-                # add user edx
-                password_charset = string.ascii_letters + string.digits
-                password = gen_random_string(password_charset, 32)
-                username = (self.partner_id.email.split('@')[0] +
-                            str(self.partner_id.id))
-                self.partner_id.write({
-                    'edx_username': username,
-                    'edx_password': password,
-                    'edx_active': True
-                })
-                wizard_user.with_context(active_test=True)._send_email()
-
+                if not self.get_user():
+                    password_charset = string.ascii_letters + string.digits
+                    password = gen_random_string(password_charset, 32)
+                    username = (self.partner_id.email.split('@')[0] +
+                                str(self.partner_id.id))
+                    self.partner_id.write({
+                        'edx_username': username,
+                        'edx_password': password,
+                        'edx_active': True
+                    })
+                    wizard_user.with_context(active_test=True)._send_email()
+                    wizard_user.create_edx_user()
+                else:
+                    wizard_user.update_edx_user(True)
                 wizard_user.refresh()
-                # wizard_user.create_edx_user()
             else:
-                # remove the user (if it exists) from the edx group
                 self.partner_id.write({
                     'edx_active': True,
                 })
+                wizard_user.update_edx_user(False)
 
     @api.multi
     def _send_email(self):
