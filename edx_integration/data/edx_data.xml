@@ -21,7 +21,7 @@
     Seus dados para acesso são:
 </p>
 <ul>
-    <li>Usuário: ${object.partner_id.edx_username or ''}</li>
+    <li>Usuário: ${object.partner_id.email or ''}</li>
     <li>Senha: ${object.partner_id.edx_password or ''}</li>
 </ul>
 <p>

@@ -20,25 +20,24 @@
                         The email address of each selected contact must be valid and unique.
                         If necessary, you can fix any contact's email address directly in the list.
                     </div>
-                    <field name="user_ids">
-                        <tree string="Contacts" editable="bottom" create="false" delete="false">
-                            <field name="partner_id" force_save="1"/>
-                            <field name="email"/>
-                            <field name="edx_active"/>
-                        </tree>
-                    </field>
+                    <group>
+                        <field name="user_ids" nolabel="1">
+                            <tree string="Contacts" editable="bottom" create="false" delete="false">
+                                <field name="wizard_id" invisible="1" />
+                                <field name="partner_id" invisible="1"/>
+                                <field name="name" />
+                                <field name="email"/>
+                                <field name="in_edx"/>
+                            </tree>
+                        </field>
+                    </group>
                     <field name="welcome_message"
                         placeholder="This text is included in the email sent to new edx users."/>
                     <footer>
                         <button string="Apply" name="action_apply" type="object" class="btn-primary"/>
-                        <button string="Update" name="update" type="object" class="btn-primary"/>
                         <button string="Cancel" class="btn-default" special="cancel" />
                     </footer>
                 </form>
             </field>
-        </record>
-
-        <record id="group_edx" model="res.groups">
-            <field name="name">EDX</field>
         </record>
 </odoo>
