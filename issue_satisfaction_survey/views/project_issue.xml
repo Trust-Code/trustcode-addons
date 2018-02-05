@@ -13,11 +13,12 @@
             </header>
             <xpath expr="//page[@name='extra_info']" position="inside">
               <group string="Avaliação">
-                <field name="pergunta1" string="Cumpriu com as Obrigações?"/>
-                <field name="pergunta2" string="Tempo de Atendimento?"/>
-                <field name="pergunta3" string="Qualidade do atendimento?"/>
-                <field name="pergunta4" string="Satisfação" widget="radio" options="{'horizontal': true}"/>
+                <field name="pergunta1" string="Cumpriu com as Obrigações?" attrs="{'readonly': [('done', '=', True)]}"/>
+                <field name="pergunta2" string="Tempo de Atendimento?" attrs="{'readonly': [('done', '=', True)]}"/>
+                <field name="pergunta3" string="Qualidade do atendimento?" attrs="{'readonly': [('done', '=', True)]}"/>
+                <field name="pergunta4" string="Satisfação" widget="radio" options="{'horizontal': true}" />
                 <field name="pergunta5" />
+                <field name="done" invisible="1" />
               </group>
             </xpath>
         </field>
