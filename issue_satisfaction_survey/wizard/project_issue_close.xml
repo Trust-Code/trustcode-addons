@@ -8,14 +8,17 @@
             <form string="Pesquisa">
                 <group>
                   <field name="pergunta1" colspan="4" widget="radio"
-                           string="A CCM cumpriu com as suas obrigações no atendimento?"/>
+                           string="A CCM cumpriu com as suas obrigações no atendimento?" attrs="{'readonly': [('done', '=', True)]}"/>
                   <field name="pergunta2" colspan="4" widget="radio"
-                          string="Favor avaliar o tempo do atendimento prestado:"/>
+                          string="Favor avaliar o tempo do atendimento prestado:" attrs="{'readonly': [('done', '=', True)]}"/>
                   <field name="pergunta3" colspan="4" widget="radio"
-                          string="Favor avaliar a qualidade do atendimento prestado:"/>
+                          string="Favor avaliar a qualidade do atendimento prestado:" attrs="{'readonly': [('done', '=', True)]}"/>
                   <field name="pergunta4" colspan="4" widget="radio" options="{'horizontal': true}"
-                          string="Numa escala de 1 a 10, quanto você indicaria a nossa empresa para outras empresas?"/>
+                          string="Numa escala de 1 a 10, quanto você indicaria a nossa empresa para outras empresas?" attrs="{'readonly': [('done', '=', True)]}"/>
                   <field name="pergunta5" colspan="4" />
+  
+                  <field name="done" colspan="4" invisible="1" />  
+
                 </group>
                 <footer>
                     <button name="close_issue" string="Encerrar Chamado" type="object" class="oe_highlight" />
