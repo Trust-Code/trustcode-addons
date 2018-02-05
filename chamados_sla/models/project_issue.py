@@ -50,8 +50,11 @@ class ProjectIssue(models.Model):
             if item.create_date and item.priority and item.impacto:
                 valor = PRIORITY_TABLE[item.priority][item.impacto]
                 data_python = fields.Datetime.from_string(item.create_date)
-                item.tempo_resposta = data_python + timedelta(hours=valor[0])
-                item.tempo_resolucao = data_python + timedelta(hours=valor[1])
+                calendar_id = item.project_id.resource_calendar_id
+                item.tempo_resposta = calendar_id.plan_hours(
+                    valor[0], data_python, compute_leaves=True)
+                item.tempo_resolucao = calendar_id.plan_hours(
+                    valor[1], data_python, compute_leaves=True)
 
     @api.multi
     def _compute_excedido(self):
