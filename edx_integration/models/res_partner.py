@@ -30,15 +30,31 @@ class ResPartner(models.Model):
     def get_username(self):
         return self.email.split('@')[0] + str(self.id)
 
+    def get_base_url(self):
+        params = self.env['ir.config_parameter'].sudo()
+        return params.get_param(
+            'edx_integration.edx_url', default="")
+
+    def get_client_id(self):
+        params = self.env['ir.config_parameter'].sudo()
+        return params.get_param(
+            'edx_integration.edx_client_id', default="")
+
+    def get_client_secret(self):
+        params = self.env['ir.config_parameter'].sudo()
+        return params.get_param(
+            'edx_integration.edx_client_secret', default="")
+
     def get_user(self):
         token = self.get_token()
         session = requests.Session()
+        base_url = self.get_base_url()
         if not self.edx_username:
             username = self.get_username()
         else:
             username = self.edx_username
 
-        url_api = 'http://52.55.244.3:8080/api/user/v1/accounts/' + username
+        url_api = base_url + '/api/user/v1/accounts/' + username
 
         header = {
             'Content-Type': 'application/merge-patch+json',
@@ -57,6 +73,7 @@ class ResPartner(models.Model):
             return False
 
     def create_edx_user(self):
+        base_url = self.get_base_url()
         session = requests.Session()
         password_charset = string.ascii_letters + string.digits
         password = gen_random_string(password_charset, 32)
@@ -77,7 +94,7 @@ class ResPartner(models.Model):
             'honor_code': 'true'
         }
 
-        url_api = 'http://52.55.244.3:8080//user_api/v1/account/registration/'
+        url_api = base_url + '//user_api/v1/account/registration/'
 
         request = session.post(url_api, data=payload)
         if request.status_code != 200:
@@ -93,13 +110,14 @@ class ResPartner(models.Model):
 
     def get_token(self):
         session = requests.Session()
+        base_url = self.get_base_url()
 
-        url_api = 'http://52.55.244.3:8080/oauth2/access_token'
+        url_api = base_url + '/oauth2/access_token'
 
         payload = {
             'grant_type': 'client_credentials',
-            'client_id': '7f447db1ceffbf04410e',
-            'client_secret': 'c288965eefe735fe193932d658c464a426c73ce5',
+            'client_id': self.get_client_id(),
+            'client_secret': self.get_client_secret(),
             'token_type': 'jwt'
         }
 
@@ -115,6 +133,7 @@ class ResPartner(models.Model):
         token = self.get_token()
         session = requests.Session()
         username = self.edx_username
+        base_url = self.get_base_url()
 
         header = {
             'Content-Type': 'application/merge-patch+json',
@@ -125,7 +144,7 @@ class ResPartner(models.Model):
             'is_active': active,
         })
 
-        url_api = 'http://52.55.244.3:8080/api/user/v1/accounts/' + username
+        url_api = base_url + '/api/user/v1/accounts/' + username
         request = session.patch(url_api, data=payload, headers=header)
 
         if request.status_code != 200:
@@ -140,12 +159,13 @@ class ResPartner(models.Model):
     def get_courses(self):
         session = requests.Session()
         token = self.get_token()
+        base_url = self.get_base_url()
 
         header = {
             'Authorization': 'JWT ' + token
         }
 
-        url_api = 'http://52.55.244.3:8080/api/courses/v1/courses/'
+        url_api = base_url + '/api/courses/v1/courses/'
 
         request = session.get(url_api, headers=header)
 
@@ -159,13 +179,14 @@ class ResPartner(models.Model):
         for course in courses['results']:
             session = requests.Session()
             token = self.get_token()
+            base_url = self.get_base_url()
 
             header = {
                 'Authorization': 'JWT ' + token,
                 'Content-Type': 'application/json',
             }
 
-            url_api = 'http://52.55.244.3:8080/api/enrollment/v1/enrollment'
+            url_api = base_url + '/api/enrollment/v1/enrollment'
 
             payload = json.dumps({
                 'user': username,
