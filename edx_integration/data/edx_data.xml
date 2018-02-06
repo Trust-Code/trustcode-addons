@@ -12,7 +12,7 @@
             <field name="user_signature" eval="True"/>
             <field name="body_html"><![CDATA[
 <p>
-    ${object.user_id.name or ''},
+    ${object.partner_id.name or ''},
 </p>
 <p>
     Seu acesso ao EDX foi liberado.
@@ -21,8 +21,8 @@
     Seus dados para acesso são:
 </p>
 <ul>
-    <li>Usuário: ${object.user_id.login or ''}</li>
-    <li>Senha: ${object.user_id.edx_password or ''}</li>
+    <li>Usuário: ${object.partner_id.email or ''}</li>
+    <li>Senha: ${object.partner_id.edx_password or ''}</li>
 </ul>
 <p>
     O acesso aos cursos poderá ser realizado através do seguinte endereço:

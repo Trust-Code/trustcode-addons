@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="res_config_settings_json_api" model="ir.ui.view">
+        <field name="name">res_config_settings.json_api</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base_setup.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <div name="integration" position="inside">
+                <div class="col-xs-12 col-md-6 o_setting_box">
+                    <div class="o_setting_right_pane">
+                        <label string="EDX Integration"/>
+                        <span class="fa fa-lg fa-building-o" title="Values set here are company-specific." groups="base.group_multi_company"/>
+                        <div class="content-group">
+                            <div class="mt16">
+                                <label string="Base url" class="col-xs-3 col-md-3 o_light_label"/>
+                                <field name="edx_url" class="o_light_label" />
+                            </div>
+                        </div>
+                        <span class="fa fa-lg fa-building-o" title="Values set here are company-specific." groups="base.group_multi_company"/>
+                        <div class="content-group">
+                            <div class="mt16">
+                                <label string="Client Id" class="col-xs-3 col-md-3 o_light_label"/>
+                                <field name="edx_client_id" class="o_light_label" />
+                            </div>
+                        </div>
+                        <span class="fa fa-lg fa-building-o" title="Values set here are company-specific." groups="base.group_multi_company"/>
+                        <div class="content-group">
+                            <div class="mt16">
+                                <label string="Client Secret" class="col-xs-3 col-md-3 o_light_label"/>
+                                <field name="edx_client_secret" class="o_light_label" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </field>
+    </record>
+</odoo>
