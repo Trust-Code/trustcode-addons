@@ -29,7 +29,8 @@ class KKSites(models.Model):
     street = fields.Char()
     street2 = fields.Char()
     zip = fields.Char(string='CEP')
-    city = fields.Char(
+    city_id = fields.Many2one(
+        'res.state.city',
         string="Cidade",
         track_visibility='onchange')
     state_id = fields.Many2one(
@@ -169,11 +170,16 @@ class KKSites(models.Model):
             return '{} x {}'.format(comprimento, largura)
         except Exception:
             raise ValidationError(
-                "Verifique se as dimensões da fundação são válidas.")
+                "Verifique se as dimensões da fundação são válidas.\
+                    \n Formato padrão: XXX x XXX")
 
     def _mask_coordenadas(self, coord):
+        coord = coord.split(',')
+        if len(coord) > 2:
+            raise ValidationError(
+                "Use ponto para delimitar casas decimais no campo coordenadas.\
+                \n Formato padrão: -XX.XXXXX, -XX.XXXXX")
         try:
-            coord = coord.split(',')
             coord = [float(item.strip()) for item in coord]
             return '{}, {}'.format(coord[0], coord[1])
         except Exception:
@@ -203,7 +209,7 @@ class KKSites(models.Model):
         self.street = self.partner_id.street
         self.street2 = self.partner_id.street2
         self.zip = self.partner_id.zip
-        self.city = self.partner_id.city
+        self.city_id = self.partner_id.city_id
         self.state_id = self.partner_id.state_id
         self.country_id = self.partner_id.country_id
         self.number = self.partner_id.number
