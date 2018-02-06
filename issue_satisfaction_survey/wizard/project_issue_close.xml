@@ -14,7 +14,7 @@
                   <field name="pergunta3" colspan="4" widget="radio"
                           string="Favor avaliar a qualidade do atendimento prestado:" attrs="{'readonly': [('done', '=', True)]}"/>
                   <field name="pergunta4" colspan="4" widget="radio" options="{'horizontal': true}"
-                          string="Numa escala de 1 a 10, quanto você indicaria a nossa empresa para outras empresas?" attrs="{'readonly': [('done', '=', True)]}"/>
+                          string="Numa escala de 1 (péssimo) a 10 (ótimo), qual é o seu nível de satisfação em relação ao atendimento?" attrs="{'readonly': [('done', '=', True)]}"/>
                   <field name="pergunta5" colspan="4" />
   
                   <field name="done" colspan="4" invisible="1" />  
