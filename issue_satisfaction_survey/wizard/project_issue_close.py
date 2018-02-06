@@ -3,7 +3,7 @@
 # © 2017 Danimar Ribeiro, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-from odoo import fields, models
+from odoo import fields, models, api
 from odoo.exceptions import Warning
 
 # Estágio em que o issue será finalizado pelo cliente
@@ -27,6 +27,24 @@ class ProjectIssueClose(models.TransientModel):
                                   ('10', '10')])
     pergunta5 = fields.Text(string="Comentários")
 
+    done = fields.Boolean("Respondido")
+
+    @api.model
+    def default_get(self, fields):
+        res = super(ProjectIssueClose, self).default_get(fields)
+        active_id = self.env.context.get('active_id')
+        issue = self.env['project.issue'].browse(active_id)
+        if issue.done:
+            res.update({
+                'pergunta1': issue.pergunta1,
+                'pergunta2': issue.pergunta2,
+                'pergunta3': issue.pergunta3,
+                'pergunta4': issue.pergunta4,
+                'pergunta5': issue.pergunta5
+                })
+        res.update({'done': issue.done})
+        return res
+
     def _validate_answer(self):
         result = True
         if not self.pergunta1 or not self.pergunta2 or not self.pergunta3 or \
@@ -46,5 +64,6 @@ class ProjectIssueClose(models.TransientModel):
                     'pergunta4': self.pergunta4,
                     'pergunta5': self.pergunta5,
                     'can_close': True,
-                    'stage_id': STAGE_ID_CLOSED}
+                    'stage_id': STAGE_ID_CLOSED,
+                    'done': True}
             issue.write(vals)

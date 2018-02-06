@@ -27,6 +27,8 @@ class ProjectIssue(models.Model):
                                   ('10', '10')])
     pergunta5 = fields.Text(string="Comentários")
 
+    done = fields.Boolean("Respondido")
+
     @api.multi
     def write(self, vals):
         res = super(ProjectIssue, self).write(vals)
