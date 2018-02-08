@@ -2,18 +2,17 @@
 # © 2017 Fábio Luna, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-from odoo import api, models
+from odoo import models
 import requests
 import json
 from datetime import datetime
 
 
-class StockPicking(models.Model):
-    _inherit = 'stock.picking'
+class StockImmediateTransfer(models.TransientModel):
+    _inherit = 'stock.immediate.transfer'
 
-    @api.multi
-    def button_validate(self):
-        res = super(StockPicking, self).button_validate()
+    def process(self):
+        res = super(StockImmediateTransfer, self).process()
         param = self.env["ir.config_parameter"]
         url = param.sudo().get_param('stock.endpoint_stock_delivery')
         headers = {
@@ -22,25 +21,25 @@ class StockPicking(models.Model):
         date = datetime.now()
         date = date.isoformat()
 
-        for item in self:
-            dest_id = self.picking_type_id.default_location_dest_id
+        for item in self.pick_ids:
+            dest_id = item.picking_type_id.default_location_dest_id
             if dest_id.usage != "customer":
                 continue
 
             vals = dict(
-                order_id=self.origin,
+                order_id=item.origin,
                 date=date,
                 shippingCompany=dict(
-                    driver=self.motorista,
-                    board=self.placa,
+                    driver=item.motorista,
+                    board=item.placa,
                 ),)
 
             products = []
-            for product in self.move_lines:
+            for product in item.move_lines:
                 item_vals = dict(
                     id=product.product_id.default_code,
                     quantity=product.quantity_done,
-                    volume=self.number_of_packages,
+                    volume=item.number_of_packages,
                 )
 
                 products.append(item_vals)
