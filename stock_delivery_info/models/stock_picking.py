@@ -8,8 +8,8 @@ import json
 from datetime import datetime
 
 
-class StockPicking(models.Model):
-    _inherit = 'stock.picking'
+class StockImmediateTransfer(models.TransientModel):
+    _inherit = 'stock.immediate.transfer'
 
     def send_json(self, pick_ids, backorder=False):
         param = self.env["ir.config_parameter"]
@@ -23,6 +23,7 @@ class StockPicking(models.Model):
         for item in pick_ids:
             agrupador = item.picking_type_id.agrupador
             if agrupador != "saida":
+
                 continue
 
             vals = dict(
