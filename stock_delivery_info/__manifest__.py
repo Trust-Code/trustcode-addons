@@ -23,5 +23,6 @@
     ],
     'data': [
         'views/res_config_settings.xml',
+        'views/stock_picking_type.xml',
     ],
 }
