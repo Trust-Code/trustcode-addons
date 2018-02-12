@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_sales_order_variant" model="ir.ui.view">
+        <field name="name">sale.order.variant</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='order_line']" position="after">
+                <button name="call_wizard_sale_variant" icon="fa-arrow-right" type="action" string="Product variant" class="btn-link"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

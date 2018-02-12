@@ -1,0 +1,2 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_sale_variant_configurator_sale_variant_configurator,sale_variant_configurator.sale_variant_configurator,model_sale_variant_configurator_sale_variant_configurator,,1,0,0,0
