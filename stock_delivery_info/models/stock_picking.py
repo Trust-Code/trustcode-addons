@@ -64,9 +64,9 @@ class StockPickingType(models.Model):
     agrupador = fields.Selection(
         string="Agrupa picking types",
         selection=[
-                ('entrada', 'Entrada'),
-                ('saida', 'Saída'),
-                ('outros', 'Outros'),
+            ('entrada', 'Entrada'),
+            ('saida', 'Saída'),
+            ('outros', 'Outros'),
         ],
     )
 
