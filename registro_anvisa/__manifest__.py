@@ -1,9 +1,8 @@
-# -*- coding: utf-8 -*-
 # © 2015 Danimar Ribeiro, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 
-{
+{  # pylint: disable=C8101,C8103
     'name': 'Trustcode - Campos da Anvisa para Medicamentos',
     'description': 'Códigos da Anvisa',
     'summary': """
