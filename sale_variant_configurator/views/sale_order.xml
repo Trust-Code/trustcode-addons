@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_sales_order_variant" model="ir.ui.view">
+        <field name="name">sale.order.variant</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form" />
+        <field name="arch" type="xml">
+                <xpath expr="//field[@name='order_line']/form//group"
+                       position="before">
+                    <group>
+                        <field name="product_tmpl_id" string="Modelo de Produto" />
+                        <field name="attr_sale" string="Atributos">
+                            <tree editable="bottom" create="false">
+                                <field name="attribute_id" readonly="1" string="Atributo" />
+                                <field name="attr_value" string="Valor" options="{'no_create': True}" domain="[('attribute_id', '=', attribute_id)]"/>
+                            </tree>
+                        </field>
+                    </group>
+                </xpath>
+                
+        </field>
+    </record>
+
+</odoo>
