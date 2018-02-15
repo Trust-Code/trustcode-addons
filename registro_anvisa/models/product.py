@@ -6,7 +6,7 @@ from odoo import fields, models
 
 
 class ProductProduct(models.Model):
-    _inherit = 'product.product'
+    _inherit = 'product.template'
 
     registro_anvisa = fields.Char(string=u'Registro Anvisa', size=30)
     validade_anvisa = fields.Date(string=u'Validade Anvisa')
