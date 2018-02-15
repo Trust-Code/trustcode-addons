@@ -9,7 +9,7 @@
             <group name="inventory" position="inside">
                 <group string="Campos Especiais" name="special_fields">
                     <field name="imei"/>
-                    <field name="iccd"/>
+                    <field name="iccid"/>
                     <field name="n_linha"/>
                 </group>
             </group>

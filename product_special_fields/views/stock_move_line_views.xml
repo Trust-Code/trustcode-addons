@@ -6,10 +6,10 @@
             <field name="arch" type="xml">
                 <field name="lot_name" position="after">
                     <field name="conf_imei" invisible="1"/>
-                    <field name="conf_iccd" invisible="1"/>
+                    <field name="conf_iccid" invisible="1"/>
                     <field name="conf_n_linha" invisible="1"/>
                     <field name="imei" attrs="{'required':[('conf_imei','=',True)],'readonly':[('conf_imei','=',False)]}"/>
-                    <field name="iccd" attrs="{'required':[('conf_iccd','=',True)],'readonly':[('conf_iccd','=',False)]}"/>
+                    <field name="iccid" attrs="{'required':[('conf_iccid','=',True)],'readonly':[('conf_iccid','=',False)]}"/>
                     <field name="n_linha" attrs="{'required':[('conf_n_linha','=',True)],'readonly':[('conf_n_linha','=',False)]}"/>
                 </field>
             </field>
