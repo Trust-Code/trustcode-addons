@@ -4,10 +4,8 @@
 
 {  # pylint: disable=C8101,C8103
     'name': "sale_variant_configurator",
-
     'summary': """
         Permite selecionar nas linhas da cotação o as variações do produto.""",
-
     'description': """""",
     'author': "Trustcode",
     'website': "http://www.trustcode.com.br",
@@ -19,6 +17,7 @@
         'Felipe Paloschi <paloschi.eca@gmail.com>'],
     'depends': ['sale'],
     'data': [
+        'security/ir.model.access.csv',
         'views/sale_order.xml',
     ],
 }
