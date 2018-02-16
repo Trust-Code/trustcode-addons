@@ -54,7 +54,10 @@ class StockPicking(models.Model):
     @api.multi
     def action_cancel(self):
         res = super(StockPicking, self).action_cancel()
-        self.send_json(self)
+
+        if not self.backorder_id:
+            self.send_json(self)
+
         return res
 
 
