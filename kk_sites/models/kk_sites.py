@@ -156,6 +156,22 @@ class KKSites(models.Model):
         string="Pasta no Servidor",
         track_visibility='onchange')
 
+    @api.onchange('country_id')
+    def _onchange_country_id(self):
+        if self.country_id:
+            return {'domain': {'state_id': [(
+                'country_id', '=', self.country_id.id)]}}
+        else:
+            return {'domain': {'state_id': []}}
+
+    @api.onchange('state_id')
+    def _onchange_state_id(self):
+        if self.state_id:
+            return {'domain': {'city_id': [(
+                'state_id', '=', self.state_id.id)]}}
+        else:
+            return {'domain': {'city_id': []}}
+
     def _mask_dimensoes_fundacao(self, dimensoes):
         dimensoes = dimensoes.strip()
         try:
