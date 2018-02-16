@@ -17,5 +17,7 @@ class StockMoveLine(models.Model):
         for ml in self:
             if ml.lot_id:
                 ml.lot_id.update(
-                    {'imei': ml.imei, 'iccid': ml.iccid, 'n_linha': ml.n_linha})
+                    {'imei': ml.imei,
+                     'iccid': ml.iccid,
+                     'n_linha': ml.n_linha})
         return res
