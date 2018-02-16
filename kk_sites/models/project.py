@@ -5,15 +5,6 @@
 from odoo import fields, models
 
 
-class Project(models.Model):
-    _inherit = 'project.project'
-
-    kk_site_id = fields.Many2one(
-        'kk.sites',
-        string="Site",
-        store=True)
-
-
 class Task(models.Model):
     _inherit = 'project.task'
 
