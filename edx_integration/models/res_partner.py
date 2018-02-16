@@ -100,7 +100,7 @@ class ResPartner(models.Model):
         if request.status_code != 200:
             raise UserError(
                 'Não foi possível registrar o usuário %s %s'
-                % username % request.text)
+                % (username, request.reason))
 
         self.write({
             'edx_username': username,
@@ -150,7 +150,7 @@ class ResPartner(models.Model):
 
         if request.status_code != 200:
             raise UserError('Não foi possível ativar o usuário: %s %s'
-                            % username % request.text)
+                            % (username, request.reason))
 
         if active:
             self.enrollment(username, self.get_courses())
