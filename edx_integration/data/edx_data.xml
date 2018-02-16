@@ -3,35 +3,54 @@
     <data noupdate="1">
 
         <record id="mail_template_data_edx_welcome" model="mail.template">
-            <field name="name">edx: new user</field>
+            <field name="name">EDX Trustcode: Novo usuário</field>
             <field name="model_id" ref="edx_integration.model_edx_wizard_user"/>
             <field name="email_to">${object.partner_id.email}</field>
-            <field name="subject">Your Odoo account at ${user.company_id.name}</field>
+            <field name="subject">Sua conta no portal de cursos da ${user.company_id.name}</field>
             <field name="lang">${object.partner_id.lang}</field>
             <field name="auto_delete" eval="True"/>
             <field name="user_signature" eval="True"/>
             <field name="body_html"><![CDATA[
-<p>
-    ${object.partner_id.name or ''},
-</p>
-<p>
-    Seu acesso ao EDX foi liberado.
-</p>
-<p>
-    Seus dados para acesso são:
-</p>
-<ul>
-    <li>Usuário: ${object.partner_id.email or ''}</li>
-    <li>Senha: ${object.partner_id.edx_password or ''}</li>
-</ul>
-<p>
-    O acesso aos cursos poderá ser realizado através do seguinte endereço:
-</p>
-<ul>
-    <li><a href="cursos.trustcode.com.br">cursos.trustcode.com.br</a></li>
-</ul>
-<p>
-${object.wizard_id.welcome_message or ''}]]></field>
+<!--?xml version="1.0"?-->
+<div style="background:#F0F0F0;color:#515166;padding:10px 0px;font-family:Arial,Helvetica,sans-serif;font-size:14px;">
+    <table style="width:600px;margin:5px auto;">
+        <tbody>
+            <tr><td>
+                <a href="/"><img src="/web/binary/company_logo" style="vertical-align:baseline;max-width:100px;"></a>
+            </td><td style="text-align:center;vertical-align:middle;">
+              Dados de acesso cursos Trustcode
+            </td></tr>
+        </tbody>
+    </table>
+    <table style="width:600px;margin:0px auto;background:white;border:1px solid #e1e1e1;">
+        <tbody>
+            <tr><td style="padding:15px 20px 10px 20px;">
+                <p>Olá ${object.partner_id.name or ''},</p>
+                <p>Seu acesso a nossa plataforma de cursos foi liberada</p>
+                <p>Seus dados de acesso são: <br>
+                  <ul>
+                    <strong>
+                      <li>Usuário: ${object.partner_id.email or ''}</li>
+                      <li>Senha: ${object.partner_id.edx_password or ''}</li>
+                    </strong>
+                  </ul>
+                </p>
+                <p>O acesso aos cursos poderá ser realizado através do seguinte endereço:.</p>
+                <ul>
+                    <li><a href="cursos.trustcode.com.br" data-original-title="" title="">cursos.trustcode.com.br</a></li>
+                </ul>
+            </td></tr>
+        </tbody>
+    </table>
+    <table style="width:600px;margin:auto;text-align:center;font-size:12px;">
+        <tbody>
+            <tr><td style="padding-top:10px;color:#afafaf;">
+                <p>Email enviado automaticamente por <a target="_blank" href="https://www.trustcode.com.br/" style="color:#875A7B;">Trustcode Bot</a></p>
+            </td></tr>
+        </tbody>
+    </table>
+</div>
+]]></field>
         </record>
     </data>
 </odoo>
