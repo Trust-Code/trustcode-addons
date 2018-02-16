@@ -150,7 +150,7 @@ class ResPartner(models.Model):
 
         if request.status_code != 200:
             raise UserError('Não foi possível ativar o usuário: %s %s'
-                            % username & request.text)
+                            % username % request.text)
 
         if active:
             self.enrollment(username, self.get_courses())
