@@ -6,7 +6,7 @@
     'name': 'Product Special Fields',
     'description': "Campos adicionais para controle de stock",
     'summary': """"Campos adicionais configuráveis no produto, permitindo inserir
-o valor do IMEI, ICCD, No linha""",
+o valor do IMEI, ICCID, No linha""",
     'version': '11.0.1.0.0',
     'category': "stock",
     'author': 'Trustcode',
