@@ -6,7 +6,7 @@
         <field name="arch" type="xml">
             <field name="ref" position="before">
                 <field name="imei"/>
-                <field name="iccd"/>
+                <field name="iccid"/>
                 <field name="n_linha"/>
             </field>
         </field>
@@ -20,7 +20,7 @@
             <group name="main_group" position="after">
                 <group>
                     <field name="imei"/>
-                    <field name="iccd"/>
+                    <field name="iccid"/>
                     <field name="n_linha"/>
                 </group>
             </group>

@@ -5,5 +5,5 @@ class ProductionLot(models.Model):
     _inherit = 'stock.production.lot'
 
     imei = fields.Char(string=_(u"Valor do IMEI"))
-    iccd = fields.Char(string=_(u"Valor do ICCD"))
+    iccid = fields.Char(string=_(u"Valor do ICCID"))
     n_linha = fields.Char(string=_(u"Número da Linha"))
