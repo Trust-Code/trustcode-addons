@@ -1,31 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <record id="project_kk_site_view" model="ir.ui.view">
-        <field name="name">project.kk.site.view</field>
-        <field name="model">project.project</field>
-        <field name="inherit_id" ref="project.edit_project"/>
-        <field name="arch" type="xml">
-            <xpath expr="//page[@name='settings']/group/field[@name='partner_id']" position="after">
-                <field name="kk_site_id" />
-            </xpath>
-        </field>
-    </record>
-
-    <record id="view_project_kanban_site" model="ir.ui.view">
-        <field name="name">view.project.kanban.site</field>
-        <field name="model">project.project</field>
-        <field name="inherit_id" ref="project.view_project_kanban"/>
-        <field name="arch" type="xml">
-            <field name="partner_id" position="after">
-                <field name="kk_site_id" invisible="1"/>
-            </field>
-            <xpath expr="//div[hasclass('o_kanban_primary_left')]" position="inside">
-                <div t-if="record.kk_site_id.raw_value">
-                    <span><t t-esc="record.kk_site_id.value"/></span>
-                </div>
-            </xpath>
-        </field>
-    </record>
 
     <record model="ir.ui.view" id="view_task_form2_inherited">
         <field name="name">project.task.form.inherited</field>
@@ -33,7 +7,7 @@
         <field name="inherit_id" ref="project.view_task_form2" />
         <field name="arch" type="xml">
             <xpath expr="//field[@name='project_id']" position="after">
-                <field name="kk_site_id" invisible="1" />
+                <field name="kk_site_id" />
             </xpath>
         </field>
     </record>
