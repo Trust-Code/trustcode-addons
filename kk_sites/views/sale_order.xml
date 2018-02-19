@@ -7,6 +7,14 @@
         <field name="arch" type="xml">
             <xpath expr="//field[@name='order_line']/tree/field[@name='product_id']" position="after">
                 <field name="kk_site_id" />
+                <field name="description_proposta" invisible="1" />
+            </xpath>
+            <xpath expr="//field[@name='order_line']/form/group/group/field[@name='product_id']" position="after">
+                <field name="kk_site_id" />
+            </xpath>
+            <xpath expr="//field[@name='order_line']/form/field[@name='name']" position="after">
+                <label for="description_proposta" />
+                <field name="description_proposta" type="html" nolabel="1" />
             </xpath>
         </field>
     </record>

@@ -10,6 +10,8 @@ class SaleOrderLine(models.Model):
 
     kk_site_id = fields.Many2one('kk.sites', string="Site")
 
+    description_proposta = fields.Html(string="Descrição para proposta")
+
     @api.multi
     def _timesheet_find_task(self):
         result = super(SaleOrderLine, self)._timesheet_find_task()
@@ -17,3 +19,8 @@ class SaleOrderLine(models.Model):
             task = result[so_line.id]
             task.write({'kk_site_id': so_line.kk_site_id.id})
         return result
+
+    @api.onchange('product_id')
+    def _onchange_product(self):
+        setattr(self, 'description_proposta',
+                self.product_id.description_proposta)
