@@ -9,7 +9,6 @@ class SaleOrderLine(models.Model):
     _inherit = 'sale.order.line'
 
     kk_site_id = fields.Many2one('kk.sites', string="Site")
-
     description_proposta = fields.Html(string="Descrição para proposta")
 
     @api.multi
