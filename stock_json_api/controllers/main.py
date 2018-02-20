@@ -229,7 +229,8 @@ class ApiStock(http.Controller):
         }
         if not partner:
             partner = env_partner.create(vals)
-            partner.zip_search(venda['shipping_postcode'])
+            partner.zip_search(
+                re.sub('[^0-9]', '', venda['shipping_postcode']))
             partner.write({
                 'street': venda['shipping_address_1'],
                 'street2': venda['shipping_address_2'],
