@@ -5,7 +5,7 @@
 from odoo import fields, models
 
 
-class PurchaseOrder(models.Model):
-    _inherit = 'purchase.order'
+class PurchaseOrderLine(models.Model):
+    _inherit = 'purchase.order.line'
 
     kk_site_id = fields.Many2one('kk.sites', string="Site")

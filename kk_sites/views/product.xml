@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="product_view_form_kk_sites" model="ir.ui.view">
+        <field name="name">product.template.kk.sites</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_form_view"/>
+        <field name="arch" type="xml">
+            <group name="description" position="after">
+                <separator string="Descrição para Propostas" />
+                <field name="description_proposta" type="html" nolabel="1" />
+            </group>
+        </field>
+    </record>
+</odoo>
