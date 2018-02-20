@@ -13,6 +13,7 @@
                 <field name="city_id" />
                 <field name="state_id" />
                 <field name="tipo_site" />
+                <field name="list_dir" />
             </tree>
         </field>
     </record>
@@ -34,56 +35,68 @@
                         </div>
                         <div class="col-xs-7">
                             <h3><field name="partner_id" placeholder="Cliente Fantasia" /></h3>
-
                         </div>
                     </div>
-                    <group>
-                        <group>
-                            <label for="street" string="Localização"/>
-                            <div class="o_address_format">
-                                <field name="zip" placeholder="CEP" class="o_address_zip"/>
-                                <field name="street" placeholder="Rua" class="o_address_street"/>
-                                <field name="number" placeholder="Número" />
-                                <field name="street2" placeholder="Complemento" class="o_address_street"/>
-                                <field name="country_id" placeholder="País" class="o_address_country" options='{"no_open": True, "no_create": True}'/>
-                                <field name="state_id" class="o_address_state" placeholder="Estado" options='{"no_open": True}' />
-                                <field name="city_id" placeholder="Cidade" class="o_address_city" options='{"no_open": True, "no_create": True}' />
-                                <field name="referencia" placeholder="Referência"/>
-                                <label for="coordenadas" />
-                                <field name="coordenadas" placeholder="-XX.XXXXX, -XX.XXXXX" />
+                    <notebook>
+                        <page string="Informações Gerais">
+                            <group>
+                                <group>
+                                    <label for="street" string="Localização"/>
+                                    <div class="o_address_format">
+                                        <field name="zip" placeholder="CEP" class="o_address_zip"/>
+                                        <field name="street" placeholder="Rua" class="o_address_street"/>
+                                        <field name="number" placeholder="Número" />
+                                        <field name="street2" placeholder="Complemento" class="o_address_street"/>
+                                        <field name="country_id" placeholder="País" class="o_address_country" options='{"no_open": True, "no_create": True}'/>
+                                        <field name="state_id" class="o_address_state" placeholder="Estado" options='{"no_open": True}' />
+                                        <field name="city_id" placeholder="Cidade" class="o_address_city" options='{"no_open": True, "no_create": True}' />
+                                        <field name="referencia" placeholder="Referência"/>
+                                        <label for="coordenadas" />
+                                        <field name="coordenadas" placeholder="-XX.XXXXX, -XX.XXXXX" />
+                                    </div>
+                                </group>
+                                <group>
+                                    <field name="tipo_site" />
+                                    <field name="tipo_estrutura" />
+                                    <field name="secao_transversal" />
+                                    <field name="fabricante_id" domain="[('is_fabricante', '=', True)]" />
+                                    <field name="modelo" />
+                                    <field name="altura_total" />
+                                    <field name="ampliada" />
+                                    <field name="abertura_base" />
+                                    <field name="perfil_montante" />
+                                </group>
+                            </group>
+                            <group>
+                                <group>
+                                    <label for="tipo_acesso" string="Acesso" />
+                                    <div>
+                                        <field name="tipo_acesso" nolabel="1" placeholder="Tipo de Acesso" />
+                                        <field name="local_retirada_chave" nolabel="1" placeholder="Local de Retirada da Chave" />
+                                    </div>
+                                </group>
+                                <group>
+                                    <field name="tipo_fundacao" />
+                                    <field name="dimensoes_fundacao" placeholder="XXX x XXX" />
+                                    <field name="profundidade_fundacao" />
+                                </group>
+                                <group>
+                                    <field name="pasta_servidor" readonly="1"/>
+                                </group>
+                            </group>
+                            <label for="notes" />
+                            <field name="notes" />
+                        </page>
+                        <page name="pastas_servidor" string="Pastas no Servidor">
+                            <div class="col-xs-12">
+                                <label for="list_dir" string="Diretórios: "/>
+                                <button class="oe_right" type="object" name="refresh_list_dir" string="Atualizar Pastas" />
                             </div>
-                        </group>
-                        <group>
-                            <field name="tipo_site" />
-                            <field name="tipo_estrutura" />
-                            <field name="secao_transversal" />
-                            <field name="fabricante_id" domain="[('is_fabricante', '=', True)]" />
-                            <field name="modelo" />
-                            <field name="altura_total" />
-                            <field name="ampliada" />
-                            <field name="abertura_base" />
-                            <field name="perfil_montante" />
-                        </group>
-                    </group>
-                    <group>
-                        <group>
-                            <label for="tipo_acesso" string="Acesso" />
-                            <div>
-                                <field name="tipo_acesso" nolabel="1" placeholder="Tipo de Acesso" />
-                                <field name="local_retirada_chave" nolabel="1" placeholder="Local de Retirada da Chave" />
+                            <div colspan="4">
+                                <field name="list_dir" nolabel="1"/>
                             </div>
-                        </group>
-                        <group>
-                            <field name="tipo_fundacao" />
-                            <field name="dimensoes_fundacao" placeholder="XXX x XXX" />
-                            <field name="profundidade_fundacao" />
-                        </group>
-                        <group>
-                            <field name="pasta_servidor" />
-                        </group>
-                    </group>
-                    <label for="notes" />
-                    <field name="notes" />
+                        </page>
+                    </notebook>
                 </sheet>
                 <div class="oe_chatter">
                     <field name="message_follower_ids" widget="mail_followers"/>

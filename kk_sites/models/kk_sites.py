@@ -4,6 +4,7 @@
 
 from odoo import fields, models, api
 from odoo.exceptions import ValidationError, UserError
+import egnyte
 
 
 class KKSites(models.Model):
@@ -236,6 +237,16 @@ class KKSites(models.Model):
         (host, user, passwd) = (company.egnyte_host,
                                 company.egnyte_user,
                                 company.egnyte_passwd)
+
+        import ipdb
+        ipdb.set_trace()
+
+        acess = egnyte.base.get_access_token({
+            "api_key": "ku5g44gr8x8fwz5qgx8z328b",
+            "login": user,
+            "password": passwd,
+            "grant_type": "password",
+            "domain": host})
 
         if not (host and user and passwd):
             raise UserError('Configure corretamente os dados para \

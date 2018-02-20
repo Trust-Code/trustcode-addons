@@ -9,3 +9,4 @@ from . import project
 from . import purchase_order
 from . import res_partner
 from . import product
+from . import res_company
