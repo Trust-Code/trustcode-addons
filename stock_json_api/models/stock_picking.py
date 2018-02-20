@@ -3,7 +3,7 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 
-from odoo import fields, models
+from odoo import fields, models, api
 
 
 class StockPicking(models.Model):
@@ -35,3 +35,13 @@ class StockMove(models.Model):
     _inherit = 'stock.move'
 
     valor_bruto = fields.Float(string="Valor bruto", readonly=True)
+    price_unit = fields.Float(
+        string="Preço Unitário",
+        readonly=True,
+        compute='_compute_price_unit')
+
+    @api.depends('valor_bruto', 'product_uom_qty')
+    def _compute_price_unit(self):
+        for item in self:
+            if not item.price_unit:
+                item.price_unit = item.valor_bruto/item.product_uom_qty
