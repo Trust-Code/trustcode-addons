@@ -3,7 +3,7 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 from odoo import fields, models, api
-from odoo.exceptions import ValidationError
+from odoo.exceptions import ValidationError, UserError
 
 
 class KKSites(models.Model):
@@ -156,6 +156,11 @@ class KKSites(models.Model):
         string="Pasta no Servidor",
         track_visibility='onchange')
 
+    list_dir = fields.Html(
+        string="Diretórios",
+        readonly=True,
+        store=True)
+
     @api.onchange('country_id')
     def _onchange_country_id(self):
         if self.country_id:
@@ -171,6 +176,21 @@ class KKSites(models.Model):
                 'state_id', '=', self.state_id.id)]}}
         else:
             return {'domain': {'city_id': []}}
+
+    def _add_line_listdir(self, lista, iteracao):
+        tab = '- - '
+        if type(lista) == list:
+            for item in lista[0]:
+                self.list_dir += '<p>' + tab*iteracao + item + ':</p>'
+                self._add_line_listdir(lista[0][item], iteracao + 1)
+            for item in lista[1]:
+                self.list_dir += '<p>' + tab*iteracao + item + '</p>'
+
+    def refresh_list_dir(self):
+        self.list_dir = ''
+        pastas = []
+
+        self._add_line_listdir(pastas, 0)
 
     def _mask_dimensoes_fundacao(self, dimensoes):
         dimensoes = dimensoes.strip()
@@ -211,8 +231,19 @@ class KKSites(models.Model):
                 vals['dimensoes_fundacao'])
         return super(KKSites, self).write(vals)
 
+    def _create_server_dir(self, vals):
+        company = self.env.user.company_id
+        (host, user, passwd) = (company.egnyte_host,
+                                company.egnyte_user,
+                                company.egnyte_passwd)
+
+        if not (host and user and passwd):
+            raise UserError('Configure corretamente os dados para \
+                conexão com egnyte no cadastro da empresa!')
+
     @api.model
     def create(self, vals):
+        self._create_server_dir(vals)
         if vals.get('coordenadas'):
             vals['coordenadas'] = self._mask_coordenadas(vals['coordenadas'])
         if vals.get('dimensoes_fundacao'):
