@@ -61,9 +61,13 @@ class BatchProduct(models.Model):
                     new_qty = move.product_uom_qty + l[1]
                     new_pick_origin = (move.picking_id.origin if
                                        move.picking_id else "")
-                    new_pick_origin += "; " + l[2]
+                    split_origin = l[2].split()
+                    for item in split_origin:
+                        if item not in new_pick_origin:
+                            new_pick_origin += item
                     move.write({'origin': new_origin,
                                 'product_uom_qty': new_qty})
+
                     move.picking_id.write({'origin': new_pick_origin})
 
                     if move.picking_id not in picking_ids:
@@ -83,6 +87,13 @@ class BatchProduct(models.Model):
                 for x in l[3].split(','):
                     move_ids.append(int(x))
 
+            origin = origin.split()
+            new_origin = ""
+
+            for item in origin:
+                if item not in new_origin:
+                    new_origin += item
+
             if len(lines) > 0:
                 picking_dest = rule.picking_type_dest
                 vals = {
@@ -90,7 +101,7 @@ class BatchProduct(models.Model):
                     'location_id': picking_dest.default_location_src_id.id,
                     'location_dest_id':
                     picking_dest.default_location_dest_id.id,
-                    'origin': origin,
+                    'origin': new_origin,
                     'move_lines': lines}
                 picking_ids.append(self.env['stock.picking'].create(vals))
 
