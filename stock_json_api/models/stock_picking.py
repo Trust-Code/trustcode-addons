@@ -35,3 +35,4 @@ class StockMove(models.Model):
     _inherit = 'stock.move'
 
     valor_bruto = fields.Float(string="Valor bruto", readonly=True)
+    price_unit = fields.Float(string="Preço Unitário", readonly=True)

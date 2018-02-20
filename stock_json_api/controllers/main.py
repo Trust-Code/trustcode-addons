@@ -260,10 +260,11 @@ class ApiStock(http.Controller):
             picking_items.append((0, 0, {
                 'name': product[0].name,
                 'product_id': product[0].id,
+                'price_unit': item['price'],
                 'product_uom_qty': item['quantity'],
                 'ordered_qty': item['quantity'],
                 'product_uom': product[0].uom_id.id,
-                'valor_bruto': int(item['quantity']) * int(item['price'])
+                'valor_bruto': float(item['quantity']) * float(item['price'])
             }))
 
         schedule = datetime.strptime(
