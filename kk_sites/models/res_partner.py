@@ -9,3 +9,4 @@ class ResPartner(models.Model):
     _inherit = 'res.partner'
 
     is_fabricante = fields.Boolean('É Fabricante')
+    pasta_servidor = fields.Char(string="Pasta no Servidor")

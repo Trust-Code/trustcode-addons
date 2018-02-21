@@ -11,3 +11,4 @@ class ResCompany(models.Model):
     egnyte_host = fields.Char(string="Host Egnyte")
     egnyte_user = fields.Char(string="Usuário Egnyte")
     egnyte_passwd = fields.Char(string="Senha Egnyte", copy=False)
+    egnyte_api = fields.Char(string='Api Key')

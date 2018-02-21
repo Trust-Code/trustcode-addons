@@ -4,7 +4,8 @@
 
 from odoo import fields, models, api
 from odoo.exceptions import ValidationError, UserError
-import egnyte
+import requests
+import json
 
 
 class KKSites(models.Model):
@@ -232,25 +233,69 @@ class KKSites(models.Model):
                 vals['dimensoes_fundacao'])
         return super(KKSites, self).write(vals)
 
-    def _create_server_dir(self, vals):
+    def _get_egnyte_access_token(self):
         company = self.env.user.company_id
-        (host, user, passwd) = (company.egnyte_host,
-                                company.egnyte_user,
-                                company.egnyte_passwd)
+        (host, user, passwd, api_key) = (company.egnyte_host,
+                                         company.egnyte_user,
+                                         company.egnyte_passwd,
+                                         company.egnyte_api)
 
-        import ipdb
-        ipdb.set_trace()
-
-        acess = egnyte.base.get_access_token({
-            "api_key": "ku5g44gr8x8fwz5qgx8z328b",
-            "login": user,
-            "password": passwd,
-            "grant_type": "password",
-            "domain": host})
-
-        if not (host and user and passwd):
+        if not (host and user and passwd and api_key):
             raise UserError('Configure corretamente os dados para \
                 conexão com egnyte no cadastro da empresa!')
+
+        domain = "https://" + host + ".egnyte.com/puboauth/token"
+
+        vals = {
+            "client_id": api_key,
+            "username": user,
+            "password": passwd,
+            "grant_type": "password"}
+
+        response = requests.post(
+            domain,
+            headers={'Content-Type': 'application/x-www-form-urlencoded'},
+            data=vals)
+
+        if 'errorMessage' in response.json():
+            raise UserError('Erro ao tentar conectar com egnyte: %s'
+                            % response.json()['errorMessage'])
+
+        return response.json()['access_token']
+
+    def _get_company_folder(self, vals):
+        host = self.env.user.company_id.egnyte_host
+        partner = self.env['res.partner'].search([
+            ('id', '=', vals['partner_id'])])
+        if partner.pasta_servidor:
+            return partner.pasta_servidor.replace(
+                'https://' + host + '.egnyte.com/app/index.do#storage/files/1',
+                '').replace('%20', ' '), partner.pasta_servidor
+        else:
+            raise UserError("Campo 'Pasta no Servidor' no cadastro do cliente\
+                não está preenchido")
+
+    def _parse_response(self, response):
+        if '201' in str(response):
+            return
+        elif '401' or '400' in str(response):
+            raise UserError('Erro ao tentar criar pasta no servidor: \
+                %s' % response.content)
+
+    def _create_server_dir(self, vals):
+        access_token = self._get_egnyte_access_token()
+        headers = {'Authorization': 'Bearer ' + access_token,
+                   'Content-Type': 'application/json'}
+        company_folder, company_pasta_servidor = self._get_company_folder(vals)
+        site_folder = vals['cod_site_kk'].split('/')[1] + '_' + vals['site_id']
+        domain = "https://" + self.env.user.company_id.egnyte_host +\
+            ".egnyte.com/pubapi/v1/fs" + company_folder + '/' + site_folder
+        data = {"action": "add_folder"}
+        data = json.dumps(data)
+        response = requests.post(domain, headers=headers, data=data)
+        self._parse_response(response)
+        vals.update({'pasta_servidor': company_pasta_servidor + '/' +
+                     site_folder})
 
     @api.model
     def create(self, vals):

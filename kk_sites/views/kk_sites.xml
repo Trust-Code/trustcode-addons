@@ -13,7 +13,7 @@
                 <field name="city_id" />
                 <field name="state_id" />
                 <field name="tipo_site" />
-                <field name="list_dir" />
+                <field name="list_dir" invisible="1"/>
             </tree>
         </field>
     </record>
@@ -81,7 +81,7 @@
                                     <field name="profundidade_fundacao" />
                                 </group>
                                 <group>
-                                    <field name="pasta_servidor" readonly="1"/>
+                                    <field name="pasta_servidor" readonly="1" widget="url" />
                                 </group>
                             </group>
                             <label for="notes" />
