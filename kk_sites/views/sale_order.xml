@@ -6,11 +6,11 @@
         <field name="inherit_id" ref="sale.view_order_form" />
         <field name="arch" type="xml">
             <xpath expr="//field[@name='order_line']/tree/field[@name='product_id']" position="after">
-                <field name="kk_site_id" />
+                <field name="kk_site_id" domain="[('partner_id', '=', parent.partner_id)]" />
                 <field name="description_proposta" invisible="1" />
             </xpath>
             <xpath expr="//field[@name='order_line']/form/group/group/field[@name='product_id']" position="after">
-                <field name="kk_site_id" />
+                <field name="kk_site_id" domain="[('partner_id', '=', parent.partner_id)]" />
             </xpath>
             <xpath expr="//field[@name='order_line']/form/field[@name='name']" position="after">
                 <label for="description_proposta" />
