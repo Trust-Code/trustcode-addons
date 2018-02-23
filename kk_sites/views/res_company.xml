@@ -12,9 +12,10 @@
                             <group>
                                 <label for="egnyte_host" string="Dados Egnyte" />
                                 <div>
-                                    <field name="egnyte_host" placeholder="Host" /><br />
-                                    <field name="egnyte_user" placeholder="Usuário" /><br />
-                                    <field name="egnyte_passwd" placeholder="Senha" password="True" /><br />
+                                    <field name="egnyte_host" placeholder="Host" />
+                                    <br />
+                                    <field name="egnyte_acess_token" placeholder="Chave de Acesso" password="True" />
+                                    <br />
                                     <field name="egnyte_api" placeholder="API Key" />
                                 </div>
                             </group>

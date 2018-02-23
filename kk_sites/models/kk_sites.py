@@ -6,6 +6,9 @@ from odoo import fields, models, api
 from odoo.exceptions import ValidationError, UserError
 import requests
 import json
+from datetime import datetime
+import math
+import locale
 
 
 class KKSites(models.Model):
@@ -158,7 +161,9 @@ class KKSites(models.Model):
         string="Pasta no Servidor",
         track_visibility='onchange')
 
-    list_dir = fields.Html(
+    dir_ids = fields.One2many(
+        comodel_name='kk.files',
+        inverse_name='site_id',
         string="Diretórios",
         readonly=True,
         store=True)
@@ -179,20 +184,51 @@ class KKSites(models.Model):
         else:
             return {'domain': {'city_id': []}}
 
-    def _add_line_listdir(self, lista, iteracao):
-        tab = '- - '
-        if type(lista) == list:
-            for item in lista[0]:
-                self.list_dir += '<p>' + tab*iteracao + item + ':</p>'
-                self._add_line_listdir(lista[0][item], iteracao + 1)
-            for item in lista[1]:
-                self.list_dir += '<p>' + tab*iteracao + item + '</p>'
+    def _get_server_folders(self, link):
+        host = self.env.user.company_id.egnyte_host
+        pasta = link.replace(
+            'https://' + host + '.egnyte.com/app/index.do#storage/files/1',
+            '').replace('%20', ' ')
+        headers = {'Authorization': 'Bearer ' +
+                   self.env.user.company_id.egnyte_acess_token}
+        domain = 'https://' + host + '.egnyte.com/pubapi/v1/fs' + pasta
+        response = requests.get(domain, headers=headers)
+        if '200' not in str(response):
+            raise UserError('Ocorreu um erro ao tentar checar as pastas do \
+                servidor: %s' % response.content)
+        res = response.json()
+        vals = []
+        if 'folders' in res:
+            for item in res['folders']:
+                vals.append({
+                    'site_id': self.id,
+                    'name': item['name'],
+                    'link': link + '/' + item['name'],
+                    'file_type': 'folder',
+                    'last_modified': datetime.fromtimestamp(
+                        item['lastModified']/1000)
+                })
+
+        if 'files' in res:
+            for item in res['files']:
+                locale.setlocale(locale.LC_TIME, 'en_US.utf8')
+                data = datetime.strptime(
+                    item['last_modified'], '%a, %d %b %Y %H:%M:%S %Z')
+                locale.setlocale(locale.LC_TIME, 'pt_BR.utf8')
+                vals.append({
+                    'site_id': self.id,
+                    'name': item['name'],
+                    'file_type': 'file',
+                    'size': item['size'],
+                    'last_modified': data
+                })
+        return vals
 
     def refresh_list_dir(self):
-        self.list_dir = ''
-        pastas = []
-
-        self._add_line_listdir(pastas, 0)
+        self.dir_ids.unlink()
+        values = self._get_server_folders(self.pasta_servidor)
+        if values:
+            self.write({'dir_ids': [(0, 0, vals) for vals in values]})
 
     def _mask_dimensoes_fundacao(self, dimensoes):
         dimensoes = dimensoes.strip()
@@ -233,36 +269,6 @@ class KKSites(models.Model):
                 vals['dimensoes_fundacao'])
         return super(KKSites, self).write(vals)
 
-    def _get_egnyte_access_token(self):
-        company = self.env.user.company_id
-        (host, user, passwd, api_key) = (company.egnyte_host,
-                                         company.egnyte_user,
-                                         company.egnyte_passwd,
-                                         company.egnyte_api)
-
-        if not (host and user and passwd and api_key):
-            raise UserError('Configure corretamente os dados para \
-                conexão com egnyte no cadastro da empresa!')
-
-        domain = "https://" + host + ".egnyte.com/puboauth/token"
-
-        vals = {
-            "client_id": api_key,
-            "username": user,
-            "password": passwd,
-            "grant_type": "password"}
-
-        response = requests.post(
-            domain,
-            headers={'Content-Type': 'application/x-www-form-urlencoded'},
-            data=vals)
-
-        if 'errorMessage' in response.json():
-            raise UserError('Erro ao tentar conectar com egnyte: %s'
-                            % response.json()['errorMessage'])
-
-        return response.json()['access_token']
-
     def _get_company_folder(self, vals):
         host = self.env.user.company_id.egnyte_host
         partner = self.env['res.partner'].search([
@@ -275,7 +281,7 @@ class KKSites(models.Model):
             raise UserError("Campo 'Pasta no Servidor' no cadastro do cliente\
                 não está preenchido")
 
-    def _parse_response(self, response):
+    def parse_response(self, response):
         if '201' in str(response):
             return
         elif '401' or '400' in str(response):
@@ -283,7 +289,7 @@ class KKSites(models.Model):
                 %s' % response.content)
 
     def _create_server_dir(self, vals):
-        access_token = self._get_egnyte_access_token()
+        access_token = self.env.user.company_id.egnyte_acess_token
         headers = {'Authorization': 'Bearer ' + access_token,
                    'Content-Type': 'application/json'}
         company_folder, company_pasta_servidor = self._get_company_folder(vals)
@@ -293,13 +299,14 @@ class KKSites(models.Model):
         data = {"action": "add_folder"}
         data = json.dumps(data)
         response = requests.post(domain, headers=headers, data=data)
-        self._parse_response(response)
+        self.parse_response(response)
         vals.update({'pasta_servidor': company_pasta_servidor + '/' +
                      site_folder})
 
     @api.model
     def create(self, vals):
-        self._create_server_dir(vals)
+        if not vals.get('pasta_servidor'):
+            self._create_server_dir(vals)
         if vals.get('coordenadas'):
             vals['coordenadas'] = self._mask_coordenadas(vals['coordenadas'])
         if vals.get('dimensoes_fundacao'):
@@ -324,3 +331,58 @@ class KKSites(models.Model):
             result.append((rec.id, "%s - %s" % (
                 rec.cod_site_kk, rec.partner_id.name or '')))
         return result
+
+
+class KKFiles(models.Model):
+    _name = 'kk.files'
+
+    site_id = fields.Many2one('kk.sites', 'Id do Site')
+    parent_id = fields.Many2one('kk.files', 'Pasta pai')
+    link = fields.Char('Link no Servidor')
+    name = fields.Char('Nome')
+    size = fields.Char('Tamanho')
+    file_type = fields.Selection(
+        [('file', 'Arquivo'),
+         ('folder', 'Pasta')],
+        string="Tipo")
+    last_modified = fields.Datetime('Última Modificação')
+
+    def convert_size(self, size_bytes):
+        if size_bytes == 0:
+            return "0B"
+        size_name = ("B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB")
+        i = int(math.floor(math.log(size_bytes, 1024)))
+        p = math.pow(1024, i)
+        s = round(size_bytes / p, 2)
+        return "%s %s" % (s, size_name[i])
+
+    @api.model
+    def create(self, vals):
+        if vals.get('size'):
+            vals['size'] = self.convert_size(int(vals['size']))
+        return super(KKFiles, self).create(vals)
+
+    def get_dir_function(self, kk_file, folder):
+        if kk_file.site_id:
+            return kk_file.site_id._get_server_folders(folder)
+        else:
+            return self.get_dir_function(kk_file.parent_id, folder)
+
+    def open_folder_tree(self):
+        dirs = self.get_dir_function(self, self.link)
+        self.env['kk.files'].search([('parent_id', '=', self.id)]).unlink()
+        ids = []
+        for item in dirs:
+            item['site_id'] = False
+            item['parent_id'] = self.id
+            ids.append(self.create(item))
+        ids = [item.id for item in ids]
+
+        return {
+                "type": "ir.actions.act_window",
+                "res_model": "kk.files",
+                "views": [[False, "tree"]],
+                "name": u"Diretórios",
+                "target": "new",
+                "domain": [["id", "in", ids]]
+            }
