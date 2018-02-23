@@ -2,10 +2,11 @@
 # © 2017 Fábio Luna, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-from odoo import models, fields, api
-import requests
 import json
+import requests
 from datetime import datetime
+from odoo import models, fields, api
+from odoo.exceptions import UserError
 
 
 class StockPicking(models.Model):
@@ -17,11 +18,14 @@ class StockPicking(models.Model):
         headers = {
             'Content-Type': 'application/json',
             'apikey': self.env.user.api_key}
-        date = datetime.now()
-        date = date.isoformat()
+        date = datetime.now().isoformat()
 
         for item in pick_ids:
             agrupador = item.picking_type_id.agrupador
+            if not agrupador:
+                raise UserError(
+                    'Configurar o agrupador do tipo de picking antes de\
+                    confirmar alguma operação')
             if agrupador != "saida":
                 continue
 
@@ -41,7 +45,7 @@ class StockPicking(models.Model):
                 item_vals = dict(
                     id=product.product_id.default_code,
                     quantity=product.quantity_done,
-                    volume=item.number_of_packages,
+                    volume=0,
                 )
 
                 products.append(item_vals)
@@ -49,7 +53,9 @@ class StockPicking(models.Model):
             vals.update({'products': products})
 
             post = json.dumps(vals)
-            requests.post(url=url, data=post, headers=headers)
+            response = requests.post(url=url, data=post, headers=headers)
+            texto = "Json enviado a url: %s - %s" % (response.status_code, url)
+            item.message_post(body=texto)
 
     @api.multi
     def action_cancel(self):
