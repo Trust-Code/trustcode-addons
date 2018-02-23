@@ -378,11 +378,9 @@ class KKFiles(models.Model):
             ids.append(self.create(item))
         ids = [item.id for item in ids]
 
-        return {
-                "type": "ir.actions.act_window",
+        return {"type": "ir.actions.act_window",
                 "res_model": "kk.files",
                 "views": [[False, "tree"]],
                 "name": u"Diretórios",
                 "target": "new",
-                "domain": [["id", "in", ids]]
-            }
+                "domain": [["id", "in", ids]]}
