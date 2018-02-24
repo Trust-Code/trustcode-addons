@@ -133,6 +133,7 @@
                 <field name="site_id"/>
                 <field name="city_id" string="Cidade" />
                 <field name="state_id" string="Estado" />
+                <field name="zip" string="CEP" />
                 <field name="pasta_servidor"/>
             </search>
         </field>

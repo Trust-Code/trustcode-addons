@@ -229,7 +229,8 @@ class ApiStock(http.Controller):
         }
         if not partner:
             partner = env_partner.create(vals)
-            partner.zip_search(venda['shipping_postcode'])
+            partner.zip_search(
+                re.sub('[^0-9]', '', venda['shipping_postcode']))
             partner.write({
                 'street': venda['shipping_address_1'],
                 'street2': venda['shipping_address_2'],
@@ -260,10 +261,11 @@ class ApiStock(http.Controller):
             picking_items.append((0, 0, {
                 'name': product[0].name,
                 'product_id': product[0].id,
+                'price_unit': item['price'],
                 'product_uom_qty': item['quantity'],
                 'ordered_qty': item['quantity'],
                 'product_uom': product[0].uom_id.id,
-                'valor_bruto': int(item['quantity']) * int(item['price'])
+                'valor_bruto': float(item['quantity']) * float(item['price'])
             }))
 
         schedule = datetime.strptime(

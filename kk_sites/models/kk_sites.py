@@ -9,6 +9,7 @@ import json
 from datetime import datetime
 import math
 import locale
+import re
 
 
 class KKSites(models.Model):
@@ -34,6 +35,7 @@ class KKSites(models.Model):
     street = fields.Char()
     street2 = fields.Char()
     zip = fields.Char(string='CEP')
+    district = fields.Char(string="Bairro")
     city_id = fields.Many2one(
         'res.state.city',
         string="Cidade",
@@ -318,6 +320,7 @@ class KKSites(models.Model):
     def onchange_partner_id(self):
         self.street = self.partner_id.street
         self.street2 = self.partner_id.street2
+        self.district = self.partner_id.district
         self.zip = self.partner_id.zip
         self.city_id = self.partner_id.city_id
         self.state_id = self.partner_id.state_id
@@ -331,6 +334,19 @@ class KKSites(models.Model):
             result.append((rec.id, "%s - %s" % (
                 rec.cod_site_kk, rec.partner_id.name or '')))
         return result
+
+    @api.onchange('zip')
+    def _onchange_zip(self):
+        cep = re.sub('[^0-9]', '', self.zip or '')
+        if len(cep) == 8:
+            self.zip_search(cep)
+
+    @api.multi
+    def zip_search(self, cep):
+        self.zip = "%s-%s" % (cep[0:5], cep[5:8])
+        res = self.env['br.zip'].search_by_zip(zip_code=self.zip)
+        if res:
+            self.update(res)
 
 
 class KKFiles(models.Model):

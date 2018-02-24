@@ -38,7 +38,9 @@ class SaleOrderLine(models.Model):
         result = super(SaleOrderLine, self)._timesheet_find_task()
         for so_line in self:
             task = result[so_line.id]
-            task.write({'kk_site_id': so_line.kk_site_id.id})
+            task.write({'kk_site_id': so_line.kk_site_id.id,
+                        'name': '%s:%s' % (so_line.order_id.name,
+                                           so_line.product_id.name)})
             self._create_server_service_dir(result)
         return result
 
