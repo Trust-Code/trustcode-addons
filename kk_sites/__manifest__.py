@@ -29,7 +29,8 @@
         'views/purchase_order.xml',
         'security/ir.model.access.csv',
         'views/res_partner.xml',
-        'views/product.xml'
+        'views/product.xml',
+        'views/res_company.xml'
     ],
 
 }

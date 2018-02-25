@@ -5,6 +5,9 @@
         <field name="model">res.partner</field>
         <field name="inherit_id" ref="base.view_partner_form" />
         <field name="arch" type="xml">
+            <page name="internal_notes" position="inside">
+                <group><field name="pasta_servidor" widget="url" /></group>
+            </page>
             <field name="user_id" position="after">
                 <field name="is_fabricante"/>
             </field>
