@@ -45,7 +45,7 @@ class StockPicking(models.Model):
                 item_vals = dict(
                     id=product.product_id.default_code,
                     quantity=product.quantity_done,
-                    volume=0,
+                    volume=item.volumes,
                 )
 
                 products.append(item_vals)
