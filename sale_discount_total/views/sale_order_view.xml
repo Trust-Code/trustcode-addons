@@ -10,12 +10,34 @@
                     <button string="Atualizar Descontos" type="object" name="update_discount_lines" class="oe_highlight" 
                         attrs="{'invisible': [('state', 'not in', ('draft', 'sent'))]}"/>
                 </xpath>
-                <xpath expr="//group[@name='sale_total']" position="after">
-                    <group class="footer oe_left" colspan="2" name="discount">
-                        <field name="discount_type" />
-                        <field name="discount_value" />
+                <!-- <xpath expr="//group[@name='sale_total']" position="after">
+                    <group class="oe_left" col="6" name="discount">
+                        <label for="discount_type" string="Descontos"/>
+                        <div class="col-xs-12">
+                            <field name="discount_type" />
+                            <field name="discount_value" />
+                        </div>
                     </group>
-                </xpath>
+                </xpath> -->
+                <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++= -->
+                <!-- <field name="note" position="before">
+                   <group class="oe-left">
+                        <label for="discount_type" string="Descontos"/>
+                        <div class="col-xs-3">
+                            <field name="discount_type" /><br />
+                            <field name="discount_value" />
+                        </div>
+                    </group>
+                </field> -->
+                <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++== -->
+                <field name="note" position="before">
+                   <div class="col-xs-4">
+                        <label for="discount_type"/>: 
+                            <field name="discount_type" /><br />
+                        <label for="discount_value"/>: 
+                            <field name="discount_value" />
+                    </div>
+                </field>
             </field>
         </record>
     </data>
