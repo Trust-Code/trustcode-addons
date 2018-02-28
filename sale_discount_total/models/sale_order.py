@@ -34,12 +34,19 @@ class SaleOrder(models.Model):
         for item in self:
             if item.discount_value == 0:
                 continue
-            discount_percent = item.discount_value
+            discount_percent = round(item.discount_value, 2)
             if item.discount_type == 'amount':
-                discount_percent = item.discount_value / item.total_bruto * 100
+                discount_percent = round(
+                    item.discount_value / item.total_bruto * 100, 2)
             if discount_percent > 100:
                 discount_percent = 100
             elif discount_percent < 0:
                 discount_percent = 0
-            for line in item.order_line:
+            amount = 0
+            for line in item.order_line[:-1]:
                 line.discount = discount_percent
+                amount += discount_percent / 100 * line.valor_bruto
+            if item.discount_type == 'amount':
+                last = item.order_line[-1]
+                last.discount = (
+                    item.discount_value - amount) / last.valor_bruto * 100
