@@ -34,7 +34,11 @@ class SaleOrderLine(models.Model):
             domain.append(('attribute_value_ids', '=', item.id))
         if domain:
             domain.append(('product_tmpl_id', '=', self.product_tmpl_id.id))
-            self.product_id = self.product_id.search(domain)[0]
+            product = self.product_id.search(domain)[0]
+            self.update({
+                'product_uom': product.uom_id.id,
+                'product_id': product.id,
+            })
 
 
 class SaleOrderVariant(models.Model):
