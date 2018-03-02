@@ -186,7 +186,7 @@ class KKSites(models.Model):
         else:
             return {'domain': {'city_id': []}}
 
-    def _get_server_folders(self, link):
+    def get_server_folders(self, link, create_folders=True):
         host = self.env.user.company_id.egnyte_host
         pasta = link.replace(
             'https://' + host + '.egnyte.com/app/index.do#storage/files/1',
@@ -198,7 +198,12 @@ class KKSites(models.Model):
         if '200' not in str(response):
             raise UserError('Ocorreu um erro ao tentar checar as pastas do \
                 servidor: %s' % response.content)
-        res = response.json()
+        if create_folders:
+            return self._create_folders_objects(response.json(), link)
+        else:
+            return response.json()
+
+    def _create_folders_objects(self, res, link):
         vals = []
         if 'folders' in res:
             for item in res['folders']:
@@ -228,7 +233,7 @@ class KKSites(models.Model):
 
     def refresh_list_dir(self):
         self.dir_ids.unlink()
-        values = self._get_server_folders(self.pasta_servidor)
+        values = self.get_server_folders(self.pasta_servidor)
         if values:
             self.write({'dir_ids': [(0, 0, vals) for vals in values]})
 
@@ -287,8 +292,12 @@ class KKSites(models.Model):
         if '201' in str(response):
             return
         elif '401' or '400' in str(response):
+            message = response.content
+            if 'already exists' in message:
+                message = 'Já existe uma pasta com este nome para este\
+                    cliente no servidor'
             raise UserError('Erro ao tentar criar pasta no servidor: \
-                %s' % response.content)
+                %s' % message)
 
     def _create_server_dir(self, vals):
         access_token = self.env.user.company_id.egnyte_acess_token
@@ -380,7 +389,7 @@ class KKFiles(models.Model):
 
     def get_dir_function(self, kk_file, folder):
         if kk_file.site_id:
-            return kk_file.site_id._get_server_folders(folder)
+            return kk_file.site_id.get_server_folders(folder)
         else:
             return self.get_dir_function(kk_file.parent_id, folder)
 
