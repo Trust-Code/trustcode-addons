@@ -17,7 +17,7 @@ class KKSites(models.Model):
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
     cod_site_kk = fields.Char(
-        string="Código do Site: ",
+        string="Código do Site KK: ",
         required=True,
         track_visibility='always')
 
