@@ -39,6 +39,7 @@ class KKSites(models.Model):
     city_id = fields.Many2one(
         'res.state.city',
         string="Cidade",
+        required=True,
         track_visibility='onchange')
     state_id = fields.Many2one(
         "res.country.state",
