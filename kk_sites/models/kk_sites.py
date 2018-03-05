@@ -316,7 +316,8 @@ class KKSites(models.Model):
 
     @api.model
     def create(self, vals):
-        if not vals.get('pasta_servidor'):
+        if not vals.get('pasta_servidor') and\
+                self.env.user.company_id.egnyte_active:
             self._create_server_dir(vals)
         if vals.get('coordenadas'):
             vals['coordenadas'] = self._mask_coordenadas(vals['coordenadas'])

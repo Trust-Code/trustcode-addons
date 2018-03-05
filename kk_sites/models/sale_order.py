@@ -19,6 +19,8 @@ class SaleOrderLine(models.Model):
         link = task.kk_site_id.pasta_servidor
         res = self.env['kk.sites'].get_server_folders(link, False)
         numbers = []
+        if not res.get('folders'):
+            return 0
         for item in res['folders']:
             numbers.append(item['name'][:2])
         for index in range(len(numbers)):
@@ -39,7 +41,7 @@ class SaleOrderLine(models.Model):
         pasta = task.kk_site_id.pasta_servidor.replace(
             'https://' + host + '.egnyte.com/app/index.do#storage/files/1',
             '').replace('%20', ' ')
-        name = str(number + 1).zfill(2) + '_' + task.name.replace(
+        name = str(number + 1).zfill(2) + '_' + self.name.replace(
             ':', '_').strip()
         pasta += '/' + normalize(
             'NFKD', name).encode('ASCII', 'ignore').decode('ASCII').upper()
@@ -59,8 +61,8 @@ class SaleOrderLine(models.Model):
             task.write({'kk_site_id': so_line.kk_site_id.id,
                         'name': '%s:%s' % (so_line.order_id.name,
                                            so_line.product_id.name)})
-            if so_line.kk_site_id:
-                self._create_server_service_dir(result)
+            if so_line.kk_site_id and self.env.user.company_id.egnyte_active:
+                so_line._create_server_service_dir(result)
         return result
 
     @api.onchange('product_id')
