@@ -7,7 +7,7 @@
         <field name="type">tree</field>
         <field name="arch" type="xml">
             <tree string="Sites">
-                <field name="cod_site_kk" />
+                <field name="cod_site_kk" string="Código do Site KK" />
                 <field name="partner_id" />
                 <field name="site_id" />
                 <field name="city_id" />
@@ -26,7 +26,7 @@
                 <sheet>
                     <div class="col-xs-12">
                         <div class="col-xs-6">
-                            <h1><label for="cod_site_kk" style="font-size: 16pt" />
+                            <h1><label for="cod_site_kk" readonly="1" string="Código do Site KK" style="font-size: 16pt" />
                             <field name="cod_site_kk" /></h1>
                         </div>
                         <div class="col-xs-6">
@@ -34,7 +34,7 @@
                             <field name="site_id" /></h1>
                         </div>
                         <div class="col-xs-7">
-                            <h3><field name="partner_id" placeholder="Cliente Fantasia" /></h3>
+                            <h3><field name="partner_id" domain="[('customer', '=', True)]" placeholder="Cliente Fantasia" /></h3>
                         </div>
                     </div>
                     <notebook>
@@ -48,7 +48,7 @@
                                         <field name="number" placeholder="Número" />
                                         <field name="street2" placeholder="Complemento" class="o_address_street"/>
                                         <field name="country_id" placeholder="País" class="o_address_country" options='{"no_open": True, "no_create": True}'/>
-                                        <field name="state_id" class="o_address_state" placeholder="Estado" options='{"no_open": True}' />
+                                        <field name="state_id" class="o_address_state" placeholder="Estado" options='{"no_open": True, "no_create": True}' />
                                         <field name="city_id" placeholder="Cidade" class="o_address_city" options='{"no_open": True, "no_create": True}' />
                                         <field name="referencia" placeholder="Referência"/>
                                         <label for="coordenadas" />
