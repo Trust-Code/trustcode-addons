@@ -341,7 +341,7 @@ class KKSites(models.Model):
         result = []
         for rec in self:
             result.append((rec.id, "%s - %s" % (
-                rec.cod_site_kk, rec.partner_id.name or '')))
+                rec.cod_site_kk, rec.site_id or '')))
         return result
 
     @api.onchange('zip')
