@@ -12,3 +12,5 @@ class ResCompany(models.Model):
     egnyte_acess_token = fields.Char(string="Chave de Acesso Egnyte",
                                      copy=False)
     egnyte_api = fields.Char(string='Api Key')
+    egnyte_active = fields.Boolean(string="Criar Pastas no Egnyte",
+                                   default=True)
