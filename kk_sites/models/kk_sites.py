@@ -325,17 +325,6 @@ class KKSites(models.Model):
                 vals['dimensoes_fundacao'])
         return super(KKSites, self).create(vals)
 
-    @api.onchange('partner_id')
-    def onchange_partner_id(self):
-        self.street = self.partner_id.street
-        self.street2 = self.partner_id.street2
-        self.district = self.partner_id.district
-        self.zip = self.partner_id.zip
-        self.city_id = self.partner_id.city_id
-        self.state_id = self.partner_id.state_id
-        self.country_id = self.partner_id.country_id
-        self.number = self.partner_id.number
-
     @api.multi
     def name_get(self):
         result = []
