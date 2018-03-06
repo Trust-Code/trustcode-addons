@@ -32,13 +32,13 @@ class ProjectIssue(models.Model):
     _inherit = 'project.issue'
 
     tempo_resposta = fields.Datetime(string=u"Prazo 1º Atend.",
-                                     stored=True,
+                                     store=True,
                                      compute="_compute_tempo")
     tempo_resolucao = fields.Datetime(string=u"Prazo Solução",
-                                      stored=True,
+                                      store=True,
                                       compute="_compute_tempo")
     tempo_excedido = fields.Boolean(string="Tempo Excedido",
-                                    stored=True,
+                                    store=True,
                                     compute="_compute_excedido")
 
     impacto = fields.Selection(
