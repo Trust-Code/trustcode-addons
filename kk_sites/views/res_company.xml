@@ -10,8 +10,9 @@
                     <page string="Outras Informações">
                         <group>
                             <group>
-                                <label for="egnyte_host" string="Dados Egnyte" />
-                                <div>
+                                <field name="egnyte_active" />
+                                <label for="egnyte_host" string="Dados Egnyte" attrs="{'invisible': [('egnyte_active', '=', False)]}" />
+                                <div attrs="{'invisible': [('egnyte_active', '=', False)]}">
                                     <field name="egnyte_host" placeholder="Host" />
                                     <br />
                                     <field name="egnyte_acess_token" placeholder="Chave de Acesso" password="True" />
