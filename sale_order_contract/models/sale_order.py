@@ -111,7 +111,7 @@ class SaleOrder(models.Model):
         recurrent_lines = map(
             lambda line: line.recurring_line, self.order_line)
         contract_id = self
-        if recurrent_lines and False in recurrent_lines:
+        if len(recurrent_lines) > 0 and not self.is_contract:
             contract_id = self._create_contract()
 
         res = super(SaleOrder, self).action_confirm()
@@ -119,7 +119,6 @@ class SaleOrder(models.Model):
         pgto = self.env['account.payment.term']
         payment_term_id = pgto.search([('indPag', '=', '3')], limit=1)
         contract_id.write({
-            'is_contract': True,
             'payment_term_id': payment_term_id.id or False
         })
         return res
