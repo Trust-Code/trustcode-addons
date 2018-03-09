@@ -11,7 +11,8 @@ class ProductTemplate(models.Model):
 
     service_tracking = fields.Selection(selection_add=[
         ('new_project_per_line', 'Cria um projeto por linha da venda'),
-        ('new_project_per_line_plus_task', 'Cria um projeto por linha da venda + tarefa')])
+        ('new_project_per_line_plus_task', 'Cria um projeto por linha da venda\
+            + tarefa')])
 
 
 class SaleOrder(models.Model):
@@ -33,7 +34,8 @@ class SaleOrderLine(models.Model):
 
     def _timesheet_create_task_prepare_values(self):
         v = super(SaleOrderLine, self)._timesheet_create_task_prepare_values()
-        if self.product_id.service_tracking == 'new_project_per_line_plus_task':
+        if self.product_id.service_tracking ==\
+                'new_project_per_line_plus_task':
             v['project_id'] = self.project_id.id
         return v
 
