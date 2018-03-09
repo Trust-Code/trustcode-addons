@@ -273,7 +273,7 @@ class KKSites(models.Model):
                 \n Formato padrão: -XX.XXXXX, -XX.XXXXX")
         try:
             coord = [float(item.strip()) for item in coord]
-            return ' https://maps.google.com?q={},{}'.format(
+            return 'https://maps.google.com?q={},{}'.format(
                 coord[0], coord[1])
         except Exception:
             raise ValidationError("Verifique se as coordenadas são válidas.\
