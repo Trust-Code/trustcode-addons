@@ -132,8 +132,6 @@ class SaleOrderLine(models.Model):
     @api.multi
     @api.onchange('product_attribute_ids')
     def onchange_product_attribute_ids(self):
-        import ipdb
-        ipdb.set_trace()
         product_obj = self.env['product.product']
         domain, cont = product_obj._build_attributes_domain(
             self.product_tmpl_id, self.product_attribute_ids)
