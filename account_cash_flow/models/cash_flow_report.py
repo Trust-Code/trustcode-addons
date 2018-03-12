@@ -176,8 +176,17 @@ class CashFlowReport(models.TransientModel):
         ])
         moves = []
         for move in moveline_ids:
+
+            # Essas variáveis são usadas apenas para o if
             debit = move.credit - move.credit_cash_basis
             credit = move.debit - move.debit_cash_basis
+
+            # Temporario: não mostra as linhas que estão com 'a receber' e
+            # 'a pagar' zerados
+            if not debit:
+                if not credit:
+                    continue
+
             amount = move.debit - move.credit
 
             moves.append({
@@ -188,8 +197,8 @@ class CashFlowReport(models.TransientModel):
                 'account_id': move.account_id.id,
                 'line_type': move.account_id.internal_type,
                 'date': move.date_maturity,
-                'debit': debit,
-                'credit': credit,
+                'debit': move.credit,
+                'credit': move.debit,
                 'amount': amount,
             })
         return moves
