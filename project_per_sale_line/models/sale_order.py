@@ -10,7 +10,9 @@ class ProductTemplate(models.Model):
     _inherit = 'product.template'
 
     service_tracking = fields.Selection(selection_add=[
-        ('new_project_per_line', 'Cria um projeto por linha da venda')])
+        ('new_project_per_line', 'Cria um projeto por linha da venda'),
+        ('new_project_per_line_plus_task', 'Cria um projeto por linha da venda\
+            + tarefa')])
 
 
 class SaleOrder(models.Model):
@@ -32,19 +34,26 @@ class SaleOrderLine(models.Model):
 
     def _timesheet_create_task_prepare_values(self):
         v = super(SaleOrderLine, self)._timesheet_create_task_prepare_values()
-        if self.product_id.service_tracking == 'new_project_per_line':
+        if self.product_id.service_tracking ==\
+                'new_project_per_line_plus_task':
             v['project_id'] = self.project_id.id
         return v
 
-    def _timesheet_create_project(self):
+    def _timesheet_create_project(self, task=False):
+
         Project = self.env['project.project']
-        self.order_id._create_analytic_account(
-            prefix=self.product_id.default_code or None)
-        account = self.order_id.analytic_account_id
-        project = Project.search(
-            [('analytic_account_id', '=', account.id)], limit=1)
-        self.project_id = project.id
-        self._timesheet_create_task()
+        name = (self.product_id.default_code or None
+                ) + ": " + self.order_id.name
+        project_id = Project.create({
+            'name': name,
+            'code': self.order_id.client_order_ref,
+            'company_id': self.order_id.company_id.id,
+            'partner_id': self.order_id.partner_id.id,
+            'sale_line_id': self.id
+        })
+        self.project_id = project_id.id
+        if task:
+            self._timesheet_create_task()
 
     @api.multi
     def _timesheet_service_generation(self):
@@ -53,3 +62,6 @@ class SaleOrderLine(models.Model):
             # create a new project
             if so_line.product_id.service_tracking == 'new_project_per_line':
                 so_line._timesheet_create_project()
+            if so_line.product_id.service_tracking ==\
+                    'new_project_per_line_plus_task':
+                so_line._timesheet_create_project(task=True)
