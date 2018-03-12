@@ -197,8 +197,8 @@ class CashFlowReport(models.TransientModel):
                 'account_id': move.account_id.id,
                 'line_type': move.account_id.internal_type,
                 'date': move.date_maturity,
-                'debit': move.credit,
-                'credit': move.debit,
+                'debit': debit,
+                'credit': credit,
                 'amount': amount,
             })
         return moves
