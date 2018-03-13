@@ -177,17 +177,14 @@ class CashFlowReport(models.TransientModel):
         moves = []
         for move in moveline_ids:
 
-            # Essas variáveis são usadas apenas para o if
-            debit = move.credit - move.credit_cash_basis
-            credit = move.debit - move.debit_cash_basis
+            debit = move.amount_residual if move.amount_residual < 0 else 0.0
+            credit = move.amount_residual if move.amount_residual > 0 else 0.0
+            amount = credit + debit
 
             # Temporario: não mostra as linhas que estão com 'a receber' e
             # 'a pagar' zerados
-            if not debit:
-                if not credit:
-                    continue
-
-            amount = move.debit - move.credit
+            if not debit and not credit:
+                continue
 
             moves.append({
                 'name': move.ref or move.name,
@@ -214,7 +211,7 @@ class CashFlowReport(models.TransientModel):
                                                                  '%Y-%m-%d'))
 
         for lines in liquidity_lines+move_lines:
-            balance += lines['credit'] - lines['debit']
+            balance += lines['credit'] + lines['debit']
             lines['balance'] = balance
             self.env['account.cash.flow.line'].create(lines)
 
