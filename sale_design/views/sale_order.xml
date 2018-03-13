@@ -5,11 +5,11 @@
             <field name="model">sale.order</field>
             <field name="inherit_id" ref="sale.view_order_form" />
             <field name="arch" type="xml">
-                <button name="action_confirm" position="before">
+                <button name="action_confirm" position="after">
                     <button name="to_design" string="Design" type="object" attrs="{'invisible': [('state', 'not in', ['draft'])]}"/>
                 </button>
                 <button name="action_confirm" position="attributes">
-                    <attribute name="attrs">{'invisible': [('state', 'not in', ('draft', 'design'))]}</attribute>
+                    <attribute name="attrs">{'invisible':[('state','not in',('design'))]}</attribute>
                 </button>
                 <button name="action_cancel" position="attributes">
                     <attribute name="states">draft,sent,sale,design</attribute>
