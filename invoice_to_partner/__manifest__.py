@@ -4,10 +4,10 @@
 
 
 {  # pylint: disable=C8101,C8103
-    'name': "Fluxo de Compras GML",
+    'name': "Faturar para Parceiro",
 
     'summary': """
-        Ajuste do fluxo de Compras para empresa GML""",
+        Insere a opção de faturar para um parceiro em uma compra.""",
 
     'description': """""",
     'author': "Trustcode",
