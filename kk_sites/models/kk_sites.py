@@ -172,12 +172,18 @@ class KKSites(models.Model):
         store=True)
 
     def seq_cod_site_kk(self, vals):
+        sites = self.search(
+            [('partner_id', '=', vals['partner_id'])])
         partner = self.env['res.partner'].search(
             [('id', '=', vals['partner_id'])])
-        seq = self.search_count(
-            [('partner_id', '=', partner.id)]) + 1
-        seq = str(seq).zfill(2)
-        return "%s/%s" % (partner.ref, seq)
+        seq = [0]
+        for site in sites:
+            try:
+                seq.append(int(site.cod_site_kk.split('/')[1]))
+            except Exception:
+                seq.append(0)
+        seq.sort()
+        return "%s/%s" % (partner.ref, str(seq[-1] + 1).zfill(2))
 
     @api.onchange('country_id')
     def _onchange_country_id(self):
@@ -330,6 +336,8 @@ class KKSites(models.Model):
 
     @api.model
     def create(self, vals):
+        if not vals.get('cod_site_kk'):
+            vals['cod_site_kk'] = self.seq_cod_site_kk(vals)
         if not vals.get('pasta_servidor') and\
                 self.env.user.company_id.egnyte_active:
             self._create_server_dir(vals)
@@ -338,8 +346,6 @@ class KKSites(models.Model):
         if vals.get('dimensoes_fundacao'):
             vals['dimensoes_fundacao'] = self._mask_dimensoes_fundacao(
                 vals['dimensoes_fundacao'])
-        if not vals.get('cod_site_kk'):
-            vals['cod_site_kk'] = self.seq_cod_site_kk(vals)
         return super(KKSites, self).create(vals)
 
     @api.multi
