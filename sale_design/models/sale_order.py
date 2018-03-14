@@ -3,7 +3,7 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 from odoo import models, fields, api
-from odoo.exceptions import UserError
+from odoo.exceptions import RedirectWarning
 
 
 class SaleOrder(models.Model):
@@ -22,10 +22,12 @@ class SaleOrder(models.Model):
     def to_design(self):
         for line in self.order_line:
             if not line.product_id.allow_design:
-                raise UserError("Não é permitido o design do item %s. Para\
-                    habilitar esta opção acesse o cadastro do produto,\
-                        'Faturamento' e selecione a opção 'Permitir Design'"
-                                % line.product_id.name)
+                action = self.env.ref('product.product_template_action_all')
+                msg = "Não é permitido o design do item %s. Para\
+                        habilitar esta opção acesse o cadastro do produto,\
+                        'Faturamento' e selecione a opção 'Permitir Design'"\
+                        % line.product_id.name
+                raise RedirectWarning(msg, action.id, 'Acesse os produtos')
         self.order_line._timesheet_service_generation(design=True)
         self.write({'state': 'design'})
 
