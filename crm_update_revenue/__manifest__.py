@@ -25,6 +25,4 @@
         'views/crm_lead.xml',
         'views/crm_lead_kanban.xml',
     ],
-    'application': True,
-    'installable': True,
 }
