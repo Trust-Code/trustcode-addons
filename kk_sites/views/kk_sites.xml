@@ -24,6 +24,14 @@
         <field name="arch" type="xml">
             <form string="Sites">
                 <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_tasks"
+                            type="object"
+                            class="oe_stat_button"
+                            string="Tarefas"
+                            icon="fa-puzzle-piece">
+                        </button>
+                    </div>
                     <div class="col-xs-12">
                         <div class="col-xs-6">
                             <h1><label for="cod_site_kk" string="Código do Site KK:" style="font-size: 16pt" />

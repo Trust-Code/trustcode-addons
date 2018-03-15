@@ -369,6 +369,14 @@ class KKSites(models.Model):
         if res:
             self.update(res)
 
+    def action_view_tasks(self):
+        tarefas = self.env['project.task'].search(
+            [('kk_site_id', '=', self.id)])
+        result = self.env.ref('project.action_view_task').read()[0]
+        result['context'] = {}
+        result['domain'] = [('id', 'in', tarefas.ids)]
+        return result
+
 
 class KKFiles(models.Model):
     _name = 'kk.files'
