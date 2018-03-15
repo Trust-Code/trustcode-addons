@@ -200,6 +200,12 @@ class KKSites(models.Model):
                 'state_id', '=', self.state_id.id)]}}
         else:
             return {'domain': {'city_id': []}}
+    
+    @api.onchange('partner_id')
+    def _onchange_partner_id(self):
+        if self.partner_id:
+            seq = rec.search_count([('partner_id', '=', rec.partner_id.id)])
+            self.cod_site_kk = "%s/%s" % (self.partner_id.id, seq)
 
     def get_server_folders(self, link, create_folders=True):
         host = self.env.user.company_id.egnyte_host
