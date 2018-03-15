@@ -18,7 +18,7 @@ class KKSites(models.Model):
 
     cod_site_kk = fields.Char(
         string="Código do Site: ",
-        required=True,
+        store=True,
         track_visibility='always')
 
     partner_id = fields.Many2one(
@@ -171,6 +171,20 @@ class KKSites(models.Model):
         readonly=True,
         store=True)
 
+    def seq_cod_site_kk(self, vals):
+        sites = self.search(
+            [('partner_id', '=', vals['partner_id'])])
+        partner = self.env['res.partner'].search(
+            [('id', '=', vals['partner_id'])])
+        seq = [0]
+        for site in sites:
+            try:
+                seq.append(int(site.cod_site_kk.split('/')[1]))
+            except Exception:
+                seq.append(0)
+        seq.sort()
+        return "%s/%s" % (partner.ref, str(seq[-1] + 1).zfill(2))
+
     @api.onchange('country_id')
     def _onchange_country_id(self):
         if self.country_id:
@@ -256,6 +270,8 @@ class KKSites(models.Model):
                     \n Formato padrão: XXX x XXX")
 
     def _mask_coordenadas(self, coord):
+        if 'maps.google' in coord:
+            return coord
         coord = coord.split(',')
         if len(coord) > 2:
             raise ValidationError(
@@ -263,7 +279,8 @@ class KKSites(models.Model):
                 \n Formato padrão: -XX.XXXXX, -XX.XXXXX")
         try:
             coord = [float(item.strip()) for item in coord]
-            return '{}, {}'.format(coord[0], coord[1])
+            return 'https://maps.google.com?q={},{}'.format(
+                coord[0], coord[1])
         except Exception:
             raise ValidationError("Verifique se as coordenadas são válidas.\
                 Formato padrão: -XX.XXXXX, -XX.XXXXX")
@@ -275,6 +292,8 @@ class KKSites(models.Model):
         if vals.get('dimensoes_fundacao'):
             vals['dimensoes_fundacao'] = self._mask_dimensoes_fundacao(
                 vals['dimensoes_fundacao'])
+        if vals.get('partner_id'):
+            vals['cod_site_kk'] = self.seq_cod_site_kk(vals)
         return super(KKSites, self).write(vals)
 
     def _get_company_folder(self, vals):
@@ -317,6 +336,8 @@ class KKSites(models.Model):
 
     @api.model
     def create(self, vals):
+        if not vals.get('cod_site_kk'):
+            vals['cod_site_kk'] = self.seq_cod_site_kk(vals)
         if not vals.get('pasta_servidor') and\
                 self.env.user.company_id.egnyte_active:
             self._create_server_dir(vals)
