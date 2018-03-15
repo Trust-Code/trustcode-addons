@@ -231,9 +231,20 @@ class ApiStock(http.Controller):
             partner = env_partner.create(vals)
             partner.zip_search(
                 re.sub('[^0-9]', '', venda['shipping_postcode']))
+            payment_adress = {
+                'type': 'invoice',
+                'zip': venda['payment_postcode'],
+                'street': venda['payment_address_1'],
+                'district': venda['payment_address_2'],
+                'number': venda['payment_custom_field']['1'],
+                'street2': venda['payment_custom_field']['2'],
+            }
             partner.write({
                 'street': venda['shipping_address_1'],
-                'street2': venda['shipping_address_2'],
+                'district': venda['shipping_address_2'],
+                'number': venda['shipping_custom_field']['1'],
+                'street2': venda['shipping_custom_field']['2'],
+                'child_ids': [(0, 0, payment_adress)],
             })
 
         env_product = request.env['product.product'].sudo(user)
