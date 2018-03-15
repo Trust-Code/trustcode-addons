@@ -30,6 +30,24 @@ class StockPicking(models.Model):
     placa = fields.Char(string="Placa")
     volumes = fields.Char(string="Volumes")
 
+    def create_new_picking(self, picking_ids):
+        for picking in picking_ids:
+            if picking.picking_type_id.next_picking_type_id:
+                picking_type_id = picking.picking_type_id.next_picking_type_id
+                new_picking = picking.copy()
+                new_picking.write({
+                    'picking_type_id': picking_type_id.id
+                })
+
+    @api.multi
+    def button_validate(self):
+        res = super(StockPicking, self).button_validate()
+
+        if self.state == 'done':
+            self.create_new_picking(self)
+
+        return res
+
 
 class StockMove(models.Model):
     _inherit = 'stock.move'
@@ -45,3 +63,27 @@ class StockMove(models.Model):
         for item in self:
             if not item.price_unit:
                 item.price_unit = item.valor_bruto/item.product_uom_qty
+
+
+class StockImmediateTransfer(models.TransientModel):
+    _inherit = 'stock.immediate.transfer'
+
+    def process(self):
+        res = super(StockImmediateTransfer, self).process()
+        self.env['stock.picking'].create_new_picking(self.pick_ids)
+        return res
+
+
+class StockBackorderConfirmation(models.TransientModel):
+    _inherit = 'stock.backorder.confirmation'
+
+    def process(self):
+        res = super(StockBackorderConfirmation, self).process()
+        self.env['stock.picking'].create_new_picking(self.pick_ids)
+        return res
+
+    def process_cancel_backorder(self):
+        res = super(
+            StockBackorderConfirmation, self).process_cancel_backorder()
+        self.env['stock.picking'].create_new_picking(self.pick_ids)
+        return res
