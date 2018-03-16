@@ -34,4 +34,14 @@
             <p>                You can either do it immediately or mark it as Todo for future processing. Use your scanner to validate the transferred quantity quicker.              </p>
         </field>
     </record>
+    <record id="stock_json_api_picking_type" model="ir.ui.view">
+        <field name="name">stock.json_api.picking_type.form</field>
+        <field name="model">stock.picking.type</field>
+        <field name="inherit_id" ref="stock.view_picking_type_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//group/group[1]" position="inside">
+                <field name="next_picking_type_id"/>
+            </xpath>
+        </field>
+    </record>
 </odoo>

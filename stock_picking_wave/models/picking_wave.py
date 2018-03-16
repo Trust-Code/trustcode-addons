@@ -36,13 +36,16 @@ class BatchProduct(models.Model):
         move_obj = self.env['stock.move']
         for rule in self.search([]):
             self.env.cr.execute("""
-                SELECT product_id, SUM(product_uom_qty),
-                       string_agg(reference, '; '), string_agg(id::text, ', ')
+                SELECT stock_move.product_id, SUM(stock_move.product_uom_qty),
+                       string_agg(stock_picking.origin, '; '),
+                       string_agg(stock_move.id::text, ', ')
                 FROM stock_move
-                WHERE picking_type_id = %d
-                    AND state LIKE 'confirmed'
-                    AND created_wave = False
-                GROUP BY product_id
+                INNER JOIN stock_picking
+                on stock_picking.id = stock_move.picking_id
+                WHERE stock_move.picking_type_id = %d
+                    AND stock_move.state LIKE 'confirmed'
+                    AND stock_move.created_wave = False
+                GROUP BY stock_move.product_id
                         """ % rule.picking_type_orig.id)
 
             lines = []
@@ -57,14 +60,14 @@ class BatchProduct(models.Model):
                                      'partially_available'])
                 ], limit=1)
                 if move:
-                    new_origin = move.origin + l[2]
+                    new_origin = move.origin + l[2] + "; "
                     new_qty = move.product_uom_qty + l[1]
                     new_pick_origin = (move.picking_id.origin if
                                        move.picking_id else "")
                     split_origin = l[2].split()
                     for item in split_origin:
                         if item not in new_pick_origin:
-                            new_pick_origin += item
+                            new_pick_origin += item + '; '
                     move.write({'origin': new_origin,
                                 'product_uom_qty': new_qty})
 
@@ -77,7 +80,7 @@ class BatchProduct(models.Model):
                     product_uom_id = product_id.uom_id
                     lines.append([0, 0, {
                         'name': product_id.name,
-                        'origin': l[2],
+                        'origin': l[2] + '; ',
                         'product_id': l[0],
                         'product_uom_qty': l[1],
                         'product_uom': product_uom_id.id,
