@@ -233,10 +233,11 @@ class KKSites(models.Model):
 
         if 'files' in res:
             for item in res['files']:
+                previous = locale.getlocale(locale.LC_TIME)
                 locale.setlocale(locale.LC_TIME, 'en_US.utf8')
                 data = datetime.strptime(
                     item['last_modified'], '%a, %d %b %Y %H:%M:%S %Z')
-                locale.setlocale(locale.LC_TIME, 'pt_BR.utf8')
+                locale.setlocale(locale.LC_TIME, previous)
                 vals.append({
                     'site_id': self.id,
                     'name': item['name'],
