@@ -291,80 +291,76 @@ class ApiStock(http.Controller):
         pick_order_type_id = int(params.get_param(
             'json_api.pick_type_order_id', default=False))
         picking_type_ref = pick_type_env.browse(pick_order_type_id)
-        if not picking_type_ref:
-            raise Exception("Configure os tipos de picking.")
+        if picking_type_ref:
+            src_id, dest_id = self._get_locations(
+                user, partner, picking_type_ref)
+            picking = request.env['stock.picking'].sudo(
+                user).with_context(planned_picking=True).create({
+                    'name': picking_type_ref.sequence_id.next_by_id(),
+                    'scheduled_date': schedule,
+                    'partner_id': partner[0].id,
+                    'picking_type_id': picking_type_ref.id,
+                    'move_lines': picking_items,
+                    'location_id': src_id,
+                    'location_dest_id': dest_id,
+                    'origin': venda['order_id'],
+                    'amount_total': self._calc_amount_total(picking_items),
+                })
+            move = request.env['stock.move'].sudo().search([
+                ('picking_id', '=', picking.id)])
+            move.write({'picking_type_id': picking_type_ref.id})
 
-        src_id, dest_id = self._get_locations(user, partner, picking_type_ref)
-        picking = request.env['stock.picking'].sudo(
-            user).with_context(planned_picking=True).create({
-                'name': picking_type_ref.sequence_id.next_by_id(),
-                'scheduled_date': schedule,
-                'partner_id': partner[0].id,
-                'picking_type_id': picking_type_ref.id,
-                'move_lines': picking_items,
-                'location_id': src_id,
-                'location_dest_id': dest_id,
-                'origin': venda['order_id'],
-                'amount_total': self._calc_amount_total(picking_items),
-            })
-        move = request.env['stock.move'].sudo().search([
-            ('picking_id', '=', picking.id)])
-        move.write({'picking_type_id': picking_type_ref.id})
-
-        ids.append(picking.id)
+            ids.append(picking.id)
 
         pack_type_id = int(params.get_param(
             'json_api.pick_type_pack_id', default=False))
         packing_type_ref = pick_type_env.browse(pack_type_id)
-        if not packing_type_ref:
-            raise Exception("Configure os tipos de picking.")
+        if packing_type_ref:
+            src_id, dest_id = self._get_locations(
+                user, partner, packing_type_ref)
 
-        src_id, dest_id = self._get_locations(user, partner, packing_type_ref)
+            packing = request.env['stock.picking'].sudo(
+                user).with_context(planned_picking=True).create({
+                    'name': packing_type_ref.sequence_id.next_by_id(),
+                    'scheduled_date': schedule,
+                    'partner_id': partner[0].id,
+                    'picking_type_id': packing_type_ref.id,
+                    'move_lines': picking_items,
+                    'location_id': src_id,
+                    'location_dest_id': dest_id,
+                    'origin': venda['order_id'],
+                    'amount_total': self._calc_amount_total(picking_items),
+                })
+            move = request.env['stock.move'].sudo().search([
+                ('picking_id', '=', packing.id)])
+            move.write({'picking_type_id': packing_type_ref.id})
 
-        packing = request.env['stock.picking'].sudo(
-            user).with_context(planned_picking=True).create({
-                'name': packing_type_ref.sequence_id.next_by_id(),
-                'scheduled_date': schedule,
-                'partner_id': partner[0].id,
-                'picking_type_id': packing_type_ref.id,
-                'move_lines': picking_items,
-                'location_id': src_id,
-                'location_dest_id': dest_id,
-                'origin': venda['order_id'],
-                'amount_total': self._calc_amount_total(picking_items),
-            })
-        move = request.env['stock.move'].sudo().search([
-            ('picking_id', '=', packing.id)])
-        move.write({'picking_type_id': packing_type_ref.id})
-
-        ids.append(packing.id)
+            ids.append(packing.id)
 
         outgoing_type_id = int(params.get_param(
             'json_api.pick_type_outgoing_id', default=False))
         requested_order_ref = pick_type_env.browse(outgoing_type_id)
-        if not requested_order_ref:
-            raise Exception("Configure os tipos de picking.")
+        if requested_order_ref:
+            src_id, dest_id = self._get_locations(
+                user, partner, requested_order_ref)
 
-        src_id, dest_id = self._get_locations(
-            user, partner, requested_order_ref)
+            requested_order = request.env['stock.picking'].sudo(
+                user).with_context(planned_picking=True).create({
+                    'name': requested_order_ref.sequence_id.next_by_id(),
+                    'scheduled_date': schedule,
+                    'partner_id': partner[0].id,
+                    'picking_type_id': requested_order_ref.id,
+                    'move_lines': picking_items,
+                    'location_id': src_id,
+                    'location_dest_id': dest_id,
+                    'origin': venda['order_id'],
+                    'amount_total': self._calc_amount_total(picking_items),
+                })
+            move = request.env['stock.move'].sudo().search([
+                ('picking_id', '=', requested_order.id)])
+            move.write({'picking_type_id': requested_order_ref.id})
 
-        requested_order = request.env['stock.picking'].sudo(
-            user).with_context(planned_picking=True).create({
-                'name': requested_order_ref.sequence_id.next_by_id(),
-                'scheduled_date': schedule,
-                'partner_id': partner[0].id,
-                'picking_type_id': requested_order_ref.id,
-                'move_lines': picking_items,
-                'location_id': src_id,
-                'location_dest_id': dest_id,
-                'origin': venda['order_id'],
-                'amount_total': self._calc_amount_total(picking_items),
-            })
-        move = request.env['stock.move'].sudo().search([
-            ('picking_id', '=', requested_order.id)])
-        move.write({'picking_type_id': requested_order_ref.id})
-
-        ids.append(requested_order.id)
+            ids.append(requested_order.id)
 
         return ids
 
