@@ -1,7 +1,7 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_kk_sites_manager,acess_kk_sites,model_kk_sites,sales_team.group_sale_manager,1,1,1,1
-access_kk_sites_salesman_all,acess_kk_sites,model_kk_sites,sales_team.group_sale_salesman_all_leads,1,1,1,0
-access_kk_sites_salesman,acess_kk_sites,model_kk_sites,sales_team.group_sale_salesman,1,1,0,0
+access_kk_sites_salesman_all,acess_kk_sites,model_kk_sites,sales_team.group_sale_salesman_all_leads,1,0,0,0
+access_kk_sites_salesman,acess_kk_sites,model_kk_sites,sales_team.group_sale_salesman,1,0,0,0
 access_kk_files_manager,acess_kk_files,model_kk_files,sales_team.group_sale_manager,1,1,1,1
 access_kk_files_salesman_all,acess_kk_files,model_kk_files,sales_team.group_sale_salesman_all_leads,1,1,1,0
 access_kk_files_salesman,acess_kk_files,model_kk_files,sales_team.group_sale_salesman,1,1,0,0

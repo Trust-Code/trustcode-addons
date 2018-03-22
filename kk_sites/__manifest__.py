@@ -21,7 +21,7 @@
         'Felipe Paloschi <paloschi.eca@gmail.com>',
     ],
 
-    'depends': ['sale_timesheet', 'project', 'purchase', 'product'],
+    'depends': ['project_per_sale_line', 'purchase', 'product', 'contacts'],
     'data': [
         'views/kk_sites.xml',
         'views/sale_order.xml',
