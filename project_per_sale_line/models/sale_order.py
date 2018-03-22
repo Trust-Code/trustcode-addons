@@ -42,7 +42,7 @@ class SaleOrderLine(models.Model):
     def _timesheet_create_project(self, task=False):
 
         Project = self.env['project.project']
-        name = (self.product_id.default_code or None
+        name = (self.product_id.default_code or ''
                 ) + ": " + self.order_id.name
         project_id = Project.create({
             'name': name,
