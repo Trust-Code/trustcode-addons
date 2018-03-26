@@ -3,7 +3,7 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 from odoo import fields, models, api
-from odoo.exceptions import ValidationError, UserError
+from odoo.exceptions import ValidationError, UserError, RedirectWarning
 import requests
 import json
 from datetime import datetime
@@ -171,19 +171,48 @@ class KKSites(models.Model):
         readonly=True,
         store=True)
 
+    def check_cod_site_kk(self, cod, partner, sites):
+        numbers = cod.split('/')
+        try:
+            if len(numbers) != 2:
+                raise Exception
+            int(numbers[0])
+            int(numbers[1])
+        except Exception:
+            raise UserError('Código Site KK inválido.\
+                Formato padrão: 000/00')
+        if numbers[0] != partner.ref:
+            raise UserError('Código Site KK inválido.\
+                Digitos iniciais não correpondem à Referência Interna do\
+                Cliente!')
+        if sites:
+            if cod in [site.cod_site_kk for site in sites]:
+                raise UserError('Já existe um site com este código')
+
     def seq_cod_site_kk(self, vals):
         sites = self.search(
             [('partner_id', '=', vals['partner_id'])])
         partner = self.env['res.partner'].search(
             [('id', '=', vals['partner_id'])])
-        seq = [0]
-        for site in sites:
-            try:
-                seq.append(int(site.cod_site_kk.split('/')[1]))
-            except Exception:
-                seq.append(0)
-        seq.sort()
-        return "%s/%s" % (partner.ref, str(seq[-1] + 1).zfill(2))
+        cod = ''
+        if vals.get('cod_site_kk'):
+            self.check_cod_site_kk(vals['cod_site_kk'], partner, sites)
+            cod = vals['cod_site_kk']
+        else:
+            seq = [0]
+            for site in sites:
+                try:
+                    seq.append(int(site.cod_site_kk.split('/')[1]))
+                except Exception:
+                    seq.append(0)
+            seq.sort()
+            if not partner.ref:
+                action = self.env.ref('contacts.action_contacts')
+                raise RedirectWarning(
+                    'Configure a Referência Interna do cliente.',
+                    action.id, 'Ir para contatos')
+            cod = "%s/%s" % (partner.ref, str(seq[-1] + 1).zfill(2))
+        return cod
 
     @api.onchange('country_id')
     def _onchange_country_id(self):
@@ -287,6 +316,10 @@ class KKSites(models.Model):
 
     @api.multi
     def write(self, vals):
+        if vals.get('cod_site_kk'):
+            sites = self.search(
+                [('partner_id', '=', self.partner_id.id)])
+            self.check_cod_site_kk(vals['cod_site_kk'], self.partner_id, sites)
         if vals.get('coordenadas'):
             vals['coordenadas'] = self._mask_coordenadas(vals['coordenadas'])
         if vals.get('dimensoes_fundacao'):
@@ -311,7 +344,7 @@ class KKSites(models.Model):
     def parse_response(self, response):
         if '201' in str(response):
             return
-        elif '401' or '400' in str(response):
+        elif ('401' or '400' or '504') in str(response):
             message = response.content
             if 'already exists' in message:
                 message = 'Já existe uma pasta com este nome para este\
@@ -336,8 +369,7 @@ class KKSites(models.Model):
 
     @api.model
     def create(self, vals):
-        if not vals.get('cod_site_kk'):
-            vals['cod_site_kk'] = self.seq_cod_site_kk(vals)
+        vals['cod_site_kk'] = self.seq_cod_site_kk(vals)
         if not vals.get('pasta_servidor') and\
                 self.env.user.company_id.egnyte_active:
             self._create_server_dir(vals)
@@ -369,12 +401,12 @@ class KKSites(models.Model):
         if res:
             self.update(res)
 
-    def action_view_tasks(self):
-        tarefas = self.env['project.task'].search(
+    def action_view_projects(self):
+        projetos = self.env['project.project'].search(
             [('kk_site_id', '=', self.id)])
-        result = self.env.ref('project.action_view_task').read()[0]
+        result = self.env.ref('project.open_view_project_all').read()[0]
         result['context'] = {}
-        result['domain'] = [('id', 'in', tarefas.ids)]
+        result['domain'] = [('id', 'in', projetos.ids)]
         return result
 
 

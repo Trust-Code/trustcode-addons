@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-
     <record model="ir.ui.view" id="view_task_form2_inherited">
         <field name="name">project.task.form.inherited</field>
         <field name="model">project.task</field>
@@ -11,20 +10,57 @@
             </xpath>
         </field>
     </record>
-
     <record id="view_task_kanban_inherited_progress" model="ir.ui.view">
         <field name="name">project.task.timesheet.kanban.inherited.progress</field>
         <field name="model">project.task</field>
         <field name="inherit_id" ref="project.view_task_kanban"/>
         <field name="arch" type="xml">
-                <templates position="before">
-                    <field name="kk_site_id" />
-                </templates>
-             <div class="o_kanban_record_body" position="inside">
+            <templates position="before">
+                <field name="kk_site_id" />
+            </templates>
+            <div class="o_kanban_record_body" position="inside">
                 <t t-if="record.kk_site_id.raw_value">
-                    <span><t t-esc="record.kk_site_id.value" /></span>
+                    <span>
+                        <t t-esc="record.kk_site_id.value" />
+                    </span>
                 </t>
-             </div>
+            </div>
+        </field>
+    </record>
+    <record model="ir.ui.view" id="view_project_form_kk">
+        <field name="name">view.project.form.kk</field>
+        <field name="model">project.project</field>
+        <field name="inherit_id" ref="project.edit_project" />
+        <field name="arch" type="xml">
+            <xpath expr="//group/group[1]" position="after">
+                <group string="Características do Projeto">
+                    <field name="kk_site_id" readonly="1" />
+                    <field name="art" />
+                    <field name="qualidade" />
+                    <field name="data_entrega" readonly="1" />
+                    <field name="create_date" readonly="1" />
+                    <field name="ultima_alteracao" readonly="1" />
+                    <field name="sale_line_id" />
+                </group>
+                <field name="obs" nolabel="1" />
+            </xpath>
+        </field>
+    </record>
+    <record model="ir.ui.view" id="view_project_kanban_kk">
+        <field name="name">view.project.kanban.kk</field>
+        <field name="model">project.project</field>
+        <field name="inherit_id" ref="project.view_project_kanban" />
+        <field name="arch" type="xml">
+            <templates position="before">
+                <field name="kk_site_id" />
+                <field name="data_entrega" />
+                <field name="ultima_alteracao" />
+            </templates>
+            <xpath expr="//div/div/div/div/div" position="inside">
+                <br /><span>Site: <field name="kk_site_id" /></span><br />
+                <b>Data Entrega: <field name="data_entrega" /></b><br />
+                <span>Última Alteração: <field name="ultima_alteracao" /></span><br />
+            </xpath>
         </field>
     </record>
 </odoo>
