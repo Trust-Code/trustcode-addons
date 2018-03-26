@@ -11,12 +11,15 @@ from unicodedata import normalize
 class SaleOrderLine(models.Model):
     _inherit = 'sale.order.line'
 
-    kk_site_id = fields.Many2one('kk.sites', string="Site")
+    kk_site_id = fields.Many2one(
+        'kk.sites',
+        string="Site",
+        ondelete='restrict')
 
     description_proposta = fields.Html(string="Descrição para proposta")
 
-    def get_next_folder_number(self, task):
-        link = task.kk_site_id.pasta_servidor
+    def get_next_folder_number(self, project):
+        link = project.kk_site_id.pasta_servidor
         res = self.env['kk.sites'].get_server_folders(link, False)
         numbers = []
         if not res.get('folders'):
@@ -31,14 +34,14 @@ class SaleOrderLine(models.Model):
         numbers.sort()
         return numbers[-1]
 
-    def _create_server_service_dir(self, res):
-        task = res[self.id]
+    def _create_server_service_dir(self):
+        project = self.project_id
         access_token = self.env.user.company_id.egnyte_acess_token
         host = self.env.user.company_id.egnyte_host
         headers = {'Authorization': 'Bearer ' + access_token,
                    'Content-Type': 'application/json'}
-        number = self.get_next_folder_number(task)
-        pasta = task.kk_site_id.pasta_servidor.replace(
+        number = self.get_next_folder_number(project)
+        pasta = project.kk_site_id.pasta_servidor.replace(
             'https://' + host + '.egnyte.com/app/index.do#storage/files/1',
             '').replace('%20', ' ')
         name = str(number + 1).zfill(2) + '_' + self.name.replace(
@@ -53,17 +56,11 @@ class SaleOrderLine(models.Model):
         self.order_id.message_post('Criada pasta de serviço no servidor: %s'
                                    % pasta)
 
-    @api.multi
-    def _timesheet_find_task(self):
-        result = super(SaleOrderLine, self)._timesheet_find_task()
-        for so_line in self:
-            task = result[so_line.id]
-            task.write({'kk_site_id': so_line.kk_site_id.id,
-                        'name': '%s:%s' % (so_line.order_id.name,
-                                           so_line.product_id.name)})
-            if so_line.kk_site_id and self.env.user.company_id.egnyte_active:
-                so_line._create_server_service_dir(result)
-        return result
+    def _timesheet_create_project(self, task=False):
+        super(SaleOrderLine, self)._timesheet_create_project(task)
+        self.project_id.kk_site_id = self.kk_site_id
+        if self.kk_site_id and self.env.user.company_id.egnyte_active:
+            self._create_server_service_dir()
 
     @api.onchange('product_id')
     def _onchange_product(self):
