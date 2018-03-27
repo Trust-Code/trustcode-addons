@@ -14,8 +14,9 @@ class Project(models.Model):
         store=True)
     art = fields.Char('ART')
     qualidade = fields.Char('Qualidade')
-    data_entrega = fields.Date('Data de Entrega')
+    data_entrega = fields.Date('Data Previsão Entrega')
     ultima_alteracao = fields.Datetime('Última Alteração')
+    arquivado_fisicamente = fields.Char('Arquivado Fisicamente Em')
     obs = fields.Html('Observação')
 
 

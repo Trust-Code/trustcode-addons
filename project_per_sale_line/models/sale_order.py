@@ -42,16 +42,24 @@ class SaleOrderLine(models.Model):
     def _timesheet_create_project(self, task=False):
 
         Project = self.env['project.project']
-        name = (self.product_id.default_code or ''
-                ) + ": " + self.order_id.name
-        project_id = Project.create({
+        if self.product_id.project_name:
+            name = self.product_id.project_name + ': ' + self.order_id.name
+        else:
+            name = (self.product_id.default_code or ''
+                    ) + ": " + self.order_id.name
+        project = Project.create({
             'name': name,
             'code': self.order_id.client_order_ref,
             'company_id': self.order_id.company_id.id,
             'partner_id': self.order_id.partner_id.id,
             'sale_line_id': self.id
         })
-        self.project_id = project_id.id
+        msg_body = (
+            "Criado Projeto (%s): <a href=# data-oe-model=project.project\
+            data-oe-id=%d>%s</a>") % (self.product_id.name, project.id,
+                                      project.name)
+        self.order_id.message_post(body=msg_body)
+        self.project_id = project.id
         if task:
             self._timesheet_create_task()
 

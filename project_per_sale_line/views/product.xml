@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="product_form_view_project_per_sale_line" model="ir.ui.view">
+        <field name="name">product.form.view.project.per.sale.line</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="product.product_normal_form_view"/>
+        <field name="arch" type="xml">
+            <field name="service_tracking" position="after">
+                <field name="project_name" attrs="{'invisible': [('service_tracking', 'not in', ('new_project_per_line', 'new_project_per_line_plus_task'))]}" />
+            </field>
+        </field>
+    </record>
+</odoo>

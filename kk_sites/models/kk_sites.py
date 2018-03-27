@@ -343,10 +343,10 @@ class KKSites(models.Model):
                 não está preenchido")
 
     def parse_response(self, response):
-        if '201' in str(response):
+        if response.ok:
             return
-        elif ('401' or '400' or '504') in str(response):
-            message = response.content
+        else:
+            message = response.text
             if 'already exists' in message:
                 message = 'Já existe uma pasta com este nome para este\
                     cliente no servidor'
