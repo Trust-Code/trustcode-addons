@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record model="ir.ui.view" id="view_product_certification_tree">
+        <field name="name">view.product.certification.tree</field>
+        <field name="model">product.certification</field>
+        <field name="type">tree</field>
+        <field name="arch" type="xml">
+            <tree string="Certificação" editable="bottom">
+                <field name="product_tmpl_id" invisible="1" />
+                <field name="certifying_entity" />
+                <field name="certificate_date" />
+                <field name="certificate_number" />
+                <field name="certificate_expiration_date" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_product_certification_form" model="ir.ui.view">
+        <field name="name">view.product.certification.form</field>
+        <field name="model">product.certification</field>
+        <field name="arch" type="xml">
+            <form string="Certificação">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="product_tmpl_id" invisible="1" />
+                            <field name="certifying_entity" />
+                            <field name="certificate_number" />
+                        </group>
+                        <group>
+                            <field name="certificate_date" />
+                            <field name="certificate_expiration_date" />
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>

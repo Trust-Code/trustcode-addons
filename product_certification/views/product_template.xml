@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Product Template -->
+    <record id="view_product_template_certification" model="ir.ui.view">
+        <field name="name">view.product.template.certification</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_form_view"/>
+        <field name="arch" type="xml">
+            <page name="notes" position="after">
+                <page name="certification" string="Certificação">
+                    <group>
+                        <separator string="Certificações" colspan="4"/>
+                        <field name="product_certification_ids" widget="one2many_list" nolabel="1" />
+                    </group>
+                </page>
+            </page>
+        </field>
+    </record>
+</odoo>
