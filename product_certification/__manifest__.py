@@ -7,7 +7,7 @@
     'name': "Certificação do Produto",
 
     'summary': """
-        Cria campos para especificar entidate e número
+        Cria campos para especificar entidade e número
         da certificação dos produtos""",
     'description': """
     """,
