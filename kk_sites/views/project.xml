@@ -41,6 +41,7 @@
                     <field name="create_date" readonly="1" />
                     <field name="ultima_alteracao" readonly="1" />
                     <field name="sale_line_id" />
+                    <field name="arquivado_fisicamente" widget="url" />
                 </group>
                 <field name="obs" nolabel="1" />
             </xpath>

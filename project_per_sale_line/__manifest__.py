@@ -19,5 +19,6 @@
         'project', 'sale_timesheet'
     ],
     'data': [
+        'views/product.xml'
     ],
 }
