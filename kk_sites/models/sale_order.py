@@ -48,6 +48,7 @@ class SaleOrderLine(models.Model):
             ':', '_').strip()
         name = normalize(
             'NFKD', name).encode('ASCII', 'ignore').decode('ASCII').upper()
+        name = name.replace('[', '(').replace(']', ')')
         pasta += '/' + name
         domain = 'https://' + host + '.egnyte.com/pubapi/v1/fs' + pasta
         data = {"action": "add_folder"}
@@ -57,12 +58,16 @@ class SaleOrderLine(models.Model):
         if response.ok:
             self.order_id.message_post(
                 'Criada pasta de serviço no servidor: <a href=%s>%s</a>'
-                % (link.replace(' ', '%20'), project.name))
-            project.arquivado_fisicamente = link
+                % (link.replace(' ', '%20'), self.name))
         else:
             self.order_id.message_post(
                 'Problemas ao criar pasta no servidor do egnyte: %s'
                 % response.text)
+
+    def _timesheet_create_task_prepare_values(self):
+        v = super(SaleOrderLine, self)._timesheet_create_task_prepare_values()
+        v['kk_site_id'] = self.kk_site_id.id
+        return v
 
     def _timesheet_create_project(self, task=False):
         super(SaleOrderLine, self)._timesheet_create_project(task)
