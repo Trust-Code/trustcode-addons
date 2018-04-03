@@ -28,8 +28,8 @@
                         <button name="action_view_projects"
                             type="object"
                             class="oe_stat_button"
-                            string="Projetos"
                             icon="fa-puzzle-piece">
+                            <field name="project_count" widget="statinfo" string="Projetos" />
                         </button>
                     </div>
                     <div class="col-xs-12">
