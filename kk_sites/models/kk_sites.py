@@ -171,6 +171,16 @@ class KKSites(models.Model):
         readonly=True,
         store=True)
 
+    project_count = fields.Integer(
+        string='Contador Projetos', compute='_compute_project_count')
+
+    @api.multi
+    def _compute_project_count(self):
+        for item in self:
+            count = self.env['project.project'].search_count(
+                [('kk_site_id', '=', item.id)])
+            item.update({'project_count': count})
+
     def check_cod_site_kk(self, cod, partner, sites):
         numbers = cod.split('/')
         try:
