@@ -45,7 +45,7 @@ class SaleOrderLine(models.Model):
             'https://' + host + '.egnyte.com/app/index.do#storage/files/1',
             '').replace('%20', ' ')
         name = (str(number + 1).zfill(2) + '_' + self.order_id.name + '_' +
-                self.product_id.name).replace(':', '_').strip()
+                self.name).replace(':', '_').strip()
         name = normalize(
             'NFKD', name).encode('ASCII', 'ignore').decode('ASCII').upper()
         name = name.replace('[', '(').replace(']', ')')
