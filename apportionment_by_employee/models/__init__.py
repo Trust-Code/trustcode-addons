@@ -5,3 +5,5 @@
 from . import hr_employee
 from . import res_partner
 from . import analytic_apportionment
+from . import account_move
+from . import account_voucher

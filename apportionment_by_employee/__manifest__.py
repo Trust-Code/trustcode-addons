@@ -21,9 +21,12 @@
     'contributors': [
         'Felipe Paloschi <paloschi.eca@gmail.com>',
     ],
-    'depends': ['analytic_account_apportionment', 'hr'],
+    'depends': [
+        'analytic_account_apportionment', 'hr', 'account_voucher'],
     'data': [
         'views/hr_employee.xml',
         'views/res_partner.xml',
+        'views/account_move.xml',
+        'views/account_voucher.xml',
     ],
 }

@@ -4,3 +4,4 @@
 
 from . import analytic_apportionment
 from . import analytic_account
+from . import account_move
