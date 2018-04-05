@@ -5,7 +5,7 @@
 from odoo import fields, models, api
 
 
-class HrEmployee(models.Model):
+class Employee(models.Model):
     _inherit = 'hr.employee'
 
     analytic_account_ids = fields.Many2many(
@@ -19,13 +19,13 @@ class HrEmployee(models.Model):
 
     @api.multi
     def write(self, vals):
-        res = super(HrEmployee, self).write(vals)
-        if vals.get('analytic_account_ids'):
+        res = super(Employee, self).write(vals)
+        if vals.get('analytic_account_ids') or vals.get('active'):
             self.compute_percent_per_employe()
         return res
 
     @api.model
     def create(self, vals):
-        res = super(HrEmployee, self).create(vals)
+        res = super(Employee, self).create(vals)
         res.compute_percent_per_employe()
         return res

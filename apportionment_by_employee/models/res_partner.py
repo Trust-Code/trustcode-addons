@@ -12,7 +12,6 @@ class ResPartner(models.Model):
     apportionment_ids = fields.Many2many(
         'analytic.apportionment', string='Grupos de Rateio')
     is_branch = fields.Boolean('É Filial')
-    has_analytic_acc = fields.Boolean(compute='_compute_has_analytic_acc')
     acc_group_ids = fields.Many2many('acc.group', string="Grupo de contas")
     count_apportionment_lines = fields.Integer(
         'Linhas de Rateio',
@@ -26,15 +25,6 @@ class ResPartner(models.Model):
                     [('partner_id', '=', item.id)])))
             item.count_apportionment_lines = sum(
                 [len(app.apportionment_line_ids) for app in app_groups])
-
-    @api.multi
-    def _compute_has_analytic_acc(self):
-        for partner in self:
-            partner.has_analytic_acc = False
-            if self.env['account.analytic.account'].search_count(
-                    [('partner_id', '=', partner.id)]) == len(
-                            partner.acc_group_ids):
-                partner.has_analytic_acc = True
 
     def create_apportiomeint_group(self):
         analytic_accs = self.env['account.analytic.account'].search(
@@ -79,8 +69,15 @@ class ResPartner(models.Model):
             'res_model': 'analytic.apportionment.line',
             'view_type': 'form',
             'view_mode': 'tree,form',
-            'domain': [('apportionment_id', 'in', [app.id for app in app_groups])],
+            'domain': [
+                ('apportionment_id', 'in', [app.id for app in app_groups])],
         }
+
+    @api.model
+    def create(self, vals):
+        res = super(ResPartner, self).create(vals)
+        res.create_analytic_account()
+        return res
 
 
 class AccGroup(models.Model):

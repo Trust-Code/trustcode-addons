@@ -18,12 +18,6 @@
                     <group>
                         <group>
                             <field name="acc_group_ids" widget="many2many_tags" />
-                            <field name="has_analytic_acc" widget="many2many_tags" invisible="1" />
-                            <button name="create_analytic_account"
-                                    string="Criar centro de custo"
-                                    type="object"
-                                    class="oe_inline fa fa-arrow-right oe_link"
-                                    attrs="{'invisible': [('has_analytic_acc', '=', True)]}" />
                         </group>
                     </group>
                 </page>

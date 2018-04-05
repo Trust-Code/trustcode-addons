@@ -20,8 +20,8 @@ class AccountMove(models.Model):
 class AccountMoveLine(models.Model):
     _inherit = 'account.move.line'
 
-    def update_apportionment_line(self, credit, debit,
-                                  app_line):
+    def update_apportionment_move_line(self, credit, debit,
+                                       app_line):
         if app_line.type == 'percent':
             self.update({
                 'credit': (credit * app_line.apportionment_percent
@@ -52,7 +52,7 @@ class AccountMoveLine(models.Model):
                 move_line = self
             else:
                 move_line = self.copy()
-            new_credit, new_debit = move_line.update_apportionment_line(
+            new_credit, new_debit = move_line.update_apportionment_move_line(
                     initial_credit, initial_debit, app_line)
             credit -= new_credit
             debit -= new_debit
@@ -63,4 +63,4 @@ class AccountMoveLine(models.Model):
             move_line = self
         else:
             move_line = self.copy()
-        move_line.update_apportionment_line(credit, debit, balance_line)
+        move_line.update_apportionment_move_line(credit, debit, balance_line)

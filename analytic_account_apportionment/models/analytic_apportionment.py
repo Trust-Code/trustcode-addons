@@ -48,11 +48,23 @@ class AnalyticApportionment(models.Model):
 class AnalyticApportionmentLine(models.Model):
     _name = 'analytic.apportionment.line'
 
-    apportionment_id = fields.Many2one('analytic.apportionment', string='Grupo de Rateio')
+    apportionment_id = fields.Many2one(
+        'analytic.apportionment', string='Grupo de Rateio')
     analytic_account_id = fields.Many2one(
-        'account.analytic.account', string='Conta Analítica')
+        'account.analytic.account',
+        string='Conta Analítica',
+        ondelete='restrict')
     type = fields.Selection([
         ('percent', 'Percentual'),
         ('balance', 'Saldo')],
         string="Tipo", default='percent')
     apportionment_percent = fields.Float('Percentual de Rateio', digits=(4, 4))
+    isactive = fields.Boolean(
+        string='Ativo', compute='_compute_is_active', store=True)
+
+    @api.multi
+    def _compute_is_active(self):
+        for item in self:
+            item.isactive = True
+            if not item.analytic_account_id.active:
+                item.isactive = False
