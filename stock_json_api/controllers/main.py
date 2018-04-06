@@ -229,8 +229,6 @@ class ApiStock(http.Controller):
         }
         if not partner:
             partner = env_partner.create(vals)
-            partner.zip_search(
-                re.sub('[^0-9]', '', venda['shipping_postcode']))
             payment_adress = {
                 'type': 'invoice',
                 'zip': venda['payment_postcode'],
@@ -239,23 +237,28 @@ class ApiStock(http.Controller):
                 'number': venda['payment_custom_field']['1'],
                 'street2': venda['payment_custom_field']['2'],
             }
-
-            shipping_number = ''
-            shipping_street2 = ''
-
-            if '1' in venda['shipping_custom_field'].keys():
-                shipping_number = venda['shipping_custom_field']['1']
-
-            if '2' in venda['shipping_custom_field'].keys():
-                shipping_street2 = venda['shipping_custom_field']['2']
-
             partner.write({
-                'street': venda['shipping_address_1'],
-                'district': venda['shipping_address_2'],
-                'number': shipping_number,
-                'street2': shipping_street2,
                 'child_ids': [(0, 0, payment_adress)],
             })
+
+        partner.zip_search(
+            re.sub('[^0-9]', '', venda['shipping_postcode']))
+
+        shipping_number = ''
+        shipping_street2 = ''
+
+        if '1' in venda['shipping_custom_field'].keys():
+            shipping_number = venda['shipping_custom_field']['1']
+
+        if '2' in venda['shipping_custom_field'].keys():
+            shipping_street2 = venda['shipping_custom_field']['2']
+
+        partner.write({
+            'street': venda['shipping_address_1'],
+            'district': venda['shipping_address_2'],
+            'number': shipping_number,
+            'street2': shipping_street2,
+        })
 
         env_product = request.env['product.product'].sudo(user)
         env_uom = request.env['product.uom'].sudo(user)
