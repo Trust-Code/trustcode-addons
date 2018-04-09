@@ -8,5 +8,5 @@ from odoo import models, fields
 class AccountAnalyticAccount(models.Model):
     _inherit = 'account.analytic.account'
 
-    apportionment_id = fields.Many2one(
-        'analytic.apportionment', 'Grupo de Rateio')
+    partition_id = fields.Many2one(
+        'analytic.partition', 'Grupo de Rateio')

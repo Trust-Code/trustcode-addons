@@ -1,6 +1,6 @@
 <odoo>
-    <record id="partner_apportionment_form" model="ir.ui.view">
-        <field name="name">partner.apportionment.form</field>
+    <record id="partner_partition_form" model="ir.ui.view">
+        <field name="name">partner.partition.form</field>
         <field name="model">res.partner</field>
         <field name="inherit_id" ref="account.partner_view_button_contracts_count"/>
         <field name="arch" type="xml">
@@ -8,13 +8,13 @@
                 <field name="is_branch" string="É Filial"/>
             </field>
             <button name="%(account.action_open_partner_analytic_accounts)d" position="after">
-                <button class="oe_stat_button" type="object" name="action_view_analytic_apportionment_lines"
+                <button class="oe_stat_button" type="object" name="action_view_analytic_partition_lines"
                     icon="fa-book" groups="analytic.group_analytic_accounting">
-                    <field string="Linhas de Rateio" name="count_apportionment_lines" widget="statinfo"/>
+                    <field string="Linhas de Rateio" name="count_partition_lines" widget="statinfo"/>
                 </button>
             </button>
             <notebook position="inside">
-                <page name="apportionment" string="Controle de Rateio" attrs="{'invisible': [('is_branch', '=', False)]}">
+                <page name="partition" string="Controle de Rateio" attrs="{'invisible': [('is_branch', '=', False)]}">
                     <group>
                         <group>
                             <field name="acc_group_ids" widget="many2many_tags" />

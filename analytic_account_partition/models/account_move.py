@@ -12,21 +12,21 @@ class AccountMove(models.Model):
     @api.multi
     def post(self):
         for line in self.line_ids:
-            line._create_apportionment_move_lines(
-                line.analytic_account_id.apportionment_id)
+            line._create_partition_move_lines(
+                line.analytic_account_id.partition_id)
         return super(AccountMove, self).post()
 
 
 class AccountMoveLine(models.Model):
     _inherit = 'account.move.line'
 
-    def update_apportionment_move_line(self, credit, debit,
-                                       app_line):
+    def update_partition_move_line(self, credit, debit,
+                                   app_line):
         if app_line.type == 'percent':
             self.update({
-                'credit': (credit * app_line.apportionment_percent
+                'credit': (credit * app_line.partition_percent
                         / 100),
-                'debit': (debit * app_line.apportionment_percent /
+                'debit': (debit * app_line.partition_percent /
                         100),
                 'analytic_account_id': app_line.analytic_account_id,
                 })
@@ -38,13 +38,13 @@ class AccountMoveLine(models.Model):
                 })
         return self.credit, self.debit
 
-    def _create_apportionment_move_lines(self, apportionment_group):
-        if not apportionment_group:
+    def _create_partition_move_lines(self, partition_group):
+        if not partition_group:
             return
         initial_credit = credit = self.credit
         initial_debit = debit = self.debit
         balance_line = False
-        for app_line in apportionment_group.apportionment_line_ids:
+        for app_line in partition_group.partition_line_ids:
             if app_line.type == 'balance':
                 balance_line = app_line
                 continue
@@ -52,15 +52,15 @@ class AccountMoveLine(models.Model):
                 move_line = self
             else:
                 move_line = self.copy()
-            new_credit, new_debit = move_line.update_apportionment_move_line(
+            new_credit, new_debit = move_line.update_partition_move_line(
                     initial_credit, initial_debit, app_line)
             credit -= new_credit
             debit -= new_debit
         if not balance_line:
             raise UserError('O grupo de rateio %s não contém linha de Saldo'
-                            % apportionment_group.name)
+                            % partition_group.name)
         if balance_line.analytic_account_id == self.analytic_account_id:
             move_line = self
         else:
             move_line = self.copy()
-        move_line.update_apportionment_move_line(credit, debit, balance_line)
+        move_line.update_partition_move_line(credit, debit, balance_line)

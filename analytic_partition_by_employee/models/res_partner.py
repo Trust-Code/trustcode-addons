@@ -9,40 +9,40 @@ from odoo.exceptions import UserError
 class ResPartner(models.Model):
     _inherit = 'res.partner'
 
-    apportionment_ids = fields.Many2many(
-        'analytic.apportionment', string='Grupos de Rateio')
+    partition_ids = fields.Many2many(
+        'analytic.partition', string='Grupos de Rateio')
     is_branch = fields.Boolean('É Filial')
     acc_group_ids = fields.Many2many('acc.group', string="Grupo de contas")
-    count_apportionment_lines = fields.Integer(
+    count_partition_lines = fields.Integer(
         'Linhas de Rateio',
-        compute="_compute_apportionment_lines")
+        compute="_compute_partition_lines")
 
     @api.multi
-    def _compute_apportionment_lines(self):
+    def _compute_partition_lines(self):
         for item in self:
-            app_groups = set(map(lambda x: x.apportionment_id, self.env[
+            app_groups = set(map(lambda x: x.partition_id, self.env[
                 'account.analytic.account'].search(
                     [('partner_id', '=', item.id)])))
-            item.count_apportionment_lines = sum(
-                [len(app.apportionment_line_ids) for app in app_groups])
+            item.count_partition_lines = sum(
+                [len(app.partition_line_ids) for app in app_groups])
 
     def create_apportiomeint_group(self):
         analytic_accs = self.env['account.analytic.account'].search(
             [('partner_id', '=', self.id)])
-        app_group = self.env['analytic.apportionment'].create({
+        app_group = self.env['analytic.partition'].create({
             'name': 'Escritório ' + self.name,
-            'apportionment_line_ids': [(0, 0, {
+            'partition_line_ids': [(0, 0, {
                 'analytic_account_id': analytic_accs[0].id,
                 'type': 'balance',
-                'apportionment_percent': 0
+                'partition_percent': 0
             })]
         })
         for acc in analytic_accs[1:]:
-            self.env['analytic.apportionment.line'].create({
-                'apportionment_id': app_group.id,
+            self.env['analytic.partition.line'].create({
+                'partition_id': app_group.id,
                 'analytic_account_id': acc.id,
                 'type': 'percent',
-                'apportionment_percent': 0
+                'partition_percent': 0
             })
         return app_group
 
@@ -58,19 +58,19 @@ class ResPartner(models.Model):
             }))
         app_group = self.create_apportiomeint_group()
         for acc in analytic_accs:
-            acc.write({'apportionment_id': app_group.id})
+            acc.write({'partition_id': app_group.id})
 
-    def action_view_analytic_apportionment_lines(self):
-        app_groups = list(map(lambda x: x.apportionment_id, self.env[
+    def action_view_analytic_partition_lines(self):
+        app_groups = list(map(lambda x: x.partition_id, self.env[
             'account.analytic.account'].search([('partner_id', '=', self.id)])))
         return {
             'type': 'ir.actions.act_window',
             'name': 'Linhas de Rateio',
-            'res_model': 'analytic.apportionment.line',
+            'res_model': 'analytic.partition.line',
             'view_type': 'form',
             'view_mode': 'tree,form',
             'domain': [
-                ('apportionment_id', 'in', [app.id for app in app_groups])],
+                ('partition_id', 'in', [app.id for app in app_groups])],
         }
 
     @api.model

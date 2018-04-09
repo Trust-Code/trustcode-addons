@@ -12,9 +12,9 @@ class Employee(models.Model):
         'account.analytic.account', string='Conta Analitica')
 
     def compute_percent_per_employe(self):
-        apportionment_groups = set(
-            [acc.apportionment_id for acc in self.analytic_account_ids])
-        for app in apportionment_groups:
+        partition_groups = set(
+            [acc.partition_id for acc in self.analytic_account_ids])
+        for app in partition_groups:
             app.calc_percent_by_employee()
 
     @api.multi

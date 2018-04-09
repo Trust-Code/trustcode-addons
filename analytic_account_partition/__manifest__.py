@@ -21,7 +21,7 @@
     ],
     'depends': ['br_account', 'analytic'],
     'data': [
-        'views/analytic_apportionment.xml',
+        'views/analytic_partition.xml',
         'views/analytic_account.xml'
     ],
 }

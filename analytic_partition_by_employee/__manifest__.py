@@ -22,7 +22,7 @@
         'Felipe Paloschi <paloschi.eca@gmail.com>',
     ],
     'depends': [
-        'analytic_account_apportionment', 'hr', 'account_voucher'],
+        'analytic_account_partition', 'hr', 'account_voucher'],
     'data': [
         'views/hr_employee.xml',
         'views/res_partner.xml',

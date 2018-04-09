@@ -6,50 +6,58 @@ from odoo import models, fields, api
 from odoo.exceptions import UserError
 
 
-class AnalyticApportionment(models.Model):
-    _name = 'analytic.apportionment'
+class Analyticpartition(models.Model):
+    _name = 'analytic.partition'
 
     name = fields.Char('Nome')
-    apportionment_line_ids = fields.One2many(
-        'analytic.apportionment.line',
-        'apportionment_id',
+    partition_line_ids = fields.One2many(
+        'analytic.partition.line',
+        'partition_id',
         string="Linhas de Rateio")
 
     def _check_percent_amount(self):
         balance_line = []
         amount = 0
-        for line in self.apportionment_line_ids:
+        for line in self.partition_line_ids:
             if line.type == 'balance':
                 balance_line.append(line)
             else:
-                amount += line.apportionment_percent
+                amount += line.partition_percent
         if len(balance_line) != 1:
             raise UserError('Uma (e apenas uma) linha de rateio deve ser do\
                 tipo Saldo')
         else:
-            balance_line[0].apportionment_percent = 100 - amount
+            balance_line[0].partition_percent = 100 - amount
         if amount > 100:
             raise UserError('O somatório do percentual de rateio é maior que\
                 100%')
 
+    def _check_analytic_accounts(self):
+        if len(set([x.analytic_account_id for x in self.partition_line_ids]))\
+                != len(self.partition_line_ids):
+            raise UserError('Não podem existir duas linhas correspondentes à\
+                mesma conta analítica')
+
     @api.model
     def create(self, vals):
-        res = super(AnalyticApportionment, self).create(vals)
+        res = super(Analyticpartition, self).create(vals)
         res._check_percent_amount()
+        res._check_analytic_accounts()
         return res
 
     @api.multi
     def write(self, vals):
-        res = super(AnalyticApportionment, self).write(vals)
+        res = super(Analyticpartition, self).write(vals)
         self._check_percent_amount()
+        self._check_analytic_accounts()
         return res
 
 
-class AnalyticApportionmentLine(models.Model):
-    _name = 'analytic.apportionment.line'
+class AnalyticpartitionLine(models.Model):
+    _name = 'analytic.partition.line'
 
-    apportionment_id = fields.Many2one(
-        'analytic.apportionment', string='Grupo de Rateio')
+    partition_id = fields.Many2one(
+        'analytic.partition', string='Grupo de Rateio')
     analytic_account_id = fields.Many2one(
         'account.analytic.account',
         string='Conta Analítica',
@@ -58,7 +66,7 @@ class AnalyticApportionmentLine(models.Model):
         ('percent', 'Percentual'),
         ('balance', 'Saldo')],
         string="Tipo", default='percent')
-    apportionment_percent = fields.Float('Percentual de Rateio', digits=(4, 4))
+    partition_percent = fields.Float('Percentual de Rateio', digits=(4, 4))
     isactive = fields.Boolean(
         string='Ativo', compute='_compute_is_active', store=True)
 
