@@ -44,6 +44,7 @@ class AccountMoveLine(models.Model):
         initial_credit = credit = self.credit
         initial_debit = debit = self.debit
         balance_line = False
+        move_lines = []
         for app_line in partition_group.partition_line_ids:
             if app_line.type == 'balance':
                 balance_line = app_line
@@ -56,6 +57,7 @@ class AccountMoveLine(models.Model):
                     initial_credit, initial_debit, app_line)
             credit -= new_credit
             debit -= new_debit
+            move_lines.append(move_line)
         if not balance_line:
             raise UserError('O grupo de rateio %s não contém linha de Saldo'
                             % partition_group.name)
@@ -64,3 +66,5 @@ class AccountMoveLine(models.Model):
         else:
             move_line = self.copy()
         move_line.update_partition_move_line(credit, debit, balance_line)
+        move_lines.append(move_line)
+        return move_lines
