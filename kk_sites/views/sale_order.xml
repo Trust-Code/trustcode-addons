@@ -16,6 +16,10 @@
                 <label for="description_proposta" />
                 <field name="description_proposta" type="html" nolabel="1" />
             </xpath>
+            <xpath expr="//field[@name='order_line']/form/group/group[2]" position="inside">
+                <field  name="purchase_order" />
+                <field name="is_invoice_ok" />
+            </xpath>
         </field>
     </record>
 </odoo>
