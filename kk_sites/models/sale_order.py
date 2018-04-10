@@ -15,11 +15,14 @@ class SaleOrder(models.Model):
     def _prepare_invoice(self):
         lines = self.order_line.filtered(
             lambda x: x.invoice_status != 'invoiced')
-        if all(not line.is_invoice_ok for line in lines):
+        if all(not (line.is_invoice_ok and line.purchase_order) for line in
+                lines):
             raise UserError('Não é possível faturar a ordem %s pois nenhuma das\
-                linhas faturáveis está liberada para faturamento.\n\
-                Acesse as linhas que deseja faturar e marque a opção "Liberar\
-                para faturamento"' % self.name)
+                linhas faturáveis está liberada para faturamento e ou a\
+                ordem de compra não está preenchida.\n\
+                Acesse as linhas que deseja faturar, marque a opção "Liberar\
+                para faturamento" e preencha o campo "Ordem de compra"'
+                            % self.name)
         else:
             return super(SaleOrder, self)._prepare_invoice()
 
@@ -41,7 +44,8 @@ class SaleOrderLine(models.Model):
     def invoice_line_create(self, invoice_id, qty):
         lines = super(SaleOrderLine, self).invoice_line_create(invoice_id, qty)
         for line in lines:
-            if any(not item.is_invoice_ok for item in line.sale_line_ids):
+            if any(not (item.is_invoice_ok and item.purchase_order) for item
+                    in line.sale_line_ids):
                 line.unlink()
         return lines
 
