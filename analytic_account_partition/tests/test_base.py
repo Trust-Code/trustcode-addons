@@ -3,6 +3,7 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 from odoo.tests.common import TransactionCase
+from datetime import date
 
 
 class TestBaseAnalyticPartition(TransactionCase):
@@ -62,8 +63,23 @@ class TestBaseAnalyticPartition(TransactionCase):
             'default_debit_account_id': self.expenses_account.id,
             'default_credit_account_id': self.expenses_account.id,
         })
-        self.move_id = self.env['account.move'].create({
+        self.move = self.env['account.move'].create({
             'ref': 'Move one',
             'journal_id': self.journal.id,
-            'line_ids': [(0, 0, #continuar aqui)]
+            'line_ids': [
+                (0, 0, {
+                    'account_id': self.expenses_account.id,
+                    'debit': 3458.97,
+                    'credit': 0,
+                    'quantity': 1,
+                    'date_maturity': date.today()
+                }),
+                (0, 0, {
+                    'account_id': self.expenses_account.id,
+                    'debit': 0,
+                    'credit': 3458.97,
+                    'quantity': 1,
+                    'date_maturity': date.today()
+                })
+            ]
         })
