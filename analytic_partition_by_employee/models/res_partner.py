@@ -62,7 +62,8 @@ class ResPartner(models.Model):
 
     def action_view_analytic_partition_lines(self):
         app_groups = list(map(lambda x: x.partition_id, self.env[
-            'account.analytic.account'].search([('partner_id', '=', self.id)])))
+            'account.analytic.account'].search([('partner_id', '=', self.id)]))
+            )
         return {
             'type': 'ir.actions.act_window',
             'name': 'Linhas de Rateio',

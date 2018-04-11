@@ -13,18 +13,6 @@ class TestBaseAnalyticPartition(TransactionCase):
         self.main_company = self.env.ref('base.main_company')
         self.analytic_model = self.env['account.analytic.account']
         self.partition_model = self.env['analytic.partition']
-        # self.product_one = self.env['product.product'].create({
-        #     'name': 'Normal Product',
-        #     'default_code': '010',
-        #     'list_price': 99.53,
-        #     'taxes_id': [],
-        # })
-        # self.product_two = self.env['product.product'].create({
-        #     'name': 'Normal Product 2',
-        #     'default_code': '011',
-        #     'list_price': 37.13,
-        #     'taxes_id': [],
-        # })
         self.analytic_acc_one = self.analytic_model.create({
             'name': 'Analytic Account One'
         })
