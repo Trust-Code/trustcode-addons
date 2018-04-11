@@ -6,7 +6,7 @@ from odoo import models, fields, api
 from odoo.exceptions import UserError
 
 
-class Analyticpartition(models.Model):
+class AnalyticPartition(models.Model):
     _name = 'analytic.partition'
 
     name = fields.Char('Nome')
@@ -31,6 +31,7 @@ class Analyticpartition(models.Model):
         if amount > 100:
             raise UserError('O somatório do percentual de rateio é maior que\
                 100%')
+        return True
 
     def _check_analytic_accounts(self):
         if len(set([x.analytic_account_id for x in self.partition_line_ids]))\
@@ -40,20 +41,20 @@ class Analyticpartition(models.Model):
 
     @api.model
     def create(self, vals):
-        res = super(Analyticpartition, self).create(vals)
+        res = super(AnalyticPartition, self).create(vals)
         res._check_percent_amount()
         res._check_analytic_accounts()
         return res
 
     @api.multi
     def write(self, vals):
-        res = super(Analyticpartition, self).write(vals)
+        res = super(AnalyticPartition, self).write(vals)
         self._check_percent_amount()
         self._check_analytic_accounts()
         return res
 
 
-class AnalyticpartitionLine(models.Model):
+class AnalyticPartitionLine(models.Model):
     _name = 'analytic.partition.line'
 
     partition_id = fields.Many2one(

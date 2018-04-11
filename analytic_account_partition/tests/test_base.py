@@ -12,7 +12,7 @@ class TestBaseAnalyticPartition(TransactionCase):
         super(TestBaseAnalyticPartition, self).setUp()
         self.main_company = self.env.ref('base.main_company')
         self.analytic_model = self.env['account.analytic.account']
-        self.partition_model = self.env['analytic.account.partition']
+        self.partition_model = self.env['analytic.partition']
         # self.product_one = self.env['product.product'].create({
         #     'name': 'Normal Product',
         #     'default_code': '010',
@@ -34,6 +34,9 @@ class TestBaseAnalyticPartition(TransactionCase):
         self.analytic_acc_three = self.analytic_model.create({
             'name': 'Analytic Account Three'
         })
+        self.analytic_acc_four = self.analytic_model.create({
+            'name': 'Analytic Account Four'
+        })
         self.partition_group = self.partition_model.create({
             'name': '213',
             'partition_line_ids': [
@@ -49,6 +52,7 @@ class TestBaseAnalyticPartition(TransactionCase):
                     'analytic_account_id': self.analytic_acc_three.id,
                     'type': 'balance'})
             ]})
+        self.analytic_acc_one.partition_id = self.partition_group
         self.expenses_account = self.env['account.account'].create({
             'code': '100',
             'name': 'Despesas',
@@ -64,17 +68,21 @@ class TestBaseAnalyticPartition(TransactionCase):
             'default_credit_account_id': self.expenses_account.id,
         })
         self.move = self.env['account.move'].create({
+            'name': 'Move name',
             'ref': 'Move one',
             'journal_id': self.journal.id,
             'line_ids': [
                 (0, 0, {
+                    'name': 'line one',
                     'account_id': self.expenses_account.id,
                     'debit': 3458.97,
                     'credit': 0,
                     'quantity': 1,
-                    'date_maturity': date.today()
+                    'date_maturity': date.today(),
+                    'analytic_account_id': self.analytic_acc_one.id
                 }),
                 (0, 0, {
+                    'name': 'line 2',
                     'account_id': self.expenses_account.id,
                     'debit': 0,
                     'credit': 3458.97,
