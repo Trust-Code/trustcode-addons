@@ -10,7 +10,7 @@ class ResCompany(models.Model):
     _inherit = 'res.company'
 
     debit_note_sequence_id = fields.Many2one(
-            'ir.sequence',
-            'Sequência da Nota de débito',
-            help="Selecione a sequência que será utilizada para \
-    a nota de débito.")
+        'ir.sequence',
+        'Sequência da Nota de débito',
+        help="Selecione a sequência que será utilizada para \
+a nota de débito.")

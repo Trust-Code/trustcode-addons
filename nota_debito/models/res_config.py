@@ -22,5 +22,5 @@ a nota de débito.")
 
     @api.multi
     def set_default_debit_note_sequence_id(self):
-        self.env.user.company_id.debit_note_sequence_id\
-          = self.debit_note_sequence_id.id
+        self.env.user.company_id.debit_note_sequence_id = \
+            self.debit_note_sequence_id.id
