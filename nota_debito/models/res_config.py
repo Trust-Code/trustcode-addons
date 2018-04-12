@@ -12,8 +12,7 @@ class AccountPaymentConfig(models.TransientModel):
     debit_note_sequence_id = fields.Many2one(
         'ir.sequence',
         'Sequência da Nota de débito',
-        help="Selecione a sequência que será utilizada para \
-a nota de débito.")
+        help="Selecione a sequência que será utilizada para a nota de débito.")
 
     @api.model
     def get_default_debit_note_sequence_id(self, fields):
