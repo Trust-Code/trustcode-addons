@@ -57,7 +57,7 @@
                 <div class="col-xs-4">
                     <div class="panel panel-primary">
                         <div class="panel-heading" style="padding:3px 6px;">
-                            <h3 class="panel-title">Nº FORMULÁRIO <span class="pull-right" t-field="doc.number" /></h3>
+                            <h3 class="panel-title">Nº FORMULÁRIO <span class="pull-right" t-esc="doc._get_debit_note_sequence()" /></h3>
                         </div>
                     </div>
                 </div>

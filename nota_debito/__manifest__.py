@@ -19,5 +19,6 @@
     ],
     'data': [
         'reports/nota_debito.xml',
+        'views/res_config.xml',
     ],
 }
