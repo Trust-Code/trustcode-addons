@@ -13,7 +13,7 @@
             <xpath expr="//group/group/field[@name='day_close']" position="after">
                 <field name="tempo_excedido"/>
             </xpath>
-            <field name="tag_ids" position="after">
+            <field name="priority" position="after">
                 <field name="impacto" required="1" />
             </field>
         </field>

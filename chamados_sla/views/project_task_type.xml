@@ -1,0 +1,12 @@
+<odoo>
+    <record id="task_type_issues" model="ir.ui.view">
+        <field name="name">project.task.issues</field>
+        <field name="model">project.task.type</field>
+        <field name="inherit_id" ref="project.task_type_edit"/>
+        <field name="arch" type="xml">
+            <field name="sequence" position="after">
+                <field name="block_stages_changes" />
+            </field>
+        </field>
+    </record>
+</odoo>

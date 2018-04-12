@@ -4,6 +4,8 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 from odoo import api, fields, models
+from odoo.exceptions import UserError
+import re
 
 ALTA = '2'
 MEDIA = '1'
@@ -43,7 +45,12 @@ class ProjectIssue(models.Model):
 
     impacto = fields.Selection(
         [('0', 'Baixo'), ('1', 'Médio'), ('2', 'Alto')],
-        string="Impacto sobre negócios", oldname='x_impacto')
+        string="Impacto sobre negócios", oldname='x_impacto',
+        track_visibility='onchange')
+
+    priority = fields.Selection(
+        [('0', 'Low'), ('1', 'Normal'), ('2', 'High')],
+        'Priority', index=True, default='0', track_visibility='onchange')
 
     @api.multi
     @api.depends("create_date", "priority", "impacto")
@@ -72,3 +79,40 @@ class ProjectIssue(models.Model):
                and item.stage_id.sequence <= 100:
                 result = True
             item.tempo_excedido = result
+
+    def _check_description_characters(self, vals, onCreate=False):
+        error = False
+        if vals.get('description'):
+            cleanr = re.compile('<.*?>')
+            cleantext = re.sub(cleanr, '', vals['description'])
+            desc_len = len(cleantext)
+            if desc_len < 25:
+                error = True
+        elif onCreate:
+            error = True
+            desc_len = 0
+        if error:
+            raise UserError(u'A descrição contém apenas %d caracteres. Favor\
+             descrever melhor o incidente. Este campo deve conter\
+             no mínimo 25 caracteres' % desc_len)
+
+    def _check_is_done(self, vals):
+        if vals.get('stage_id'):
+            if self.stage_id.block_stages_changes:
+                raise UserError(u'Não é possível mudar o estágio de um chamado\
+                    em %s' % self.stage_id.name)
+            else:
+                stage = self.env['project.task.type'].browse(vals['stage_id'])
+                if stage.block_stages_changes:
+                    self.is_issue_done = True
+
+    @api.multi
+    def write(self, vals):
+        self._check_is_done(vals)
+        self._check_description_characters(vals)
+        return super(ProjectIssue, self).write(vals)
+
+    @api.model
+    def create(self, vals):
+        self._check_description_characters(vals, True)
+        return super(ProjectIssue, self).create(vals)

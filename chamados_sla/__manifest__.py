@@ -19,7 +19,8 @@
         'project_issue',
     ],
     'data': [
-        'views/project_issue.xml'
+        'views/project_issue.xml',
+        'views/project_task_type.xml'
     ],
     'installable': True,
 }

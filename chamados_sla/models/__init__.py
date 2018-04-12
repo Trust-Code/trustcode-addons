@@ -4,3 +4,4 @@
 
 from . import project_issue
 from . import resources_calendar
+from . import project_task_type
