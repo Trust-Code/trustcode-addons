@@ -5,11 +5,24 @@
 import copy
 from datetime import datetime
 import dateutil.relativedelta as relativedelta
-from odoo import api, models, tools
+from odoo import api, models, tools, fields
 
 
 class AccountInvoice(models.Model):
     _inherit = 'account.invoice'
+
+    debit_note_number = fields.Char(
+        string="Numeração Nota Débito", size=20)
+
+    @api.multi
+    def invoice_validate(self):
+        for invoice in self:
+            if not self.env.user.company_id.debit_note_sequence_id:
+                continue
+            number = \
+                self.env.user.company_id.debit_note_sequence_id.next_by_id()
+            invoice.write({'debit_note_number': number})
+        return super(AccountInvoice, self).invoice_validate()
 
     @api.multi
     def compute_legal_information(self):
@@ -71,3 +84,10 @@ class AccountInvoice(models.Model):
             render_result = template.render(variables)
             result += render_result + '<br />'
         return result
+
+    def _get_debit_note_sequence(self):
+        if self.company_id.debit_note_sequence_id and\
+                self.debit_note_number:
+            return self.debit_note_number
+        else:
+            return self.number
