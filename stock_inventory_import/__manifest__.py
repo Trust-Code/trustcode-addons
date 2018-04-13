@@ -4,9 +4,9 @@
 # © 2016 Alessandro Fernandes Martini, Trustcode
 # License AGPL-3.0 or later (http://gnu.org/licenses/agpl-3.0.html)
 
-{
+{   # pylint: disable=C8101,C8103
     "name": "Stock Inventory Import from CSV file",
-    "version": "10.0.1.0.0",
+    "version": "11.0.1.0.0",
     "category": "Generic Modules",
     "license": "AGPL-3",
     "author": "OdooMRP team, "
