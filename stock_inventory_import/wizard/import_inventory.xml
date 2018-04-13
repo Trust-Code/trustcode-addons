@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Import Inventory Wizard form -->
+        <record id="view_import_inventory" model="ir.ui.view">
+            <field name="name">import.inventory.form</field>
+            <field name="model">import.inventory</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Importar Inventário">
+                <label string="O arquivo deve ter duas colunas com o seguinte nome:
+                'codigo' => para a referencia do produto
+                'quantidade' => para a quantidade do produto"/>
+                    <group>
+                        <group>
+                            <field name="location"/>
+                            <field name="owner" />
+                        </group>
+                        <group>
+                            <field name="data"/>
+                            <field name="delimeter"/>
+                        </group>
+                    </group>
+                   <footer>
+                        <button special="cancel" string="Cancelar"/>
+                        <button class="oe_highlight" name="action_import" string="Importar" type="object"/>
+                   </footer>
+               </form>
+            </field>
+        </record>
+
+    <!--  Action of Import inventory wizard -->
+
+    <record id="action_import_inventory" model="ir.actions.act_window">
+        <field name="name">Import Inventory</field>
+        <field name="res_model">import.inventory</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+       <field name="view_id" ref="view_import_inventory"/>
+       <field name="target">new</field>
+    </record>
+
+    <!-- <menuitem  id="menu_import_inventory" name="Import Inventory" action="action_import_inventory" parent="stock.menu_stock_inventory_control"/> -->
+</odoo>
