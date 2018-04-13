@@ -21,8 +21,10 @@ class Analyticpartition(models.Model):
              for line in self.partition_line_ids])
         amount = 0
         balance_line = False
+        if not self.partition_line_ids:
+            return
         for line in self.partition_line_ids:
-            if not line.is_account_active:
+            if not line.isactive:
                 line.partition_percent = 0
                 continue
             if not balance_line:

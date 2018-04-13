@@ -69,7 +69,7 @@ class AnalyticPartitionLine(models.Model):
         string="Tipo", default='percent')
     partition_percent = fields.Float('Percentual de Rateio', digits=(4, 4))
     isactive = fields.Boolean(
-        string='Ativo', compute='_compute_is_active', store=True)
+        string='Ativo', compute='_compute_is_active', store=True, default=True)
 
     @api.multi
     def _compute_is_active(self):

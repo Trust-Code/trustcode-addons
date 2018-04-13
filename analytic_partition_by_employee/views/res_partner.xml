@@ -17,7 +17,7 @@
                 <page name="partition" string="Controle de Rateio" attrs="{'invisible': [('is_branch', '=', False)]}">
                     <group>
                         <group>
-                            <field name="acc_group_ids" widget="many2many_tags" />
+                            <field name="expense_group_ids" widget="many2many_tags" />
                         </group>
                     </group>
                 </page>

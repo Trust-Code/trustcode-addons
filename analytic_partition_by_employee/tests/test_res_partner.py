@@ -11,9 +11,8 @@ class TestResPartner(TestBaseAnalyicEmploye):
     def test_create(self):
         analytic_accs = self.env['account.analytic.account'].search([
             ('partner_id', '=', self.branch_one.id)])
-        self.assertTrue(len(analytic_accs) == len(
-            self.branch_one.acc_group_ids))
-        self.assertTrue
-        app_group = analytic_accs[0].partition_id
-        self.assertTrue(len(app_group.partition_line_ids) == len(analytic_accs)
-                        )
+        self.assertEquals(len(analytic_accs), len(
+            self.branch_one.expense_group_ids))
+        part_group = analytic_accs[0].partition_id
+        self.assertEquals(len(part_group.partition_line_ids),
+                          len(analytic_accs))

@@ -19,21 +19,36 @@ class TestBaseAnalyicEmploye(TransactionCase):
                 'account.data_account_type_receivable').id,
             'company_id': self.main_company.id
         })
+        self.group_one = self.env['expense.group'].create({
+            'name': 'Grupo um'
+        })
+        self.group_two = self.env['expense.group'].create({
+            'name': 'Grupo dois'
+        })
         self.branch_one = self.env['res.partner'].create({
             'name': 'Nome Parceiro Um',
             'is_branch': True,
             'property_account_receivable_id': self.receivable_account.id,
-            'acc_group_ids': [
-                (0, 0, {
-                    'name': 'Grupo um'
-                }),
-                (0, 0, {
-                    'name': 'Grupo dois'
-                })]
+            'expense_group_ids': [
+                [6, 0, [self.group_one.id, self.group_two.id]]]
         })
         self.analytic_acc_one = self.env['account.analytic.account'].create({
             'name': 'Analytic Account One'
         })
+        self.analytic_acc_two = self.env['account.analytic.account'].create({
+            'name': 'Analytic Account Two'
+        })
+        self.partition_group = self.env['analytic.partition'].create({
+            'name': '213',
+            'partition_line_ids': [
+                (0, 0, {
+                    'analytic_account_id': self.analytic_acc_one.id,
+                    'type': 'percent',
+                    'partition_percent': 37.5698}),
+                (0, 0, {
+                    'analytic_account_id': self.analytic_acc_two.id,
+                    'type': 'balance'}),
+            ]})
         self.journal = self.env['account.journal'].create({
             'name': 'Receivable',
             'code': 'INV',
@@ -67,3 +82,13 @@ class TestBaseAnalyicEmploye(TransactionCase):
                 })
             ]
         })
+        for num in range(5):
+            self.env['hr.employee'].create({
+                'name': 'Empregado %d' % num,
+                'analytic_account_ids': [(4, self.analytic_acc_one.id, 0)]
+            })
+        for num in range(11):
+            self.env['hr.employee'].create({
+                'name': 'Empregado %d' % num,
+                'analytic_account_ids': [(4, self.analytic_acc_two.id, 0)]
+            })
