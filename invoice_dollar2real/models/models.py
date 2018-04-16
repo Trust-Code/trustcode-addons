@@ -27,4 +27,7 @@ class SaleOrderLine(models.Model):
         if currency.id != self.order_id.pricelist_id.currency_id.id:
             res['price_unit'] = self.order_id.pricelist_id.currency_id.compute(
                 res['price_unit'], currency)
+            if res.get('valor_frete'):
+                res['valor_frete'] = self.order_id.pricelist_id.currency_id.\
+                    compute(res['valor_frete'], currency)
         return res
