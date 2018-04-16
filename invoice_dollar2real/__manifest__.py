@@ -21,6 +21,6 @@
         'Fabio Luna <fabiocluna@hotmail.com>'
     ],
     'depends': [
-        'account', 'sale'
+        'br_account', 'br_sale'
     ],
 }
