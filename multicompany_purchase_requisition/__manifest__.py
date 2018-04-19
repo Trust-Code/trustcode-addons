@@ -22,5 +22,6 @@
     'data': [
         "data/multicompany_purchase.xml",
         "views/purchase_multicompany.xml",
+        "security/ir.model.access.csv",
     ],
 }
