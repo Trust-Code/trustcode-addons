@@ -118,26 +118,26 @@
     </record>
 
     <record id="view_purchase_requisition_filter" model="ir.ui.view">
-            <field name="name">purchase.requisition.list.select</field>
-            <field name="model">purchase.multicompany</field>
-            <field name="arch" type="xml">
-                <search string="Search Purchase Agreements">
-                    <field name="name" string="Purchase Agreements" filter_domain="['|', ('name','ilike',self), ('origin','ilike',self)]"/>
-                    <filter name="draft" string="Draft" domain="[('state','=','draft')]" help="New Agreements"/>
-                    <filter string="Confirmed" domain="[('state','in',('in_progress','open'))]" help="In negotiation"/>
-                    <filter string="Done" domain="[('state','=','done')]"/>
-                    <separator/>
-                    <filter string="Unassigned"  domain="[('user_id','=', False)]" help="Unassigned  Requisition"/>
-                    <field name="user_id" />
-                    <group expand="0" string="Group By">
-                        <filter string="Responsible" domain="[]" context="{'group_by':'user_id'}"/>
-                        <filter string="Status" domain="[]" context="{'group_by':'state'}"/>
-                        <filter string="Ordering Date" domain="[]" context="{'group_by':'ordering_date'}"/>
-                        <filter string="End Month" domain="[]" context="{'group_by':'date_end'}"/>
-                    </group>
-                </search>
-            </field>
-        </record>
+        <field name="name">purchase.requisition.list.select</field>
+        <field name="model">purchase.multicompany</field>
+        <field name="arch" type="xml">
+            <search string="Search Purchase Agreements">
+                <field name="name" string="Purchase Agreements" filter_domain="['|', ('name','ilike',self), ('origin','ilike',self)]"/>
+                <filter name="draft" string="Draft" domain="[('state','=','draft')]" help="New Agreements"/>
+                <filter string="Confirmed" domain="[('state','in',('in_progress','open'))]" help="In negotiation"/>
+                <filter string="Done" domain="[('state','=','done')]"/>
+                <separator/>
+                <filter string="Unassigned"  domain="[('user_id','=', False)]" help="Unassigned  Requisition"/>
+                <field name="user_id" />
+                <group expand="0" string="Group By">
+                    <filter string="Responsible" domain="[]" context="{'group_by':'user_id'}"/>
+                    <filter string="Status" domain="[]" context="{'group_by':'state'}"/>
+                    <filter string="Ordering Date" domain="[]" context="{'group_by':'ordering_date'}"/>
+                    <filter string="End Month" domain="[]" context="{'group_by':'date_end'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
 
 
     <record model="ir.actions.act_window" id="action_purchase_requisition">
@@ -157,6 +157,18 @@
           </p>
         </field>
     </record>
+
+    <record model="ir.actions.server" id="action_purchase_juntar">
+            <field name="name">Junta tuto!</field>
+            <field name="model_id" ref="multicompany_purchase_requisition.model_purchase_multicompany"/>
+            <field name="binding_model_id" ref="multicompany_purchase_requisition.model_purchase_multicompany"/>
+            <field name="state">code</field>
+            <field name="code">
+if records:
+    records.juntatuto()
+            </field>
+        </record>
+
 
     <menuitem
         id="menu_purchase_requisition_pro_mgt"
