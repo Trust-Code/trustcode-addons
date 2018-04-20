@@ -37,6 +37,9 @@ class PurchaseMulticompany(models.Model):
          ('done', 'Done'), ('cancel', 'Cancelled')],
         'Status', track_visibility='onchange', required=True,
         copy=False, default='draft')
+    centralizador_id = fields.Many2one(
+        'to.be.defined', string="Centralizador"
+    )
 
     @api.multi
     def action_cancel(self):
@@ -62,82 +65,14 @@ class PurchaseMulticompany(models.Model):
 
     @api.multi
     def juntatuto(self):
-        rfq = {}
-        tenders = {}
+        vals = {
+            'description': 'Teste',
+            'state': 'draft'
+        }
+        centralizador_id = self.env['to.be.defined'].create(vals)
         for item in self:
-            for line in item.line_ids:
-                seller_id = line.product_id.seller_ids[0].name.id
-                product_id = line.product_id
-
-                if line.product_id.purchase_requisition == 'rfq':
-
-                    if seller_id not in rfq:
-                        rfq[seller_id] = {}
-
-                    if product_id not in rfq[seller_id]:
-                        rfq[seller_id][product_id] = line.product_qty
-
-                    else:
-                        rfq[seller_id][product_id] += line.product_qty
-
-                elif line.product_id.purchase_requisition == 'tenders':
-
-                    if seller_id not in tenders:
-                        tenders[seller_id] = {}
-
-                    if product_id not in tenders[seller_id]:
-                        tenders[seller_id][product_id] = line.product_qty
-
-                    else:
-                        tenders[seller_id][product_id] += line.product_qty
-
-        self._create_purchase_orders(rfq)
-        self._create_purchase_requisition(tenders)
-
-    def _create_purchase_requisition(self, tender_dict):
-        pr_lines = []
-        requisition_ids = {}
-
-        for vendor_id, lines in tender_dict.items():
-            for product_id, quantity in lines.items():
-                line_vals = {
-                    'product_id': product_id.id,
-                    'product_qty': quantity,
-                    'price_unit': product_id.seller_ids[0].price,
-                }
-                pr_lines.append(self.env[
-                    'purchase.requisition.line'].create(line_vals).id)
-            vals = {
-                'vendor_id': vendor_id,
-                'line_ids': [(6, 0, pr_lines)],
-                'user_id': self[0].user_id.id,
-            }
-
-            requisition_ids[vendor_id] = self.env[
-                'purchase.requisition'].create(vals).id
-        self._create_purchase_orders(tender_dict, requisition_ids)
-
-    def _create_purchase_orders(self, rfq_dict, req_ids=False):
-        po_lines = []
-        for vendor_id, lines in rfq_dict.items():
-            vals = {
-                'partner_id': vendor_id,
-                'requisition_id': req_ids[vendor_id] if req_ids else None,
-                }
-            po_id = self.env['purchase.order'].create(vals)
-
-            for product_id, quantity in lines.items():
-                line_vals = {
-                    'product_id': product_id.id,
-                    'name': product_id.name,
-                    'date_planned': datetime.now(),
-                    'product_uom': product_id.uom_id.id,
-                    'product_qty': quantity,
-                    'price_unit': product_id.seller_ids[0].price,
-                    'order_id': po_id.id,
-                }
-                po_lines.append(self.env[
-                    'purchase.order.line'].create(line_vals).id)
+            item.centralizador_id = centralizador_id.id
+        centralizador_id.juntatuto(list(self))
 
 
 class PurchaseMulticompanyLine(models.Model):
