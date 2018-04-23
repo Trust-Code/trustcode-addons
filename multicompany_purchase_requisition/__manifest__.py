@@ -23,5 +23,6 @@
         "data/multicompany_purchase.xml",
         "views/purchase_multicompany.xml",
         "security/ir.model.access.csv",
+        "views/to_be_defined.xml",
     ],
 }
