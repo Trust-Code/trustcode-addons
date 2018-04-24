@@ -1,15 +1,17 @@
 <?xml version="1.0"?>
 <odoo>
     <data>
+
         <record id="act_window_wizard_increment" model="ir.actions.act_window">
-        <field name="name"></field>
-        <field name="type">ir.actions.act_window</field>
-        <field name="res_model">wizard.mrp.production</field>
-        <field name="view_type">form</field>
-        <field name="view_mode">form</field>
-        <field name="view_id" ref="outsourcing_service.view_wizard_mrp_production_form"/>
-        <field name="target">new</field>
-    </record>
+            <field name="name"></field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">wizard.multicompany.increment</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="multicompany_purchase_requisition.view_wizard_increment"/>
+            <field name="target">new</field>
+        </record>
+
     <record model="ir.ui.view" id="view_to_be_defined_form">
         <field name="name">to.be.defined.form</field>
         <field name="model">to.be.defined</field>
@@ -17,8 +19,7 @@
             <form string="To Be Defined">
             <header>
                 <button name="action_in_progress" states="draft" string="Confirm" type="object" class="btn-primary"/>
-                <button name="action_open" states="in_progress" string="Validate" type="object" class="btn-primary"/>
-                <button name="action_done" states="open" string="Done" type="object" class="btn-primary"/>
+                <button name="action_done" states="in_progress" string="Done" type="object" class="btn-primary"/>
                 <button name="action_draft" states="cancel" string="Reset to Draft" type="object"/>
                 <button name="action_cancel" states="draft,in_progress" string="Cancel Call" type="object"/>
                 <field name="state" widget="statusbar" statusbar_visible="draft,in_progress,open,done"/>
@@ -51,10 +52,8 @@
                                 <field name="product_qty"/>
                                 <field name="qty_increment" attrs="{'readonly': True}"/>
                                 <field name="product_uom_id" groups="product.group_uom"/>
-                                <div class="oe_button_box" name="button_box">
-                                    <button class="oe_highlight" name="%(act_window_wizard_increment)d"
-                                        type="action" icon="fa-pencil"/>
-                                </div>
+                                <button class="oe_highlight" name="%(act_window_wizard_increment)d"
+                                    type="action" icon="fa-pencil"/>
                             </tree>
                             <form string="Products">
                                 <group>
