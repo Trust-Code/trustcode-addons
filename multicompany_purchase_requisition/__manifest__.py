@@ -12,6 +12,7 @@
     'website': 'http://www.trustcode.com.br',
     'contributors': [
         'Danimar Ribeiro <danimaribeiro@gmail.com>',
+        'Johny Chen Jy <johnychenjy@gmail.com>'
     ],
     "description": """
         Requisição de compras - Multi-empresas
@@ -23,6 +24,7 @@
         "data/multicompany_purchase.xml",
         "views/purchase_multicompany.xml",
         "security/ir.model.access.csv",
+        "wizard/wizard_multicompany_increment.xml",
         "views/to_be_defined.xml",
     ],
 }

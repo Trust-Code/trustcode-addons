@@ -48,11 +48,12 @@ class ToBeDefined(models.Model):
         lines = {}
         for request in multicompany_requests:
             for line in request.line_ids:
+                total_qty = line.product_qty + line.qty_increment
                 if line.product_id in lines:
-                    lines[line.product_id][0] += line.product_qty
+                    lines[line.product_id][0] += total_qty
                     lines[line.product_id][1].append(line.id)
                 else:
-                    lines[line.product_id] = [line.product_qty, [line.id]]
+                    lines[line.product_id] = [total_qty, [line.id]]
         return lines
 
     def _create_to_be_defined_lines(self, lines):
@@ -62,7 +63,7 @@ class ToBeDefined(models.Model):
                 'product_uom_id': line[0].uom_id.id,
                 'product_qty': line[1][0],
                 'qty_increment': 0,
-                'requisition_line_ids': line[1][1],
+                'requisition_line_ids': [(6, 0, line[1][1])],
                 'to_be_defined_id': self.id,
             }
             self.env['to.be.defined.line'].create(vals)
@@ -74,19 +75,20 @@ class ToBeDefined(models.Model):
         rfq = {}
         tenders = {}
         for line in self.line_ids:
+            line._qty_increment_distribution()
             seller_id = line.product_id.seller_ids[0].name.id
             product_id = line.product_id
-
+            total_qty = line.product_qty + line.qty_increment
             if line.product_id.purchase_requisition == 'rfq':
 
                 if seller_id not in rfq:
                     rfq[seller_id] = {}
 
                 if product_id not in rfq[seller_id]:
-                    rfq[seller_id][product_id] = line.product_qty
+                    rfq[seller_id][product_id] = total_qty
 
                 else:
-                    rfq[seller_id][product_id] += line.product_qty
+                    rfq[seller_id][product_id] += total_qty
 
             elif line.product_id.purchase_requisition == 'tenders':
 
@@ -94,11 +96,10 @@ class ToBeDefined(models.Model):
                     tenders[seller_id] = {}
 
                 if product_id not in tenders[seller_id]:
-                    tenders[seller_id][product_id] = line.product_qty
+                    tenders[seller_id][product_id] = total_qty
 
                 else:
-                    tenders[seller_id][product_id] += line.product_qty
-
+                    tenders[seller_id][product_id] += total_qty
         self._create_purchase_orders(rfq)
         self._create_purchase_requisition(tenders)
         self.write({'state': 'in_progress', 'ordering_date': datetime.now()})
@@ -131,8 +132,6 @@ class ToBeDefined(models.Model):
         self._create_purchase_orders(tender_dict, requisition_ids)
 
     def _create_purchase_orders(self, rfq_dict, req_ids=False):
-        po_lines = []
-        po_ids = []
         for vendor_id, lines in rfq_dict.items():
             vals = {
                 'partner_id': vendor_id,
@@ -140,7 +139,6 @@ class ToBeDefined(models.Model):
                 'centralizador_id': self.id,
             }
             po_id = self.env['purchase.order'].create(vals)
-            po_ids.append(po_id.id)
 
             for product_id, quantity in lines.items():
                 line_vals = {
@@ -152,15 +150,23 @@ class ToBeDefined(models.Model):
                     'price_unit': product_id.seller_ids[0].price,
                     'order_id': po_id.id,
                 }
-                po_lines.append(self.env[
-                    'purchase.order.line'].create(line_vals).id)
-        self.write({'purchase_order_ids': [(6, 0, po_ids)]})
+            self.env['purchase.order.line'].create(line_vals)
+            self.write({'purchase_order_ids': [(4, po_id.id, 0)]})
 
     @api.multi
     def action_cancel(self):
-        self.write({'purchase_order_ids': [(6, 0, None)]})
-        self.write({'purchase_requisition_ids': [(6, 0, None)]})
+        for item in self.purchase_order_ids:
+            item.write({'state': 'cancel'})
+        for item in self.purchase_requisition_ids:
+            item.write({'state': 'cancel'})
+
+        self.write({'purchase_order_ids': [(5, 0, 0)]})
+        self.write({'purchase_requisition_ids': [(5, 0, 0)]})
         self.write({'state': 'cancel'})
+
+    @api.multi
+    def action_draft(self):
+        self.write({'state': 'draft'})
 
     class ToBeDefinedLine(models.Model):
         _name = "to.be.defined.line"
@@ -196,8 +202,7 @@ class ToBeDefined(models.Model):
                 self.product_uom_id = self.product_id.uom_id
                 self.product_qty = 1.0
 
-        @api.onchange('qty_increment')
-        def _onchange_increment_qty(self):
+        def _qty_increment_distribution(self):
             if self.qty_increment:
                 total_increment = self.qty_increment
                 num_req_lines = len(self.requisition_line_ids)
