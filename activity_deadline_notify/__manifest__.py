@@ -4,7 +4,7 @@
 
 
 {
-    'name': "Notificação de tempo nas atividades",
+    'name': "Notificação de deadline das atividades",
 
     'summary': """
         Permite definir data e hora para atividades e envia uma notificação
@@ -19,7 +19,7 @@
     'contributors': [
         'Felipe Paloschi <paloschi.eca@gmail.com>',
     ],
-    'depends': ['mail', 'br_base'],
+    'depends': ['base', 'mail', 'br_base', 'project'],
     'data': [
         'views/mail_activity.xml',
     ],
