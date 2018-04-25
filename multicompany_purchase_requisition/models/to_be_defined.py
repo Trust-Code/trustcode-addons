@@ -24,19 +24,26 @@ class ToBeDefined(models.Model):
             'purchase.requisition'))
     line_ids = fields.One2many(
         'to.be.defined.line', 'to_be_defined_id',
-        string='Products to Purchase', states={'done': [('readonly', True)]},
+        string='Products to Purchase',
+        states={'in_progress': [('readonly', False)]},
         copy=True)
     state = fields.Selection(
-        [('draft', 'Draft'), ('in_progress', 'Confirmed'),
-         ('needs_attention', 'Needs attention'),
+        [('in_progress', 'Confirmed'),
+         ('in_negociation', 'In Negociation'),
          ('done', 'Done'), ('cancel', 'Cancelled')],
         'Status', track_visibility='onchange', required=True,
-        copy=False, default='draft')
+        copy=False, default='in_progress')
     purchase_order_ids = fields.Many2many(
-        'purchase.order', string="Purchase Orders"
+        'purchase.order', string="Purchase Orders",
+        readonly=True,
     )
     purchase_requisition_ids = fields.Many2many(
-        'purchase.requisition', string="Purchase Requisitions"
+        'purchase.requisition', string="Purchase Requisitions",
+        readonly=True,
+    )
+    purchase_multicompany_ids = fields.Many2many(
+        'purchase.multicompany', string="Purchase Multicompany",
+        readonly=True,
     )
 
     @api.multi
@@ -68,7 +75,7 @@ class ToBeDefined(models.Model):
             }
             self.env['to.be.defined.line'].create(vals)
 
-    def action_in_progress(self):
+    def action_in_negociation(self):
         if not all(obj.line_ids for obj in self):
             raise UserError(
                 _('You cannot confirm call because there is no product line.'))
@@ -102,7 +109,8 @@ class ToBeDefined(models.Model):
                     tenders[seller_id][product_id] += total_qty
         self._create_purchase_orders(rfq)
         self._create_purchase_requisition(tenders)
-        self.write({'state': 'in_progress', 'ordering_date': datetime.now()})
+        self.write({
+            'state': 'in_negociation', 'ordering_date': datetime.now()})
 
     def _create_purchase_requisition(self, tender_dict):
         pr_lines = []
@@ -165,8 +173,12 @@ class ToBeDefined(models.Model):
         self.write({'state': 'cancel'})
 
     @api.multi
-    def action_draft(self):
-        self.write({'state': 'draft'})
+    def action_progress(self):
+        self.write({'state': 'in_progress'})
+
+    @api.multi
+    def action_done(self):
+        self.write({'state': 'done'})
 
     class ToBeDefinedLine(models.Model):
         _name = "to.be.defined.line"
@@ -195,6 +207,7 @@ class ToBeDefined(models.Model):
                 'purchase.multicompany.line'))
         to_be_defined_id = fields.Many2one(
             'to.be.defined', string="To Be Defined")
+        state = fields.Selection(related="to_be_defined_id.state")
 
         @api.onchange('product_id')
         def _onchange_product_id(self):
@@ -207,7 +220,7 @@ class ToBeDefined(models.Model):
                 total_increment = self.qty_increment
                 num_req_lines = len(self.requisition_line_ids)
                 for line in self.requisition_line_ids:
-                    increment = round(total_increment/num_req_lines)
+                    increment = round(total_increment / num_req_lines)
                     line.qty_increment = increment
                     total_increment -= increment
                     num_req_lines -= 1

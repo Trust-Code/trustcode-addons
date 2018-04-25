@@ -33,17 +33,23 @@ class PurchaseMulticompany(models.Model):
         copy=True)
     state = fields.Selection(
         [('draft', 'Draft'), ('in_progress', 'Confirmed'),
-         ('needs_attention', 'Needs attention'),
+         ('in_negociation', 'In Negociation'),
          ('done', 'Done'), ('cancel', 'Cancelled')],
         'Status', track_visibility='onchange', required=True,
         copy=False, default='draft')
     centralizador_id = fields.Many2one(
-        'to.be.defined', string="Centralizador"
+        'to.be.defined', string="Centralizador", readonly=True,
     )
 
     @api.multi
     def action_cancel(self):
-        self.write({'state': 'cancel'})
+        if self.centralizador_id.state not in ['cancel']:
+            raise UserError(
+                _(u'You cannot cancel this call because it is linked \
+to a non cancelled Junta Tuto object. Try cancelling the Junta Tuto object \
+first.'))
+        else:
+            self.write({'state': 'cancel'})
 
     @api.multi
     def action_in_progress(self):
@@ -54,23 +60,27 @@ class PurchaseMulticompany(models.Model):
 
     @api.multi
     def action_draft(self):
-        self.write({'state': 'draft'})
+        self.write({'state': 'in_progress'})
 
     @api.multi
     def action_done(self):
         self.write({'state': 'done'})
 
-    # @api.multi
-    # def action_open(self):
+    @api.multi
+    def action_negociation(self):
+        self.juntatuto()
 
     @api.multi
     def juntatuto(self):
         vals = {
-            'description': 'Teste',
-            'state': 'draft'
+            'description': 'Created from purchase.multicompany ID: %s'
+            % (self.ids),
+            'state': 'in_progress',
+            'purchase_multicompany_ids': [(6, 0, self.ids)],
         }
         centralizador_id = self.env['to.be.defined'].create(vals)
         for item in self:
+            item.write({'state': 'in_negociation'})
             item.centralizador_id = centralizador_id.id
         centralizador_id.juntatuto(list(self))
 
