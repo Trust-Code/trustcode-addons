@@ -18,11 +18,11 @@
         <field name="arch" type="xml">
             <form string="To Be Defined">
             <header>
-                <button name="action_in_progress" states="draft" string="Confirm" type="object" class="btn-primary"/>
-                <button name="action_done" states="in_progress" string="Done" type="object" class="btn-primary"/>
-                <button name="action_draft" states="cancel" string="Reset to Draft" type="object"/>
-                <button name="action_cancel" states="draft,in_progress" string="Cancel Call" type="object"/>
-                <field name="state" widget="statusbar" statusbar_visible="draft,in_progress,open,done"/>
+                <button name="action_in_negociation" states="in_progress" string="Confirm" type="object" class="btn-primary"/>
+                <button name="action_done" states="in_negociation" string="Done" type="object" class="btn-primary"/>
+                <button name="action_progress" states="cancel" string="Reset to Confirmed" type="object"/>
+                <button name="action_cancel" states="in_progress,in_negociation" string="Cancel Call" type="object"/>
+                <field name="state" widget="statusbar" statusbar_visible="in_progress,in_negociation,done"/>
             </header>
             <sheet>
                 <div class="oe_button_box" name="button_box">
@@ -46,14 +46,15 @@
                 </group>
                 <notebook>
                     <page string="Products">
-                        <field name="line_ids">
+                        <field name="line_ids" attrs="{'readonly': [('state','not in',('in_progress'))]}">
                             <tree string="Products" editable="bottom">
+                                <field name="state" attrs="{'invisible': True}"/>
                                 <field name="product_id"/>
                                 <field name="product_qty"/>
                                 <field name="qty_increment" attrs="{'readonly': True}"/>
                                 <field name="product_uom_id" groups="product.group_uom"/>
                                 <button class="oe_highlight" name="%(act_window_wizard_increment)d"
-                                    type="action" icon="fa-pencil"/>
+                                    type="action" icon="fa-pencil" attrs="{'invisible': [('state','not in',('in_progress','in_negociation'))]}"/>
                             </tree>
                             <form string="Products">
                                 <group>
@@ -75,6 +76,9 @@
                     </page>
                     <page string="Purchase Requisitions">
                         <field name="purchase_requisition_ids"/>
+                    </page>
+                    <page string="Purchase Multicompany">
+                        <field name="purchase_multicompany_ids"/>
                     </page>
                 </notebook>
             </sheet>

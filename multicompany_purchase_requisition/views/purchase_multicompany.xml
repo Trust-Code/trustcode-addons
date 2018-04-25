@@ -9,11 +9,11 @@
             <form string="Purchase MultiCompany">
             <header>
                 <button name="action_in_progress" states="draft" string="Confirm" type="object" class="btn-primary"/>
-                <button name="action_open" states="in_progress" string="Validate" type="object" class="btn-primary"/>
-                <button name="action_done" states="open" string="Done" type="object" class="btn-primary"/>
+                <button name="action_negociation" states="in_progress" string="Negociation" type="object" class="btn-primary"/>
+                <button name="action_done" states="in_negociation" string="Done" type="object" class="btn-primary"/>
                 <button name="action_draft" states="cancel" string="Reset to Draft" type="object"/>
-                <button name="action_cancel" states="draft,in_progress" string="Cancel Call" type="object"/>
-                <field name="state" widget="statusbar" statusbar_visible="draft,in_progress,open,done"/>
+                <button name="action_cancel" states="draft,in_progress,in_negociation" string="Cancel Call" type="object"/>
+                <field name="state" widget="statusbar" statusbar_visible="draft,in_progress,in_negociation,done"/>
             </header>
             <sheet>
                 <div class="oe_button_box" name="button_box">
@@ -33,11 +33,12 @@
                     <group>
                         <field name="date_end" attrs="{'readonly': [('state','not in',('draft','in_progress','open'))]}"/>
                         <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}" attrs="{'readonly': [('state','not in',('draft'))]}"/>
+                        <field name="centralizador_id" options="{'no_create': True}" attrs="{'readonly': True}"/>
                     </group>
                 </group>
                 <notebook>
                     <page string="Products">
-                        <field name="line_ids">
+                        <field name="line_ids" attrs="{'readonly': [('state', 'not in', ('draft'))]}">
                             <tree string="Products" editable="bottom">
                                 <field name="product_id"/>
                                 <field name="product_qty"/>
