@@ -1,2 +1,0 @@
-id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_activity_popup_deadline_activity_popup_deadline,activity_popup_deadline.activity_popup_deadline,model_activity_popup_deadline_activity_popup_deadline,,1,0,0,0
