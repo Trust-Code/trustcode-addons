@@ -9,10 +9,9 @@ from odoo.exceptions import UserError
 class ResPartner(models.Model):
     _inherit = 'res.partner'
 
-    partition_ids = fields.Many2many(
-        'analytic.partition', string='Grupos de Rateio')
     is_branch = fields.Boolean('É Filial')
-    expense_group_ids = fields.Many2many('expense.group', string="Grupo de contas")
+    expense_group_ids = fields.Many2many(
+        'expense.group', string="Grupo de contas")
     count_partition_lines = fields.Integer(
         'Linhas de Rateio',
         compute="_compute_partition_lines")
@@ -26,24 +25,18 @@ class ResPartner(models.Model):
             item.count_partition_lines = sum(
                 [len(app.partition_line_ids) for app in app_groups])
 
-    def create_apportiomeint_group(self):
-        analytic_accs = self.env['account.analytic.account'].search(
-            [('partner_id', '=', self.id)])
+    def create_partition_group(self, analytic_accs):
         part_group = self.env['analytic.partition'].create({
             'name': 'Escritório ' + self.name,
             'partition_line_ids': [(0, 0, {
-                'analytic_account_id': analytic_accs[0].id,
-                'type': 'balance',
-                'partition_percent': 0
-            })]
-        })
-        for acc in analytic_accs[1:]:
-            self.env['analytic.partition.line'].create({
-                'partition_id': part_group.id,
                 'analytic_account_id': acc.id,
-                'type': 'percent',
                 'partition_percent': 0
-            })
+            }) for acc in analytic_accs[1:]]
+        })
+        analytic_accs[0].update({
+            'partition_id': part_group.id,
+            'name': analytic_accs[0].name + ' (Rateio)'
+        })
         return part_group
 
     def deactivate_analytic_account(self, groups):
@@ -55,7 +48,7 @@ class ResPartner(models.Model):
             if analytic_acc and analytic_acc.active:
                 analytic_acc.toggle_active()
 
-    def create_analytic_account(self, groups, create_partition_group=False):
+    def create_analytic_account(self, groups, create_group=False):
         if not groups:
             raise UserError(
                 'Selecione os grupos de conas para este escritório.')
@@ -63,7 +56,8 @@ class ResPartner(models.Model):
         for group in groups:
             analytic_acc = self.env['account.analytic.account'].search([
                 ('partner_id', '=', self.id),
-                ('expense_group_id', '=', group.id)
+                ('expense_group_id', '=', group.id),
+                ('active', '=', False)
             ])
             if analytic_acc and not analytic_acc.active:
                 analytic_acc.toggle_active()
@@ -74,8 +68,8 @@ class ResPartner(models.Model):
                         'partner_id': self.id,
                         'expense_group_id': group.id,
                     }))
-        if create_partition_group:
-            part_group = self.create_apportiomeint_group()
+        if create_group:
+            part_group = self.create_partition_group(analytic_accs)
         else:
             part_group = self.env['account.analytic.account'].search([
                 ('partner_id', '=', self.id),
@@ -84,11 +78,8 @@ class ResPartner(models.Model):
                 self.env['analytic.partition.line'].create({
                     'partition_id': part_group.id,
                     'analytic_account_id': acc.id,
-                    'type': 'percent',
                     'partition_percent': 0
                 })
-        for acc in analytic_accs:
-            acc.write({'partition_id': part_group.id})
         return analytic_accs
 
     def action_view_analytic_partition_lines(self):

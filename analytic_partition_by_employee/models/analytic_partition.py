@@ -5,7 +5,7 @@
 from odoo import models
 
 
-class Analyticpartition(models.Model):
+class AnalyticPartition(models.Model):
     _inherit = 'analytic.partition'
 
     def get_employee_per_account(self, id):
@@ -16,24 +16,18 @@ class Analyticpartition(models.Model):
                    for employee in employees)
 
     def calc_percent_by_employee(self):
+        analytic_accs = self.env['account.analytic.account'].search(
+            [('partition_id', '=', self.id)], limit=1)
+        analytic_accs |= self.partition_line_ids.mapped('analytic_account_id')
         total_employee = sum(
-            [self.get_employee_per_account(line.analytic_account_id.id)
-             for line in self.partition_line_ids])
-        amount = 0
-        balance_line = False
+            [self.get_employee_per_account(acc.id)
+             for acc in analytic_accs])
         if not self.partition_line_ids:
             return
         for line in self.partition_line_ids:
             if not line.isactive:
                 line.partition_percent = 0
                 continue
-            if not balance_line:
-                balance_line = line
-                continue
             line.partition_percent = (self.get_employee_per_account(
-                line.analytic_account_id.id)/total_employee * 100) if\
-                total_employee else 0
-            amount += line.partition_percent
-            line.type = 'percent'
-        balance_line.type = 'balance'
-        balance_line.partition_percent = 100 - amount
+                line.analytic_account_id.id)
+                / total_employee * 100) if total_employee else 0

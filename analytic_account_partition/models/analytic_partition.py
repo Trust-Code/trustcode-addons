@@ -54,10 +54,6 @@ class AnalyticPartitionLine(models.Model):
         'account.analytic.account',
         string='Conta Analítica',
         ondelete='restrict')
-    # type = fields.Selection([
-    #     ('percent', 'Percentual'),
-    #     ('balance', 'Saldo')],
-    #     string="Tipo", default='percent')
     partition_percent = fields.Float('Percentual de Rateio', digits=(4, 4))
     isactive = fields.Boolean(
         string='Ativo', compute='_compute_is_active', store=True, default=True)

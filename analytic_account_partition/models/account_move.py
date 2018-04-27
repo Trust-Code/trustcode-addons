@@ -10,8 +10,6 @@ class AccountMove(models.Model):
 
     @api.multi
     def post(self):
-        import ipdb
-        ipdb.set_trace()
         for line in self.line_ids:
             line._create_partition_move_lines(
                 line.analytic_account_id.partition_id)
@@ -30,7 +28,7 @@ class AccountMoveLine(models.Model):
             })
         else:
             percent = 100
-        self.update({
+        self.with_context(check_move_validity=False).update({
             'credit': (credit * percent / 100),
             'debit': (debit * percent / 100),
             })
@@ -43,7 +41,7 @@ class AccountMoveLine(models.Model):
         initial_debit = debit = self.debit
         move_lines = []
         for app_line in partition_group.partition_line_ids:
-            move_line = self.copy()
+            move_line = self.with_context(check_move_validity=False).copy()
             new_credit, new_debit = move_line.update_partition_move_line(
                     initial_credit, initial_debit, app_line)
             credit -= new_credit

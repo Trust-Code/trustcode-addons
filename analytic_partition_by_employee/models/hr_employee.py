@@ -12,8 +12,16 @@ class Employee(models.Model):
         'account.analytic.account', string='Conta Analitica')
 
     def compute_percent_per_employe(self):
-        partition_groups = set(
-            [acc.partition_id for acc in self.analytic_account_ids])
+        partition_groups = []
+        for acc in self.analytic_account_ids:
+            if acc.partition_id:
+                partition_groups.append(acc.partition_id)
+            else:
+                part_group = self.env['account.analytic.account'].search([
+                    ('partner_id', '=', acc.partner_id.id),
+                    ('partition_id', '!=', False)], limit=1).mapped(
+                        'partition_id')
+                partition_groups.append(part_group)
         for app in partition_groups:
             app.calc_percent_by_employee()
 

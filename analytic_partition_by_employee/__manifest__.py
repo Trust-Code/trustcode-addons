@@ -29,5 +29,6 @@
         'views/res_partner.xml',
         'views/account_move.xml',
         'views/account_voucher.xml',
+        'views/analytic_account.xml',
     ],
 }
