@@ -111,17 +111,11 @@ class MailActivityNotification(models.Model):
             message = (act.activity_type_id.name or '') + ': ' +\
                 (act.summary or '')
             redirect = {
-                'model': 'mail.activity.notify',
-                'method': 'return_action_open',
-                'args': [act.id, act.id]
+                'action_id': self.env.ref('project.action_view_task').id,
+                'context': {}
             }
             act.user_id.notify(message, title, True, redirect)
             # notification.already_notified = True
-
-    def return_action_open(self, res_id):
-        action = self.env.ref('project.action_view_task').read()[0]
-        action['res_id'] = res_id
-        return action
 
 
 class ProjectTaskType(models.Model):
