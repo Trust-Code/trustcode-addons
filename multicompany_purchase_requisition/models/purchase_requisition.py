@@ -5,5 +5,5 @@ class PurchaseRequisition(models.Model):
     _inherit = "purchase.requisition"
 
     centralizador_id = fields.Many2one(
-        'to.be.defined', string="Centralizador"
+        'purchase.multicompany.req', string="Centralizador"
     )

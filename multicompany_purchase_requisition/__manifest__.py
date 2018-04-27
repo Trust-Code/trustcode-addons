@@ -25,6 +25,7 @@
         "views/purchase_multicompany.xml",
         "security/ir.model.access.csv",
         "wizard/wizard_multicompany_increment.xml",
-        "views/to_be_defined.xml",
+        "views/purchase_multicompany_req.xml",
+        "views/purchase_order.xml"
     ],
 }
