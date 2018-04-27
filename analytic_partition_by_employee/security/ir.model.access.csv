@@ -1,2 +1,2 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_partition_by_employee_partition_by_employee,partition_by_employee.partition_by_employee,model_partition_by_employee_partition_by_employee,,1,0,0,0
+access_expense_group,access_expense_group,model_expense_group,,1,1,1,0

@@ -16,7 +16,7 @@
         <field name="arch" type="xml">
             <form string="Rateio de Contas Analíticas">
                 <sheet>
-                    <group class="col-xs-12">
+                    <group>
                         <group>
                             <field name="name" />
                         </group>
@@ -24,6 +24,7 @@
                     <notebook>
                         <page string="Linhas de Rateio">
                             <group>
+<<<<<<< HEAD
                                 <group>
                                     <field name="partition_line_ids" nolabel="1" >
                                         <tree colors="red:isactive==False" editable="bottom">
@@ -34,6 +35,16 @@
                                         </tree>
                                     </field>
                                 </group>
+=======
+                                <field name="partition_line_ids" nolabel="1" >
+                                    <tree colors="red:isactive==False" editable="bottom">
+                                        <field name="analytic_account_id" />
+                                        <field name="type" />
+                                        <field name="partition_percent" />
+                                        <field name="isactive" invisible="1" />
+                                    </tree>
+                                </field>
+>>>>>>> 9af94f6949ed6858e83522a99bae7afb4f4e50f7
                             </group>
                         </page>
                     </notebook>
