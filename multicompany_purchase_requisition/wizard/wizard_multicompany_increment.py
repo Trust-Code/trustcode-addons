@@ -9,34 +9,34 @@ class WizardMulticompanyIncrement(models.TransientModel):
     _name = 'wizard.multicompany.increment'
 
     def _get_default_product(self):
-        to_be_defined_line_id = self.env['to.be.defined.line'].browse(
+        purchase_order_line_id = self.env['purchase.order.line'].browse(
             self.env.context.get('active_id'))
-        return to_be_defined_line_id.product_id
+        return purchase_order_line_id.product_id
 
     def _get_default_product_uom(self):
-        to_be_defined_line_id = self.env['to.be.defined.line'].browse(
+        purchase_order_line_id = self.env['purchase.order.line'].browse(
             self.env.context.get('active_id'))
-        return to_be_defined_line_id.product_id.uom_id
+        return purchase_order_line_id.product_id.uom_id
 
     def _get_default_product_qty(self):
-        to_be_defined_line_id = self.env['to.be.defined.line'].browse(
+        purchase_order_line_id = self.env['purchase.order.line'].browse(
             self.env.context.get('active_id'))
-        return to_be_defined_line_id.product_qty
+        return purchase_order_line_id.product_qty
 
     def _get_default_line(self):
-        return self.env['to.be.defined.line'].browse(
+        return self.env['purchase.order.line'].browse(
             self.env.context.get('active_id'))
 
     def _get_default_qty_increment(self):
-        to_be_defined_line_id = self.env['to.be.defined.line'].browse(
+        purchase_order_line_id = self.env['purchase.order.line'].browse(
             self.env.context.get('active_id'))
-        return to_be_defined_line_id.qty_increment
+        return purchase_order_line_id.qty_increment
 
     @api.onchange('qty_increment')
     def _onchange_qty_increment(self):
         self.total_quantity = self.product_qty + self.qty_increment
 
-    line_id = fields.Many2one('to.be.defined.line', string="Attached Line",
+    line_id = fields.Many2one('purchase.order.line', string="Attached Line",
                               default=_get_default_line)
 
     product_id = fields.Many2one(

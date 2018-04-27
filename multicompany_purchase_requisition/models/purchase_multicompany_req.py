@@ -4,14 +4,14 @@ from odoo.addons import decimal_precision as dp
 from odoo.exceptions import UserError
 
 
-class ToBeDefined(models.Model):
-    _name = "to.be.defined"
+class PurchaseMulticompanyReq(models.Model):
+    _name = "purchase.multicompany.req"
     _order = "id desc"
 
     name = fields.Char(
         string='Agreement Reference', required=True, copy=False,
         default=lambda self: self.env['ir.sequence'].next_by_code(
-            'purchase.multicompany.requisition'))
+            'purchase.multicompany.req'))
     ordering_date = fields.Date(string="Ordering Date")
     date_end = fields.Datetime(string='Agreement Deadline')
     schedule_date = fields.Date(string='Delivery Date', index=True)
@@ -23,7 +23,8 @@ class ToBeDefined(models.Model):
         default=lambda self: self.env['res.company']._company_default_get(
             'purchase.requisition'))
     line_ids = fields.One2many(
-        'to.be.defined.line', 'to_be_defined_id',
+        'purchase.multicompany.req.line',
+        'purchase_multicompany_req_id',
         string='Products to Purchase',
         states={'in_progress': [('readonly', False)]},
         copy=True)
@@ -47,11 +48,11 @@ class ToBeDefined(models.Model):
     )
 
     @api.multi
-    def juntatuto(self, multicompany_requests):
-        lines = self._junta_tuto_by_product(multicompany_requests)
-        self._create_to_be_defined_lines(lines)
+    def assemble_selected(self, multicompany_requests):
+        lines = self._assemble_selected_by_product(multicompany_requests)
+        self._create_purchase_mult_req_lines(lines)
 
-    def _junta_tuto_by_product(self, multicompany_requests):
+    def _assemble_selected_by_product(self, multicompany_requests):
         lines = {}
         for request in multicompany_requests:
             for line in request.line_ids:
@@ -63,7 +64,7 @@ class ToBeDefined(models.Model):
                     lines[line.product_id] = [total_qty, [line.id]]
         return lines
 
-    def _create_to_be_defined_lines(self, lines):
+    def _create_purchase_mult_req_lines(self, lines):
         for line in lines.items():
             vals = {
                 'product_id': line[0].id,
@@ -71,14 +72,16 @@ class ToBeDefined(models.Model):
                 'product_qty': line[1][0],
                 'qty_increment': 0,
                 'requisition_line_ids': [(6, 0, line[1][1])],
-                'to_be_defined_id': self.id,
+                'purchase_multicompany_req_id': self.id,
             }
-            self.env['to.be.defined.line'].create(vals)
+            self.env['purchase.multicompany.req.line'].create(vals)
 
     def action_in_negociation(self):
         if not all(obj.line_ids for obj in self):
             raise UserError(
                 _('You cannot confirm call because there is no product line.'))
+        for line in self.purchase_multicompany_ids:
+            line.action_negociation()
         rfq = {}
         tenders = {}
         for line in self.line_ids:
@@ -180,9 +183,9 @@ class ToBeDefined(models.Model):
     def action_done(self):
         self.write({'state': 'done'})
 
-    class ToBeDefinedLine(models.Model):
-        _name = "to.be.defined.line"
-        _description = "To Be Defined Line"
+    class PurchaseMulticompanyReqLine(models.Model):
+        _name = "purchase.multicompany.req.line"
+        _description = "Purchase Multicompany Requisition Line"
         _rec_name = 'product_id'
 
         product_id = fields.Many2one(
@@ -205,9 +208,11 @@ class ToBeDefined(models.Model):
             store=True, readonly=True,
             default=lambda self: self.env['res.company']._company_default_get(
                 'purchase.multicompany.line'))
-        to_be_defined_id = fields.Many2one(
-            'to.be.defined', string="To Be Defined")
-        state = fields.Selection(related="to_be_defined_id.state")
+        purchase_multicompany_req_id = fields.Many2one(
+            'purchase.multicompany.req',
+            string="Purchase Multicompany Requisition")
+        state = fields.Selection(
+            related="purchase_multicompany_req_id.state")
 
         @api.onchange('product_id')
         def _onchange_product_id(self):

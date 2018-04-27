@@ -38,7 +38,8 @@ class PurchaseMulticompany(models.Model):
         'Status', track_visibility='onchange', required=True,
         copy=False, default='draft')
     centralizador_id = fields.Many2one(
-        'to.be.defined', string="Centralizador", readonly=True,
+        'purchase.multicompany.requisirion',
+        string="Centralizador", readonly=True,
     )
 
     @api.multi
@@ -57,6 +58,7 @@ first.'))
             raise UserError(
                 _('You cannot confirm call because there is no product line.'))
         self.write({'state': 'in_progress', 'ordering_date': datetime.now()})
+        self.assemble_selected()
 
     @api.multi
     def action_draft(self):
@@ -68,21 +70,21 @@ first.'))
 
     @api.multi
     def action_negociation(self):
-        self.juntatuto()
+        self.write({'state': 'in_negociation'})
 
     @api.multi
-    def juntatuto(self):
+    def assemble_selected(self):
         vals = {
             'description': 'Created from purchase.multicompany ID: %s'
             % (self.ids),
             'state': 'in_progress',
             'purchase_multicompany_ids': [(6, 0, self.ids)],
         }
-        centralizador_id = self.env['to.be.defined'].create(vals)
+        centralizador_id = self.env[
+            'purchase.multicompany.requisition'].create(vals)
         for item in self:
-            item.write({'state': 'in_negociation'})
             item.centralizador_id = centralizador_id.id
-        centralizador_id.juntatuto(list(self))
+        centralizador_id.assemble_selected(list(self))
 
 
 class PurchaseMulticompanyLine(models.Model):
