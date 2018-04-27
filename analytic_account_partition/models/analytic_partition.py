@@ -16,18 +16,9 @@ class AnalyticPartition(models.Model):
         string="Linhas de Rateio")
 
     def _check_percent_amount(self):
-        balance_line = []
         amount = 0
         for line in self.partition_line_ids:
-            if line.type == 'balance':
-                balance_line.append(line)
-            else:
-                amount += line.partition_percent
-        if len(balance_line) != 1:
-            raise UserError('Uma (e apenas uma) linha de rateio deve ser do\
-                tipo Saldo')
-        else:
-            balance_line[0].partition_percent = 100 - amount
+            amount += line.partition_percent
         if amount > 100:
             raise UserError('O somatório do percentual de rateio é maior que\
                 100%')
@@ -63,10 +54,10 @@ class AnalyticPartitionLine(models.Model):
         'account.analytic.account',
         string='Conta Analítica',
         ondelete='restrict')
-    type = fields.Selection([
-        ('percent', 'Percentual'),
-        ('balance', 'Saldo')],
-        string="Tipo", default='percent')
+    # type = fields.Selection([
+    #     ('percent', 'Percentual'),
+    #     ('balance', 'Saldo')],
+    #     string="Tipo", default='percent')
     partition_percent = fields.Float('Percentual de Rateio', digits=(4, 4))
     isactive = fields.Boolean(
         string='Ativo', compute='_compute_is_active', store=True, default=True)

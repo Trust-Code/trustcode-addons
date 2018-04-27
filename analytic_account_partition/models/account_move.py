@@ -3,7 +3,6 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 from odoo import models, api
-from odoo.exceptions import UserError
 
 
 class AccountMove(models.Model):
@@ -11,6 +10,8 @@ class AccountMove(models.Model):
 
     @api.multi
     def post(self):
+        import ipdb
+        ipdb.set_trace()
         for line in self.line_ids:
             line._create_partition_move_lines(
                 line.analytic_account_id.partition_id)
@@ -21,21 +22,18 @@ class AccountMoveLine(models.Model):
     _inherit = 'account.move.line'
 
     def update_partition_move_line(self, credit, debit,
-                                   app_line):
-        if app_line.type == 'percent':
+                                   app_line=False):
+        if app_line:
+            percent = app_line.partition_percent
             self.update({
-                'credit': (credit * app_line.partition_percent
-                        / 100),
-                'debit': (debit * app_line.partition_percent /
-                        100),
-                'analytic_account_id': app_line.analytic_account_id,
-                })
+                'analytic_account_id': app_line.analytic_account_id
+            })
         else:
-            self.update({
-                'credit': credit,
-                'debit': debit,
-                'analytic_account_id': app_line.analytic_account_id,
-                })
+            percent = 100
+        self.update({
+            'credit': (credit * percent / 100),
+            'debit': (debit * percent / 100),
+            })
         return self.credit, self.debit
 
     def _create_partition_move_lines(self, partition_group):
@@ -43,28 +41,13 @@ class AccountMoveLine(models.Model):
             return
         initial_credit = credit = self.credit
         initial_debit = debit = self.debit
-        balance_line = False
         move_lines = []
         for app_line in partition_group.partition_line_ids:
-            if app_line.type == 'balance':
-                balance_line = app_line
-                continue
-            if app_line.analytic_account_id == self.analytic_account_id:
-                move_line = self
-            else:
-                move_line = self.copy()
+            move_line = self.copy()
             new_credit, new_debit = move_line.update_partition_move_line(
                     initial_credit, initial_debit, app_line)
             credit -= new_credit
             debit -= new_debit
             move_lines.append(move_line)
-        if not balance_line:
-            raise UserError('O grupo de rateio %s não contém linha de Saldo'
-                            % partition_group.name)
-        if balance_line.analytic_account_id == self.analytic_account_id:
-            move_line = self
-        else:
-            move_line = self.copy()
-        move_line.update_partition_move_line(credit, debit, balance_line)
-        move_lines.append(move_line)
+        self.update_partition_move_line(credit, debit)
         return move_lines
