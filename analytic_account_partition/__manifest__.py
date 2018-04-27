@@ -21,6 +21,7 @@
     ],
     'depends': ['br_account', 'analytic'],
     'data': [
+        'security/ir.model.access.csv',
         'views/analytic_partition.xml',
         'views/analytic_account.xml'
     ],
