@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_mail_activity_notify_all,mail.activity.notify.all,model_mail_activity_notify,,0,0,0,0
+access_mail_activity_notify_user,mail.activity.notify.user,model_mail_activity_notify,base.group_user,1,1,1,1
