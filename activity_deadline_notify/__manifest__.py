@@ -21,6 +21,7 @@
     ],
     'depends': ['base', 'mail', 'br_base', 'project'],
     'data': [
+        'security/ir.model.access.csv',
         'views/mail_activity.xml',
     ],
 }

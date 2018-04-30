@@ -53,15 +53,15 @@ class MailActivity(models.Model):
                 'activity_id': self.id,
                 'notification_time': datetime.strftime(
                     notification_time, DTFT),
-                'already_notified': False,
             })
 
     @api.model
     def create(self, vals):
         if vals.get('datetime_deadline'):
             vals = self.update_date_deadline(vals)
-            self.create_notification(vals)
-        return super(MailActivity, self).create(vals)
+        res = super(MailActivity, self).create(vals)
+        res.create_notification(vals)
+        return res
 
     @api.multi
     def update_notify_time(self):
@@ -71,11 +71,9 @@ class MailActivity(models.Model):
                 datetime_val, activity.notification_time,
                 activity.notification_interval)
             notif = self.env['mail.activity.notify'].search(
-                [('already_notified', '=', False),
-                 ('activity_id', '=', activity.id)], limit=1)
+                [('activity_id', '=', activity.id)], limit=1)
             if notif:
                 notif.notification_time = notif_time
-                notif.already_notified = False
             else:
                 if activity.enable_notification:
                     self.env['mail.activity.notify'].create({
@@ -96,26 +94,27 @@ class MailActivity(models.Model):
 class MailActivityNotification(models.Model):
     _name = 'mail.activity.notify'
 
-    activity_id = fields.Many2one('mail.activity', 'Atividade')
+    activity_id = fields.Many2one('mail.activity', 'Atividade', required=True)
     notification_time = fields.Datetime('Hora da notificação')
-    already_notified = fields.Boolean('Notificado')
 
     def cron_check_notifications(self):
-        notifications = self.env['mail.activity.notify'].search(
-            [('already_notified', '=', False)]).filtered(
-                lambda x: datetime.strptime(x.notification_time, DTFT)
-                <= datetime.now())
+        notifications = self.env['mail.activity.notify'].search([
+            ]).filtered(lambda x: datetime.strptime(x.notification_time, DTFT)
+                        <= datetime.now())
         for notification in notifications:
             act = notification.activity_id
             title = 'Atividade: ' + (act.res_name or '')
             message = (act.activity_type_id.name or '') + ': ' +\
                 (act.summary or '')
             redirect = {
-                'action_id': self.env.ref('project.action_view_task').id,
+                'name': 'Atividades',
+                'model': act.res_model,
+                'view': 'kanban',
+                'domain': [['id', '=', act.res_id]],
                 'context': {}
             }
             act.user_id.notify(message, title, True, redirect)
-            # notification.already_notified = True
+            notification.unlink()
 
 
 class ProjectTaskType(models.Model):
