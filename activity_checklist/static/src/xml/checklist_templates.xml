@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<template>
+    <t t-name="mail.Chatter.Buttons">
+        <button t-if="new_message_btn" type="button" class="btn btn-sm btn-link o_chatter_button_new_message" title="Send a message">            Send message        </button>
+        <button t-if="log_note_btn" class="btn btn-sm btn-link o_chatter_button_log_note" title="Log a note. Followers will not be notified.">            Log note        </button>
+        <button t-if="schedule_activity_btn" class="btn btn-sm btn-link o_chatter_button_schedule_activity" title="Log or schedule an activity">
+            <i class="fa fa-clock-o"/>
+            <t t-if="isMobile">Activity</t>
+            <t t-else="">Schedule activity</t>
+        </button>
+        <button t-if="schedule_activity_btn" class="btn btn-sm btn-link o_chatter_button_create_checklist" title="Criar uma Checklist">
+            <i class="fa fa-list"/>
+            <t>Criar Checklist</t>
+        </button>
+    </t>
+</template>
