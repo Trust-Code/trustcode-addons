@@ -115,10 +115,3 @@ class MailActivityNotification(models.Model):
             }
             act.user_id.notify(message, title, True, redirect)
             notification.unlink()
-
-
-class ProjectTaskType(models.Model):
-    _inherit = 'project.task'
-
-    def button_test_not(self):
-        return self.env['mail.activity.notify'].cron_check_notifications()

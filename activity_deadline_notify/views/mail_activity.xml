@@ -29,14 +29,4 @@
         <field name="model_id" ref="model_mail_activity_notify"/>
         <field name="code">model.cron_check_notifications()</field>
     </record>
-    <record id="view_task_form_button_test" model="ir.ui.view">
-        <field name="name">project.task.form.button.test</field>
-        <field name="model">project.task</field>
-        <field name="inherit_id" ref="project.view_task_form2"/>
-        <field name="arch" type="xml">
-            <button name="action_assign_to_me" position="after">
-                <button name="button_test_not" type="object" class="btn btn-primary" string="teste notificar"/>
-            </button>
-        </field>
-    </record>
 </odoo>
