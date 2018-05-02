@@ -1,0 +1,32 @@
+<?xml version="1.0" ?>
+<odoo>
+    <template id="assets_backend" name="activity_checklist_assets" inherit_id="web.assets_backend">
+        <xpath expr="." position="inside">
+            <script type="text/javascript" src="/activity_checklist/static/src/js/checklist.js"/>
+            <link rel="stylesheet" href="/activity_checklist/static/src/less/mail_activity_checklist.less" type="text/less" />
+        </xpath>
+    </template>
+    <record id="activity_checklist_form" model="ir.ui.view">
+        <field name="name">activity.checklist.form</field>
+        <field name="model">activity.checklist</field>
+        <field name="arch" type="xml">
+            <form string="Checklist">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name" />
+                        </group>
+                        <br />
+                        <separator string="Itens" />
+                        <field name="checklist_item_ids" nolabel="1">
+                            <tree editable="bottom">
+                                <field name="name"/>
+                                <field name="is_done"/>
+                            </tree>
+                        </field>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>

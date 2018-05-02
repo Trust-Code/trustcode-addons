@@ -18,11 +18,11 @@
     'contributors': [
         'Felipe Paloschi <paloschi.eca@gmail.com>',
     ],
-    'depends': ['mail'],
+    'depends': ['mail', 'project'],
     'data': [
         'security/ir.model.access.csv',
-        'views/mail_activity.xml',
-        'views/mail_activity_checklist.xml',
+        'views/activity_checklist.xml',
+        'views/project.xml',
     ],
     'qweb': ['static/src/xml/*.xml'],
 }

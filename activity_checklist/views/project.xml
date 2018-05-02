@@ -1,0 +1,13 @@
+<?xml version="1.0" ?>
+<odoo>
+    <record model="ir.ui.view" id="view_task_form2_checklist">
+        <field name="name">project.task.form.checklist</field>
+        <field name="model">project.task</field>
+        <field name="inherit_id" ref="project.view_task_form2" />
+        <field name="arch" type="xml">
+            <div class="oe_chatter" position="inside">
+                <field name="checklist_id" widget="activity_checklist" />
+            </div>
+        </field>
+    </record>
+</odoo>
