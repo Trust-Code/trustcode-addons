@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<template>
+<templates xml:space="preserve">
     <t t-name="mail.Chatter.Buttons">
         <button t-if="new_message_btn" type="button" class="btn btn-sm btn-link o_chatter_button_new_message" title="Send a message">            Send message        </button>
         <button t-if="log_note_btn" class="btn btn-sm btn-link o_chatter_button_log_note" title="Log a note. Followers will not be notified.">            Log note        </button>
@@ -13,4 +13,17 @@
             <t>Criar Checklist</t>
         </button>
     </t>
-</template>
+    <t t-name="activity_checklist.checklist_template">
+        <div class="o_thread_date_separator o_border_dashed" data-toggle="collapse" data-target="#o_chatter_checklist">
+            <span class="o_thread_date btn">
+                <i class="fa fa-fw fa-caret-down"/>                Checklist                
+            </span>
+            <span><t t-esc="checklist.name" /></span>
+        </div>
+        <div id="o_chatter_checklist" class="collapse in">
+            <t t-foreach="checklist.checklist_item_ids" t-as="item">
+                <span t-esc="item"></span><br />
+            </t>
+        </div>
+    </t>
+</templates>

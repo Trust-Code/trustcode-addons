@@ -1,0 +1,29 @@
+/* Common */
+.o_activity_checklist {
+    &.o_field_widget {
+        display: block;
+    }
+
+    .o_thread_date_separator.o_border_dashed {
+        border-bottom-style: dashed;
+
+        &[data-toggle="collapse"] {
+            cursor: pointer;
+
+            &.collapsed {
+                margin-bottom: 0;
+                .o-transition(margin, 0.8s);
+
+                .o_chatter_checklist {
+                    display: inline-block;
+
+                    span {
+                        padding: 0 5px;
+                        border-radius: 100%;
+                        font-size: 11px;
+                    }
+                }
+            }
+        }
+    }
+}
