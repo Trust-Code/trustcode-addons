@@ -2,7 +2,10 @@
 # © 2018 Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
+import pytz
+from datetime import datetime
 from odoo import models, fields, api
+from odoo.exceptions import UserError
 
 
 class ActivityChecklist(models.Model):
@@ -35,16 +38,34 @@ class ActivityChecklist(models.Model):
     def create(self, values):
         # already compute default values to be sure those
         # are computed using the current user
-        values_defaults = self.default_get(self._fields.keys())
-        values_defaults.update(values)
+        vals = self.default_get(self._fields.keys())
+        vals.update(values)
         model = self.env['ir.model'].search(
-            [('model', '=', values_defaults['res_model'])], limit=1)
-        values_defaults.update({
+            [('model', '=', vals['res_model'])], limit=1)
+        vals.update({
             'res_model_id': model.id,
             'res_name': model.name
         })
         return super(ActivityChecklist, self.sudo()).create(
-            values_defaults)
+            vals)
+
+    def mark_checklist_done(self):
+        res_obj = self.env[self.res_model].browse(self.res_id)
+        if not self.is_done:
+            raise UserError('Você não pode finalizar uma checklist que contém\
+                itens não finalizados')
+        tz = pytz.timezone(self.env.user.partner_id.tz) or pytz.utc
+        dt = datetime.utcnow()
+        dt = pytz.utc.localize(dt).astimezone(tz)
+        message = ('Checklist finalizada por {} em {}!<br /> Itens: <br /><ul>'
+                   .format(self.env.user.name, dt.strftime(
+                       '%d-%m-%Y %H:%M:%S')))
+        for item in self.checklist_item_ids:
+            message += '<li>{}</li>'.format(item.name)
+        message += '</ul>'
+        res_obj.message_post(message)
+        self.unlink()
+        return
 
 
 class ActivityChecklistItem(models.Model):
