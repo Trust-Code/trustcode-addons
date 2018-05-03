@@ -160,9 +160,9 @@
     </record>
 
     <record model="ir.actions.server" id="action_purchase_juntar">
-            <field name="name">Junta tuto!</field>
-            <field name="model_id" ref="multicompany_purchase_req.model_purchase_multicompany"/>
-            <field name="binding_model_id" ref="multicompany_purchase_req.model_purchase_multicompany"/>
+            <field name="name">Assemble MultiCompany Purchases</field>
+            <field name="model_id" ref="multicompany_purchase_requisition.model_purchase_multicompany"/>
+            <field name="binding_model_id" ref="multicompany_purchase_requisition.model_purchase_multicompany"/>
             <field name="state">code</field>
             <field name="code">
 if records:

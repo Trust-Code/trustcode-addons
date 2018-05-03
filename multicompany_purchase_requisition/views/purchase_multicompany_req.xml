@@ -153,7 +153,7 @@
     </record>
 
     <record model="ir.actions.act_window" id="action_purchase_multicompany_req">
-        <field name="name">Sr. Junta Tuto</field>
+        <field name="name">Assembled Multicompany Purchases</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">purchase.multicompany.req</field>
         <field name="view_type">form</field>
@@ -162,10 +162,11 @@
         <field name="search_view_id" ref="view_purchase_multicompany_req_filter"/>
         <field name="help" type="html">
           <p class="oe_view_nocontent_create">
-            Clique aqui para criar uma nova solicitação de compra a Matriz
+            <!-- Clique aqui para criar uma nova solicitação de compra a Matriz -->
           </p><p>
-            Nesta solicitação os dados dos produtos solicitados serão enviados
-            a matriz para que a mesma execute o processo de compra.
+            Aqui serão exibidos as solicitações de compra das filias juntas num
+            mesmo objeto. Esse objeto será usado para criação de requisições
+            de compra de fornecedores e ordens de compra.
           </p>
         </field>
     </record>

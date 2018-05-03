@@ -85,7 +85,6 @@ class PurchaseMulticompanyReq(models.Model):
         rfq = {}
         tenders = {}
         for line in self.line_ids:
-            line._qty_increment_distribution()
             seller_id = line.product_id.seller_ids[0].name.id
             product_id = line.product_id
             total_qty = line.product_qty + line.qty_increment
@@ -158,6 +157,7 @@ class PurchaseMulticompanyReq(models.Model):
                     'date_planned': datetime.now(),
                     'product_uom': product_id.uom_id.id,
                     'product_qty': quantity,
+                    'prod_original_qty': quantity,
                     'price_unit': product_id.seller_ids[0].price,
                     'order_id': po_id.id,
                 }
@@ -181,6 +181,18 @@ class PurchaseMulticompanyReq(models.Model):
 
     @api.multi
     def action_done(self):
+        if not all(item.state == 'done' for item in self.purchase_order_ids):
+            raise UserError(_(
+                u"There is Purchase Orders which are not in 'done' state. \
+Please finish the PO process before changing this object's state."
+            ))
+        for po_id in self.purchase_order_ids:
+            for line in po_id.order_line:
+                pmr_line = self.env['purchase.multicompany.req.line'].search([
+                    ('product_id', '=', line.product_id.id),
+                    ('purchase_multicompany_req_id', '=', self.id)])
+                pmr_line.write({'qty_increment': line.qty_increment})
+                pmr_line._qty_increment_distribution()
         self.write({'state': 'done'})
 
     class PurchaseMulticompanyReqLine(models.Model):
