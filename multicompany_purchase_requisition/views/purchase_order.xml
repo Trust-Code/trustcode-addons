@@ -5,7 +5,7 @@
         <field name="res_model">wizard.multicompany.increment</field>
         <field name="view_type">form</field>
         <field name="view_mode">form</field>
-        <field name="view_id" ref="multicompany_purchase_req.view_wizard_increment"/>
+        <field name="view_id" ref="multicompany_purchase_requisition.view_wizard_increment"/>
         <field name="target">new</field>
     </record>
 
@@ -15,13 +15,9 @@
         <field name="inherit_id" ref="purchase.purchase_order_form"/>
         <field name="arch" type="xml">
 
-            <field name="product_qty" position="after">
-                <field name="qty_increment"/>
-            </field>
-
             <field name="price_subtotal" position="after">
                 <button class="oe_highlight" name="%(act_window_wizard_increment)d"
-                        type="action" icon="fa-pencil" />
+                        type="action" icon="fa-pencil" attrs="{'invisible': [('state','not in',('draft'))]}"/>
             </field>
 
         </field>

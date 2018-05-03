@@ -21,7 +21,7 @@ class WizardMulticompanyIncrement(models.TransientModel):
     def _get_default_product_qty(self):
         purchase_order_line_id = self.env['purchase.order.line'].browse(
             self.env.context.get('active_id'))
-        return purchase_order_line_id.product_qty
+        return purchase_order_line_id.prod_original_qty
 
     def _get_default_line(self):
         return self.env['purchase.order.line'].browse(
@@ -54,12 +54,13 @@ class WizardMulticompanyIncrement(models.TransientModel):
             'Product Unit of Measure'),
         default=_get_default_qty_increment)
 
-    total_quantity = fields.Float(string='Total Quantity',
-                                  digits=dp.get_precision(
-                                      'Product Unit of Measure'),
-                                  readonly=True)
+    total_quantity = fields.Float(
+        string='Total Quantity',
+        digits=dp.get_precision('Product Unit of Measure'),
+        readonly=True)
 
     @api.multi
     def action_confirm(self, vals):
-        if self.qty_increment:
-            self.line_id.write({'qty_increment': self.qty_increment})
+        total_quantity = self.product_qty + self.qty_increment
+        self.line_id.write({'qty_increment': self.qty_increment,
+                            'product_qty': total_quantity})

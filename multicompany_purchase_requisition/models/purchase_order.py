@@ -13,6 +13,10 @@ class PurchaseOrder(models.Model):
 class PurchaseOrderLine(models.Model):
     _inherit = "purchase.order.line"
 
+    prod_original_qty = fields.Float(
+        string="Original qty", digits=dp.get_precision(
+            'Product Unit of Measure'))
+
     qty_increment = fields.Float(
         string='Qty Increment', digits=dp.get_precision(
             'Product Unit of Measure'))

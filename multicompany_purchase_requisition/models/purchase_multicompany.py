@@ -38,17 +38,19 @@ class PurchaseMulticompany(models.Model):
         'Status', track_visibility='onchange', required=True,
         copy=False, default='draft')
     centralizador_id = fields.Many2one(
-        'purchase.multicompany.requisirion',
+        'purchase.multicompany.req',
         string="Centralizador", readonly=True,
     )
 
     @api.multi
     def action_cancel(self):
-        if self.centralizador_id.state not in ['cancel']:
+        if self.centralizador_id and \
+                self.centralizador_id.state not in ['cancel']:
             raise UserError(
                 _(u'You cannot cancel this call because it is linked \
-to a non cancelled Junta Tuto object. Try cancelling the Junta Tuto object \
-first.'))
+to a non cancelled Assembled Multicompany Purchase object (%s).\
+Try cancelling the Assembled Multicompany Purchase object first.')
+                % (self.centralizador_id.name))
         else:
             self.write({'state': 'cancel'})
 
@@ -58,11 +60,10 @@ first.'))
             raise UserError(
                 _('You cannot confirm call because there is no product line.'))
         self.write({'state': 'in_progress', 'ordering_date': datetime.now()})
-        self.assemble_selected()
 
     @api.multi
     def action_draft(self):
-        self.write({'state': 'in_progress'})
+        self.write({'state': 'draft'})
 
     @api.multi
     def action_done(self):
@@ -75,13 +76,20 @@ first.'))
     @api.multi
     def assemble_selected(self):
         vals = {
+            'name': 'PMR %s' % (self.ids),
             'description': 'Created from purchase.multicompany ID: %s'
             % (self.ids),
             'state': 'in_progress',
             'purchase_multicompany_ids': [(6, 0, self.ids)],
         }
         centralizador_id = self.env[
-            'purchase.multicompany.requisition'].create(vals)
+            'purchase.multicompany.req'].create(vals)
+        if not all(item.state == 'in_progress' for item in self):
+            raise UserError(_(
+                u"It's not possible to assemble non confirmed purchase \
+requisitions. Please, confirm those purchases or assemble the non \
+confirmed purchases later."
+            ))
         for item in self:
             item.centralizador_id = centralizador_id.id
         centralizador_id.assemble_selected(list(self))
