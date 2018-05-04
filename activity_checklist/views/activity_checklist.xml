@@ -46,5 +46,5 @@
         <field name="view_mode">tree,form</field>
         <field name="view_id" ref="activity_checklist_tree"/>
     </record>
-    <menuitem parent="base.menu_email" id="menu_action_open_checklist_template" action="action_open_checklist_tree" name="Modelos de Checklist" sequence="14" />
+    <menuitem parent="base.menu_email" id="menu_action_open_checklist_template" action="action_open_checklist_tree" name="Modelos de Checklist" sequence="20" />
 </odoo>

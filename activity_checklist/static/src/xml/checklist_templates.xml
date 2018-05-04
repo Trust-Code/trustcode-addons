@@ -1,14 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <templates xml:space="preserve">
-    <t t-name="mail.Chatter.Buttons">
-        <button t-if="new_message_btn" type="button" class="btn btn-sm btn-link o_chatter_button_new_message" title="Send a message">            Send message        </button>
-        <button t-if="log_note_btn" class="btn btn-sm btn-link o_chatter_button_log_note" title="Log a note. Followers will not be notified.">            Log note        </button>
-        <button t-if="schedule_activity_btn" class="btn btn-sm btn-link o_chatter_button_schedule_activity" title="Log or schedule an activity">
-            <i class="fa fa-clock-o"/>
-            <t t-if="isMobile">Activity</t>
-            <t t-else="">Schedule activity</t>
-        </button>
-        <button t-if="schedule_activity_btn" class="btn btn-sm btn-link o_chatter_button_create_checklist" title="Criar uma Checklist">
+    <t t-name="activity_checklist.checklist_button">
+        <button t-if="checklist_btn" class="btn btn-sm btn-link o_chatter_button_create_checklist" title="Criar uma Checklist">
             <i class="fa fa-list"/>
             <t>Criar Checklist</t>
         </button>
@@ -16,28 +9,31 @@
     <t t-name="activity_checklist.checklist_template">
         <div class="o_thread_date_separator" data-toggle="collapse" data-target="#o_chatter_checklist">
             <p class="checklist_title o_thread_date btn">
-                <i class="fa fa-fw fa-caret-down"/> Checklist:                                 
+                <i class="fa fa-fw fa-caret-down"/> Checklist:                                                                                                                                             
                 <t t-esc="checklist.name" />
             </p>
         </div>
         <div id="o_chatter_checklist" class="collapse in">
-            <ul>
-                <t t-foreach="checklist.checklist_item_ids" t-as="item">
-                    <li>
-                        <span t-esc="item.name"></span>
-                        <input class="checklist_checkbox" type="checkbox" t-att-id="item.id" t-att-checked="item.is_done ? true : undefined"/>
-                    </li>
-                </t>
-            </ul>
-            <div class="o_thread_message_tools btn-group">
+            <!-- TENTAVIVA DE USAR BOTOES BOOTSTRAP -->
+            <t t-foreach="checklist.checklist_item_ids" t-as="item">
+                <div class="funkyradio">
+                    <div class="funkyradio-success">
+                        <input type="checkbox" name="checkbox" class="checklist_checkbox" t-att-id="item.id" t-att-checked="item.is_done ? true : undefined"/>
+                        <label t-att-for="item.id">
+                            <t t-esc="item.name" />
+                        </label>
+                    </div>
+                </div>
+            </t>
+            <div class="o_thread_message_tools btn-group col-md-12">
                 <a href="#" class="btn btn-link btn-success text-muted btn-sm o_checklist_done mr8" t-att-data-checklist-id="checklist.id">
-                    <i class="fa fa-check"/> Finalizar                                                                
+                    <i class="fa fa-check"/> Finalizar                                                                                                                                                                            
                 </a>
                 <a href="#" class="btn btn-link btn-default text-muted btn-sm o_checklist_edit" t-att-data-checklist-id="checklist.id">
-                    <i class="fa fa-pencil"/> Editar                                                                
+                    <i class="fa fa-pencil"/> Editar                                                                                                                                                                            
                 </a>
                 <a href="#" class="btn btn-link btn-sm btn-danger text-muted o_checklist_unlink" t-att-data-checklist-id="checklist.id">
-                    <i class="fa fa-times"/> Excluir                                                                
+                    <i class="fa fa-times"/> Excluir                                                                                                                                                                            
                 </a>
             </div>
         </div>
