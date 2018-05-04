@@ -8,8 +8,8 @@
             <field name="arch" type="xml">
                 <xpath expr="//page[1]" position="after">
                     <page string="Dynamic Components">
-                        <field name="bom_dynamic_line_ids" widget="one2many_list">
-                            <tree string="Receitas">
+                        <field name="bom_dynamic_line_ids" widget="one2many_list" context="{'default_bom_id': id}">
+                            <tree string="Variants">
                                 <field name="name"/>
                             </tree>
                         </field>
@@ -23,7 +23,7 @@
             <field name="arch" type="xml">
                 <form>
                     <group>
-                        <field name="bom_id" />
+                        <field name="bom_id" invisible="1"/>
                         <field name="name" />
                     </group>
                     
