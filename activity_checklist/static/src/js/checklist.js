@@ -77,6 +77,13 @@ odoo.define('activity_checklist.Checklist', function (require) {
                 keepChanges: true,
             });
         },
+        start: function () {
+            this._super()
+            console.log(this.$topbar)
+            this.$topbar.append(QWeb.render('activity_checklist.checklist_button', {
+                checklist_btn: !!this.fields.checklist
+            }));
+        }
     });
 
     var AbstractChecklistField = AbstractField.extend({
@@ -195,7 +202,7 @@ odoo.define('activity_checklist.Checklist', function (require) {
                 model: options.model,
                 method: 'mark_checklist_done',
                 args: options.args,
-            }).then(self._reload({ checklist: true, thread: true}));
+            }).then(self._reload.bind(self, { checklist: true, thread: true }));
         },
     });
 
