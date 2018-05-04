@@ -26,7 +26,16 @@
                         <field name="bom_id" />
                         <field name="name" />
                     </group>
-
+                    
+                    <span><br/>
+                        No campo abaixo('códigos'), por favor coloque todos os códigos de checkagem/tags em minusculo.
+                        Por Exemplo:<br/>
+                        if '16gb' in ATR:<br/> 
+                            result = ['16gb', 1]<br/>
+                        E não:<br/>
+                        if '16GB' in ATR:<br/>
+                            result = ['16GB', 1]<br/>
+                    </span>
                     <label for="codigo" />
                     <field name="codigo" widget="ace" />
                 </form>
