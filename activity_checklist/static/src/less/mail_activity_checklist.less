@@ -4,9 +4,44 @@
         display: block;
     }
 
-    .o_thread_date_separator.o_border_dashed {
-        border-bottom-style: dashed;
+    .checklist_title {
+        text-align: center;
+    }
+    .checklist_checkbox{
+        float: right;
+    }
 
+    ul li{
+        list-style: square inside none;
+        margin: 10px 300px 10px 20px;
+    }
+
+
+    .o_thread_date_separator {
+        margin-top: 15px;
+        margin-bottom: 30px;
+        @media (max-width: @screen-xs-max) {
+            margin-top: 0px;
+            margin-bottom: 15px;
+        }
+        border-bottom: 1px dashed @gray-lighter-darker;
+        text-align: center;
+
+        .o_thread_date {
+            position: relative;
+            top: 10px;
+            margin: 0 auto;
+            padding: 0 10px;
+            font-weight: bold;
+            background: white;
+        }
+
+        .btn-group {
+            .o_checklist_done {
+                padding-left: 0;
+            }
+        }
+        
         &[data-toggle="collapse"] {
             cursor: pointer;
 
