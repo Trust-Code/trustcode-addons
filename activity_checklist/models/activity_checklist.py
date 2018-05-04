@@ -15,10 +15,10 @@ class ActivityChecklist(models.Model):
     checklist_item_ids = fields.One2many(
         'activity.checklist.item', 'checklist_id', 'Atividades')
     # owner
-    res_id = fields.Integer('Related Document ID', index=True, required=True)
+    res_id = fields.Integer('Related Document ID', index=True)
     res_model_id = fields.Many2one(
         'ir.model', 'Related Document Model',
-        index=True, ondelete='cascade', required=True)
+        index=True, ondelete='cascade')
     res_model = fields.Char(
         'Related Document Model',
         index=True, related='res_model_id.model', store=True, readonly=True)
@@ -36,16 +36,20 @@ class ActivityChecklist(models.Model):
 
     @api.model
     def create(self, values):
-        # already compute default values to be sure those
-        # are computed using the current user
         vals = self.default_get(self._fields.keys())
         vals.update(values)
-        model = self.env['ir.model'].search(
-            [('model', '=', vals['res_model'])], limit=1)
-        vals.update({
-            'res_model_id': model.id,
-            'res_name': model.name
-        })
+        if vals.get('res_model'):
+            if any(self.env['activity.checklist'].search(
+                        [('res_id', '=', vals['res_id']),
+                         ('res_model', '=', vals['res_model'])])):
+                raise UserError('Já existe uma checklist associada a este\
+                    objeto.')
+            model = self.env['ir.model'].search(
+                [('model', '=', vals['res_model'])], limit=1)
+            vals.update({
+                'res_model_id': model.id,
+                'res_name': model.name
+            })
         return super(ActivityChecklist, self.sudo()).create(
             vals)
 
@@ -71,6 +75,6 @@ class ActivityChecklist(models.Model):
 class ActivityChecklistItem(models.Model):
     _name = 'activity.checklist.item'
 
-    name = fields.Char('Nome')
+    name = fields.Char('Nome', required=True)
     checklist_id = fields.Many2one('activity.checklist', 'Checklist')
     is_done = fields.Boolean('Pronto')

@@ -14,37 +14,32 @@
         </button>
     </t>
     <t t-name="activity_checklist.checklist_template">
-        <div class="o_thread_date_separator o_border_dashed" data-toggle="collapse" data-target="#o_chatter_checklist">
-            <span class="o_thread_date btn">
-                <i class="fa fa-fw fa-caret-down"/> Checklist: <t t-esc="checklist.name" />
-            </span>
-            
+        <div class="o_thread_date_separator" data-toggle="collapse" data-target="#o_chatter_checklist">
+            <p class="checklist_title o_thread_date btn">
+                <i class="fa fa-fw fa-caret-down"/> Checklist:                                 
+                <t t-esc="checklist.name" />
+            </p>
         </div>
         <div id="o_chatter_checklist" class="collapse in">
             <ul>
                 <t t-foreach="checklist.checklist_item_ids" t-as="item">
                     <li>
-                        <div class="col-xs-9">
-                            <span t-esc="item.name"></span>
-                        </div>
-                        <div class="col-xs-2">
-                            <input class="checklist_checkbox" type="checkbox" t-att-id="item.id" t-att-checked="item.is_done ? true : undefined"/>
-                        </div>
-                        <br />
+                        <span t-esc="item.name"></span>
+                        <input class="checklist_checkbox" type="checkbox" t-att-id="item.id" t-att-checked="item.is_done ? true : undefined"/>
                     </li>
                 </t>
             </ul>
-        </div>
-        <div class="o_thread_message_tools btn-group">
-            <a href="#" class="btn btn-link btn-success text-muted btn-sm o_checklist_done mr8" t-att-data-checklist-id="checklist.id">
-                <i class="fa fa-check"/> Finalizar                            
-            </a>
-            <a href="#" class="btn btn-link btn-default text-muted btn-sm o_checklist_edit" t-att-data-checklist-id="checklist.id">
-                <i class="fa fa-pencil"/> Editar                            
-            </a>
-            <a href="#" class="btn btn-link btn-sm btn-danger text-muted o_checklist_unlink" t-att-data-checklist-id="checklist.id">
-                <i class="fa fa-times"/> Excluir                            
-            </a>
+            <div class="o_thread_message_tools btn-group">
+                <a href="#" class="btn btn-link btn-success text-muted btn-sm o_checklist_done mr8" t-att-data-checklist-id="checklist.id">
+                    <i class="fa fa-check"/> Finalizar                                                                
+                </a>
+                <a href="#" class="btn btn-link btn-default text-muted btn-sm o_checklist_edit" t-att-data-checklist-id="checklist.id">
+                    <i class="fa fa-pencil"/> Editar                                                                
+                </a>
+                <a href="#" class="btn btn-link btn-sm btn-danger text-muted o_checklist_unlink" t-att-data-checklist-id="checklist.id">
+                    <i class="fa fa-times"/> Excluir                                                                
+                </a>
+            </div>
         </div>
     </t>
 </templates>

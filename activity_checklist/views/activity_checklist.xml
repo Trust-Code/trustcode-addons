@@ -29,4 +29,22 @@
             </form>
         </field>
     </record>
+    <record id="activity_checklist_tree" model="ir.ui.view">
+        <field name="name">activity.checklist.tree</field>
+        <field name="model">activity.checklist</field>
+        <field name="arch" type="xml">
+            <tree string="Checklist">
+                <field name="name" />
+                <field name="checklist_item_ids" invisible="1"/>
+            </tree>
+        </field>
+    </record>
+    <record id="action_open_checklist_tree" model="ir.actions.act_window">
+        <field name="name">Modelos de Checklist</field>
+        <field name="res_model">activity.checklist</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="activity_checklist_tree"/>
+    </record>
+    <menuitem parent="base.menu_email" id="menu_action_open_checklist_template" action="action_open_checklist_tree" name="Modelos de Checklist" sequence="14" />
 </odoo>
