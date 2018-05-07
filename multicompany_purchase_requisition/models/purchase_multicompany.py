@@ -33,7 +33,7 @@ class PurchaseMulticompany(models.Model):
         copy=True)
     state = fields.Selection(
         [('draft', 'Draft'), ('in_progress', 'Confirmed'),
-         ('in_negociation', 'In Negociation'),
+         ('in_negociation', 'In Negotiation'),
          ('done', 'Done'), ('cancel', 'Cancelled')],
         'Status', track_visibility='onchange', required=True,
         copy=False, default='draft')
