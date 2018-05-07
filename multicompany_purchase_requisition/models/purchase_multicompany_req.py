@@ -30,7 +30,7 @@ class PurchaseMulticompanyReq(models.Model):
         copy=True)
     state = fields.Selection(
         [('in_progress', 'Confirmed'),
-         ('in_negociation', 'In Negociation'),
+         ('in_negociation', 'In Negotiation'),
          ('done', 'Done'), ('cancel', 'Cancelled')],
         'Status', track_visibility='onchange', required=True,
         copy=False, default='in_progress')
@@ -95,6 +95,9 @@ class PurchaseMulticompanyReq(models.Model):
         rfq = {}
         tenders = {}
         for line in self.line_ids:
+            if not line.product_id.seller_ids:
+                raise UserError(_('You cannot confirm because the product %s \
+does not have a supplier' % (line.product_id.name)))
             seller_id = line.product_id.seller_ids[0].name.id
             product_id = line.product_id
             total_qty = line.product_qty + line.qty_increment
@@ -204,9 +207,10 @@ class PurchaseMulticompanyReq(models.Model):
         distribui os eventuais incrementos de quantidade para todos pedidos de
         requisicao iniciais"""
 
-        if not all(item.state == 'done' for item in self.purchase_order_ids):
+        if not all(item.state in ('purchase', 'done') for item in
+                   self.purchase_order_ids):
             raise UserError(_(
-                u"There is Purchase Orders which are not in 'done' state. \
+                u"There is Purchase Orders which are not in 'purchase' or 'done' state. \
 Please finish the PO process before changing this object's state."
             ))
         for po_id in self.purchase_order_ids:
