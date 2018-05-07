@@ -6,7 +6,7 @@
         <field name="name">purchase.multicompany.req.form</field>
         <field name="model">purchase.multicompany.req</field>
         <field name="arch" type="xml">
-            <form string="To Be Defined">
+            <form string="Assembled Multicompany Purchases">
             <header>
                 <button name="action_in_negociation" states="in_progress" string="Confirm" type="object" class="btn-primary"/>
                 <button name="action_done" states="in_negociation" string="Done" type="object" class="btn-primary"/>
