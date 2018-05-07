@@ -49,10 +49,15 @@ class PurchaseMulticompanyReq(models.Model):
 
     @api.multi
     def assemble_selected(self, multicompany_requests):
+        """ Famoso junta-tudo: junta todas as requisicoes e cria um único
+        objeto com os produtos somados."""
+
         lines = self._assemble_selected_by_product(multicompany_requests)
         self._create_purchase_mult_req_lines(lines)
 
     def _assemble_selected_by_product(self, multicompany_requests):
+        "Gera um dicionario com todos os produtos, somando suas quantidades."
+
         lines = {}
         for request in multicompany_requests:
             for line in request.line_ids:
@@ -77,10 +82,15 @@ class PurchaseMulticompanyReq(models.Model):
             self.env['purchase.multicompany.req.line'].create(vals)
 
     def action_in_negociation(self):
+        """Separa as linhas de acordo com o campo 'purchase_requisition'
+        e vendedor"""
+
         if not all(obj.line_ids for obj in self):
             raise UserError(
                 _('You cannot confirm call because there is no product line.'))
         for line in self.purchase_multicompany_ids:
+            # Muda o status da linha para 'em negociação', bloqueando mudanças
+            # nas mesmas
             line.action_negociation()
         rfq = {}
         tenders = {}
@@ -115,6 +125,8 @@ class PurchaseMulticompanyReq(models.Model):
             'state': 'in_negociation', 'ordering_date': datetime.now()})
 
     def _create_purchase_requisition(self, tender_dict):
+        "Cria purchase_requisitions de acordo com os dados fornecidos"
+
         pr_lines = []
         requisition_ids = {}
         req_ids = []
@@ -142,6 +154,8 @@ class PurchaseMulticompanyReq(models.Model):
         self._create_purchase_orders(tender_dict, requisition_ids)
 
     def _create_purchase_orders(self, rfq_dict, req_ids=False):
+        "Cria purchase orders de acordo com as informações fornecidas"
+
         for vendor_id, lines in rfq_dict.items():
             vals = {
                 'partner_id': vendor_id,
@@ -166,6 +180,10 @@ class PurchaseMulticompanyReq(models.Model):
 
     @api.multi
     def action_cancel(self):
+        """Muda o status para cancelado e remove o link entre as
+        purchase_orders e purchase_requisition_ids, e também coloca o status
+        das orders/requisitions para cancelado"""
+
         for item in self.purchase_order_ids:
             item.write({'state': 'cancel'})
         for item in self.purchase_requisition_ids:
@@ -177,10 +195,15 @@ class PurchaseMulticompanyReq(models.Model):
 
     @api.multi
     def action_progress(self):
+        # Pretty straight forward, dont you think?
         self.write({'state': 'in_progress'})
 
     @api.multi
     def action_done(self):
+        """Verifica se todos os purchase_orders estão em 'done' e logo em seguida
+        distribui os eventuais incrementos de quantidade para todos pedidos de
+        requisicao iniciais"""
+
         if not all(item.state == 'done' for item in self.purchase_order_ids):
             raise UserError(_(
                 u"There is Purchase Orders which are not in 'done' state. \
@@ -233,6 +256,8 @@ Please finish the PO process before changing this object's state."
                 self.product_qty = 1.0
 
         def _qty_increment_distribution(self):
+            "Distribui qty_increment para todas as requisicoes"
+
             if self.qty_increment:
                 total_increment = self.qty_increment
                 num_req_lines = len(self.requisition_line_ids)
