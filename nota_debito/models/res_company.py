@@ -9,6 +9,8 @@ from odoo import fields, models
 class ResCompany(models.Model):
     _inherit = 'res.company'
 
+    debit_document_id = fields.Many2one(
+        'br_account.fiscal.document', string="Documento de Débito")
     debit_note_sequence_id = fields.Many2one(
         'ir.sequence',
         'Sequência da Nota de débito',

@@ -9,10 +9,22 @@ from odoo import fields, models, api
 class AccountPaymentConfig(models.TransientModel):
     _inherit = 'account.config.settings'
 
+    debit_document_id = fields.Many2one(
+        'br_account.fiscal.document', string="Documento de Débito")
     debit_note_sequence_id = fields.Many2one(
         'ir.sequence',
         'Sequência da Nota de débito',
         help="Selecione a sequência que será utilizada para a nota de débito.")
+
+    @api.model
+    def get_default_debit_document_id(self, fields):
+        return {'debit_document_id':
+                self.env.user.company_id.debit_document_id.id}
+
+    @api.multi
+    def set_default_debit_document_id(self):
+        self.env.user.company_id.debit_document_id = \
+            self.debit_document_id.id
 
     @api.model
     def get_default_debit_note_sequence_id(self, fields):
