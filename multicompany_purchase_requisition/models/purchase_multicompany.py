@@ -33,7 +33,7 @@ class PurchaseMulticompany(models.Model):
         copy=True)
     state = fields.Selection(
         [('draft', 'Draft'), ('in_progress', 'Confirmed'),
-         ('in_negociation', 'In Negociation'),
+         ('in_negociation', 'In Negotiation'),
          ('done', 'Done'), ('cancel', 'Cancelled')],
         'Status', track_visibility='onchange', required=True,
         copy=False, default='draft')
@@ -58,7 +58,8 @@ Try cancelling the Assembled Multicompany Purchase object first.')
     def action_in_progress(self):
         if not all(obj.line_ids for obj in self):
             raise UserError(
-                _('You cannot confirm call because there is no product line.'))
+                _(u'You cannot confirm call because there is no product line.'
+                  ))
         self.write({'state': 'in_progress', 'ordering_date': datetime.now()})
 
     @api.multi
@@ -85,11 +86,11 @@ Try cancelling the Assembled Multicompany Purchase object first.')
         centralizador_id = self.env[
             'purchase.multicompany.req'].create(vals)
         if not all(item.state == 'in_progress' for item in self):
-            raise UserError(_(
-                u"It's not possible to assemble non confirmed purchase \
+            raise UserError(
+                _(u"It's not possible to assemble non confirmed purchase \
 requisitions. Please, confirm those purchases or assemble the non \
 confirmed purchases later."
-            ))
+                  ))
         for item in self:
             item.centralizador_id = centralizador_id.id
         centralizador_id.assemble_selected(list(self))
