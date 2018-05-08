@@ -12,12 +12,15 @@ class AccountInvoice(models.Model):
     _inherit = 'account.invoice'
 
     debit_note_number = fields.Char(
-        string="Numeração Nota Débito", size=20)
+        string="Numeração Nota Débito", size=20, copy=False)
 
     @api.multi
     def invoice_validate(self):
         for invoice in self:
-            if not self.env.user.company_id.debit_note_sequence_id:
+            company = self.env.user.company_id
+            if not company.debit_note_sequence_id:
+                continue
+            if invoice.fiscal_document_id != company.debit_document_id:
                 continue
             number = \
                 self.env.user.company_id.debit_note_sequence_id.next_by_id()

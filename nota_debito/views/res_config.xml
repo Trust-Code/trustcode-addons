@@ -7,7 +7,12 @@
     <field name="arch" type="xml">
       <group name="followup" position="after" >
         <group string="Sequencia da nota de débito" name="debit_note_seq">
-          <field name="debit_note_sequence_id" />
+            <group>
+                <field name="debit_document_id" />
+            </group>
+            <group>
+                <field name="debit_note_sequence_id" />
+            </group>
         </group>
       </group>
     </field>
