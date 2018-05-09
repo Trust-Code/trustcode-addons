@@ -40,8 +40,8 @@ class ActivityChecklist(models.Model):
         vals.update(values)
         if vals.get('res_model'):
             if any(self.env['activity.checklist'].search(
-                        [('res_id', '=', vals['res_id']),
-                         ('res_model', '=', vals['res_model'])])):
+                    [('res_id', '=', vals['res_id']),
+                     ('res_model', '=', vals['res_model'])])):
                 raise UserError('Já existe uma checklist associada a este\
                     objeto.')
             model = self.env['ir.model'].search(
