@@ -14,7 +14,7 @@ class TestAccountMove(TestBaseAnalyticPartition):
         amount = sum([line.credit for line in lines])
         self.assertEquals(round(amount, 2), 3458.97)
         self.assertTrue(len(lines) == len(
-            self.partition_group.partition_line_ids))
+            self.partition_group.partition_line_ids) + 1)
 
     def test_post(self):
         self.move.post()

@@ -30,17 +30,12 @@ class TestBaseAnalyticPartition(TransactionCase):
             'partition_line_ids': [
                 (0, 0, {
                     'analytic_account_id': self.analytic_acc_one.id,
-                    'type': 'percent',
                     'partition_percent': 37.5698}),
                 (0, 0, {
                     'analytic_account_id': self.analytic_acc_two.id,
-                    'type': 'percent',
-                    'partition_percent': 28.5698}),
-                (0, 0, {
-                    'analytic_account_id': self.analytic_acc_three.id,
-                    'type': 'balance'})
+                    'partition_percent': 28.5698})
             ]})
-        self.analytic_acc_one.partition_id = self.partition_group
+        self.analytic_acc_three.partition_id = self.partition_group
         self.expenses_account = self.env['account.account'].create({
             'code': '100',
             'name': 'Despesas',
@@ -67,7 +62,7 @@ class TestBaseAnalyticPartition(TransactionCase):
                     'credit': 0,
                     'quantity': 1,
                     'date_maturity': date.today(),
-                    'analytic_account_id': self.analytic_acc_one.id
+                    'analytic_account_id': self.analytic_acc_three.id
                 }),
                 (0, 0, {
                     'name': 'line 2',

@@ -43,12 +43,9 @@ class TestBaseAnalyicEmploye(TransactionCase):
             'partition_line_ids': [
                 (0, 0, {
                     'analytic_account_id': self.analytic_acc_one.id,
-                    'type': 'percent',
                     'partition_percent': 37.5698}),
-                (0, 0, {
-                    'analytic_account_id': self.analytic_acc_two.id,
-                    'type': 'balance'}),
             ]})
+        self.analytic_acc_two.partition_id = self.partition_group
         self.journal = self.env['account.journal'].create({
             'name': 'Receivable',
             'code': 'INV',
@@ -68,7 +65,7 @@ class TestBaseAnalyicEmploye(TransactionCase):
                     'credit': 0,
                     'quantity': 1,
                     'date_maturity': date.today(),
-                    'analytic_account_id': self.analytic_acc_one.id,
+                    'analytic_account_id': self.analytic_acc_two.id,
                     'branch_partner_id': self.branch_one.id,
                 }),
                 (0, 0, {

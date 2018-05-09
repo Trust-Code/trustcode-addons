@@ -43,9 +43,10 @@ class AccountMoveLine(models.Model):
         for app_line in partition_group.partition_line_ids:
             move_line = self.with_context(check_move_validity=False).copy()
             new_credit, new_debit = move_line.update_partition_move_line(
-                    initial_credit, initial_debit, app_line)
+                initial_credit, initial_debit, app_line)
             credit -= new_credit
             debit -= new_debit
             move_lines.append(move_line)
         self.update_partition_move_line(credit, debit)
+        move_lines.append(self)
         return move_lines

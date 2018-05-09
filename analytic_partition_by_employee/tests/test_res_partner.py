@@ -13,6 +13,6 @@ class TestResPartner(TestBaseAnalyicEmploye):
             ('partner_id', '=', self.branch_one.id)])
         self.assertEquals(len(analytic_accs), len(
             self.branch_one.expense_group_ids))
-        part_group = analytic_accs[0].partition_id
-        self.assertEquals(len(part_group.partition_line_ids),
+        part_group = self.partition_group
+        self.assertEquals(len(part_group.partition_line_ids) + 1,
                           len(analytic_accs))

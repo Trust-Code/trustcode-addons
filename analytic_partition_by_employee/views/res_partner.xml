@@ -7,12 +7,12 @@
             <field name="user_id" position="after">
                 <field name="is_branch" string="É Filial"/>
             </field>
-            <button name="%(account.action_open_partner_analytic_accounts)d" position="after">
+            <!-- <button name="%(account.action_open_partner_analytic_accounts)d" position="after">
                 <button class="oe_stat_button" type="object" name="action_view_analytic_partition_lines"
                     icon="fa-book" groups="analytic.group_analytic_accounting">
                     <field string="Linhas de Rateio" name="count_partition_lines" widget="statinfo"/>
                 </button>
-            </button>
+            </button> -->
             <notebook position="inside">
                 <page name="partition" string="Controle de Rateio" attrs="{'invisible': [('is_branch', '=', False)]}">
                     <group>
