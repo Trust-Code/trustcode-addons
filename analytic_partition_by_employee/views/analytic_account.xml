@@ -1,0 +1,12 @@
+<odoo>
+    <record id="analytic_account_partition_employee_form" model="ir.ui.view">
+        <field name="name">analytic.account.partition.employee.form</field>
+        <field name="model">account.analytic.account</field>
+        <field name="inherit_id" ref="analytic.view_account_analytic_account_form"/>
+        <field name="arch" type="xml">
+            <field name="tag_ids" position="after">
+                <field name="expense_group_id" invisible="1" />
+            </field>
+        </field>
+    </record>
+</odoo>
