@@ -3,7 +3,6 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 from odoo import fields, models, api
-from odoo.exceptions import UserError
 
 
 class ResPartner(models.Model):
@@ -99,7 +98,7 @@ class ResPartner(models.Model):
 
     # def action_view_analytic_partition_lines(self):
     #     app_groups = list(map(lambda x: x.partition_id, self.env[
-    #         'account.analytic.account'].search([('partner_id', '=', self.id)]))
+    #       'account.analytic.account'].search([('partner_id', '=', self.id)]))
     #         )
     #     return {
     #         'type': 'ir.actions.act_window',
