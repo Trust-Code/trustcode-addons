@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record model="ir.ui.view" id="view_partition_tree">
+        <field name="name">view.partition.tree</field>
+        <field name="model">analytic.partition</field>
+        <field name="type">tree</field>
+        <field name="arch" type="xml">
+            <tree string="Rateio de Contas Analíticas">
+                <field name="name" />
+            </tree>
+        </field>
+    </record>
+    <record id="view_partition_form" model="ir.ui.view">
+        <field name="name">view.partition.form</field>
+        <field name="model">analytic.partition</field>
+        <field name="arch" type="xml">
+            <form string="Rateio de Contas Analíticas">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name" />
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Linhas de Rateio">
+                            <group>
+                                <group>
+                                    <field name="partition_line_ids" nolabel="1" >
+                                        <tree colors="red:isactive==False" editable="bottom">
+                                            <field name="analytic_account_id" />
+                                            <!-- <field name="type" /> -->
+                                            <field name="partition_percent" />
+                                            <field name="isactive" invisible="1" />
+                                        </tree>
+                                    </field>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="view_partition_line_tree">
+        <field name="name">view.partition.line.tree</field>
+        <field name="model">analytic.partition.line</field>
+        <field name="type">tree</field>
+        <field name="arch" type="xml">
+            <tree name="apportionmet" colors="red:isactive==False">
+                <field name="partition_id" />
+                <field name="analytic_account_id" />
+                <!-- <field name="type" /> -->
+                <field name="partition_percent" />
+                <field name="isactive" invisible="1" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_partition_line_form" model="ir.ui.view">
+        <field name="name">view.partition.line.form</field>
+        <field name="model">analytic.partition.line</field>
+        <field name="arch" type="xml">
+            <form string="Rateio de Contas Analíticas">
+                <sheet>
+                    <group class="col-xs-12">
+                        <group>
+                            <field name="partition_id" />
+                            <field name="analytic_account_id" />
+                        </group>
+                        <group>
+                            <!-- <field name="type" /> -->
+                            <field name="partition_percent" />
+                            <field name="isactive" invisible="1" />
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_open_partition">
+        <field name="name">Rateio de Contas Analíticas</field>
+        <field name="res_model">analytic.partition</field>
+        <field name="view_type">form</field>
+        <field name='view_mode'>tree,form</field>
+        <field name='view_id' ref='view_partition_tree' />
+    </record>
+    <menuitem id="menu_partition_view" name="Rateio de Contas Analíticas" parent="account.menu_analytic_accounting" action="action_open_partition" sequence="10"/>
+</odoo>

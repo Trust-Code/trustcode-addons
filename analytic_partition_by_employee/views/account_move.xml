@@ -1,0 +1,12 @@
+<odoo>
+    <record id="account_move_form_partition" model="ir.ui.view">
+        <field name="name">account.move.form.partition</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook/page/field/tree/field[@name='analytic_account_id']" position="before">
+                <field name="branch_partner_id" domain="[('is_branch', '=', True)]" />
+            </xpath>
+        </field>
+    </record>
+</odoo>

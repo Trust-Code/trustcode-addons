@@ -1,0 +1,182 @@
+<?xml version="1.0"?>
+<odoo>
+    <data>
+
+    <record model="ir.ui.view" id="view_purchase_requisition_form">
+        <field name="name">purchase.requisition.form</field>
+        <field name="model">purchase.multicompany</field>
+        <field name="arch" type="xml">
+            <form string="Purchase MultiCompany">
+            <header>
+                <button name="action_in_progress" states="draft" string="Confirm" type="object" class="btn-primary"/>
+                <button name="action_negociation" states="in_progress" string="Negociation" type="object" class="btn-primary"/>
+                <button name="action_done" states="in_negociation" string="Done" type="object" class="btn-primary"/>
+                <button name="action_draft" states="cancel" string="Reset to Draft" type="object"/>
+                <button name="action_cancel" states="draft,in_progress,in_negociation" string="Cancel Call" type="object"/>
+                <field name="state" widget="statusbar" statusbar_visible="draft,in_progress,in_negociation,done"/>
+            </header>
+            <sheet>
+                <div class="oe_button_box" name="button_box">
+
+                </div>
+                <div class="pull-left">
+                    <label for="name" class="oe_edit_only oe_inline"/>
+                    <h1>
+                        <field name="name" attrs="{'readonly': [('state','not in',('draft'))]}"/>
+                    </h1>
+                </div>
+                <group>
+                    <group>
+                        <field name="user_id" attrs="{'readonly': [('state','not in',('draft','in_progress','open'))]}"/>
+                        <field name="ordering_date" attrs="{'readonly': True}"/>
+                    </group>
+                    <group>
+                        <field name="date_end" attrs="{'readonly': [('state','not in',('draft','in_progress','open'))]}"/>
+                        <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}" attrs="{'readonly': [('state','not in',('draft'))]}"/>
+                        <field name="centralizador_id" options="{'no_create': True}" attrs="{'readonly': True}"/>
+                    </group>
+                </group>
+                <notebook>
+                    <page string="Products">
+                        <field name="line_ids" attrs="{'readonly': [('state', 'not in', ('draft'))]}">
+                            <tree string="Products" editable="bottom">
+                                <field name="product_id"/>
+                                <field name="product_qty"/>
+                                <field name="qty_increment" attrs="{'readonly': True}"/>
+                                <field name="product_uom_id" groups="product.group_uom"/>
+                            </tree>
+                            <form string="Products">
+                                <group>
+                                    <field name="product_id" />
+                                    <field name="product_qty"/>
+                                    <field name="qty_increment" attrs="{'readonly': True}"/>
+                                    <field name="product_uom_id" />
+                                    <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}"/>
+                                </group>
+                            </form>
+                        </field>
+                        <separator string="Terms and Conditions"/>
+                        <field name="description" attrs="{'readonly': [('state','not in',('draft','in_progress','open'))]}"/>
+                    </page>
+                </notebook>
+            </sheet>
+            <div class="oe_chatter">
+              <field name="message_follower_ids" widget="mail_followers"/>
+              <field name="message_ids" widget="mail_thread"/>
+            </div>
+            </form>
+        </field>
+    </record>
+    <record model="ir.ui.view" id="view_purchase_requisition_tree">
+        <field name="name">purchase.requisition.tree</field>
+        <field name="model">purchase.multicompany</field>
+        <field name="arch" type="xml">
+            <tree decoration-bf="message_needaction==True" decoration-muted="state == 'cancel'" decoration-danger="date_end and date_end&lt;current_date" string="Purchase MultiCompany">
+                <field name="message_needaction" invisible="1"/>
+                <field name="name"/>
+                <field name="user_id"/>
+                <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}"/>
+                <field name="ordering_date"/>
+                <field name="date_end"/>
+                <field name="state"/>
+            </tree>
+      </field>
+    </record>
+
+    <record id="view_purchase_requisition_kanban" model="ir.ui.view">
+        <field name="name">purchase.requisition.kanban</field>
+        <field name="model">purchase.multicompany</field>
+        <field name="arch" type="xml">
+            <kanban class="o_kanban_mobile">
+                <field name="name"/>
+                <field name="state"/>
+                <field name="user_id"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div t-attf-class="oe_kanban_card oe_kanban_global_click">
+                            <div class="o_kanban_record_top">
+                                <div class="o_kanban_record_headings mt4">
+                                    <strong class="o_kanban_record_title"><span><field name="name"/></span></strong>
+                                </div>
+                                <field name="state" widget="kanban_label_selection" options="{'classes': {'draft': 'default', 'in_progress': 'default', 'open': 'success', 'done': 'success', 'close': 'danger'}}"/>
+                            </div>
+                            <div class="o_kanban_record_body">
+                                <span class="text-muted">aqui ia o type</span>
+                            </div>
+                            <div class="o_kanban_record_bottom">
+                                <div class="oe_kanban_bottom_left">
+                                    aqui ia o vendor
+                                </div>
+                                <div class="oe_kanban_bottom_right">
+                                    <img t-att-src="kanban_image('res.users', 'image_small', record.user_id.raw_value)" t-att-title="record.user_id.value" width="24" height="24" class="oe_kanban_avatar pull-right"/>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="view_purchase_requisition_filter" model="ir.ui.view">
+        <field name="name">purchase.requisition.list.select</field>
+        <field name="model">purchase.multicompany</field>
+        <field name="arch" type="xml">
+            <search string="Search Purchase Agreements">
+                <field name="name" string="Purchase Agreements" filter_domain="['|', ('name','ilike',self), ('origin','ilike',self)]"/>
+                <filter name="draft" string="Draft" domain="[('state','=','draft')]" help="New Agreements"/>
+                <filter string="Confirmed" domain="[('state','in',('in_progress','open'))]" help="In negotiation"/>
+                <filter string="Done" domain="[('state','=','done')]"/>
+                <separator/>
+                <filter string="Unassigned"  domain="[('user_id','=', False)]" help="Unassigned  Requisition"/>
+                <field name="user_id" />
+                <group expand="0" string="Group By">
+                    <filter string="Responsible" domain="[]" context="{'group_by':'user_id'}"/>
+                    <filter string="Status" domain="[]" context="{'group_by':'state'}"/>
+                    <filter string="Ordering Date" domain="[]" context="{'group_by':'ordering_date'}"/>
+                    <filter string="End Month" domain="[]" context="{'group_by':'date_end'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+
+    <record model="ir.actions.act_window" id="action_purchase_requisition">
+        <field name="name">Solicitação de compra</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">purchase.multicompany</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,kanban,form</field>
+        <field name="context">{"search_default_user_id":uid}</field>
+        <field name="search_view_id" ref="view_purchase_requisition_filter"/>
+        <field name="help" type="html">
+          <p class="oe_view_nocontent_create">
+            Clique aqui para criar uma nova solicitação de compra a Matriz
+          </p><p>
+            Nesta solicitação os dados dos produtos solicitados serão enviados
+            a matriz para que a mesma execute o processo de compra.
+          </p>
+        </field>
+    </record>
+
+    <record model="ir.actions.server" id="action_purchase_juntar">
+            <field name="name">Assemble MultiCompany Purchases</field>
+            <field name="model_id" ref="multicompany_purchase_requisition.model_purchase_multicompany"/>
+            <field name="binding_model_id" ref="multicompany_purchase_requisition.model_purchase_multicompany"/>
+            <field name="state">code</field>
+            <field name="code">
+if records:
+    records.assemble_selected()
+            </field>
+        </record>
+
+
+    <menuitem
+        id="menu_purchase_requisition_pro_mgt"
+        sequence="10"
+        parent="purchase.menu_procurement_management"
+        action="action_purchase_requisition"/>
+
+    </data>
+
+</odoo>

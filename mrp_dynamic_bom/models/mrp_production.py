@@ -12,43 +12,42 @@ class MrpProduction(models.Model):
         if not self.product_id.attribute_value_ids:
             return moves
 
-        # Formar lista de todos os atributos desse template de produto
-        atributos = self.env['product.attribute.value']\
-            .search([(
-                'product_ids.product_tmpl_id', '=', self.product_tmpl_id.id)])
+        # Formar um set dos nomes dos atributos do produto escolhido
+        product_attr_set = set(item.name.lower() for item in
+                               self.product_id.attribute_value_ids)
 
-        # Formar uma lista dos nomes dos atributos do produto escolhido
-        product_attr_list = list(item.name for item in
-                                 self.product_id.attribute_value_ids)
+        atributos_set = set()
 
-        atributos_dict = {}
-
-        for item in atributos:
-            atributos_dict[item.name] = False
-
-        for item in product_attr_list:
-            atributos_dict[item] = True
+        for item in product_attr_set:
+            atributos_set.add(item)
 
         # Chamada de método que retorna a lista de codigos (default_code)
         # os quais serão usados para procurar os ingredientes e suas
         # respectivas unidades
-        lista_codigos = self.bom_id.retorna_lista_codigos(atributos_dict)
+        lista_codigos = self.bom_id.retorna_lista_codigos(atributos_set)
 
         # Iteração de cada cod/qty para criação de um move
         for codigo, quantidade in lista_codigos:
 
             bom_line = self.env['mrp.bom.line'].browse(0)
+
+            # Para evitar erros de typing, usamos o '=ilike', o qual torna
+            # a busca por codigo no modo 'case insensitive'
             product_id = self.env['product.product'].search(
-                [('default_code', '=', codigo)], limit=1)
-            line_data = {
-                'original_qty': 1.0,
-                'product': product_id,
-                'parent_line': False,
-                'qty': quantidade
-            }
-            # Criação dos moves com os dados acima.
-            # Usado apenas quando há linhas dinamicas a serem adicionadas
-            moves += self._generate_dynamic_raw_move(bom_line, line_data)
+                [('default_code', '=ilike', codigo)], limit=1)
+            if product_id:
+                line_data = {
+                    'original_qty': 1.0,
+                    'product': product_id,
+                    'parent_line': False,
+                    'qty': quantidade
+                }
+                # Criação dos moves com os dados acima.
+                # Usado apenas quando há linhas dinamicas a serem adicionadas
+                moves += self._generate_dynamic_raw_move(bom_line, line_data)
+            else:
+                self.message_post(body="ALERTA! O produto com código '%s' \
+não foi encontrado!" % (codigo))
 
         return moves
 
