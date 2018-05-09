@@ -1,0 +1,45 @@
+<odoo>
+    <data>
+        <!-- Dynamic Bill of Materials -->
+        <record id="mrp_dynamic_bom_form_view" model="ir.ui.view">
+            <field name="name">mrp.dynamic.bom.form</field>
+            <field name="model">mrp.bom</field>
+            <field name="inherit_id" ref="mrp.mrp_bom_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//page[1]" position="after">
+                    <page string="Dynamic Components">
+                        <field name="bom_dynamic_line_ids" widget="one2many_list" context="{'default_bom_id': id}">
+                            <tree string="Variants">
+                                <field name="name"/>
+                            </tree>
+                        </field>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+        <record id="bom_dynamic_line_form" model="ir.ui.view">
+            <field name="name">bom.dynamic.line.form</field>
+            <field name="model">bom.dynamic.line</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <field name="bom_id" invisible="1"/>
+                        <field name="name" />
+                    </group>
+                    
+                    <span><br/>
+                        No campo abaixo('códigos'), por favor coloque todos os códigos de checkagem/tags em minusculo.
+                        Por Exemplo:<br/>
+                        if '16gb' in ATR:<br/> 
+                            result = ['16gb', 1]<br/>
+                        E não:<br/>
+                        if '16GB' in ATR:<br/>
+                            result = ['16GB', 1]<br/>
+                    </span>
+                    <label for="codigo" />
+                    <field name="codigo" widget="ace" />
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>

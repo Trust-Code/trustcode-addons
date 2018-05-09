@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_purchase_multicompany,access_purchase_multicompany,model_purchase_multicompany,base.group_system,1,1,1,1
+access_purchase_multicompany_line,access_purchase_multicompany_line,model_purchase_multicompany_line,base.group_system,1,1,1,1
+access_purchase_multicompany_req,access_purchase_multicompany_req,model_purchase_multicompany_req,base.group_system,1,1,1,1
+access_purchase_multicompany_req_line,access_purchase_multicompany_req_line,model_purchase_multicompany_req_line,base.group_system,1,1,1,1
