@@ -21,7 +21,7 @@
     ],
     'depends': ['purchase'],
     'data': [
-        'views/product_template.xml',
+        'views/supplier_info.xml',
         'views/purchase_order.xml',
     ],
 }

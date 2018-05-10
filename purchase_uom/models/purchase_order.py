@@ -10,17 +10,21 @@ class PurchaseOrderLine(models.Model):
 
     second_qty = fields.Float('Segunda Quantidade')
     second_uom = fields.Many2one('product.uom', 'Segunda UOM')
+    second_price_unit = fields.Float('Segundo Preço Unitário')
 
-    @api.onchange('product_id')
+    @api.onchange('product_id', 'price_unit', 'product_qty', 'product_uom')
     def update_second_uom(self):
-        if not self.product_id:
-            self.update({
-                'second_uom': False,
-                'second_qty': False,
-            })
+        supplier_info = self.env['product.supplierinfo'].search(
+            [('product_tmpl_id', '=', self.product_id.product_tmpl_id.id),
+             ('name', '=', self.order_id.partner_id.id)])
+        noupdate = not (self.product_id and supplier_info.purchase_uom_id and
+                        self.product_uom == supplier_info.product_uom)
+        if noupdate:
+            self.second_uom = False
+            self.second_qty = False
+            self.second_price_unit = False
             return
-        p_uom = self.product_id.purchase_uom_id
-        uom = self.product_id.uom_po_id
-        self.second_uom = p_uom if p_uom != uom else False
-        self.second_qty = self.product_qty * self.product_id.conversion_rate\
-            if self.second_uom else False
+        rate = supplier_info.conversion_rate
+        self.second_uom = supplier_info.purchase_uom_id
+        self.second_qty = self.product_qty * rate
+        self.second_price_unit = self.valor_bruto / self.second_qty
