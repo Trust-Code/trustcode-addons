@@ -14,10 +14,11 @@
     'website': 'http://www.trustcode.com.br',
     'contributors': [
         'Danimar Ribeiro <danimaribeiro@gmail.com>',
-        'Mackilem Van der Laan Soares <mack.vdl@gmail.com>'
+        'Mackilem Van der Laan Soares <mack.vdl@gmail.com>',
+        'Felipe Paloschi <paloschi.eca@gmail.com>',
     ],
     'depends': [
-        'project', 'hr_timesheet'
+        'project', 'hr_timesheet', 'hr_attendance'
     ],
     'data': [
         'views/project_task_view.xml',

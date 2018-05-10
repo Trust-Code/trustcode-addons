@@ -57,11 +57,11 @@ class ProjectTask (models.Model):
                 self.stop_track_time(self.user_id.id or self.env.user.id)
 
         elif "kanban_state" in vals:
-            if vals["kanban_state"] == "blocked":
-                self.stop_track_time(self.user_id.id or self.env.user.id)
-            elif self.kanban_state == 'blocked':
+            if vals["kanban_state"] == "normal":
                 self.start_track_time(
                     self.stage_id.name, self.user_id.id or self.env.user.id)
+            else:
+                self.stop_track_time(self.user_id.id or self.env.user.id)
 
         elif "user_id" in vals and self.stage_id.tracking_time:
             self.stop_track_time(self.user_id.id or self.env.user.id)
@@ -83,3 +83,18 @@ class AccountAnalyticLine(models.Model):
     start_date = fields.Datetime(u'Inicio Atividade')
     end_date = fields.Datetime(u'Fim Atividade')
     running_time = fields.Boolean(u'Em execução')
+
+
+class HrEmployee(models.Model):
+    _inherit = "hr.employee"
+
+    def attendance_action_change(self):
+        res = super(HrEmployee, self).attendance_action_change()
+        if self.attendance_state == 'checked_out':
+            tasks = self.env['project.task'].search(
+                [('user_id', '=', self.user_id.id),
+                 ('stage_id.tracking_time', '=', True),
+                 ('kanban_state', '=', 'normal')])
+            for task in tasks:
+                task.write({'kanban_state': 'blocked'})
+        return res
