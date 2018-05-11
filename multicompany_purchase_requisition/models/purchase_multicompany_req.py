@@ -83,7 +83,7 @@ class PurchaseMulticompanyReq(models.Model):
 
     def action_in_negociation(self):
         """Separa as linhas de acordo com o campo 'purchase_requisition'
-        e vendedor"""
+        e fornecedor"""
 
         if not all(obj.line_ids for obj in self):
             raise UserError(
@@ -106,22 +106,15 @@ does not have a supplier' % (line.product_id.name)))
                 if seller_id not in rfq:
                     rfq[seller_id] = {}
 
-                if product_id not in rfq[seller_id]:
-                    rfq[seller_id][product_id] = total_qty
-
-                else:
-                    rfq[seller_id][product_id] += total_qty
+                rfq[seller_id][line.id] = [product_id, total_qty]
 
             elif line.product_id.purchase_requisition == 'tenders':
 
                 if seller_id not in tenders:
                     tenders[seller_id] = {}
 
-                if product_id not in tenders[seller_id]:
-                    tenders[seller_id][product_id] = total_qty
+                tenders[seller_id][line.id] = [product_id, total_qty]
 
-                else:
-                    tenders[seller_id][product_id] += total_qty
         self._create_purchase_orders(rfq)
         self._create_purchase_requisition(tenders)
         self.write({
@@ -135,11 +128,11 @@ does not have a supplier' % (line.product_id.name)))
         req_ids = []
 
         for vendor_id, lines in tender_dict.items():
-            for product_id, quantity in lines.items():
+            for req_line, product_data in lines.items():
                 line_vals = {
-                    'product_id': product_id.id,
-                    'product_qty': quantity,
-                    'price_unit': product_id.seller_ids[0].price,
+                    'product_id': product_data[0].id,
+                    'product_qty': product_data[1],
+                    'price_unit': product_data[0].seller_ids[0].price,
                 }
                 pr_lines.append(self.env[
                     'purchase.requisition.line'].create(line_vals).id)
@@ -167,18 +160,23 @@ does not have a supplier' % (line.product_id.name)))
             }
             po_id = self.env['purchase.order'].create(vals)
 
-            for product_id, quantity in lines.items():
+            for req_line_id, product_data in lines.items():
                 line_vals = {
-                    'product_id': product_id.id,
-                    'name': product_id.name,
+                    'product_id': product_data[0].id,
+                    'name': product_data[0].name,
                     'date_planned': datetime.now(),
-                    'product_uom': product_id.uom_id.id,
-                    'product_qty': quantity,
-                    'prod_original_qty': quantity,
-                    'price_unit': product_id.seller_ids[0].price,
+                    'product_uom': product_data[0].uom_id.id,
+                    'product_qty': product_data[1],
+                    'prod_original_qty': product_data[1],
+                    'price_unit': product_data[0].seller_ids[0].price,
                     'order_id': po_id.id,
+                    'req_line_id': req_line_id,
                 }
-            self.env['purchase.order.line'].create(line_vals)
+                po_line_id = self.env['purchase.order.line'].create(line_vals)
+
+                self.env['purchase.multicompany.req.line'].browse(
+                    req_line_id).write({'po_line_id': po_line_id.id})
+
             self.write({'purchase_order_ids': [(4, po_id.id, 0)]})
 
     @api.multi
@@ -238,18 +236,22 @@ Please finish the PO process before changing this object's state."
         qty_increment = fields.Float(
             string='Increment', digits=dp.get_precision(
                 'Product Unit of Measure'))
-        requisition_line_ids = fields.Many2many(
-            'purchase.multicompany.line', string='Purchase Company',
-            ondelete='cascade')
+
         company_id = fields.Many2one(
             'res.company',
             string='Company',
             store=True, readonly=True,
             default=lambda self: self.env['res.company']._company_default_get(
                 'purchase.multicompany.line'))
+
         purchase_multicompany_req_id = fields.Many2one(
             'purchase.multicompany.req',
             string="Purchase Multicompany Requisition")
+        requisition_line_ids = fields.Many2many(
+            'purchase.multicompany.line', string='Purchase Company',
+            ondelete='cascade')
+        po_line_id = fields.Many2one('purchase.order.line')
+
         state = fields.Selection(
             related="purchase_multicompany_req_id.state")
 
