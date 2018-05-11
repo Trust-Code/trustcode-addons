@@ -7,11 +7,11 @@
         <field name="arch" type="xml">
             <xpath expr="//group/group[2]" position="after">
                 <group></group>
-                <group>
+                <group string="Segunda Unidade de Compra">
                     <field name="purchase_uom_id" groups="product.group_uom"/>
-                    <field name="new_price_unit" groups="product.group_uom"/>
+                    <field name="new_price" groups="product.group_uom"/>
                     <field name="conversion_rate" groups="product.group_uom"/>
-                    <p class="oe_grey" colspan="2" groups="product.group_uom">                    Ex: Fator de Conversão * Unidade de Medida de Compra = 2ª Unidade de Compra                </p>
+                    <p class="oe_grey" colspan="2" groups="product.group_uom">Ex: Fator de Conversão * Unidade de Medida de Compra = 2ª Unidade de Compra</p>
                 </group>
             </xpath>
         </field>

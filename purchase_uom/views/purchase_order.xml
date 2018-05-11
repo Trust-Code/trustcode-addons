@@ -6,18 +6,18 @@
         <field name="inherit_id" ref="purchase.purchase_order_form"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='order_line']/tree//field[@name='product_uom']" position="after">
-                <field name="second_qty" />
-                <field name="second_price_unit" />
-                <field name="second_uom" />
+                <field name="second_qty" invisible="1" />
+                <field name="second_price_unit" invisible="1" />
+                <field name="second_uom" invisible="1" />
             </xpath>
             <xpath expr="//field[@name='order_line']/form//field[@name='date_planned']" position="after">
                 <label for="second_qty"/>
                 <div attrs="{'invisible': [('second_uom', '=', False)]}">
-                    <field name="second_qty" class="oe_inline"/>
+                    <field name="second_qty" class="oe_inline" readonly="1" />
                     <span class="oe_inline">&#160;</span>
-                    <field name="second_uom" groups="product.group_uom" class="oe_inline"/>
+                    <field name="second_uom" groups="product.group_uom" class="oe_inline" readonly="1" />
                 </div>
-                <field name="second_price_unit" />
+                <field name="second_price_unit" readonly="1" />
             </xpath>
         </field>
     </record>

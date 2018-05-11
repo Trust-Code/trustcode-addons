@@ -23,5 +23,6 @@
     'data': [
         'views/supplier_info.xml',
         'views/purchase_order.xml',
+        'reports/report_purchase_order.xml',
     ],
 }
