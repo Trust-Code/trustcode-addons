@@ -19,10 +19,11 @@
     'contributors': [
         'Felipe Paloschi <paloschi.eca@gmail.com>',
     ],
-    'depends': ['purchase'],
+    'depends': ['br_purchase'],
     'data': [
         'views/supplier_info.xml',
         'views/purchase_order.xml',
+        'views/account_invoice.xml',
         'reports/report_purchase_order.xml',
     ],
 }

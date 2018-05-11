@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="accoun_invoice_purchase_uom" model="ir.ui.view">
+        <field name="name">account.invoice.purchase.uom</field>
+        <field name="model">account.invoice</field>
+        <field name="inherit_id" ref="account.invoice_supplier_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='invoice_line_ids']/tree" position="inside">
+                <field name="second_qty" invisible="1" />
+                <field name="second_price_unit" invisible="1" />
+                <field name="second_uom" invisible="1" />
+            </xpath>
+        </field>
+    </record>
+    <record id="accoun_invoice_purchase_uom" model="ir.ui.view">
+        <field name="name">account.invoice.purchase.uom</field>
+        <field name="model">account.invoice.line</field>
+        <field name="inherit_id" ref="br_account.view_br_account_invoice_line_form"/>
+        <field name="arch" type="xml">
+            <field name="price_unit" position="after">
+                <label for="second_qty" attrs="{'invisible': [('second_uom', '=', False)]}"/>
+                <div attrs="{'invisible': [('second_uom', '=', False)]}">
+                    <field name="second_qty" class="oe_inline" readonly="1" />
+                    <span class="oe_inline">&#160;</span>
+                    <field name="second_uom" groups="product.group_uom" class="oe_inline" readonly="1" />
+                </div>
+                <field name="second_price_unit" readonly="1" attrs="{'invisible': [('second_uom', '=', False)]}"/></field>
+        </field>
+    </record>
+</odoo>

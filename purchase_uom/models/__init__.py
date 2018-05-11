@@ -4,3 +4,4 @@
 
 from . import supplier_info
 from . import purchase_order
+from . import account_invoice
