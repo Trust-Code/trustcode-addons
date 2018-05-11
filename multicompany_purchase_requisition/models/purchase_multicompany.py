@@ -76,6 +76,14 @@ Try cancelling the Assembled Multicompany Purchase object first.')
 
     @api.multi
     def assemble_selected(self):
+
+        if not all(item.state == 'in_progress' for item in self):
+            raise UserError(
+                _(u"It's not possible to assemble purchase requisitions \
+which are not in 'confirmed' state. Please, verify the purchase's state \
+and try again later."
+                  ))
+
         vals = {
             'name': 'PMR %s' % (self.ids),
             'description': 'Created from purchase.multicompany ID: %s'
@@ -85,12 +93,7 @@ Try cancelling the Assembled Multicompany Purchase object first.')
         }
         centralizador_id = self.env[
             'purchase.multicompany.req'].create(vals)
-        if not all(item.state == 'in_progress' for item in self):
-            raise UserError(
-                _(u"It's not possible to assemble non confirmed purchase \
-requisitions. Please, confirm those purchases or assemble the non \
-confirmed purchases later."
-                  ))
+
         for item in self:
             item.centralizador_id = centralizador_id.id
         centralizador_id.assemble_selected(list(self))
@@ -117,6 +120,8 @@ class PurchaseMulticompanyLine(models.Model):
         store=True, readonly=True,
         default=lambda self: self.env['res.company']._company_default_get(
             'purchase.multicompany.line'))
+
+    pm_req_line_id = fields.Many2one('purchase.multicompany.req.line')
 
     @api.onchange('product_id')
     def _onchange_product_id(self):
