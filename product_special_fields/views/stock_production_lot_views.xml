@@ -7,11 +7,11 @@
             <field name="ref" position="before">
                 <field name="imei"/>
                 <field name="iccid"/>
-                <field name="n_linha"/>
+                <field name="n_linha" />
+                <field name="partner_id" />
             </field>
         </field>
     </record>
-
     <record id="view_production_special_fields_lot_form" model="ir.ui.view">
         <field name="name">stock.production.special.fields.lot.form</field>
         <field name="model">stock.production.lot</field>
@@ -22,6 +22,7 @@
                     <field name="imei"/>
                     <field name="iccid"/>
                     <field name="n_linha"/>
+                    <field name="partner_id" />
                 </group>
             </group>
         </field>
