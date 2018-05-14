@@ -19,5 +19,6 @@ class StockMoveLine(models.Model):
                 ml.lot_id.update(
                     {'imei': ml.imei,
                      'iccid': ml.iccid,
-                     'n_linha': ml.n_linha})
+                     'n_linha': ml.n_linha,
+                     'partner_id': ml.move_id.picking_id.partner_id.id})
         return res
