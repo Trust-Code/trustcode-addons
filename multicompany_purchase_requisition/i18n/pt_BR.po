@@ -67,7 +67,7 @@ msgstr "Cancelar"
 #: model:ir.ui.view,arch_db:multicompany_purchase_requisition.view_purchase_multicompany_req_form
 #: model:ir.ui.view,arch_db:multicompany_purchase_requisition.view_purchase_requisition_form
 msgid "Cancel Call"
-msgstr "Cancelar ligação"
+msgstr "Cancelar Chamado"
 
 #. module: multicompany_purchase_requisition
 #: selection:purchase.multicompany,state:0
@@ -209,8 +209,8 @@ msgstr "Incremento"
 #. module: multicompany_purchase_requisition
 #: code:addons/multicompany_purchase_requisition/models/purchase_multicompany.py:90
 #, python-format
-msgid "It's not possible to assemble non confirmed purchase requisitions. Please, confirm those purchases or assemble the non confirmed purchases later."
-msgstr "Não é possivel juntar requisições de compra que ainda não foram confirmadas. Por favor, confirme essas compras ou junte as requisições não confirmadas depois."
+msgid "It's not possible to assemble purchase requisitions which are not in 'confirmed' state. Please, verify the purchase's state and try again later."
+msgstr "Não é possivel juntar requisições de compra que não estão na situação de 'Confirmado'. Por favor, verifique a situação dessas compras e depois tente novamente."
 
 #. module: multicompany_purchase_requisition
 #: model:ir.model.fields,field_description:multicompany_purchase_requisition.field_purchase_multicompany___last_update
