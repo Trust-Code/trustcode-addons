@@ -23,7 +23,6 @@
     'data': [
         'views/supplier_info.xml',
         'views/purchase_order.xml',
-        'views/account_invoice.xml',
         'reports/report_purchase_order.xml',
     ],
 }

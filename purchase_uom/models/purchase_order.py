@@ -8,9 +8,17 @@ from odoo import models, fields, api
 class PurchaseOrderLine(models.Model):
     _inherit = 'purchase.order.line'
 
-    second_qty = fields.Float('Segunda Quantidade')
-    second_uom = fields.Many2one('product.uom', 'Segunda UOM')
-    second_price_unit = fields.Float('Segundo Preço Unitário', digits=(16, 4))
+    second_qty = fields.Float(
+        'Segunda Quantidade',
+        compute='update_second_uom')
+    second_uom = fields.Many2one(
+        'product.uom',
+        'Segunda UOM',
+        compute='update_second_uom')
+    second_price_unit = fields.Float(
+        'Segundo Preço Unitário',
+        digits=(16, 4),
+        compute='update_second_uom')
 
     def get_supplier_info(self):
         supplier_info = self.env['product.supplierinfo'].search(
