@@ -171,6 +171,17 @@
         </field>
     </record>
 
+    <record model="ir.actions.server" id="action_enviar_romaneio_email">
+        <field name="name">Enviar Relatórios de Romaneio por E-mail</field>
+        <field name="model_id" ref="multicompany_purchase_requisition.model_purchase_multicompany_req"/>
+        <field name="binding_model_id" ref="multicompany_purchase_requisition.model_purchase_multicompany_req"/>
+        <field name="state">code</field>
+        <field name="code">
+if records:
+    records._send_email_romaneio()
+        </field>
+    </record>
+
     <menuitem
         id="menu_purchase_multicompany_req"
         sequence="11"

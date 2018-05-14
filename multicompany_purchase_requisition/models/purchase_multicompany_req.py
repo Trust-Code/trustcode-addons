@@ -2,6 +2,10 @@ from datetime import datetime
 from odoo import api, fields, models, _
 from odoo.addons import decimal_precision as dp
 from odoo.exceptions import UserError
+from odoo.tools.safe_eval import safe_eval
+
+import time
+import base64
 
 
 class PurchaseMulticompanyReq(models.Model):
@@ -219,6 +223,40 @@ Please finish the PO process before changing this object's state."
                 pmr_line.write({'qty_increment': line.qty_increment})
                 pmr_line._qty_increment_distribution()
         self.write({'state': 'done'})
+
+    @api.multi
+    def _send_email_romaneio(self):
+
+        mail = self.env['mail.template'].search([
+            ('model_id', '=', 'purchase.order')])[0]
+        if not mail:
+            raise UserError('Modelo de email padrão não configurado')
+
+        for po in self.purchase_order_ids:
+            romaneio_report = self.env['ir.actions.report'].search(
+                [('report_name', '=',
+                    'multicompany_purchase_requisition.report_romaneio')])
+            report_service = romaneio_report.xml_id
+            romaneio, dummy = self.env.ref(
+                report_service).render_qweb_pdf([po.id])
+            report_name = safe_eval(romaneio_report.print_report_name,
+                                    {'object': po, 'time': time})
+            filename = "%s.%s" % (report_name, "pdf")
+
+            attachment_id = po.env['ir.attachment'].create({
+                'name': filename,
+                'datas': base64.b64encode(romaneio),
+                'datas_fname': filename,
+                'mimetype': 'application/pdf',
+                'res_model': 'purchase.order',
+                'res_id': po.id,
+            })
+
+            values = {
+                "attachment_ids": [attachment_id.id]
+            }
+
+            mail.send_mail(po.id, email_values=values)
 
     class PurchaseMulticompanyReqLine(models.Model):
         _name = "purchase.multicompany.req.line"

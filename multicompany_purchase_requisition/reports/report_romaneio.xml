@@ -9,6 +9,11 @@
         file="multicompany_purchase_requisition.report_romaneio"
     />
 
+    <record id="action_report_romaneio" model="ir.actions.report">
+        <field name="name">Relatório de Romaneio</field>
+        <field name="print_report_name">'Relatório de Romaneio - %s' % (object.name)</field>
+    </record>
+
     <template id="report_romaneio_document">
         <t t-call="web.external_layout">
             <t t-set="o" t-value="o.with_context({'lang':o.partner_id.lang})"/>
@@ -73,9 +78,9 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr t-foreach="o.order_line" t-as="line">
-                                <t t-set="pm_line_id" t-value="o._get_related_pm_line(line, pm.id)" />
-                                <t t-if="pm_line_id != False">
+                            <t t-foreach="o.order_line" t-as="line">
+                                <t t-set="pm_line_ids" t-value="o._get_related_pm_line(line, pm.id)" />
+                                <tr t-foreach="pm_line_ids" t-as="pm_line_id">
                                     <td>
                                         <span t-field="pm_line_id.product_id"/>
                                     </td>
@@ -96,8 +101,8 @@
                                         <span t-esc="pm_line_id.product_qty * line.price_unit"
                                             t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
                                     </td>
-                                </t>
-                            </tr>
+                                </tr>
+                            </t>
                         </tbody>
                     </table>
 
