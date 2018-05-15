@@ -14,6 +14,7 @@ o valor do IMEI, ICCID, No linha""",
     'website': 'http://www.trustcode.com.br',
     'contributors': [
         'Johny Chen Jy <johnychenjy@gmail.com>',
+        'Felipe Paloschi <paloschi.eca@gmail.com>',
     ],
     'depends': [
         'stock',
@@ -23,5 +24,6 @@ o valor do IMEI, ICCID, No linha""",
         'views/product_template_views.xml',
         'views/stock_production_lot_views.xml',
         'views/stock_move_line_views.xml',
+        'views/res_partner.xml',
     ],
 }
