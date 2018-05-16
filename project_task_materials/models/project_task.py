@@ -45,7 +45,7 @@ class ProjectTask(models.Model):
     @api.model
     def create(self, vals):
         res = super(ProjectTask, self).create(vals)
-        if vals['material_project_task_ids']:
+        if vals.get('material_project_task_ids'):
             res.check_resquested_materials()
         return res
 
@@ -57,34 +57,36 @@ class ProjectTask(models.Model):
         return res
 
     def check_resquested_materials(self):
-        if not any(material.requested for material in
-                   self.material_project_task_ids):
-            return
-        pick_type = self.env['stock.picking.type'].search(
-            [('name', '=', 'Tasks Materials List')], limit=1)
-        picking = self.env['stock.picking'].create({
-            'picking_type_id': pick_type.id,
-            'location_id': pick_type.default_location_src_id.id,
-            'location_dest_id': pick_type.default_location_dest_id.id,
-        })
+        pick_type = self.env.ref(
+            'project_task_materials.stock_picking_type_materials')
+        moves = []
         for material in self.material_project_task_ids:
-            # TODO CREATE A DEFAULT PICKING TYPE WITH DEFAULT LOCATIONS
             model_move = self.env['stock.move']
             move = model_move.search([
                 ('material_project_task_id', '=', material.id)])
             if material.requested and not move:
-                model_move.create({
+                moves.append(model_move.create({
                     'name': 'Material Item {}'.format(material.id),
-                    'picking_id': picking.id,
                     'location_id': pick_type.default_location_src_id.id,
                     'location_dest_id': pick_type.default_location_dest_id.id,
                     'product_id': material.product_id.id,
                     'product_uom_qty': material.quantity,
                     'product_uom': material.product_id.uom_id.id,
                     'material_project_task_id': material.id,
-                })
-        if not len(picking.move_lines):
-            picking.unlink()
-        else:
+                }))
+            elif move and not material.requested:
+                pick = move.picking_id
+                move.unlink()
+                if not pick.move_lines:
+                    pick.unlink()
+        if moves:
+            vals = {
+                'name': pick_type.sequence_id.next_by_id(),
+                'picking_type_id': pick_type.id,
+                'location_id': pick_type.default_location_src_id.id,
+                'location_dest_id': pick_type.default_location_dest_id.id,
+            }
+            picking = self.env['stock.picking'].create(vals)
+            picking.move_lines = [(6, 0, [item.id for item in moves])]
             picking.action_confirm()
             picking.action_assign()

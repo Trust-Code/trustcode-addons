@@ -18,16 +18,9 @@ class ProjectTaskMaterial(models.Model):
     qty_stock_available = fields.Float(
         compute='_get_stock_product_available',
         string='Quantity On Hand', readonly=True)
-    stock_stage = fields.Char(string='Stock Stage', readonly=True)
     quantity = fields.Float(string='Quantity')
     requested = fields.Boolean(string="Requested")
     task_id = fields.Many2one('project.task', string='Task')
-
-    @api.model
-    def create(self, vals):
-        res = super(ProjectTaskMaterial, self).create(vals)
-        res.stock_stage = res.task_id.stage_id.name
-        return res
 
     @api.multi
     def _get_stock_status(self):
@@ -48,3 +41,9 @@ class ProjectTaskMaterial(models.Model):
         for item in self:
             res.append((item.id, "%s" % (item.product_id.name)))
         return res
+
+    @api.multi
+    def unlink(self):
+        self.env['stock.move'].search(
+            [('material_project_task_id', 'in', self.ids)]).unlink()
+        return super(ProjectTaskMaterial, self).unlink()

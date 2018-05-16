@@ -11,7 +11,6 @@
                 <field name="requested" />
                 <field name="qty_stock_available" readonly="1"/>
                 <field name="qty_delivered" readonly="1"/>
-                <field name="stock_stage" readonly="1"/>
             </tree>
         </field>
     </record>
@@ -31,7 +30,6 @@
                 <group>
                     <group>
                         <field name="product_id" />
-                        <field name="stock_stage" />
                         <field name="requested" />
                     </group>
                     <group>
