@@ -8,7 +8,12 @@
                 <page name="partition" string="Controle de Rateio">
                     <group>
                         <group>
-                            <field name="analytic_account_ids" widget="many2many_tags" />
+                            <field name="employee_partition_ids" widget="one2many_list" nolabel="1">
+                                <tree editable="bottom">
+                                    <field name="analytic_account_id" />
+                                    <field name="weight" />
+                                </tree>
+                            </field>
                         </group>
                     </group>
                 </page>
