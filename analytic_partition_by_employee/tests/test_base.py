@@ -79,13 +79,20 @@ class TestBaseAnalyicEmploye(TransactionCase):
                 })
             ]
         })
-        for num in range(5):
-            self.env['hr.employee'].create({
-                'name': 'Empregado %d' % num,
-                'analytic_account_ids': [(4, self.analytic_acc_one.id, 0)]
-            })
-        for num in range(11):
-            self.env['hr.employee'].create({
-                'name': 'Empregado %d' % num,
-                'analytic_account_ids': [(4, self.analytic_acc_two.id, 0)]
-            })
+        self.env['hr.employee'].create({
+            'name': 'Empregado',
+            'employee_partition_ids': [(0, 0, {
+                'analytic_account_id': self.analytic_acc_one.id,
+                'weight': 2,
+            }), (0, 0, {
+                'analytic_account_id': self.analytic_acc_two.id,
+                'weight': 0.77,
+            })]
+        })
+        self.env['hr.employee'].create({
+            'name': 'Empregado',
+            'employee_partition_ids': [(0, 0, {
+                'analytic_account_id': self.analytic_acc_one.id,
+                'weight': 0.5,
+            })]
+        })

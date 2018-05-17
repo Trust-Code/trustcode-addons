@@ -12,4 +12,5 @@ class TestAnalyticPartition(TestBaseAnalyicEmploye):
         self.partition_group.calc_percent_by_employee()
         line_one = self.partition_group.partition_line_ids.search(
             [('analytic_account_id', '=', self.analytic_acc_one.id)])
-        self.assertEquals(line_one.partition_percent, round(5/16 * 100, 4))
+        self.assertEquals(round(line_one.partition_percent, 4), round(
+            (1.5) / (1.5 + 0.77 / 2) * 100, 4))
