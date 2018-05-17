@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<odoo>
+    <record id="view_procurement_material_tree" model="ir.ui.view">
+        <field name="name">view.procurement.material.tree</field>
+        <field name="model">project.task.material</field>
+        <field name="arch" type="xml">
+            <tree string="Materials" editable="top">
+                <field name="name" invisible="1"/>
+                <field name="product_id"/>
+                <field name="quantity"/>
+                <field name="requested" />
+                <field name="qty_stock_available" readonly="1"/>
+                <field name="qty_delivered" readonly="1"/>
+            </tree>
+        </field>
+    </record>
+    <record id="view_procurement_material_form" model="ir.ui.view">
+        <field name="name">view.procurement.material.form</field>
+        <field name="model">project.task.material</field>
+        <field name="arch" type="xml">
+            <form string="Materials">
+                <sheet>
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <h1>
+                                <field name="name" />
+                            </h1>
+                        </div>
+                    </div>
+                <group>
+                    <group>
+                        <field name="product_id" />
+                        <field name="requested" />
+                    </group>
+                    <group>
+                        <field name="qty_stock_available" />
+                        <field name="quantity" />
+                        <field name="qty_delivered" />
+                    </group>
+                </group>
+                </sheet>
+            
+            </form>
+        </field>
+    </record>
+</odoo>
