@@ -9,11 +9,12 @@ class AnalyticPartition(models.Model):
     _inherit = 'analytic.partition'
 
     def get_employee_per_account(self, id):
-        employees = self.env['hr.employee'].search([
-            ('active', '=', True)]).filtered(
-            lambda x: id in x.analytic_account_ids.ids)
-        return sum(1/len(employee.analytic_account_ids)
-                   for employee in employees)
+        employee_parts = self.env['hr.employee.partition'].search([
+            ('employee_id.active', '=', True),
+            ('analytic_account_id', '=', id)
+        ])
+        return sum(part.weight / len(part.employee_id.employee_partition_ids)
+                   for part in employee_parts)
 
     def calc_percent_by_employee(self):
         analytic_accs = self.env['account.analytic.account'].search(
