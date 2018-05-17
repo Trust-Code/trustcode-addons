@@ -46,6 +46,38 @@ class ProjectTask (models.Model):
             })
         return
 
+    def to_hours(self, val):
+        hour = int(val)
+        minutes = int(60 * (val - hour))
+        return '{}:{}'.format(hour, minutes)
+
+    def message_post_timeshet_change(self, changes):
+        for change in changes:
+            if not (change[2] and change[0]):
+                continue
+            timesheet = self.env['account.analytic.line'].browse(change[1])
+            message = 'Registro de horas alterado:'
+            message += '<ul>'
+            message += '<li>Funcionário: {}'.format(timesheet.employee_id.name)
+            if change[2].get('employee_id'):
+                emp = self.env['hr.employee'].browse(change[2]['employee_id'])
+                message += '<span class="fa fa-long-arrow-right" /> {}'\
+                    .format(emp.name)
+            message += '</li>'
+            message += '<li>Duração: {}'.format(self.to_hours(
+                timesheet.unit_amount))
+            if change[2].get('unit_amount'):
+                message += '<span class="fa fa-long-arrow-right" /> {}'\
+                    .format(self.to_hours(change[2]['unit_amount']))
+            message += '</li>'
+            for item in change[2]:
+                message += '<li>{}: {} <span class="fa fa-long-arrow-right" /> \
+                    {} </li>'.format(timesheet.fields_get()[item]['string'],
+                                     timesheet[item],
+                                     change[2][item])
+            message += '</ul>'
+            self.message_post(message)
+
     @api.multi
     def write(self, vals):
         if "stage_id" in vals:
@@ -67,7 +99,8 @@ class ProjectTask (models.Model):
             self.stop_track_time(self.user_id.id or self.env.user.id)
             self.start_track_time(
                 self.stage_id.name, vals["user_id"] or self.env.user.id)
-
+        if vals.get('timesheet_ids'):
+            self.message_post_timeshet_change(vals['timesheet_ids'])
         return super(ProjectTask, self).write(vals)
 
 
