@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 11.0+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-05-16 16:17+0000\n"
-"PO-Revision-Date: 2018-05-16 16:17+0000\n"
+"POT-Creation-Date: 2018-05-18 14:29+0000\n"
+"PO-Revision-Date: 2018-05-18 14:29+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -112,9 +112,19 @@ msgid "Quantity On Hand"
 msgstr "Quantidade na mão"
 
 #. module: project_task_materials
+#: model:ir.model.fields,field_description:project_task_materials.field_project_task_request_all
+msgid "Request Materials"
+msgstr "Solicitar Materiais"
+
+#. module: project_task_materials
 #: model:ir.model.fields,field_description:project_task_materials.field_project_task_material_requested
 msgid "Requested"
 msgstr "Solicitado"
+
+#. module: project_task_materials
+#: model:ir.model.fields,field_description:project_task_materials.field_project_task_material_stage_requested
+msgid "Requested on stage"
+msgstr "Solicitado no estágio"
 
 #. module: project_task_materials
 #: model:ir.model.fields,field_description:project_task_materials.field_project_task_sale_order_id
@@ -127,15 +137,15 @@ msgid "Stock Move"
 msgstr "Movimento de Estoque"
 
 #. module: project_task_materials
-#: model:stock.picking.type,name:project_task_materials.stock_picking_type_materials
-msgid "Task List of Materials"
-msgstr "Lista de Materiais das Tarefas"
-
-#. module: project_task_materials
 #: model:ir.model,name:project_task_materials.model_project_task
 #: model:ir.model.fields,field_description:project_task_materials.field_project_task_material_task_id
 msgid "Task"
 msgstr "Tarefa"
+
+#. module: project_task_materials
+#: model:stock.picking.type,name:project_task_materials.stock_picking_type_materials
+msgid "Task List of Materials"
+msgstr "Lista de Materiais das Tarefas"
 
 #. module: project_task_materials
 #: model:ir.model,name:project_task_materials.model_project_task_material
