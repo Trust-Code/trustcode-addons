@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<odoo>
+    <record id="view_task_materials_task_form" model="ir.ui.view">
+        <field name="name">view.task.materials.task.form</field>
+        <field name="model">project.task</field>
+        <field name="inherit_id" ref="project.view_task_form2"/>
+        <field name="arch" type="xml">
+            <div name="button_box" position="inside">
+                <button type="object" name="action_request_all" class="oe_stat_button" icon="fa-list" attrs="{'invisible': [('request_all', '=', 0)]}" >
+                    <span class="oe_stat_value"><field name="request_all" widget="statinfo" nolabel="1" /></span>
+                    <span class="oe_stat_text"><label for="request_all" /></span>
+                </button>
+                <button type="object" name="action_view_delivery" class="oe_stat_button" icon="fa-truck" attrs="{'invisible': [('picking_counter', '=', 0)]}" >
+                    <span class="oe_stat_value"><field name="picking_counter" widget="statinfo" nolabel="1" /></span>
+                    <span class="oe_stat_text"><label for="picking_counter" string="Pickings" /></span>
+                </button>
+            </div>
+            <page name="description_page" position="after">
+                <page string="Materials Control" name="materials_control">
+                    <field name="material_project_task_ids" widget="one2many_list" />
+                </page>
+            </page>
+            <field name="sale_line_id" position="before">
+                <field name="sale_order_id" /></field>
+            <field name="sale_line_id" position="attributes">
+                <attribute name="domain">[('order_id', '=', sale_order_id)]</attribute>
+            </field>
+        </field>
+    </record>
+</odoo>
