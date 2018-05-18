@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- Top menu item -->
+        <menuitem name="Books" id="menu_books" sequence="10" />
+
+        <menuitem id="menu_library_books" name="Books" parent="menu_books" sequence="1"/>
+            <!--Library Books sub-menus-->
+            <menuitem id="menu_library_books_register" name="Register Books" action="library_books.library_books_action" parent="library_books.menu_library_books" sequence="1"/>
+            <menuitem id="menu_library_books_meeting" name="Meeting" action="library_books.library_books_meeting_action" parent="library_books.menu_library_books" sequence="2"/>
+            <menuitem id="menu_library_books_publication_type" name="Publication Type" action="library_books.library_books_publication_type_action" parent="library_books.menu_library_books" sequence="3"/>
+            <menuitem id="menu_library_books_license" name="License" action="library_books.library_books_license_action" parent="library_books.menu_library_books" sequence="4"/>
+            <menuitem id="menu_library_books_access_type" name="Access Type" action="library_books.library_books_access_type_action" parent="library_books.menu_library_books" sequence="5"/>
+            <menuitem id="menu_library_books_series_collection" name="Series/Collection" action="library_books.library_books_series_collection_action" parent="library_books.menu_library_books" sequence="6"/>
+            <menuitem id="menu_library_books_feedback_type" name="Feedback Type" action="library_books.library_books_feedback_type_action" parent="library_books.menu_library_books" sequence="7"/>
+            <menuitem id="menu_library_books_files_format" name="Files Format" action="library_books.library_books_files_format_action" parent="library_books.menu_library_books" sequence="8"/>
+            
+    </data>
+</odoo>
+
