@@ -14,6 +14,17 @@ class ProjectTask(models.Model):
     picking_counter = fields.Integer(
         'Picking Counter',
         compute="_compute_picking_counter")
+    request_all = fields.Integer('Request Materials',
+                                 compute="_compute_request_all")
+
+    @api.multi
+    def _compute_request_all(self):
+        for item in self:
+            if not item.material_project_task_ids:
+                item.request_all = 0
+            else:
+                item.request_all = len(item.material_project_task_ids.search(
+                    [('requested', '=', False)]))
 
     def _get_picking_ids(self):
         pickings = []
@@ -42,6 +53,16 @@ class ProjectTask(models.Model):
             action['res_id'] = picking_ids[0]
         return action
 
+    def action_request_all(self):
+        request = []
+        for item in self.material_project_task_ids:
+            if not item.requested:
+                request.append(item.id)
+        self.write({
+            'material_project_task_ids': [
+                (1, id, {'requested': True}) for id in request]
+        })
+
     @api.model
     def create(self, vals):
         res = super(ProjectTask, self).create(vals)
@@ -65,6 +86,7 @@ class ProjectTask(models.Model):
             move = model_move.search([
                 ('material_project_task_id', '=', material.id)])
             if material.requested and not move:
+                material.stage_requested = material.task_id.stage_id.name
                 moves.append(model_move.create({
                     'name': 'Material Item {}'.format(material.id),
                     'location_id': pick_type.default_location_src_id.id,
@@ -77,6 +99,7 @@ class ProjectTask(models.Model):
             elif move and not material.requested:
                 pick = move.picking_id
                 move.unlink()
+                material.stage_requested = ''
                 if not pick.move_lines:
                     pick.unlink()
         if moves:

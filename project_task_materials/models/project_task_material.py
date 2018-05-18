@@ -21,6 +21,7 @@ class ProjectTaskMaterial(models.Model):
     quantity = fields.Float(string='Quantity')
     requested = fields.Boolean(string="Requested")
     task_id = fields.Many2one('project.task', string='Task')
+    stage_requested = fields.Char('Requested on stage', readonly=True)
 
     @api.multi
     def _get_stock_status(self):

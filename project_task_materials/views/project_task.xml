@@ -6,8 +6,13 @@
         <field name="inherit_id" ref="project.view_task_form2"/>
         <field name="arch" type="xml">
             <div name="button_box" position="inside">
+                <button type="object" name="action_request_all" class="oe_stat_button" icon="fa-list" attrs="{'invisible': [('request_all', '=', 0)]}" >
+                    <span class="oe_stat_value"><field name="request_all" widget="statinfo" nolabel="1" /></span>
+                    <span class="oe_stat_text"><label for="request_all" /></span>
+                </button>
                 <button type="object" name="action_view_delivery" class="oe_stat_button" icon="fa-truck" attrs="{'invisible': [('picking_counter', '=', 0)]}" >
-                    <field name="picking_counter" widget="statinfo" string="Pickings"/>
+                    <span class="oe_stat_value"><field name="picking_counter" widget="statinfo" nolabel="1" /></span>
+                    <span class="oe_stat_text"><label for="picking_counter" string="Pickings" /></span>
                 </button>
             </div>
             <page name="description_page" position="after">
