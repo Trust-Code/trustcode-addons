@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="group_library_books_category" model="res.groups">
+        <field name="name">Category Library Books</field>
+        <field name="comment">Category Library Books</field>
+        <field name="category_id" ref="base.module_category_hidden"/>
+    </record>
+
+    <record id="group_manager" model="res.groups">
+        <field name="name">Register Book - Manager</field>
+        <!--<field name="users" eval="[(4, ref('base.user_root'))]"/>-->
+        <field name="implied_ids" eval="[(4, ref('group_library_books_category'))]"/>
+    </record>
+
+    <record id="group_employee" model="res.groups">
+        <field name="name">Register Book - Employee</field>
+        <field name="implied_ids" eval="[(4, ref('group_library_books_category'))]"/>
+    </record>
+
+</odoo>
