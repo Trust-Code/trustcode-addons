@@ -1,0 +1,103 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+#	* import_product_image
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 11.0+e\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-05-21 16:26+0000\n"
+"PO-Revision-Date: 2018-05-21 16:26+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: import_product_image
+#: model:ir.ui.view,arch_db:import_product_image.product_import_image_wizard_form_view
+msgid "Cancel"
+msgstr "Cancelar"
+
+#. module: import_product_image
+#: model:ir.model.fields,field_description:import_product_image.field_import_product_image_create_uid
+msgid "Created by"
+msgstr "Criado por"
+
+#. module: import_product_image
+#: model:ir.model.fields,field_description:import_product_image.field_import_product_image_create_date
+msgid "Created on"
+msgstr "Criado em"
+
+#. module: import_product_image
+#: model:ir.model.fields,field_description:import_product_image.field_import_product_image_display_name
+msgid "Display Name"
+msgstr "Nome exibido"
+
+#. module: import_product_image
+#: model:ir.model.fields,field_description:import_product_image.field_import_product_image_file
+msgid "File to import"
+msgstr "Arquivo"
+
+#. module: import_product_image
+#: model:ir.model.fields,field_description:import_product_image.field_import_product_image_id
+msgid "ID"
+msgstr "ID"
+
+#. module: import_product_image
+#: model:ir.ui.view,arch_db:import_product_image.product_import_image_wizard_form_view
+msgid "Import File"
+msgstr "Importar Arquivo"
+
+#. module: import_product_image
+#: model:ir.actions.act_window,name:import_product_image.import_image_action_form
+#: model:ir.ui.menu,name:import_product_image.menu_import_product_image
+msgid "Import Product Image"
+msgstr "Importar Imagem do Produto"
+
+#. module: import_product_image
+#: model:ir.model.fields,field_description:import_product_image.field_import_product_image___last_update
+msgid "Last Modified on"
+msgstr "Última modificação em"
+
+#. module: import_product_image
+#: model:ir.model.fields,field_description:import_product_image.field_import_product_image_write_uid
+msgid "Last Updated by"
+msgstr "Última atualização por"
+
+#. module: import_product_image
+#: model:ir.model.fields,field_description:import_product_image.field_import_product_image_write_date
+msgid "Last Updated on"
+msgstr "Última atualização em"
+
+#. module: import_product_image
+#: model:ir.model.fields,field_description:import_product_image.field_import_product_image_product_model
+msgid "Product Model"
+msgstr "Modelo de Produto"
+
+#. module: import_product_image
+#: selection:import.product_image,product_model:0
+msgid "Product Template"
+msgstr "Template de Produto"
+
+#. module: import_product_image
+#: selection:import.product_image,product_model:0
+msgid "Product Variants"
+msgstr "Variante de Produto"
+
+#. module: import_product_image
+#: model:ir.ui.view,arch_db:import_product_image.product_import_image_wizard_form_view
+msgid "Products Image Import"
+msgstr "Importar Imagens de Produtos"
+
+#. module: import_product_image
+#: model:ir.model,name:import_product_image.model_import_product_image
+msgid "import.product_image"
+msgstr "import.product_image"
+
+#. module: import_product_image
+#: model:ir.ui.view,arch_db:import_product_image.product_import_image_wizard_form_view
+msgid "or"
+msgstr "ou"
+
