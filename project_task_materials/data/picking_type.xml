@@ -8,8 +8,8 @@
     </record>
     <record id="stock_picking_type_materials" model="stock.picking.type">
         <field name="name">Task List of Materials</field>
-        <field name="code">internal</field>
-        <field name="default_location_src_id" ref="stock.location_inventory"/>
+        <field name="code">outgoing</field>
+        <field name="default_location_src_id" ref="stock.stock_location_stock"/>
         <field name="default_location_dest_id" ref="stock.stock_location_customers"/>
         <field name="sequence_id" ref="sequence_list_of_materials"/>
     </record>
