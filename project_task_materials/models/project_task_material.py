@@ -3,6 +3,7 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 from odoo import api, fields, models
+from odoo.exceptions import UserError
 
 
 class ProjectTaskMaterial(models.Model):
@@ -48,3 +49,9 @@ class ProjectTaskMaterial(models.Model):
         self.env['stock.move'].search(
             [('material_project_task_id', 'in', self.ids)]).unlink()
         return super(ProjectTaskMaterial, self).unlink()
+
+    @api.multi
+    def write(self, vals):
+        if (vals.get('product_id') or vals.get('quantity')) and self.requested:
+            raise UserError("Você não pode mudar uma linha já solicitada")
+        return super(ProjectTaskMaterial, self).write(vals)

@@ -2,6 +2,7 @@
 # © 2018 Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
+import datetime
 from odoo import api, fields, models
 
 
@@ -23,8 +24,10 @@ class ProjectTask(models.Model):
             if not item.material_project_task_ids:
                 item.request_all = 0
             else:
-                item.request_all = len(item.material_project_task_ids.search(
-                    [('requested', '=', False)]))
+                item.request_all = len(
+                    self.env['project.task.material'].search([
+                        ('requested', '=', False),
+                        ('task_id', '=', item.id)]))
 
     def _get_picking_ids(self):
         pickings = []
@@ -77,6 +80,20 @@ class ProjectTask(models.Model):
             self.check_resquested_materials()
         return res
 
+    def create_analytic_line(self, material):
+        unit = self.env.ref("product.product_uom_unit")
+        line = self.env['account.analytic.line'].create({
+            'name': '{} - {}'.format(material.product_id.name, self.name),
+            'partner_id': self.partner_id.id,
+            'account_id': material.task_id.project_id.analytic_account_id.id,
+            'date': (datetime.date.today()).strftime('%Y-%m-%d'),
+            'product_id': material.product_id.id,
+            'unit_amount': material.quantity,
+        })
+        line.product_uom_id = material.product_id.uom_id or unit
+        line.amount = material.product_id.lst_price * material.quantity
+        return line
+
     def check_resquested_materials(self):
         pick_type = self.env.ref(
             'project_task_materials.stock_picking_type_materials')
@@ -96,6 +113,7 @@ class ProjectTask(models.Model):
                     'product_uom': material.product_id.uom_id.id,
                     'material_project_task_id': material.id,
                 }))
+                self.create_analytic_line(material)
             elif move and not material.requested:
                 pick = move.picking_id
                 move.unlink()
@@ -105,6 +123,7 @@ class ProjectTask(models.Model):
         if moves:
             vals = {
                 'name': pick_type.sequence_id.next_by_id(),
+                'partner_id': self.partner_id.id,
                 'picking_type_id': pick_type.id,
                 'location_id': pick_type.default_location_src_id.id,
                 'location_dest_id': pick_type.default_location_dest_id.id,
