@@ -46,6 +46,71 @@ class ProjectTask (models.Model):
             })
         return
 
+    def fix_date(self, date):
+        if len(date) != 10:
+            return ''
+        return '{}/{}/{}'.format(date[-2:], date[5:7], date[0:4])
+
+    def to_hours(self, val):
+        hour = int(val)
+        minutes = int(60 * (val - hour))
+        return '{}:{}'.format(str(hour).zfill(2), str(minutes).zfill(2))
+
+    def insert_new_line(self, name, before, after=False):
+        message = '<li>{}: {}'.format(name, before)
+        if after:
+            message += '  -->  {}'.format(after)
+        message += '</li>'
+        return message
+
+    def message_post_timesheet_create(self, vals):
+        message = 'Registro de horas criado por {}:'.format(
+            self.env.user.partner_id.name)
+        message += '<ul>'
+        message += self.insert_new_line('Data', self.fix_date(vals['date']))
+        employee = self.env['hr.employee'].browse(vals['employee_id']).name
+        message += self.insert_new_line('Funcionário', employee)
+        message += self.insert_new_line('Descrição', vals['name'])
+        message += self.insert_new_line('Duração', self.to_hours(
+            vals['unit_amount']))
+        message += '</ul>'
+        self.message_post(message)
+
+    def message_post_timesheet_change(self, changes):
+        for change in changes:
+            if not (change[2]):
+                continue
+            if not change[0]:
+                self.message_post_timesheet_create(change[2])
+                continue
+            timesheet = self.env['account.analytic.line'].browse(change[1])
+            message = 'Registro de horas alterado por {}:'.format(
+                self.env.user.partner_id.name)
+            message += '<ul>'
+            after = False
+            if change[2].get('date'):
+                after = self.fix_date(change[2]['date'])
+            message += self.insert_new_line(
+                'Data', self.fix_date(timesheet.date), after)
+            employee = False
+            if change[2].get('employee_id'):
+                employee = self.env['hr.employee'].browse(
+                    change[2]['employee_id']).name
+            message += self.insert_new_line(
+                'Funcionário',
+                timesheet.employee_id.name, employee)
+            unit_before = self.to_hours(timesheet.unit_amount)
+            unit = False
+            if change[2].get('unit_amount'):
+                unit = self.to_hours(change[2]['unit_amount'])
+            message += self.insert_new_line('Duração', unit_before, unit)
+            after = False
+            if change[2].get('name'):
+                after = change[2]['name']
+            message += self.insert_new_line('Descrição', timesheet.name, after)
+            message += '</ul>'
+            self.message_post(message)
+
     @api.multi
     def write(self, vals):
         if "stage_id" in vals:
@@ -67,7 +132,8 @@ class ProjectTask (models.Model):
             self.stop_track_time(self.user_id.id or self.env.user.id)
             self.start_track_time(
                 self.stage_id.name, vals["user_id"] or self.env.user.id)
-
+        if vals.get('timesheet_ids'):
+            self.message_post_timesheet_change(vals['timesheet_ids'])
         return super(ProjectTask, self).write(vals)
 
 
