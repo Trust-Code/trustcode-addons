@@ -3,33 +3,33 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 from odoo import api, fields, models
-from odoo.exceptions import UserError
 
 
 class ProjectTaskMaterial(models.Model):
     _name = 'project.task.material'
 
     product_id = fields.Many2one(
-        'product.product', string='Product', required=True)
+        comodel_name='product.product', string='Product', required=True)
     name = fields.Char(string="Name")
-    picking_id = fields.Many2one('stock.picking', string='')
+    picking_id = fields.Many2one(comodel_name='stock.picking', string='')
     qty_delivered = fields.Float(
-        compute='_get_stock_status',
+        compute='_get_qty_delivered',
         string='Delivered Quantity', readonly=True)
     qty_stock_available = fields.Float(
         compute='_get_stock_product_available',
         string='Quantity On Hand', readonly=True)
     quantity = fields.Float(string='Quantity')
     requested = fields.Boolean(string="Requested")
-    task_id = fields.Many2one('project.task', string='Task')
+    task_id = fields.Many2one(comodel_name='project.task', string='Task')
     stage_requested = fields.Char('Requested on stage', readonly=True)
+    move_id = fields.Many2one(
+        comodel_name='stock.move',
+        string="Stock move")
 
     @api.multi
-    def _get_stock_status(self):
+    def _get_qty_delivered(self):
         for item in self:
-            move_id = self.env['stock.move'].search(
-                [('material_project_task_id', '=', item.id)])
-            item.qty_delivered = move_id.quantity_done
+            item.qty_delivered = item.move_id.quantity_done
 
     @api.multi
     def _get_stock_product_available(self):
@@ -46,12 +46,5 @@ class ProjectTaskMaterial(models.Model):
 
     @api.multi
     def unlink(self):
-        self.env['stock.move'].search(
-            [('material_project_task_id', 'in', self.ids)]).unlink()
+        self.mapped('move_id').unlink()
         return super(ProjectTaskMaterial, self).unlink()
-
-    @api.multi
-    def write(self, vals):
-        if (vals.get('product_id') or vals.get('quantity')) and self.requested:
-            raise UserError("Você não pode mudar uma linha já solicitada")
-        return super(ProjectTaskMaterial, self).write(vals)

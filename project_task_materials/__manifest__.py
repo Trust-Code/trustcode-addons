@@ -26,6 +26,5 @@
         'security/ir.model.access.csv',
         'views/project_task_materials.xml',
         'views/project_task.xml',
-        'views/stock_move.xml',
     ],
 }

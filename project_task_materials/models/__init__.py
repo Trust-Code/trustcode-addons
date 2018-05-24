@@ -4,4 +4,3 @@
 
 from . import project_task
 from . import project_task_material
-from . import stock_move
