@@ -32,10 +32,8 @@ class ProjectTask(models.Model):
     def _get_picking_ids(self):
         pickings = []
         for material in self.material_project_task_ids:
-            move_id = self.env['stock.move'].search([
-                ('material_project_task_id', '=', material.id)], limit=1)
-            if move_id.picking_id:
-                pickings.append(move_id.picking_id)
+            if material.move_id.picking_id:
+                pickings.append(material.move_id.picking_id)
         return list(set(pickings))
 
     @api.multi
@@ -100,23 +98,21 @@ class ProjectTask(models.Model):
         moves = []
         for material in self.material_project_task_ids:
             model_move = self.env['stock.move']
-            move = model_move.search([
-                ('material_project_task_id', '=', material.id)])
-            if material.requested and not move:
+            if material.requested and not material.move_id:
                 material.stage_requested = material.task_id.stage_id.name
-                moves.append(model_move.create({
+                material.move_id = model_move.create({
                     'name': 'Material Item {}'.format(material.id),
                     'location_id': pick_type.default_location_src_id.id,
                     'location_dest_id': pick_type.default_location_dest_id.id,
                     'product_id': material.product_id.id,
                     'product_uom_qty': material.quantity,
                     'product_uom': material.product_id.uom_id.id,
-                    'material_project_task_id': material.id,
-                }))
+                })
+                moves.append(material.move_id)
                 self.create_analytic_line(material)
-            elif move and not material.requested:
-                pick = move.picking_id
-                move.unlink()
+            elif material.move_id and not material.requested:
+                pick = material.move_id.picking_id
+                material.move_id.unlink()
                 material.stage_requested = ''
                 if not pick.move_lines:
                     pick.unlink()
