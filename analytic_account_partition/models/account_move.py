@@ -11,8 +11,10 @@ class AccountMove(models.Model):
     @api.multi
     def post(self):
         for line in self.line_ids:
+            partition = line.account_id.partition_id or\
+                line.analytic_account_id.partition_id
             line._create_partition_move_lines(
-                line.analytic_account_id.partition_id)
+                partition_group=partition)
         return super(AccountMove, self).post()
 
 

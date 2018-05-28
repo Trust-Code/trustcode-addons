@@ -23,6 +23,7 @@
     'data': [
         'security/ir.model.access.csv',
         'views/analytic_partition.xml',
-        'views/analytic_account.xml'
+        'views/analytic_account.xml',
+        'views/account.xml',
     ],
 }

@@ -28,7 +28,6 @@
                                     <field name="partition_line_ids" nolabel="1" >
                                         <tree colors="red:isactive==False" editable="bottom">
                                             <field name="analytic_account_id" />
-                                            <!-- <field name="type" /> -->
                                             <field name="partition_percent" />
                                             <field name="isactive" invisible="1" />
                                         </tree>
@@ -50,7 +49,6 @@
             <tree name="apportionmet" colors="red:isactive==False">
                 <field name="partition_id" />
                 <field name="analytic_account_id" />
-                <!-- <field name="type" /> -->
                 <field name="partition_percent" />
                 <field name="isactive" invisible="1" />
             </tree>
@@ -69,7 +67,6 @@
                             <field name="analytic_account_id" />
                         </group>
                         <group>
-                            <!-- <field name="type" /> -->
                             <field name="partition_percent" />
                             <field name="isactive" invisible="1" />
                         </group>
@@ -86,5 +83,5 @@
         <field name='view_mode'>tree,form</field>
         <field name='view_id' ref='view_partition_tree' />
     </record>
-    <menuitem id="menu_partition_view" name="Rateio de Contas Analíticas" parent="account.menu_analytic_accounting" action="action_open_partition" sequence="10"/>
+    <menuitem id="menu_partition_view" name="Rateio de Contas Analíticas" parent="account.account_account_menu" action="action_open_partition" sequence="20"/>
 </odoo>
