@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_dynamic_csv_import" model="ir.ui.view">
+        <field name="name">Dynamic CSV Import</field>
+        <field name="model">dynamic.csv.import</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <group>
+                        <field name="model_id"/>
+                        <field name="csv_file" />
+                    </group>
+                    <group>
+                        <field name="extra" />
+                    </group>
+                </group>
+                <group attrs="{'invisible': [('extra', '=', False)]}">
+                    <group>
+                        <field name="csv_delimiter" />
+                    </group>
+                    <group>
+                        <field name="has_quote_char" />
+                    </group>
+                    <group>
+                        <field name="csv_quote_char" />
+                    </group>
+                </group>
+                <group>
+                    <field name="table_html" nolabel="1" />
+                </group>
+                <group>
+                    <field name="coluna_ids" nolabel="1">
+                        <tree editable="bottom">
+                            <field name="model_id" invisible="1" />
+                            <field name="name" />
+                            <field name="field_odoo" domain="[('model_id', '=', model_id)]"/>
+                            <field name="domain_string" />
+                            <field name="identifier" />
+                        </tree>
+                    </field>
+                </group>
+                <footer>
+                    <button name="action_import" string="Import" type="object" default_focus="1" class="oe_highlight"/>
+                    <button string="Cancel" class="oe_link" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_dynamic_csv_import_form" model="ir.actions.act_window">
+        <field name="name">Dynamic CSV Importer</field>
+        <field name="res_model">dynamic.csv.import</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">form</field>
+        <field name="target">main</field>
+    </record>
+
+    <menuitem id="menu_dynamic_csv_import" name="Dynamic CSV Import" parent="base.menu_administration"
+        action="action_dynamic_csv_import_form" sequence="10"/>
+
+</odoo>
