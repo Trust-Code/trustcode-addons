@@ -121,7 +121,7 @@ class ProjectTask (models.Model):
             else:
                 self.stop_track_time(self.user_id.id or self.env.user.id)
 
-        elif "kanban_state" in vals:
+        elif "kanban_state" in vals and self.stage_id.tracking_time:
             if vals["kanban_state"] == "normal":
                 self.start_track_time(
                     self.stage_id.name, self.user_id.id or self.env.user.id)
