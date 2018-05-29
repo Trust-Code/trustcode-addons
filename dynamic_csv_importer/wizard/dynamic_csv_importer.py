@@ -69,18 +69,21 @@ citação estiver marcado é necessário informá-lo!'))
         for line in csv_lines:
             search_domain = []
 
-            vals, error = self._prepare_vals(line, data_lines, obj_dict)
-            if error:
-                errors.append(error)
-            elif errors:
-                continue
-
             for ident in identification_lines:
                 search_domain.append(
                     (ident.domain_string, '=', line[ident.name]))
 
             object_ids = model_id.search(search_domain)
-            lista.append((object_ids, vals))
+
+            has_match_obj = True if object_ids else False
+
+            vals, error = self._prepare_vals(
+                line, data_lines, obj_dict, has_match_obj=has_match_obj)
+            if error:
+                errors.append(error)
+            elif errors:
+                continue
+            lista.append((object_ids, vals, line))
 
         if errors:
             raise UserError(errors)
@@ -88,15 +91,18 @@ citação estiver marcado é necessário informá-lo!'))
         for item in lista:
             object_ids = item[0]
             vals = item[1]
+            line = item[2]
             if object_ids:
                 for obj in object_ids:
                     obj.write(vals)
             else:
                 ident_vals = self._prepare_vals(
-                    line, identification_lines, obj_dict)
-                vals.update(ident_vals)
-                # TODO Create external_id
-                model_id.create(vals)
+                    line, identification_lines, obj_dict, has_match_obj=False)
+                vals.update(ident_vals[0])
+                vals['id'] = line[identification_lines[0].name]
+                fields = list(vals.keys())
+                values = list(vals.values())
+                model_id.load(fields, [values])
 
     def _get_object_dict(self, lines, model_id):
         """Returns a dict of objects identified by the
@@ -113,12 +119,12 @@ citação estiver marcado é necessário informá-lo!'))
             obj_dict[line.id] = obj
         return obj_dict
 
-    def _prepare_vals(self, line, data_lines, obj_dict):
+    def _prepare_vals(self, line, data_lines, obj_dict, has_match_obj):
         vals = {}
         error = ''
         for data in data_lines:
             data_domain = data.domain_string.split('.')
-            if len(data_domain) > 1:
+            if len(data_domain) > 1 and has_match_obj:
                 val_obj = obj_dict[data.id].search([
                     (data_domain[-1], '=', line[data.name])], limit=1)
                 if not val_obj:
@@ -126,7 +132,7 @@ citação estiver marcado é necessário informá-lo!'))
                         line.id, data.name)
                 vals[data_domain[0]] = val_obj.id
             else:
-                vals[data.domain_string] = line[data.name]
+                vals[data_domain[0]] = line[data.name]
         return vals, error
 
     @api.onchange('csv_file')
