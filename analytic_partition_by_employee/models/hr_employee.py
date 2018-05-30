@@ -12,6 +12,7 @@ class Employee(models.Model):
         'hr.employee.partition',
         'employee_id',
         'Contas de Rateio')
+    help_partition = fields.Html('Ajuda')
 
     def compute_percent_per_employe(self):
         partition_groups = []
