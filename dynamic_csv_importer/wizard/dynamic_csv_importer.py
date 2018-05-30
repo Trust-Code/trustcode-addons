@@ -15,16 +15,18 @@ class DynamicCsvImport(models.TransientModel):
     extra = fields.Boolean()
 
     csv_delimiter = fields.Char(
-        string='Delimitador', size=3, required=True, default=',')
+        string='Delimiter', size=3, required=True, default=',')
 
     has_quote_char = fields.Boolean(
-        string=u'Possui caracter de citação?', default=True)
+        string=u'Has Quotation Char?', default=True)
     csv_quote_char = fields.Char(
-        string=u'Caracter de Citação', size=3, default='"')
+        string=u'Quotation Char', size=3, default='"')
 
-    table_html = fields.Html(readonly=True)
+    table_html = fields.Html(readonly=True, store=True)
     coluna_ids = fields.One2many(
-        'dynamic.import.line', 'importer_id', string="Colunas")
+        'dynamic.import.line', 'importer_id', string="Columns")
+
+    import_success = fields.Boolean(default=False)
 
     @api.onchange('csv_file', 'has_quote_char', 'csv_quote_char',
                   'model_id', 'csv_delimiter')
@@ -45,16 +47,23 @@ class DynamicCsvImport(models.TransientModel):
                 csvfile, delimiter=str(self.csv_delimiter))
         else:
             if not self.csv_quote_char:
-                raise UserError(_(u'Se o campo indicador de caracter de \
-citação estiver marcado é necessário informá-lo!'))
+                raise UserError(_(u'Quotation char missing. Please select \
+an Quotation character before proceeding.'))
             csv_lines = csv.DictReader(
                 csvfile, delimiter=str(self.csv_delimiter),
                 quotechar=self.csv_quote_char)
 
         identification_lines = self.coluna_ids.filtered(
             lambda x: x.identifier)
+        if not identification_lines:
+            raise UserError(_(u'No identification lines! Please select at least one\
+ identification line before proceeding.'))
+
         data_lines = self.coluna_ids.filtered(
             lambda x: x.domain_string and not x.identifier)
+        if not data_lines:
+            raise UserError(_(u'No import lines with domain detected! Please \
+select an Odoo field or put a domain on at least one line before proceeding.'))
 
         model_id = self.env[self.model_id.model]
 
@@ -64,9 +73,9 @@ citação estiver marcado é necessário informá-lo!'))
 
         errors = []
         lista = []
-        # TODO: Use method load() for batches ... lets see howit goes...
+
         # create/update object for each csv line
-        for line in csv_lines:
+        for index, line in enumerate(csv_lines):
             search_domain = []
 
             for ident in identification_lines:
@@ -77,10 +86,13 @@ citação estiver marcado é necessário informá-lo!'))
 
             has_match_obj = True if object_ids else False
 
+            # Index is used for error message
             vals, error = self._prepare_vals(
-                line, data_lines, obj_dict, has_match_obj=has_match_obj)
+                line, data_lines, obj_dict, has_match_obj=has_match_obj,
+                line_index=index)
             if error:
                 errors.append(error)
+            # There's already errors on it... no need to proceed
             elif errors:
                 continue
             lista.append((object_ids, vals, line))
@@ -99,10 +111,24 @@ citação estiver marcado é necessário informá-lo!'))
                 ident_vals = self._prepare_vals(
                     line, identification_lines, obj_dict, has_match_obj=False)
                 vals.update(ident_vals[0])
-                vals['id'] = line[identification_lines[0].name]
+                # 'id' is needed for External ID creation
+                if 'id' not in vals:
+                    vals['id'] = line[identification_lines[0].name]
+
                 fields = list(vals.keys())
                 values = list(vals.values())
-                model_id.load(fields, [values])
+                import ipdb
+                ipdb.set_trace()
+                res = model_id.load(fields, [values])
+
+                if res['messages'] and res['messages'][0]['type'] == 'error':
+                    raise UserError(res['messages'][0]['message'])
+        self.import_success = True
+
+        # Maintaining wizard open
+        return {
+            "type": "set_scrollTop",
+        }
 
     def _get_object_dict(self, lines, model_id):
         """Returns a dict of objects identified by the
@@ -119,7 +145,16 @@ citação estiver marcado é necessário informá-lo!'))
             obj_dict[line.id] = obj
         return obj_dict
 
-    def _prepare_vals(self, line, data_lines, obj_dict, has_match_obj):
+    def _prepare_vals(self, line, data_lines, obj_dict, has_match_obj,
+                      line_index=0):
+        """
+        :param line: dict with the csv line values
+        :param data_lines: dynamic.import.line objects
+        :param obj_dict: dict with all external references
+        :param has_match_obj: boolean. Means if there's another
+        register with the same identification data
+        :param line_index: number of the line in csv file
+        """
         vals = {}
         error = ''
         for data in data_lines:
@@ -128,9 +163,10 @@ citação estiver marcado é necessário informá-lo!'))
                 val_obj = obj_dict[data.id].search([
                     (data_domain[-1], '=', line[data.name])], limit=1)
                 if not val_obj:
-                    error += _('Line id %s: %s not found') % (
-                        line.id, data.name)
+                    error += _(u'\nLine nº%s: %s with value %s \
+not found in database') % (line_index + 1, data.name, line[data.name])
                 vals[data_domain[0]] = val_obj.id
+            # if not has_match_obj:
             else:
                 vals[data_domain[0]] = line[data.name]
         return vals, error
