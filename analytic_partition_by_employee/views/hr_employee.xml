@@ -15,9 +15,21 @@
                                 </tree>
                             </field>
                         </group>
+                        <field name="help_partition" readonly="1" nolabel="1" />
                     </group>
                 </page>
             </notebook>
+        </field>
+    </record>
+    <record id="employee_partition_form_help" model="ir.ui.view">
+        <field name="name">employee.partition.form.help</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="analytic_partition_by_employee.employee_partition_form"/>
+        <field name="groups_id" eval="[(6, 0, [ref('base.group_erp_manager') ])]" />
+        <field name="arch" type="xml">
+            <field name="help_partition" position="attributes">
+                <attribute name="readonly">0</attribute>
+            </field>
         </field>
     </record>
 </odoo>
