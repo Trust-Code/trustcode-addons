@@ -1,0 +1,201 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+#	* dynamic_csv_importer
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 11.0+e\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-05-30 20:31+0000\n"
+"PO-Revision-Date: 2018-05-30 20:31+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: dynamic_csv_importer
+#: code:addons/dynamic_csv_importer/wizard/dynamic_csv_importer.py:160
+#, python-format
+msgid "\n"
+"Line nÂº%s: %s with value %s not found in database"
+msgstr "\n"
+"Linha nÂº%s: %s com valor %s não foi encontrado no sistema"
+
+#. module: dynamic_csv_importer
+#: model:ir.ui.view,arch_db:dynamic_csv_importer.view_dynamic_csv_import
+msgid "<span>CSV file imported successfully!</span>"
+msgstr "<span>Arquivo CSV importado com sucesso!</span>"
+
+#. module: dynamic_csv_importer
+#: model:ir.ui.view,arch_db:dynamic_csv_importer.view_dynamic_csv_import
+msgid "<strong>Success!</strong>"
+msgstr "<strong>Sucesso!</strong>"
+
+#. module: dynamic_csv_importer
+#: model:ir.model.fields,field_description:dynamic_csv_importer.field_dynamic_import_line_name
+msgid "CSV column name"
+msgstr "Nome da coluna no CSV"
+
+#. module: dynamic_csv_importer
+#: model:ir.model.fields,field_description:dynamic_csv_importer.field_dynamic_csv_import_csv_file
+msgid "CSV file"
+msgstr "Arquivo CSV"
+
+#. module: dynamic_csv_importer
+#: model:ir.ui.view,arch_db:dynamic_csv_importer.view_dynamic_csv_import
+msgid "Cancel"
+msgstr "Cancelar"
+
+#. module: dynamic_csv_importer
+#: model:ir.model.fields,field_description:dynamic_csv_importer.field_dynamic_csv_import_csv_quote_char
+msgid "Quotation Char"
+msgstr "Caracter de Citação"
+
+#. module: dynamic_csv_importer
+#: model:ir.model.fields,field_description:dynamic_csv_importer.field_dynamic_csv_import_coluna_ids
+msgid "Columns"
+msgstr "Colunas"
+
+#. module: dynamic_csv_importer
+#: model:ir.model.fields,field_description:dynamic_csv_importer.field_dynamic_csv_import_create_uid
+#: model:ir.model.fields,field_description:dynamic_csv_importer.field_dynamic_import_line_create_uid
+msgid "Created by"
+msgstr "Criado por"
+
+#. module: dynamic_csv_importer
+#: model:ir.model.fields,field_description:dynamic_csv_importer.field_dynamic_csv_import_create_date
+#: model:ir.model.fields,field_description:dynamic_csv_importer.field_dynamic_import_line_create_date
+msgid "Created on"
+msgstr "Criado em"
+
+#. module: dynamic_csv_importer
+#: model:ir.model.fields,field_description:dynamic_csv_importer.field_dynamic_csv_import_csv_delimiter
+msgid "Delimiter"
+msgstr "Delimitador"
+
+#. module: dynamic_csv_importer
+#: model:ir.model.fields,field_description:dynamic_csv_importer.field_dynamic_csv_import_display_name
+#: model:ir.model.fields,field_description:dynamic_csv_importer.field_dynamic_import_line_display_name
+msgid "Display Name"
+msgstr "Nome exibido"
+
+#. module: dynamic_csv_importer
+#: model:ir.model.fields,field_description:dynamic_csv_importer.field_dynamic_import_line_domain_string
+msgid "Domain"
+msgstr "Domínio"
+
+#. module: dynamic_csv_importer
+#: model:ir.ui.menu,name:dynamic_csv_importer.menu_dynamic_csv_import
+msgid "Dynamic CSV Import"
+msgstr "Importação CSV Dinâmica"
+
+#. module: dynamic_csv_importer
+#: model:ir.actions.act_window,name:dynamic_csv_importer.action_dynamic_csv_import_form
+msgid "Dynamic CSV Importer"
+msgstr "Importador CSV Dinâmico"
+
+#. module: dynamic_csv_importer
+#: model:ir.model.fields,field_description:dynamic_csv_importer.field_dynamic_csv_import_extra
+msgid "Extra"
+msgstr "Extra"
+
+#. module: dynamic_csv_importer
+#: model:ir.model.fields,field_description:dynamic_csv_importer.field_dynamic_import_line_field_odoo
+msgid "Field Odoo"
+msgstr "Campo Odoo"
+
+#. module: dynamic_csv_importer
+#: model:ir.model.fields,field_description:dynamic_csv_importer.field_dynamic_csv_import_id
+#: model:ir.model.fields,field_description:dynamic_csv_importer.field_dynamic_import_line_id
+msgid "ID"
+msgstr "ID"
+
+#. module: dynamic_csv_importer
+#: model:ir.ui.view,arch_db:dynamic_csv_importer.view_dynamic_csv_import
+msgid "Import"
+msgstr "Importar"
+
+#. module: dynamic_csv_importer
+#: model:ir.model.fields,field_description:dynamic_csv_importer.field_dynamic_csv_import_import_success
+msgid "Import Success"
+msgstr "Sucesso na Importação"
+
+#. module: dynamic_csv_importer
+#: model:ir.model.fields,field_description:dynamic_csv_importer.field_dynamic_import_line_importer_id
+msgid "Importer"
+msgstr "Importador"
+
+#. module: dynamic_csv_importer
+#: model:ir.model.fields,field_description:dynamic_csv_importer.field_dynamic_csv_import___last_update
+#: model:ir.model.fields,field_description:dynamic_csv_importer.field_dynamic_import_line___last_update
+msgid "Last Modified on"
+msgstr "Última modificação em"
+
+#. module: dynamic_csv_importer
+#: model:ir.model.fields,field_description:dynamic_csv_importer.field_dynamic_csv_import_write_uid
+#: model:ir.model.fields,field_description:dynamic_csv_importer.field_dynamic_import_line_write_uid
+msgid "Last Updated by"
+msgstr "Última atualização por"
+
+#. module: dynamic_csv_importer
+#: model:ir.model.fields,field_description:dynamic_csv_importer.field_dynamic_csv_import_write_date
+#: model:ir.model.fields,field_description:dynamic_csv_importer.field_dynamic_import_line_write_date
+msgid "Last Updated on"
+msgstr "Última atualização em"
+
+#. module: dynamic_csv_importer
+#: model:ir.model.fields,field_description:dynamic_csv_importer.field_dynamic_csv_import_model_id
+#: model:ir.model.fields,field_description:dynamic_csv_importer.field_dynamic_import_line_model_id
+msgid "Model"
+msgstr "Modelo"
+
+#. module: dynamic_csv_importer
+#: code:addons/dynamic_csv_importer/wizard/dynamic_csv_importer.py:40
+#, python-format
+msgid "No csv file selected!"
+msgstr "Nenhum arquivo CSV selecionado!"
+
+#. module: dynamic_csv_importer
+#: code:addons/dynamic_csv_importer/wizard/dynamic_csv_importer.py:59
+#, python-format
+msgid "No identification lines! Please select at least one identification line before proceeding."
+msgstr "Não há linhas de identificação! Por favor, selecione pelo menos uma linha como identificadora antes de prosseguir."
+
+#. module: dynamic_csv_importer
+#: code:addons/dynamic_csv_importer/wizard/dynamic_csv_importer.py:65
+#, python-format
+msgid "No import lines with domain detected! Please select an Odoo field or put a domain on at least one line before proceeding."
+msgstr "Não há linhas para importação com domínio detectadas! Por favor selecione um campo odoo ou coloque um domínio em pelo menos uma linha antes de prosseguir."
+
+#. module: dynamic_csv_importer
+#: model:ir.model.fields,field_description:dynamic_csv_importer.field_dynamic_csv_import_has_quote_char
+msgid "Has Quotation Char?"
+msgstr "Possui caracter de citação?"
+
+#. module: dynamic_csv_importer
+#: code:addons/dynamic_csv_importer/wizard/dynamic_csv_importer.py:50
+#, python-format
+msgid "Quotation char missing. Please select an Quotation character before proceeding."
+msgstr "Nenhum caracter de citação informado. Por favor, coloque um caracter de citação antes de prosseguir."
+
+#. module: dynamic_csv_importer
+#: model:ir.model.fields,field_description:dynamic_csv_importer.field_dynamic_csv_import_table_html
+msgid "Table Html"
+msgstr "Tabela Html"
+
+#. module: dynamic_csv_importer
+#: model:ir.model.fields,field_description:dynamic_csv_importer.field_dynamic_import_line_identifier
+msgid "Use as identifier?"
+msgstr "Usar como identificador?"
+
+#. module: dynamic_csv_importer
+#: model:ir.model,name:dynamic_csv_importer.model_dynamic_csv_import
+msgid "dynamic.csv.import"
+msgstr "dynamic.csv.import"
+
+#. module: dynamic_csv_importer
+#: model:ir.model,name:dynamic_csv_importer.model_dynamic_import_line
+msgid "dynamic.import.line"
+msgstr "dynamic.import.line"
