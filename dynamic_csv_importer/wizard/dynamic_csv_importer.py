@@ -117,8 +117,6 @@ select an Odoo field or put a domain on at least one line before proceeding.'))
 
                 fields = list(vals.keys())
                 values = list(vals.values())
-                import ipdb
-                ipdb.set_trace()
                 res = model_id.load(fields, [values])
 
                 if res['messages'] and res['messages'][0]['type'] == 'error':
