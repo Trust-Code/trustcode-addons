@@ -24,6 +24,7 @@
     'depends': [
         'analytic_account_partition', 'hr', 'account_voucher'],
     'data': [
+        'data/data.xml',
         'security/ir.model.access.csv',
         'views/hr_employee.xml',
         'views/res_partner.xml',

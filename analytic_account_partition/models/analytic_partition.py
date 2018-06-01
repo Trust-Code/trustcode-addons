@@ -44,6 +44,11 @@ class AnalyticPartition(models.Model):
         self._check_analytic_accounts()
         return res
 
+    @api.multi
+    def unlink(self):
+        self.partition_line_ids.unlink()
+        return super(AnalyticPartition, self).unlink()
+
 
 class AnalyticPartitionLine(models.Model):
     _name = 'analytic.partition.line'
