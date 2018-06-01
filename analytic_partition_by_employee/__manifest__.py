@@ -30,5 +30,6 @@
         'views/account_move.xml',
         'views/account_voucher.xml',
         'views/analytic_account.xml',
+        'views/account_invoice.xml',
     ],
 }

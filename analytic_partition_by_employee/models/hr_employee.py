@@ -46,7 +46,7 @@ class HrEmployeePartition(models.Model):
     _name = 'hr.employee.partition'
 
     analytic_account_id = fields.Many2one(
-        'account.analytic.account', string='Conta Analitica')
+        'account.analytic.account', string='Conta Analitica', required=True)
     weight = fields.Float('Peso', default=1)
     employee_id = fields.Many2one(
         'hr.employee', 'Funcionário')
