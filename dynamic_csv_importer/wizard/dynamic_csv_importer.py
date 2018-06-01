@@ -22,7 +22,7 @@ class DynamicCsvImport(models.TransientModel):
     csv_quote_char = fields.Char(
         string=u'Quotation Char', size=3, default='"')
 
-    table_html = fields.Html(readonly=True, store=True)
+    table_html = fields.Html(readonly=True)
     coluna_ids = fields.One2many(
         'dynamic.import.line', 'importer_id', string="Columns")
 
@@ -59,9 +59,9 @@ an Quotation character before proceeding.'))
             raise UserError(_(u'No identification lines! Please select at least one\
  identification line before proceeding.'))
 
-        data_lines = self.coluna_ids.filtered(
+        import_lines = self.coluna_ids.filtered(
             lambda x: x.domain_string and not x.identifier)
-        if not data_lines:
+        if not import_lines:
             raise UserError(_(u'No import lines with domain detected! Please \
 select an Odoo field or put a domain on at least one line before proceeding.'))
 
@@ -69,7 +69,7 @@ select an Odoo field or put a domain on at least one line before proceeding.'))
 
         # pre load all external references before iterating the csv lines
         obj_dict = self._get_object_dict(
-            identification_lines + data_lines, model_id)
+            identification_lines + import_lines, model_id)
 
         errors = []
         lista = []
@@ -88,7 +88,7 @@ select an Odoo field or put a domain on at least one line before proceeding.'))
 
             # Index is used for error message
             vals, error = self._prepare_vals(
-                line, data_lines, obj_dict, has_match_obj=has_match_obj,
+                line, import_lines, obj_dict, has_match_obj=has_match_obj,
                 line_index=index)
             if error:
                 errors.append(error)
@@ -108,9 +108,13 @@ select an Odoo field or put a domain on at least one line before proceeding.'))
                 for obj in object_ids:
                     obj.write(vals)
             else:
-                ident_vals = self._prepare_vals(
+                ident_vals, error = self._prepare_vals(
                     line, identification_lines, obj_dict, has_match_obj=False)
-                vals.update(ident_vals[0])
+
+                if error:
+                    raise UserError(error)
+
+                vals.update(ident_vals)
                 # 'id' is needed for External ID creation
                 if 'id' not in vals:
                     vals['id'] = line[identification_lines[0].name]
@@ -143,11 +147,11 @@ select an Odoo field or put a domain on at least one line before proceeding.'))
             obj_dict[line.id] = obj
         return obj_dict
 
-    def _prepare_vals(self, line, data_lines, obj_dict, has_match_obj,
+    def _prepare_vals(self, csv_dict_line, di_lines, obj_dict, has_match_obj,
                       line_index=0):
         """
-        :param line: dict with the csv line values
-        :param data_lines: dynamic.import.line objects
+        :param csv_dict_line: dict with the csv line values
+        :param di_lines: dynamic.import.line objects
         :param obj_dict: dict with all external references
         :param has_match_obj: boolean. Means if there's another
         register with the same identification data
@@ -155,18 +159,31 @@ select an Odoo field or put a domain on at least one line before proceeding.'))
         """
         vals = {}
         error = ''
-        for data in data_lines:
-            data_domain = data.domain_string.split('.')
+        for di_line in di_lines:
+            data_domain = di_line.domain_string.split('.')
+            if di_line.not_null_field and not csv_dict_line[di_line.name]:
+                error += _(u'\nLine nº%s: %s - empty value in non null field')\
+                    % (line_index + 1, di_line.name)
+
             if len(data_domain) > 1 and has_match_obj:
-                val_obj = obj_dict[data.id].search([
-                    (data_domain[-1], '=', line[data.name])], limit=1)
+                val_obj = obj_dict[di_line.id].search([
+                    (data_domain[-1], '=', csv_dict_line[di_line.name])],
+                    limit=1)
+
                 if not val_obj:
-                    error += _(u'\nLine nº%s: %s with value %s \
-not found in database') % (line_index + 1, data.name, line[data.name])
+                    if not di_line.create_if_not_found:
+                        error += _(u'\nLine nº%s: %s with value %s \
+not found in database') % (line_index + 1,
+                           di_line.name,
+                           csv_dict_line[di_line.name])
+
+                    else:
+                        val_obj = obj_dict[di_line.id].create(
+                            {data_domain[-1]: csv_dict_line[di_line.name]})
                 vals[data_domain[0]] = val_obj.id
-            # if not has_match_obj:
+
             else:
-                vals[data_domain[0]] = line[data.name]
+                vals[data_domain[0]] = csv_dict_line[di_line.name]
         return vals, error
 
     @api.onchange('csv_file')
@@ -180,28 +197,28 @@ not found in database') % (line_index + 1, data.name, line[data.name])
         csv_lines = csv.DictReader(
             csvfile, delimiter=str(self.csv_delimiter),
             quotechar=self.csv_quote_char)
-        preview = '<h3 class="text-center">CSV Lines</h3>'
-        preview += '<div>'
-        preview += '<table class="table table-striped">'
-        preview += '<thead><tr>'
+        table_html = '<h3 class="text-center">CSV Lines</h3>'
+        table_html += '<div>'
+        table_html += '<table class="table table-striped">'
+        table_html += '<thead><tr>'
         for item in csv_lines.fieldnames:
-            preview += '<th scope="col">%s</th>' % (item)
-        preview += '</tr></thead>'
-        preview += '<tbody>'
+            table_html += '<th scope="col">%s</th>' % (item)
+        table_html += '</tr></thead>'
+        table_html += '<tbody>'
 
         count = 0
         for line in csv_lines:
-            preview += '<tr>'
+            table_html += '<tr>'
             for name in csv_lines.fieldnames:
-                preview += '<td scope="row">%s</td>' % line[name]
-            preview += '</tr>'
+                table_html += '<td scope="row">%s</td>' % line[name]
+            table_html += '</tr>'
             count += 1
             if count == 5:
                 break
 
-        preview += '<tr>'
-        preview += '</tbody></table><h2 class="text-center">...</h2></div>'
-        self.table_html = preview
+        table_html += '<tr>'
+        table_html += '</tbody></table><h2 class="text-center">...</h2></div>'
+        self.table_html = table_html
 
         lista = []
         for name in csv_lines.fieldnames:
@@ -219,12 +236,16 @@ class DynamicImportLine(models.TransientModel):
     name = fields.Char('CSV column name')
     field_odoo = fields.Many2one(
         'ir.model.fields')
+    field_type = fields.Char()
 
     model_id = fields.Many2one(related='importer_id.model_id')
     domain_string = fields.Char(string='Domain')
 
     identifier = fields.Boolean(string='Use as identifier?')
+    not_null_field = fields.Boolean('Not Null Field?')
+    create_if_not_found = fields.Boolean('Create if not found?')
 
     @api.onchange('field_odoo')
     def _onchange_field_odoo(self):
         self.domain_string = self.field_odoo.name
+        self.field_type = self.field_odoo.ttype

@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 11.0+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-05-30 20:31+0000\n"
-"PO-Revision-Date: 2018-05-30 20:31+0000\n"
+"POT-Creation-Date: 2018-06-01 19:42+0000\n"
+"PO-Revision-Date: 2018-06-01 19:42+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -16,7 +16,15 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. module: dynamic_csv_importer
-#: code:addons/dynamic_csv_importer/wizard/dynamic_csv_importer.py:160
+#: code:addons/dynamic_csv_importer/wizard/dynamic_csv_importer.py:165
+#, python-format
+msgid "\n"
+"Line nÂº%s: %s - empty value in non null field"
+msgstr "\n"
+"Linha nÂº%s: %s - Valor vazio em campo não nulo"
+
+#. module: dynamic_csv_importer
+#: code:addons/dynamic_csv_importer/wizard/dynamic_csv_importer.py:175
 #, python-format
 msgid "\n"
 "Line nÂº%s: %s with value %s not found in database"
@@ -49,14 +57,14 @@ msgid "Cancel"
 msgstr "Cancelar"
 
 #. module: dynamic_csv_importer
-#: model:ir.model.fields,field_description:dynamic_csv_importer.field_dynamic_csv_import_csv_quote_char
-msgid "Quotation Char"
-msgstr "Caracter de Citação"
-
-#. module: dynamic_csv_importer
 #: model:ir.model.fields,field_description:dynamic_csv_importer.field_dynamic_csv_import_coluna_ids
 msgid "Columns"
 msgstr "Colunas"
+
+#. module: dynamic_csv_importer
+#: model:ir.model.fields,field_description:dynamic_csv_importer.field_dynamic_import_line_create_if_not_found
+msgid "Create if not found?"
+msgstr "Criar caso não encontrar?"
 
 #. module: dynamic_csv_importer
 #: model:ir.model.fields,field_description:dynamic_csv_importer.field_dynamic_csv_import_create_uid
@@ -105,6 +113,16 @@ msgstr "Extra"
 #: model:ir.model.fields,field_description:dynamic_csv_importer.field_dynamic_import_line_field_odoo
 msgid "Field Odoo"
 msgstr "Campo Odoo"
+
+#. module: dynamic_csv_importer
+#: model:ir.model.fields,field_description:dynamic_csv_importer.field_dynamic_import_line_field_type
+msgid "Field Type"
+msgstr "Tipo do Campo"
+
+#. module: dynamic_csv_importer
+#: model:ir.model.fields,field_description:dynamic_csv_importer.field_dynamic_csv_import_has_quote_char
+msgid "Has Quotation Char?"
+msgstr "Possui caracter de citação?"
 
 #. module: dynamic_csv_importer
 #: model:ir.model.fields,field_description:dynamic_csv_importer.field_dynamic_csv_import_id
@@ -170,9 +188,14 @@ msgid "No import lines with domain detected! Please select an Odoo field or put 
 msgstr "Não há linhas para importação com domínio detectadas! Por favor selecione um campo odoo ou coloque um domínio em pelo menos uma linha antes de prosseguir."
 
 #. module: dynamic_csv_importer
-#: model:ir.model.fields,field_description:dynamic_csv_importer.field_dynamic_csv_import_has_quote_char
-msgid "Has Quotation Char?"
-msgstr "Possui caracter de citação?"
+#: model:ir.model.fields,field_description:dynamic_csv_importer.field_dynamic_import_line_not_null_field
+msgid "Not Null Field?"
+msgstr "Campo não nulo?"
+
+#. module: dynamic_csv_importer
+#: model:ir.model.fields,field_description:dynamic_csv_importer.field_dynamic_csv_import_csv_quote_char
+msgid "Quotation Char"
+msgstr "Caracter de Citação"
 
 #. module: dynamic_csv_importer
 #: code:addons/dynamic_csv_importer/wizard/dynamic_csv_importer.py:50
