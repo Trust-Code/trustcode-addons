@@ -55,12 +55,3 @@ class AnalyticPartitionLine(models.Model):
         string='Conta Analítica',
         ondelete='restrict')
     partition_percent = fields.Float('Percentual de Rateio', digits=(4, 4))
-    isactive = fields.Boolean(
-        string='Ativo', compute='_compute_is_active', store=True, default=True)
-
-    @api.multi
-    def _compute_is_active(self):
-        for item in self:
-            item.isactive = True
-            if not item.analytic_account_id.active:
-                item.isactive = False

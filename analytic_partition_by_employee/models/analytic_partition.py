@@ -20,13 +20,14 @@ class AnalyticPartition(models.Model):
         analytic_accs = self.env['account.analytic.account'].search(
             [('partition_id', '=', self.id)], limit=1)
         analytic_accs |= self.partition_line_ids.mapped('analytic_account_id')
+        accounts = analytic_accs.filtered(lambda x: x.active)
         total_employee = sum(
             [self.get_employee_per_account(acc.id)
-             for acc in analytic_accs])
+             for acc in accounts])
         if not self.partition_line_ids:
             return
         for line in self.partition_line_ids:
-            if not line.isactive:
+            if not line.analytic_account_id.active:
                 line.partition_percent = 0
                 continue
             line.partition_percent = (self.get_employee_per_account(
