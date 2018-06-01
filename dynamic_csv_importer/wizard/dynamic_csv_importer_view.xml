@@ -38,6 +38,9 @@
                             <field name="field_odoo" domain="[('model_id', '=', model_id)]"/>
                             <field name="domain_string" />
                             <field name="identifier" />
+                            <field name="not_null_field" />
+                            <field name="field_type" invisible="1" />
+                            <field name="create_if_not_found" attrs="{'readonly': ['|', ('field_odoo', '=', False), ('field_type', 'not in', ['many2one', 'one2many', 'many2many'])]}"/>
                         </tree>
                     </field>
                 </group>
