@@ -26,6 +26,7 @@ class AnalyticPartition(models.Model):
              for acc in accounts])
         if not self.partition_line_ids:
             return
+        percent_sum = 0
         for line in self.partition_line_ids:
             if not line.analytic_account_id.active:
                 line.partition_percent = 0
@@ -33,3 +34,6 @@ class AnalyticPartition(models.Model):
             line.partition_percent = (self.get_employee_per_account(
                 line.analytic_account_id.id)
                 / total_employee * 100) if total_employee else 0
+            percent_sum += line.partition_percent
+            if percent_sum > 100:
+                line.partition_percent -= (percent_sum - 100)

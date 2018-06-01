@@ -21,34 +21,41 @@ class AccountMove(models.Model):
 class AccountMoveLine(models.Model):
     _inherit = 'account.move.line'
 
-    def update_partition_move_line(self, credit, debit,
-                                   app_line=False):
-        if app_line:
-            percent = app_line.partition_percent
-            self.update({
-                'analytic_account_id': app_line.analytic_account_id
-            })
-        else:
-            percent = 100
-        self.with_context(check_move_validity=False).update({
-            'credit': (credit * percent / 100),
-            'debit': (debit * percent / 100),
-            })
-        return self.credit, self.debit
-
     def _create_partition_move_lines(self, partition_group):
         if not partition_group:
             return
-        initial_credit = credit = self.credit
-        initial_debit = debit = self.debit
+        initial_credit = sum_credit = self.credit
+        initial_debit = sum_debit = self.debit
         move_lines = []
         for app_line in partition_group.partition_line_ids:
             move_line = self.with_context(check_move_validity=False).copy()
             new_credit, new_debit = move_line.update_partition_move_line(
                 initial_credit, initial_debit, app_line)
-            credit -= new_credit
-            debit -= new_debit
+            credit = sum_credit - new_credit
+            debit = sum_debit - new_debit
+            if credit < 0 or debit < 0:
+                new_credit, new_debit = move_line.update_partition_move_line(
+                    credit=move_line.credit + credit,
+                    debit=move_line.debit + debit
+                )
+            sum_credit -= round(new_credit, 2)
+            sum_debit -= round(new_debit, 2)
             move_lines.append(move_line)
-        self.update_partition_move_line(credit, debit)
+        self.update_partition_move_line(sum_credit, sum_debit)
         move_lines.append(self)
         return move_lines
+
+    def update_partition_move_line(self, credit, debit,
+                                   app_line=False):
+        if app_line:
+            percent = app_line.partition_percent
+            self.write({
+                'analytic_account_id': app_line.analytic_account_id.id
+            })
+        else:
+            percent = 100
+        self.with_context(check_move_validity=False).write({
+            'credit': (credit * percent / 100),
+            'debit': (debit * percent / 100),
+            })
+        return self.credit, self.debit

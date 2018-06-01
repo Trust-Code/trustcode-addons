@@ -25,12 +25,15 @@ class ResPartner(models.Model):
         })
         return part_group
 
-    def create_partition_line(self, partition_id, analytic_acc):
-        return self.env['analytic.partition.line'].create({
-            'partition_id': partition_id.id,
-            'analytic_account_id': analytic_acc.id,
-            'partition_percent': 0,
-        })
+    def create_partition_lines(self, partition_id, analytic_accounts):
+        accounts = []
+        for acc in analytic_accounts:
+            accounts.append(self.env['analytic.partition.line'].create({
+                'partition_id': partition_id.id,
+                'analytic_account_id': acc.id,
+                'partition_percent': 0,
+            }))
+        return accounts
 
     def deactivate_analytic_account(self, groups):
         for group in groups:
@@ -42,20 +45,22 @@ class ResPartner(models.Model):
                 analytic_acc.toggle_active()
 
                 if analytic_acc.partition_id:
-                    partition_id = analytic_acc.partition_id
-                    if not any(item.analytic_account_id.active for item in
-                               partition_id.partition_line_ids):
-                        return
-                    analytic_acc.update({
-                        'partition_id': False
-                    })
-                    self.create_partition_line(partition_id, analytic_acc)
-                    for line in partition_id.partition_line_ids:
-                        if line.analytic_account_id.active:
-                            line.analytic_account_id.partition_id =\
-                                partition_id
-                            line.unlink()
-                            return
+                    self.change_partition_account(analytic_acc)
+
+    def change_partition_account(self, analytic_acc):
+        partition_id = analytic_acc.partition_id
+        if not any(item.analytic_account_id.active for item in
+                   partition_id.partition_line_ids):
+            return
+        analytic_acc.write({
+            'partition_id': False
+        })
+        self.create_partition_lines(partition_id, analytic_acc)
+        for line in partition_id.partition_line_ids:
+            if line.analytic_account_id.active:
+                line.analytic_account_id.partition_id = partition_id
+                line.unlink()
+                break
 
     def create_analytic_account(self, groups, create_group=False):
         analytic_accs = []
@@ -80,8 +85,10 @@ class ResPartner(models.Model):
             part_group = self.env['account.analytic.account'].search([
                 ('partner_id', '=', self.id),
                 ('partition_id', '!=', False)], limit=1).partition_id
-            for acc in analytic_accs:
-                self.create_partition_line(part_group, acc)
+            self.create_partition_lines(part_group, analytic_accs)
+        matrix_partition = self.env.ref(
+            "analytic_partition_by_employee.matrix_partition_group")
+        self.create_partition_lines(matrix_partition, analytic_accs)
         return analytic_accs
 
     def _update_analytic_accounts(self, groups):
@@ -107,6 +114,8 @@ class ResPartner(models.Model):
             ('expense_group_id', 'in', self.expense_group_ids.ids),
             ('partner_id', '=', self.id),
             ('partition_id', '!=', False)], limit=1).partition_id
+        self.env.ref("analytic_partition_by_employee.matrix_partition_group").\
+            calc_percent_by_employee()
         part_group.calc_percent_by_employee()
 
     @api.multi
