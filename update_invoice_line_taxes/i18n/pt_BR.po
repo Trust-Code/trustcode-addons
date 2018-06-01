@@ -1,0 +1,26 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+#	* update_invoice_line_taxes
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 11.0+e\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-06-01 22:06+0000\n"
+"PO-Revision-Date: 2018-06-01 22:06+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: update_invoice_line_taxes
+#: model:ir.ui.view,arch_db:update_invoice_line_taxes.view_update_taxes_invoice_form
+msgid "Compute Taxes"
+msgstr "Atualizar Impostos"
+
+#. module: update_invoice_line_taxes
+#: model:ir.model,name:update_invoice_line_taxes.model_account_invoice
+msgid "Invoice"
+msgstr "Fatura"
