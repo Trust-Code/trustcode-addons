@@ -8,3 +8,4 @@ from . import analytic_partition
 from . import account_move
 from . import account_voucher
 from . import analytic_account
+from . import account_invoice
