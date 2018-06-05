@@ -24,11 +24,13 @@
     'depends': [
         'analytic_account_partition', 'hr', 'account_voucher'],
     'data': [
+        'data/data.xml',
         'security/ir.model.access.csv',
         'views/hr_employee.xml',
         'views/res_partner.xml',
         'views/account_move.xml',
         'views/account_voucher.xml',
         'views/analytic_account.xml',
+        'views/account_invoice.xml',
     ],
 }
