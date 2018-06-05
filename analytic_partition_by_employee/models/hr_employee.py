@@ -25,6 +25,8 @@ class Employee(models.Model):
                     ('partition_id', '!=', False)], limit=1).mapped(
                         'partition_id')
                 partition_groups.append(part_group)
+        self.env.ref("analytic_partition_by_employee.matrix_partition_group").\
+            calc_percent_by_employee()
         for app in set(partition_groups):
             app.calc_percent_by_employee()
 
@@ -46,7 +48,7 @@ class HrEmployeePartition(models.Model):
     _name = 'hr.employee.partition'
 
     analytic_account_id = fields.Many2one(
-        'account.analytic.account', string='Conta Analitica')
+        'account.analytic.account', string='Conta Analitica', required=True)
     weight = fields.Float('Peso', default=1)
     employee_id = fields.Many2one(
         'hr.employee', 'Funcionário')

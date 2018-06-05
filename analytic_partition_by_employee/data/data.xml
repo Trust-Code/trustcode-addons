@@ -1,0 +1,9 @@
+<odoo>
+    <record id="matrix_partition_group" model="analytic.partition">
+        <field name="name">Rateio Matriz</field>
+    </record>
+    <record id="matrix_analytic_account" model="account.analytic.account">
+        <field name="name">Conta Matriz</field>
+        <field name="partition_id" ref="analytic_partition_by_employee.matrix_partition_group" />
+    </record>
+</odoo>
