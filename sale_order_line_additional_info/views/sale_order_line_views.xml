@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record model="ir.ui.view" id="sale_order_additional_info_form_view">
+            <field name="name">sale.order.line.additional.info.form</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form" />
+            <field name="priority" eval="20" />
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='order_line']/form/field[@name='state']" position="before">
+                    <br/>
+                    <label for="additional_info" string="Additional Info"/>
+                    <br/>
+                    <field name="additional_info" />
+                </xpath>
+                <xpath expr="//field[@name='order_line']/tree" position="attributes">
+                    <attribute name="editable"></attribute>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>
