@@ -102,6 +102,7 @@ class ProjectTask(models.Model):
                 material.stage_requested = material.task_id.stage_id.name
                 material.move_id = model_move.create({
                     'name': 'Material Item {}'.format(material.id),
+                    'partner_id': self.partner_id.id,
                     'location_id': pick_type.default_location_src_id.id,
                     'location_dest_id': pick_type.default_location_dest_id.id,
                     'product_id': material.product_id.id,
