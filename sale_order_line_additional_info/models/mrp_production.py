@@ -8,7 +8,7 @@ class MrpProduction(models.Model):
 
     @api.model
     def create(self, vals):
-        if 'procurement_group_id' in vals:
+        if 'procurement_group_id' in vals and vals['procurement_group_id']:
             procurement_group_id = self.env['procurement.group'].browse(
                 vals['procurement_group_id'])
 
