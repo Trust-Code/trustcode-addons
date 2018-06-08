@@ -15,9 +15,13 @@ transfered to manufacture order.""",
     'license': 'AGPL-3',
     'contributors': [
         'Johny Chen Jy <johnychenjy@gmail.com>'],
-    'depends': ['sale'],
+    'depends': [
+        'sale',
+        'product_configurator',
+        ],
     'data': [
         'views/sale_order_line_views.xml',
         'views/mrp_production_view.xml',
+        'wizard/additional_info_wizard_view.xml',
     ],
 }
