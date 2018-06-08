@@ -9,7 +9,6 @@
                 <page name="otrs_info" string="Info OTRS">
                     <group>
                         <group>
-                            <field name="otrs_server" widget="url"></field>
                             <field name="otrs_login"></field>
                             <field name="otrs_password" password="True"></field>
                         </group>
