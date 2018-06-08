@@ -4,26 +4,22 @@
 
 
 {   # pylint: disable=C8101,C8103
-    'name': "otrs_integration",
+    'name': "OTRS Integration",
 
-    'summary': """
-        Short (1 phrase/line) summary of the module's purpose, used as
-        subtitle on modules listing or apps.openerp.com""",
+    'summary': """""",
 
-    'description': """
-        Long description of module's purpose
-    """,
+    'description': """""",
     'author': "Trustcode",
     'website': "http://www.trustcode.com.br",
     'category': 'Uncategorized',
     'version': '11.0.1.0.0',
     'license': 'AGPL-3',
     'contributors': [
-        
+        'Felipe Paloschi <paloschi.eca@gmail.com>',
     ],
     'depends': ['base'],
     'data': [
-        # 'security/ir.model.access.csv',
-        'views/views.xml',
+        'views/res_users.xml',
+        'views/res_company.xml',
     ],
 }

@@ -1,2 +1,0 @@
-id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_otrs_integration_otrs_integration,otrs_integration.otrs_integration,model_otrs_integration_otrs_integration,,1,0,0,0

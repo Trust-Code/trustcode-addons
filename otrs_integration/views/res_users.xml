@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<odoo>
+    <record id="res_users_view_otrs_info" model="ir.ui.view">
+        <field name="name">res.users.view.otrs.info</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_form"/>
+        <field name="arch" type="xml">
+            <notebook position="inside">
+                <page name="otrs_info" string="Info OTRS">
+                    <group>
+                        <group>
+                            <field name="otrs_server" widget="url"></field>
+                            <field name="otrs_login"></field>
+                            <field name="otrs_password" password="True"></field>
+                        </group>
+                    </group>
+                </page>
+            </notebook>
+        </field>
+    </record>
+</odoo>
