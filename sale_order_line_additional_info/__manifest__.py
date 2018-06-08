@@ -18,6 +18,9 @@ transfered to manufacture order.""",
     'depends': [
         'sale',
         'product_configurator',
+        'mrp',
+        'product_configurator_mrp',
+        'product_configurator_wizard',
         ],
     'data': [
         'views/sale_order_line_views.xml',
