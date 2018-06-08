@@ -1,1 +1,2 @@
 odoo-brasil https://github.com/Trust-Code/odoo-brasil.git
+odoo-product-configurator https://github.com/Trust-Code/odoo-product-configurator.git
