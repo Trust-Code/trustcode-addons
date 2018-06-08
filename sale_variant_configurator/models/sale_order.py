@@ -2,7 +2,8 @@
 # © 2018 Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-from odoo import models, api, fields
+from odoo import models, api, fields, _
+from odoo.exceptions import UserError
 
 
 class SaleOrderLine(models.Model):
@@ -34,7 +35,11 @@ class SaleOrderLine(models.Model):
             domain.append(('attribute_value_ids', '=', item.id))
         if domain:
             domain.append(('product_tmpl_id', '=', self.product_tmpl_id.id))
-            product = self.product_id.search(domain)[0]
+
+            product = self.product_id.search(domain, limit=1)
+            if not product:
+                raise UserError(_(u'No product found with selected variations! \
+Please check if this product variant exists in the system.'))
             self.update({
                 'product_uom': product.uom_id.id,
                 'product_id': product.id,
