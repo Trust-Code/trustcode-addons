@@ -18,11 +18,24 @@ class ResUsers(models.Model):
         domain = self.get_otrs_domain(self.company_id.otrs_webservice_domain,
                                       route)
         data = json.dumps(data)
-        return requests.post(domain, headers=headers, data=data)
+        return requests.post(url=domain, headers=headers, data=data)
 
     def otrs_get(self, route):
-        return requests.get(self.get_otrs_domain(
+        return requests.get(url=self.get_otrs_domain(
             self.company_id.otrs_webservice_domain, route))
+
+    def otrs_patch(self, route, data):
+        headers = {'Content-Type': 'application/json'}
+        data = json.dumps(data)
+        return requests.patch(url=self.get_otrs_domain(
+            self.company_id.otrs_webservice_domain, route),
+            headers=headers, data=data)
+
+    def otrs_search(self, route, data):
+        data = json.dumps(data)
+        return requests.get(url=self.get_otrs_domain(
+            self.company_id.otrs_webservice_domain, route),
+            data=data)
 
     def get_otrs_domain(self, domain, route):
         return '{}/{}?UserLogin={}&Password={}'.format(
