@@ -8,4 +8,5 @@ from odoo import models, fields
 class ResCompany(models.Model):
     _inherit = 'res.company'
 
-    otrs_webservice_domain = fields.Char('OTRS WebService')
+    otrs_domain = fields.Char('OTRS Domain')
+    otrs_webservice_name = fields.Char('OTRS WebService')

@@ -6,7 +6,8 @@
         <field name="inherit_id" ref="base.view_company_form"/>
         <field name="arch" type="xml">
             <field name="report_header" position="after">
-                <field name="otrs_webservice_domain" widget="url"></field>
+                <field name="otrs_domain" widget="url"></field>
+                <field name="otrs_webservice_name"></field>
             </field>
         </field>
     </record>

@@ -17,9 +17,12 @@
     'contributors': [
         'Felipe Paloschi <paloschi.eca@gmail.com>',
     ],
-    'depends': ['base'],
+    'depends': ['helpdesk'],
     'data': [
         'views/res_users.xml',
         'views/res_company.xml',
+        'views/res_partner.xml',
+        'views/helpdesk_ticket.xml',
+        'wizard/otrs_tickets_import.xml',
     ],
 }
