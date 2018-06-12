@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<odoo>
+    <record id="res_partner_view_otrs_info" model="ir.ui.view">
+        <field name="name">res.partner.view.otrs.info</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <field name="category_id" position="after">
+                <field name="otrs_client_name"></field>
+            </field>
+        </field>
+    </record>
+</odoo>

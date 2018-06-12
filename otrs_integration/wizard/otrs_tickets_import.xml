@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record model="ir.ui.view" id="otrs_integration_wizard">
+        <field name="name">otrs_integration.wizard.form</field>
+        <field name="model">otrs.tickets.import</field>
+        <field name="arch" type="xml">
+            <form string="Importar OTRS Tickets">
+                <footer>
+                    <button name="import_otrs_tickets" type="object" string="Importar Tickets" class="oe_highlight"/>
+                    ou
+                    <button special="cancel" string="Cancelar"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="otrs_integration_action"  model="ir.actions.act_window">
+        <field name="name">Importar OTRS Tickets</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">otrs.tickets.import</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem action="otrs_integration_action"
+              id="menu_otrs_integration_wizard"
+              parent="helpdesk.menu_helpdesk_root"
+              name="Importar OTRS Tickets"
+              sequence="30"
+              />
+
+
+</odoo>

@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<odoo>
+    <record id="helpdesk_ticket_view_otrs" model="ir.ui.view">
+        <field name="name">helpdesk.ticket.view.otrs</field>
+        <field name="model">helpdesk.ticket</field>
+        <field name="inherit_id" ref="helpdesk.helpdesk_ticket_view_form"/>
+        <field name="arch" type="xml">
+            <field name="priority" position="after">
+                <field name="otrs_id"></field>
+                <field name="otrs_link" widget="url"></field>
+            </field>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<odoo>
+    <record id="res_company_view_otrs_info" model="ir.ui.view">
+        <field name="name">res.company.view.otrs.info</field>
+        <field name="model">res.company</field>
+        <field name="inherit_id" ref="base.view_company_form"/>
+        <field name="arch" type="xml">
+            <field name="report_header" position="after">
+                <field name="otrs_domain" widget="url"></field>
+                <field name="otrs_webservice_name"></field>
+            </field>
+        </field>
+    </record>
+</odoo>
