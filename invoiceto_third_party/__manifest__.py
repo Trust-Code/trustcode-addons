@@ -3,13 +3,13 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 
-{
+{  # pylint: disable=C8101,C8103
     'name': 'Trustcode - Invoice to third party',
     'description': 'Invoice the sales order to a third party',
     'summary': """
         Invoice the sales order to a third party
     """,
-    'version': '10.0.1.0.0',
+    'version': '11.0.1.0.0',
     'category': 'Invoicing & Payments',
     'author': 'Trustcode',
     'license': 'AGPL-3',
