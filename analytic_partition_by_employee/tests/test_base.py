@@ -19,18 +19,18 @@ class TestBaseAnalyicEmploye(TransactionCase):
                 'account.data_account_type_receivable').id,
             'company_id': self.main_company.id
         })
-        self.group_one = self.env['expense.group'].create({
-            'name': 'Grupo um'
+        self.department_one = self.env['hr.department'].create({
+            'name': 'Departamento um'
         })
-        self.group_two = self.env['expense.group'].create({
-            'name': 'Grupo dois'
+        self.department_two = self.env['hr.department'].create({
+            'name': 'Departamento dois'
         })
         self.branch_one = self.env['res.partner'].create({
             'name': 'Nome Parceiro Um',
             'is_branch': True,
             'property_account_receivable_id': self.receivable_account.id,
-            'expense_group_ids': [
-                [6, 0, [self.group_one.id, self.group_two.id]]]
+            'department_ids': [
+                [6, 0, [self.department_one.id, self.department_two.id]]]
         })
         self.analytic_acc_one = self.env['account.analytic.account'].create({
             'name': 'Analytic Account One'

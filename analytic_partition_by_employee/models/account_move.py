@@ -18,6 +18,5 @@ class AccountMoveLine(models.Model):
                 ('partner_id', '=', self.branch_partner_id.id),
                 ('partition_id', '!=', False)], limit=1)
             self.analytic_account_id = analytic_account
-            partition_group = analytic_account.partition_id
         return super(AccountMoveLine, self)._create_partition_move_lines(
-            partition_group)
+            analytic_account.partition_id)
