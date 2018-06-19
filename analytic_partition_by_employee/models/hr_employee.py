@@ -47,16 +47,15 @@ class Employee(models.Model):
         return res
 
     def check_employee_partition_ids(self):
-        if not (self.company_id and self.department_id and
-                self.employee_partition_ids):
+        if not self.department_id:
             return
-        analytic_acc = self.env['account.analytic.account'].search([
-            ('partner_id', '=', self.company_id.partner_id.id),
+        accounts = self.env['account.analytic.account'].search([
             ('department_id', '=', self.department_id.id)])
-        if analytic_acc and analytic_acc not in self.employee_partition_ids.\
-                mapped('analytic_account_id'):
+        employee_accounts = self.employee_partition_ids.\
+            mapped('analytic_account_id')
+        if not any(acc in employee_accounts for acc in accounts):
             raise UserError("É necessário ao menos uma linha no controle\
-de rateio correspondente à empresa e departamento deste funcionário!")
+de rateio correspondente ao departamento deste funcionário!")
 
 
 class HrEmployeePartition(models.Model):
