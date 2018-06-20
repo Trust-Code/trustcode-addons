@@ -5,12 +5,9 @@ Como o próprio nome já diz, esse módulo faz a importação de dados de um arq
 **Table of Contents**
 
 - [Instalação](#instalação)
-- [Teste](#teste)
 - [Instruções de Uso](#instruções-de-uso)
   - [Configuração da Importação](#tabela-de-importação)
 - [Mensagens de Erros](#mensagens-de-erros)
-
-<div id='teste'/>
 
 ## Instalação ##
 
@@ -31,7 +28,8 @@ Lembrando que ele só irá mostrar os modelos instalados na sua base local,
 então caso algum modelo não esteja ali, é provável que o mesmo não tenha sido 
 instalado na base.
 
-Aqui eu irei importar produtos.
+Aqui eu irei importar produtos:
+
 ![img1](./static/images/img1.png)
 
 O campo **Extra** mostra algumas configurações extras:*Caracter Delimitador*, 
@@ -40,6 +38,7 @@ O campo **Extra** mostra algumas configurações extras:*Caracter Delimitador*,
 O campo **Arquivo CSV** é para selecionar o arquivo .csv a ser importado.
 
 Após selecionar o arquivo, o wizard ficará algo parecido com isso:
+
 ![img2](./static/images/img2.png)
 
 Na primeira tabela mostra as 5 primeiras linhas do arquivo.
@@ -66,6 +65,7 @@ modificá-lo se for preciso. Isso é útil quando a importação de registros es
 ligada a um outro objeto do sistema, para informar qual atributo do objeto que
 temos em mãos.
 Para descobrir qual atributo que o mesmo está ligado, basta buscar no Modelo:
+
 ![](./static/images/model.png)
 
 Neste exemplo, eu tenho apenas o código do NCM.
@@ -108,6 +108,7 @@ duplicados de um mesmo objeto, caso esse campo seja usado de fora errada.
 *Caso alguma linha da segunda tabela não precise ser importada, apenas deixe o campo* **Domínio** *vazio.*
 
 Nesse exemplo, os domínios ficarão assim:
+
 ![](./static/images/img3.png)
 
 Quando tudo estiver pronto, só clicar no botão **IMPORTAR**, que as coisas irão acontecer.
