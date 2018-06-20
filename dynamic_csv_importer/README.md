@@ -4,10 +4,13 @@ Como o próprio nome já diz, esse módulo faz a importação de dados de um arq
 
 **Table of Contents**
 
-- [Instalação](#Instalação)
-- [Instruções de Uso](#Instruções-de-Uso)
-  - [Configuração da Importação](#Tabela-de-Importação)
-- [Mensagens de Erros](#Mensagens-de-Erros)
+- [Instalação](#instalação)
+- [Teste](#teste)
+- [Instruções de Uso](#instruções-de-uso)
+  - [Configuração da Importação](#tabela-de-importação)
+- [Mensagens de Erros](#mensagens-de-erros)
+
+<div id='teste'/>
 
 ## Instalação ##
 
@@ -28,14 +31,16 @@ Lembrando que ele só irá mostrar os modelos instalados na sua base local,
 então caso algum modelo não esteja ali, é provável que o mesmo não tenha sido 
 instalado na base.
 
-[Aqui eu irei importar produtos.](./static/images/img1.png)
+Aqui eu irei importar produtos.
+![img1](./static/images/img1.png)
 
 O campo **Extra** mostra algumas configurações extras:*Caracter Delimitador*, 
 *Caracter de Citação*, os quais já possuem valores default: , e " respectivamente.
 
 O campo **Arquivo CSV** é para selecionar o arquivo .csv a ser importado.
 
-Após selecionar o arquivo, o wizard ficará algo parecido com [isso](./static/images/img2.png)
+Após selecionar o arquivo, o wizard ficará algo parecido com isso:
+![img2](./static/images/img2.png)
 
 Na primeira tabela mostra as 5 primeiras linhas do arquivo.
 
@@ -53,14 +58,15 @@ Nesse exemplo, usarei um arquivo .csv com 3 colunas: *nome, NCM, preço*
 
 Em cada linha da tabela terão:
 
-**Campo Odoo**: Selection com os campos do modelo selecionado.
+**Campo Odoo**:  Selection com os campos do modelo selecionado.
 
-**Domínio**: É como o campo é referenciado dentro do sistema.
+**Domínio**:  É como o campo é referenciado dentro do sistema.
 Esse campo geralmente é setado automaticamente. Porém, há a possibilidade de
 modificá-lo se for preciso. Isso é útil quando a importação de registros está
 ligada a um outro objeto do sistema, para informar qual atributo do objeto que
 temos em mãos.
-Para descobrir qual atributo que o mesmo está ligado, [basta buscar no Modelo.](./static/images/model.png)
+Para descobrir qual atributo que o mesmo está ligado, basta buscar no Modelo:
+![](./static/images/model.png)
 
 Neste exemplo, eu tenho apenas o código do NCM.
 Portanto, é preciso informar ao importador qual campo que corresponde o dado
@@ -68,7 +74,7 @@ do arquivo .csv.
 Para isso, eu posso selecionar NCM no **Campo Odoo** e depois adicionar '.code'
 no final do dominio, pois o dado que eu tenho corresponde ao campo 'code' do NCM.
 
-**Usar como identificador?**: As linhas que tiverem essa opção selecionada serão
+**Usar como identificador?**:  As linhas que tiverem essa opção selecionada serão
 usadas como dados para a busca do registro.
 Exemplo:
 Se a linha 'name' for selecionada como identificadora, na hora de importar, o 
@@ -77,10 +83,10 @@ igual ao valor passado no arquivo .csv.
 Caso nenhum registro for encontrado, um registro será criado, com o atributo
 passado como identificador.
 
-**Campo não nulo?**: As linhas que tiverem essa opção selecionada não poderão ter
+**Campo não nulo?**:  As linhas que tiverem essa opção selecionada não poderão ter
 valores vazios. Caso tenha, será mostrado na tela as linhas que tiveram problemas.
 
-**Criar caso não encontrar?**: Essa opção permite que o usuário crie um
+**Criar caso não encontrar?**:  Essa opção permite que o usuário crie um
 registro com o valor passado caso ele não exista no sistema.
 **Porém, tenha cuidado ao usar essa opção.** Podem ocorrer casos onde algum
 campo obrigatório não esteja selecionado e então dar erro. Outro caso possível
@@ -101,30 +107,31 @@ duplicados de um mesmo objeto, caso esse campo seja usado de fora errada.
 
 *Caso alguma linha da segunda tabela não precise ser importada, apenas deixe o campo* **Domínio** *vazio.*
 
-Nesse exemplo, os domínios ficarão [assim.](./static/images/img3.png)
+Nesse exemplo, os domínios ficarão assim:
+![](./static/images/img3.png)
 
 Quando tudo estiver pronto, só clicar no botão **IMPORTAR**, que as coisas irão acontecer.
 
 ## Mensagens de Erros ##
-- [Nenhum arquivo CSV selecionado!]
+- **Nenhum arquivo CSV selecionado!**
 Indica que não foi selecionado um arquivo .csv
 
-- [Nenhum caracter de citação informado. Por favor, coloque um caracter de citação antes de prosseguir.]
+- **Nenhum caracter de citação informado. Por favor, coloque um caracter de citação antes de prosseguir.**
 Significa que o campo **Caracter de citação** está vazio. Para verificar isso, selecione o checkbox
 **Extra** que irá surgir o campo para colocar o caracter de citação.
 
-- [Não há linhas de identificação! Por favor, selecione pelo menos uma linha como identificadora antes de prosseguir.]
+- **Não há linhas de identificação! Por favor, selecione pelo menos uma linha como identificadora antes de prosseguir.**
 Indica que não há linhas com o checkbox **Usar como identificador?** selecionado.
 
-- [Não há linhas para importação com domínio detectadas! Por favor selecione um campo odoo ou coloque um domínio em pelo menos uma linha antes de prosseguir.]
+- **Não há linhas para importação com domínio detectadas! Por favor selecione um campo odoo ou coloque um domínio em pelo menos uma linha antes de prosseguir.**
 Indica que não há linhas com o campo **Domínio** preenchido.
 
-*PS: Linhas sem domínio são ignoradas na importação*
+  **PS: Linhas sem domínio são ignoradas na importação**
 
-- [Linha nº: x - Valor vazio em campo não nulo]
+- **Linha nº: x - Valor vazio em campo não nulo**
 Isso significa que na linha x, há um valor vazio num campo em quem não é aceito tal valor (Checkbox não nulo selecionado)
 
-- [Linha nº: x com valor 'valor' não foi encontrado no sistema]
+- **Linha nº: x com valor 'valor' não foi encontrado no sistema**
 Na linha x, o valor indicado não foi encontrado no sistema. Ele aparece quando é fornecido um
 atributo de um objeto (id, name, int_ref) que não está presente no sistema. Em caso de nomes,
 prestem atenção em acentos, espaços antes/depois extras, etc.
