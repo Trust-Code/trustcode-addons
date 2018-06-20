@@ -3,6 +3,7 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 from odoo import fields, models, api
+from odoo.exceptions import UserError
 
 
 class Employee(models.Model):
@@ -35,13 +36,26 @@ class Employee(models.Model):
         res = super(Employee, self).write(vals)
         if vals.get('employee_partition_ids') or vals.get('active'):
             self.compute_percent_per_employe()
+        self.check_employee_partition_ids()
         return res
 
     @api.model
     def create(self, vals):
         res = super(Employee, self).create(vals)
         res.compute_percent_per_employe()
+        res.check_employee_partition_ids()
         return res
+
+    def check_employee_partition_ids(self):
+        if not self.department_id:
+            return
+        accounts = self.env['account.analytic.account'].search([
+            ('department_id', '=', self.department_id.id)])
+        employee_accounts = self.employee_partition_ids.\
+            mapped('analytic_account_id')
+        if not any(acc in employee_accounts for acc in accounts):
+            raise UserError("É necessário ao menos uma linha no controle\
+de rateio correspondente ao departamento deste funcionário!")
 
 
 class HrEmployeePartition(models.Model):

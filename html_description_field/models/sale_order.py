@@ -13,7 +13,8 @@ class SaleOrderLine(models.Model):
 
     @api.onchange('quotation_description')
     def onchange_description(self):
-        self.name = self.clean_html_text(self.quotation_description)
+        if self.quotation_description:
+            self.name = self.clean_html_text(self.quotation_description)
 
     def clean_html_text(self, string):
         doc = document_fromstring(string.replace('</p>', '\r\n'))

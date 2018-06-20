@@ -12,7 +12,7 @@ class TestResPartner(TestBaseAnalyicEmploye):
         analytic_accs = self.env['account.analytic.account'].search([
             ('partner_id', '=', self.branch_one.id)])
         self.assertEquals(len(analytic_accs), len(
-            self.branch_one.expense_group_ids))
+            self.branch_one.department_ids))
         part_group = self.partition_group
         self.assertEquals(len(part_group.partition_line_ids) + 1,
                           len(analytic_accs))

@@ -10,7 +10,7 @@
                         <group>
                             <field name="employee_partition_ids" widget="one2many_list" nolabel="1">
                                 <tree editable="bottom">
-                                    <field name="analytic_account_id" />
+                                    <field name="analytic_account_id" domain="[('department_id', '=', parent.department_id)]"/>
                                     <field name="weight" />
                                 </tree>
                             </field>

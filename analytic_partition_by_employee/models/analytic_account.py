@@ -8,5 +8,5 @@ from odoo import models, fields
 class AccountAnalyticAccount(models.Model):
     _inherit = 'account.analytic.account'
 
-    expense_group_id = fields.Many2one(
-        'expense.group', 'Grupo de Despesas', store=True)
+    department_id = fields.Many2one(
+        'hr.department', 'Departamento', store=True)
