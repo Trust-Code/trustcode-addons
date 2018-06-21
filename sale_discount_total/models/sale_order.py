@@ -3,6 +3,7 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 from odoo import fields, models, api
+from odoo.addons import decimal_precision as dp
 
 
 class SaleOrder(models.Model):
@@ -31,16 +32,17 @@ class SaleOrder(models.Model):
 
     @api.multi
     def update_discount_lines(self):
-        precision = self.env['decimal.precision'].search([(
-            'name', '=', 'Discount')])
+        precision_discount = dp.get_precision('Discount')(self._cr)[1]
+        precision_money = dp.get_precision('Product Price')(self._cr)[1]
         for item in self:
             if item.discount_value == 0:
                 continue
-            discount_percent = round(item.discount_value, precision.digits)
+            discount_percent = round(item.discount_value,
+                                     precision_discount)
             if item.discount_type == 'amount':
                 discount_percent = round(
                     item.discount_value / item.total_bruto * 100,
-                    precision.digits)
+                    precision_discount)
             if discount_percent > 100:
                 discount_percent = 100
             elif discount_percent < 0:
@@ -48,7 +50,8 @@ class SaleOrder(models.Model):
             amount = 0
             for line in item.order_line[:-1]:
                 line.discount = discount_percent
-                amount += discount_percent / 100 * line.valor_bruto
+                amount += round(discount_percent / 100 * line.valor_bruto,
+                                precision_money)
             if item.discount_type == 'amount':
                 last = item.order_line[-1]
                 last.discount = (
