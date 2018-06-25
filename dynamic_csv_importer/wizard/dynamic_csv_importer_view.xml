@@ -13,6 +13,7 @@
                     </group>
                     <group>
                         <field name="extra" />
+                        <field name="create_if_not_found" />
                     </group>
                 </group>
                 <group attrs="{'invisible': ['|', ('extra', '=', False), ('import_success', '=', True)]}">
@@ -57,6 +58,9 @@
                             </section>
                         </div>
                     </div>
+                </group>
+                <group attrs="{'invisible': [('warnings', '=', False)]}">
+                    <field name="warnings" />
                 </group>
                 <footer attrs="{'invisible': [('import_success', '=', True)]}">
                     <button name="action_import" string="Import" type="object" default_focus="1" class="oe_highlight"/>
