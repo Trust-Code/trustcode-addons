@@ -48,6 +48,10 @@ Já na segunda tabela é onde será configurado os dados da importação.
 Caso tenha selecionado um arquivo por engano, é possivel trocar o arquivo sem
 ter que fechar e abrir o wizard novamente.
 
+O campo **Criar objeto caso não for encontrado** é para casos onde não há registros
+no sistema com os dados informados nas linhas selecionadas como **Identificador**.
+Nesses casos, um registro será criado, com os atributos passados como identificadores.
+
 ### Tabela de Importação ###
 
 Cada linha dessa tabela é uma coluna do arquivo .csv importado. Logo, se o arquivo
@@ -80,11 +84,14 @@ Exemplo:
 Se a linha 'name' for selecionada como identificadora, na hora de importar, o 
 sistema irá procurar pro um registro do modelo selecionado que tenha o nome
 igual ao valor passado no arquivo .csv.
-Caso nenhum registro for encontrado, um registro será criado, com o atributo
-passado como identificador.
+**PS: É altamente recomendável selecionar a opção _Campo não nulo_ nesses campos!**
+Isso porque não é possivel, e também faz pouco sentido atualizar/criar/identificar
+qualquer objeto com valor nulo.
 
 **Campo não nulo?**:  As linhas que tiverem essa opção selecionada não poderão ter
 valores vazios. Caso tenha, será mostrado na tela as linhas que tiveram problemas.
+É altamente recomendado que selecione essa opção em linhas com informações importantes,
+como linhas identificadoras.
 
 **Criar caso não encontrar?**:  Essa opção permite que o usuário crie um
 registro com o valor passado caso ele não exista no sistema.
