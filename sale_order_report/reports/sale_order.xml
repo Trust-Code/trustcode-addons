@@ -34,8 +34,8 @@
                     </div>
 
                     <div class="row" style="border-bottom:1px solid black">
-                        <t t-set="partner_invoice" t-value="doc.partner_invoice_id.parent_id or doc.partner_invoice_id" />
-                        <t t-set="partner_shipping" t-value="doc.partner_shipping_id.parent_id or doc.partner_shipping_id" />
+                        <t t-set="partner_invoice" t-value="doc.partner_invoice_id" />
+                        <t t-set="partner_shipping" t-value="doc.partner_shipping_id" />
 
                         <t t-if="doc.partner_shipping_id != doc.partner_invoice_id">
                             <div class="col-xs-4">
