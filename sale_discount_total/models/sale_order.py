@@ -30,6 +30,11 @@ class SaleOrder(models.Model):
         self.update_discount_lines()
         return res
 
+    def get_balance_line(self):
+        for item in reversed(self.order_line):
+            if item.valor_bruto:
+                return item
+
     @api.multi
     def update_discount_lines(self):
         precision_discount = dp.get_precision('Discount')(self._cr)[1]
@@ -48,13 +53,15 @@ class SaleOrder(models.Model):
             elif discount_percent < 0:
                 discount_percent = 0
             amount = 0
-            for line in item.order_line[:-1]:
+            balance_line = item.get_balance_line()
+            for line in item.order_line:
+                if line == balance_line:
+                    continue
                 line.discount = discount_percent
                 amount += round(discount_percent / 100 * line.valor_bruto,
                                 precision_money)
             if item.discount_type == 'amount':
-                last = item.order_line[-1]
-                last.discount = (
-                    item.discount_value - amount) / last.valor_bruto * 100
+                balance_line.discount = (item.discount_value - amount) /\
+                    balance_line.valor_bruto * 100
             else:
-                item.order_line[-1].discount = discount_percent
+                balance_line.discount = discount_percent
