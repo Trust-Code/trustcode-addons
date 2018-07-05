@@ -5,10 +5,8 @@
 
 {  # pylint: disable=C8101,C8103
     'name': "Importação de BoM",
-
     'summary': """
-        Permite a importação de BoM através de arquivos '.csv'.""",
-
+        Permite a importação de BoM através de arquivo xml.""",
     'description': """""",
     'author': "Trustcode",
     'website': "http://www.trustcode.com.br",
@@ -17,6 +15,7 @@
     'license': 'AGPL-3',
     'contributors': [
         'Johny Chen Jy <johnychenjy@gmail.com>',
+        'Danimar Ribeiro <danimaribeiro@gmail.com>',
     ],
     'depends': [
         'mrp'
