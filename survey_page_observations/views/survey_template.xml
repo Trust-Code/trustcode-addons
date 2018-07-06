@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <template id="survey_page_observation" inherit_id="survey.page">
+            <!-- Descrição da página -->
+            <xpath expr="//div[@t-field='page.description']" position="before">
+                <t t-if="page.page_description">
+                    <div t-field="page.page_description" class="text-muted oe_no_empty"/>
+                </t>
+            </xpath>
+            <!-- Descrição da pergunta -->
+            <xpath expr="//div[@t-field='question.description']" position="before">
+                <t t-if="question.question_description">
+                    <div t-field="question.question_description" class="text-muted oe_no_empty"/>
+                </t>
+            </xpath>
+        </template>
+    </data>
+</odoo>

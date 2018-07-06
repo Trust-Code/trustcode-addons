@@ -4,10 +4,10 @@ from odoo import fields, models
 class SurveyPage(models.Model):
     _inherit = 'survey.page'
 
-    observations = fields.Text()
+    page_description = fields.Text(string="Descrição da página")
 
 
 class SurveyQuestion(models.Model):
     _inherit = 'survey.question'
 
-    observations = fields.Text()
+    question_description = fields.Text(string="Descrição da pergunta")
