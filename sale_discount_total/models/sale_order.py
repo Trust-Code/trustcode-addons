@@ -40,8 +40,6 @@ class SaleOrder(models.Model):
         precision_discount = dp.get_precision('Discount')(self._cr)[1]
         precision_money = dp.get_precision('Product Price')(self._cr)[1]
         for item in self:
-            if item.discount_value == 0:
-                continue
             discount_percent = round(item.discount_value,
                                      precision_discount)
             if item.discount_type == 'amount':
