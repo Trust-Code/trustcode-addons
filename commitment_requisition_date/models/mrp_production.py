@@ -8,5 +8,7 @@ from odoo import fields, models
 class MrpProduction(models.Model):
     _inherit = "mrp.production"
 
-    commitment_date = fields.Datetime('Data do Compromisso')
-    requisition_date = fields.Datetime('Data do Requisição')
+    commitment_date = fields.Datetime(
+        'Data do Compromisso', track_visibility='onchange')
+    requisition_date = fields.Datetime(
+        'Data do Requisição', track_visibility='onchange')
