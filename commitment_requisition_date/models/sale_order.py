@@ -2,11 +2,14 @@
 # © 2018 Johny Chen Jy, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-from odoo import api, models
+from odoo import api, models, fields
 
 
 class SaleOrder(models.Model):
     _inherit = "sale.order"
+
+    commitment_date = fields.Datetime(track_visibility='onchange')
+    requested_date = fields.Datetime(track_visibility='onchange')
 
     def _sale_order_dates_update(self, vals):
         if self.procurement_group_id:
