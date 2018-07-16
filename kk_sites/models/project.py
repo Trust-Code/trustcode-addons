@@ -2,6 +2,7 @@
 # © 2017 Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
+import datetime
 from odoo import fields, models, api
 
 
@@ -17,7 +18,7 @@ class Project(models.Model):
     data_entrega = fields.Date(
         'Data Previsão Entrega',
         compute='_compute_data_entrega')
-    ultima_alteracao = fields.Datetime('Última Alteração')
+    date_delivered = fields.Date('Data de Conclusão')
     arquivado_fisicamente = fields.Date('Arquivado Fisicamente Em')
     obs = fields.Html('Observação')
 
@@ -46,4 +47,28 @@ class Task(models.Model):
         if not vals.get('kk_site_id'):
             vals.update({'kk_site_id': project.kk_site_id.id})
         res = super(Task, self).create(vals)
+        if vals.get('stage_id'):
+            res.update_date_delivered(vals)
         return res
+
+    @api.multi
+    def write(self, vals):
+        res = super(Task, self).write(vals)
+        if vals.get('stage_id'):
+            self.update_date_delivered(vals)
+        return res
+
+    def update_date_delivered(self, vals):
+        stages_done = self.env['project.task.type'].search(
+            [('is_done', '=', True)])
+        value = False
+        if all(tasks.stage_id.id in stages_done.ids for tasks in
+               self.project_id.task_ids):
+            value = datetime.datetime.now()
+        self.project_id.date_delivered = value
+
+
+class ProjectTaskType(models.Model):
+    _inherit = 'project.task.type'
+
+    is_done = fields.Boolean('Concluído')
