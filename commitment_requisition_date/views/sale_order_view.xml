@@ -14,4 +14,18 @@
             </field>
         </field>
     </record>
+    <record id="view_order_form_inherit_expedition_notes" model="ir.ui.view">
+        <field name="name">sale.order.form.inherit.expedition.notes</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <field name="note" position="after">
+                <br />
+                <label for="observation_order_sale" />
+                <br />
+                <field name="observation_order_sale" widget="html"
+                placeholder="This information will appear in manufacture and delivary"/>
+            </field>
+        </field>
+    </record>
 </odoo>

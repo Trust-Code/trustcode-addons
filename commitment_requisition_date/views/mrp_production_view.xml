@@ -10,6 +10,11 @@
                     <field name="requisition_date" readonly="1"/>
                     <field name="commitment_date" readonly="1"/>
                 </field>
+                <field name="move_raw_ids" position="after">
+                    <label for="observation_order_sale"></label>
+                    <br/>
+                    <field name="observation_order_sale" widget="html"/>
+                </field>
             </field>
         </record>
     </data>

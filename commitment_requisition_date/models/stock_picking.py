@@ -2,7 +2,7 @@
 # © 2018 Johny Chen Jy, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-from odoo import fields, models
+from odoo import fields, models, api
 
 
 class StockPicking(models.Model):
@@ -12,3 +12,5 @@ class StockPicking(models.Model):
         'Data do Compromisso', track_visibility='onchange')
     requisition_date = fields.Datetime(
         'Data do Requisição', track_visibility='onchange')
+    observation_order_sale = fields.Text(
+        'Observation')
