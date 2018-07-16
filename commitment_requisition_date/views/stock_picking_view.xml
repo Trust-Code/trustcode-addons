@@ -12,5 +12,19 @@
                 </field>
             </field>
         </record>
+        <record id="stock_picking_view_form_inherit_expedition_notes" model="ir.ui.view">
+            <field name="name">stock.picking.form.inherit.expedition.notes</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock.view_picking_form"/>
+            <field name="arch" type="xml">
+                <field name="move_lines" position="after">
+                    <br/>
+                    <label for="observation_order_sale"/>
+                    <br/>
+                    <field name="observation_order_sale" widget="html"
+                    placeholder="Obseration"/>
+                </field>
+            </field>
+        </record>
     </data>
 </odoo>

@@ -15,6 +15,7 @@
         'Johny Chen Jy <johnychenjy@gmail.com>',
     ],
     'depends': [
+        'sale',
         'mrp',
         'stock',
         'sale_order_dates',
