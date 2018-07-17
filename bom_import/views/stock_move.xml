@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_bom_import_stock_move_lots_form" model="ir.ui.view">
+        <field name="name">view.bom.import.stock.move.lots.form</field>
+        <field name="model">stock.move</field>
+        <field name="inherit_id" ref="mrp.view_stock_move_lots" />
+        <field name="arch" type="xml">
+            <field name="active_move_line_ids" position="before">
+
+                <field name="is_component" invisible="1"/>
+                <field name="is_profile" invisible="1"/>
+                <field name="is_glass" invisible="1"/>
+
+                <group string="Dados do Componente" attrs="{'invisible': [('is_component', '=', False)]}">
+                    <field name="ref"/>
+                    <field name="color_code"/>
+                    <field name="size"/>
+                </group>
+                <group string="Dados do Perfil" attrs="{'invisible': [('is_profile', '=', False)]}">
+                    <field name="ref"/>
+                    <field name="trat"/>
+                    <field name="left_angle"/>
+                    <field name="right_angle"/>
+                    <field name="size"/>
+                </group>
+                <group string="Dados do Vidro" attrs="{'invisible': [('is_glass', '=', False)]}">
+                    <field name="ref"/>
+                    <field name="height"/>
+                    <field name="width"/>
+                    <field name="surface"/>
+                </group>
+            </field>
+        </field>
+    </record>
+
+</odoo>
