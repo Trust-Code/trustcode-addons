@@ -113,7 +113,7 @@ class BomImportWizard(models.TransientModel):
                     })
 
             # Vidros
-            if "VIDROS" in dir(tipologia.VIDROS):
+            if "VIDRO" in dir(tipologia.VIDROS):
                 for vidro in tipologia.VIDROS.VIDRO:
                     raw_id = prod_env.search(
                         [('default_code', '=', str(vidro.CODIGO))], limit=1)
@@ -133,6 +133,7 @@ class BomImportWizard(models.TransientModel):
                         'bom_id': bom_id.id,
                         'product_id': raw_id.id,
                         'product_qty': float(vidro.QTDE),
+                        'ref': str(vidro.REF),
                         'height': float(vidro.ALTURA),
                         'width': float(vidro.LARGURA),
                         'surface': str(vidro.SUPERFICIE),
