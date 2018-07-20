@@ -16,7 +16,7 @@ class Project(models.Model):
     art = fields.Char('ART')
     qualidade = fields.Char('Qualidade')
     data_entrega = fields.Date(
-        'Data Previsão Entrega',
+        'Data Previsão',
         compute='_compute_data_entrega')
     date_delivered = fields.Date('Data de Conclusão')
     arquivado_fisicamente = fields.Date('Arquivado Fisicamente Em')
