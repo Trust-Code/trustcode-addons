@@ -64,4 +64,14 @@
             </xpath>
         </field>
     </record>
+    <record id="kksite_id_search_view" model="ir.ui.view">
+            <field name="name">kksite search</field>
+            <field name="model">project.task</field>
+            <field name="inherit_id" ref="project.view_task_search_form"/>
+            <field name="arch" type="xml">
+            <field name="name" position="after">
+               <field name="kk_site_id" string="kk site" /> 
+            </field>
+            </field>
+    </record> 
 </odoo>
