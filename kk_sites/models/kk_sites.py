@@ -15,7 +15,7 @@ import re
 class KKSites(models.Model):
     _name = 'kk.sites'
     _inherit = ['mail.thread', 'mail.activity.mixin']
-    name = fields.Char(compute='_compute_algo', store=True)
+    name = fields.Char(compute='_compute_name', store=True)
 
     cod_site_kk = fields.Char(
         string="Código do Site: ",
@@ -177,7 +177,7 @@ class KKSites(models.Model):
 
     @api.depends('cod_site_kk', 'site_id')
     @api.multi
-    def _compute_algo(self):
+    def _compute_name(self):
         for item in self:
             item.name = '%s - %s' % (item.cod_site_kk, item.site_id)
 
