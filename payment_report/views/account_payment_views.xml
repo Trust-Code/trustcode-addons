@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_account_payment_form_user_id" model="ir.ui.view">
+            <field name="name">account.payment.form.user.id</field>
+            <field name="model">account.payment</field>
+            <field name="inherit_id" ref="account.view_account_payment_form" />
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='payment_method_id']" position="after">
+                    <field name="create_uid" readonly="1"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>
