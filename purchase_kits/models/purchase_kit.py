@@ -21,13 +21,13 @@ class PurchaseOrderLine(models.Model):
     )
     order_id = fields.Many2one(required=0)
 
-    @api.model
-    def create(self, vals):
-        if 'default_order_id' in vals:
-            vals['order_id'] = vals['default_order_id']
-        elif 'kit_order_id' in vals:
-            vals['order_id'] = vals['kit_order_id']
-        super(PurchaseOrderLine, self).create(vals)
+    @api.onchange('product_id')
+    def onchange_product_id(self):
+        if self.default_order_id:
+            self.order_id = self.default_order_id
+        elif self.kit_order_id:
+            self.order_id = self.kit_order_id
+        super(PurchaseOrderLine, self).onchange_product_id()
 
     @api.multi
     def _create_stock_moves(self, picking):
