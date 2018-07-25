@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <report id="report_print_batch_payment"
+        string="Imprimir Relatório de Pagamentos Simples"
+        model="account.payment"
+        name="payment_report.print_batch_payment"
+        report_type="qweb-pdf"/>
+
+    <record id="paperformat_print_payment" model="report.paperformat">
+        <field name="name">Relatório Pagamentos</field>
+        <field name="default" eval="True" />
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">5</field>
+        <field name="margin_bottom">5</field>
+        <field name="margin_left">10</field>
+        <field name="margin_right">10</field>
+        <field name="header_line" eval="False" />
+        <field name="header_spacing">3</field>
+    </record>
+
+    <record id="report_print_batch_payment" model="ir.actions.report.xml">
+        <field name="paperformat_id" ref="paperformat_print_payment"/>
+        <field name="name">Relatório de Pagamentos</field>
+        <field name="print_report_name">'Relatório de Pagamentos.pdf'</field>
+    </record>
+
+    <template id="print_batch_payment_template">
+        <style type="text/css">
+            .col-xs-1, .col-xs-2,
+            .col-xs-3,.col-xs-4,.col-xs-5, .col-xs-6, .col-xs-7,
+            .col-xs-8,
+            .col-xs-9, .col-xs-10, .col-xs-11, .col-xs-12 {
+                padding:0px;
+            }
+            td, th { padding: 0 4px; }
+        </style>
+        <div class="page">
+            <div class="row">
+                <div class="col-xs-12" style="padding:0px;text-align:center;font-size:35px;">
+                    Relatório de Pagamentos
+                    <br/>
+                    <h4 style="text-align:left"><strong>Usuário: </strong><t t-esc="user_docs[0].create_uid.name"/></h4>
+                </div>
+                <table class="table table-striped">
+                    <thead><tr>
+                        <th class="text-left">Nome</th>
+                        <th class="text-left">Data de Pagamento</th>
+                        <th class="text-left">Diário de Pagamento</th>
+                        <th class="text-left">Fornecedor</th>
+                        <th class="text-left">Empresa</th>
+                        <th class="text-left">Situação</th>
+                        <th class="text-right">Valor do Pagamento</th>
+                    </tr></thead>
+                    <tr t-foreach="user_docs" t-as="payment">
+                        <td class="text-left"><t t-esc="payment.name"/></td>
+                        <td class="text-left"><t t-esc="payment.payment_date" t-options='{"widget": "date"}'/></td>
+                        <td class="text-left"><t t-esc="payment.journal_id.name"/></td>
+                        <td class="text-left"><t t-esc="payment.partner_id.name"/></td>
+                        <td class="text-left"><t t-esc="payment.company_id.name"/></td>
+                        <td class="text-left">
+                            <t t-if="payment.state == 'draft'">
+                                <span>Provisório</span>
+                            </t>
+                            <t t-if="payment.state == 'posted'">
+                                <span>Lançado</span>
+                            </t>
+                            <t t-if="payment.state == 'sent'">
+                                <span>Enviado</span>
+                            </t>
+                            <t t-if="payment.state == 'reconciled'">
+                                <span>Reconciliado</span>
+                            </t>
+                        </td>
+                        <td class="text-right"><t t-esc="payment.amount" t-options="{'widget': 'monetary', 'display_currency': payment.currency_id}"/></td>
+                    </tr>
+                    <tr>
+                        <td></td><td></td><td></td><td></td><td></td>
+                        <td class="text-right"><strong>Total:</strong></td>
+                        <td class="text-right"><t t-esc="user_docs[0].get_total_value(user_docs)" t-options="{'widget': 'monetary', 'display_currency': user_docs[0].currency_id}"/></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </template>
+
+    <template id="print_batch_payment">
+        <t t-call="report.html_container">
+            <t t-foreach="docs.group_docs_by_user()" t-as="user_docs">
+                <t t-call="payment_report.print_batch_payment_template" t-lang="docs[0].partner_id.lang"/>
+            </t>
+        </t>
+    </template>
+</odoo>
