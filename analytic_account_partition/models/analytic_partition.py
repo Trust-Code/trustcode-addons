@@ -49,7 +49,8 @@ class AnalyticPartition(models.Model):
 
     @api.multi
     def unlink(self):
-        self.partition_line_ids.unlink()
+        for item in self:
+            item.partition_line_ids.unlink()
         return super(AnalyticPartition, self).unlink()
 
 

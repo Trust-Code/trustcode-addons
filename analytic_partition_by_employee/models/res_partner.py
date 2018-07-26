@@ -86,8 +86,7 @@ class ResPartner(models.Model):
             ('active', '=', True)], limit=1).partition_id
         if not part_group:
             part_group = self.create_partition_group(analytic_accs[0])
-            analytic_accs = analytic_accs[1:]
-        self.create_partition_lines(part_group, analytic_accs)
+        self.create_partition_lines(part_group, analytic_accs[1:])
         matrix_partition = self.env.ref(
             "analytic_partition_by_employee.matrix_partition_group")
         self.create_partition_lines(matrix_partition, analytic_accs)
