@@ -19,15 +19,23 @@ class PurchaseOrderLine(models.Model):
         comodel_name="purchase.order",
         ondelete="set null",
     )
-    order_id = fields.Many2one(required=0)
+    order_id = fields.Many2one(required=0, store=True)
 
     @api.onchange('product_id')
     def onchange_product_id(self):
         if self.default_order_id:
-            self.order_id = self.default_order_id
+            self.update({'order_id': self.default_order_id})
         elif self.kit_order_id:
-            self.order_id = self.kit_order_id
+            self.update({'order_id': self.kit_order_id})
         super(PurchaseOrderLine, self).onchange_product_id()
+
+    @api.model
+    def create(self, vals):
+        if 'default_order_id' in vals:
+            vals['order_id'] = vals['default_order_id']
+        elif 'kit_order_id' in vals:
+            vals['order_id'] = vals['kit_order_id']
+        super(PurchaseOrderLine, self).create(vals)
 
     @api.multi
     def _create_stock_moves(self, picking):
@@ -35,7 +43,7 @@ class PurchaseOrderLine(models.Model):
         done = self.env['stock.move'].browse()
         is_kit = True if self.order_id.is_kit else False
         for line in self.search([('order_id', '=', self.order_id.id),
-                                ('is_kit', '=', is_kit)]):
+                                 ('is_kit', '=', is_kit)]):
             for val in line._prepare_stock_moves(picking):
                 done += moves.create(val)
         return done
