@@ -22,5 +22,7 @@
     ],
     'data': [
         'wizard/bom_import_wizard.xml',
+        'views/stock_move.xml',
+        'views/mrp_production.xml',
     ],
 }

@@ -3,7 +3,7 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 
-{
+{  # pylint: disable=C8101,C8103
     'name': 'Trustcode - Add Serial Number to Invoice Eletronic',
     'description': 'Add Serial Number to Invoice Eletronic',
     'summary': """

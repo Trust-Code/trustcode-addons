@@ -48,6 +48,11 @@ class BomImportWizard(models.TransientModel):
                 'product_tmpl_id': product_id.product_tmpl_id.id,
                 'product_qty': 1.0,
                 'code': str(tipologia.TIPO),
+                # projetista ta string...se pa, tem que mudar dps
+                'projetista': str(tipologia.PROJETISTA),
+                'width': float(tipologia.LARGURA),
+                'height': float(tipologia.ALTURA),
+                'trat_perf': str(tipologia.TRAT_PERF),
             })
 
             # O XML possui componentes, perfis e vidros
@@ -70,7 +75,11 @@ class BomImportWizard(models.TransientModel):
                     bomline_env.create({
                         'bom_id': bom_id.id,
                         'product_id': raw_id.id,
-                        'product_qty': float(comp.QTDE)
+                        'product_qty': float(comp.QTDE),
+                        'ref': str(comp.REF),
+                        'color_code': str(comp.CODIGOCOR),
+                        'size': str(comp.TAM),
+                        'is_component': True,
                     })
 
             # Perfis
@@ -94,11 +103,17 @@ class BomImportWizard(models.TransientModel):
                     bomline_env.create({
                         'bom_id': bom_id.id,
                         'product_id': raw_id.id,
-                        'product_qty': float(perfil.QTDE)
+                        'product_qty': float(perfil.QTDE),
+                        'ref': str(perfil.REF),
+                        'trat': str(perfil.TRAT),
+                        'left_angle': str(perfil.ANG_ESQ),
+                        'right_angle': str(perfil.ANG_DIR),
+                        'size': str(perfil.TAM),
+                        'is_profile': True,
                     })
 
             # Vidros
-            if "VIDROS" in dir(tipologia.VIDROS):
+            if "VIDRO" in dir(tipologia.VIDROS):
                 for vidro in tipologia.VIDROS.VIDRO:
                     raw_id = prod_env.search(
                         [('default_code', '=', str(vidro.CODIGO))], limit=1)
@@ -117,7 +132,12 @@ class BomImportWizard(models.TransientModel):
                     bomline_env.create({
                         'bom_id': bom_id.id,
                         'product_id': raw_id.id,
-                        'product_qty': float(vidro.QTDE)
+                        'product_qty': float(vidro.QTDE),
+                        'ref': str(vidro.REF),
+                        'height': float(vidro.ALTURA),
+                        'width': float(vidro.LARGURA),
+                        'surface': str(vidro.SUPERFICIE),
+                        'is_glass': True,
                     })
 
             line_env.create({
