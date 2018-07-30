@@ -18,11 +18,21 @@
             <field name="inherit_id" ref="stock.view_picking_form"/>
             <field name="arch" type="xml">
                 <field name="move_lines" position="after">
+
+                    <field name="sale_id" invisible="1"/>
                     <br/>
-                    <label for="observation_order_sale"/>
+
+                    <button name="action_update_observation"
+                    string="Update Observation" type="object" class="btn-primary"
+                    attrs="{'invisible': [('sale_id', '=', False)]}"/>
                     <br/>
-                    <field name="observation_order_sale" widget="html"
-                    placeholder="Obseration"/>
+
+                    <label for="observation_sale_order"/>
+                    <br/>
+                    <field name="observation_sale_order"
+                    placeholder="Observation" class="oe_inline"
+                    attrs="{'readonly': [('sale_id', '!=', False)]}"/>
+
                 </field>
             </field>
         </record>

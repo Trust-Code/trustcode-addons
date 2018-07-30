@@ -10,9 +10,10 @@ class SaleOrder(models.Model):
 
     commitment_date = fields.Datetime(track_visibility='onchange')
     requested_date = fields.Datetime(track_visibility='onchange')
-    observation_order_sale = fields.Text('Observation')
+    observation_sale_order = fields.Text(
+        'Observation', track_visibility='onchange')
 
-    def _sale_order_dates_update(self, vals):
+    def _sale_order_fields_update(self, vals):
         if self.procurement_group_id:
             mrp_production = self.env['mrp.production'].search([
                 ('procurement_group_id', '=', self.procurement_group_id.id)])
@@ -20,8 +21,9 @@ class SaleOrder(models.Model):
                 production.update({
                     'commitment_date': vals.get('commitment_date'),
                     'requisition_date': vals.get('requested_date'),
-                    'observation_order_sale':  vals.get('observation_order_sale'),
-                    })
+                    'observation_sale_order':
+                    vals.get('observation_sale_order'),
+                })
 
         picking_ids = self.picking_ids.filtered(lambda x: x.state != 'cancel')
 
@@ -29,31 +31,32 @@ class SaleOrder(models.Model):
             picking.update({
                 'commitment_date': vals.get('commitment_date'),
                 'requisition_date': vals.get('requested_date'),
-                'observation_order_sale':  vals.get('observation_order_sale'),
+                'observation_sale_order':  vals.get('observation_sale_order'),
             })
 
     @api.multi
     def write(self, vals):
         res = super(SaleOrder, self).write(vals)
-        if any(item in vals for item in ['commitment_date', 'requested_date', 'observation_order_sale']):
-            self._sale_order_dates_update({
+        if any(item in vals for item in ['commitment_date', 'requested_date',
+                                         'observation_sale_order']):
+            self._sale_order_fields_update({
                 'commitment_date': vals.get('commitment_date'),
                 'requested_date': vals.get('requested_date'),
-                'observation_order_sale': vals.get('observation_order_sale'),
+                'observation_sale_order': vals.get('observation_sale_order'),
             })
         return res
 
-
     @api.multi
-    def action_confirm(self):
-        for sale_order in self:
-            res = super(SaleOrder, self).action_confirm()
-
-            observation_order_sale = sale_order.observation_order_sale
-
-            if observation_order_sale:
-                move_ids = self.picking_ids.filtered(
-                    lambda x: x.state != 'cancel')
-                for move in move_ids:
-                    move.write({'observation_order_sale': observation_order_sale})
-            return res
+    def action_update_observation(self):
+        return {
+            'name': 'Update Observation',
+            'type': 'ir.actions.act_window',
+            'res_model': 'update.observation.wizard',
+            'view_type': 'form',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_order_id': self.id,
+                'old_observation': self.observation_sale_order,
+            }
+        }

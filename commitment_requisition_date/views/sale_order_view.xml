@@ -20,11 +20,14 @@
         <field name="inherit_id" ref="sale.view_order_form"/>
         <field name="arch" type="xml">
             <field name="note" position="after">
-                <br />
-                <label for="observation_order_sale" />
-                <br />
-                <field name="observation_order_sale" widget="html"
-                placeholder="This information will appear in manufacture and delivary"/>
+                <br/>
+                
+                <button name="action_update_observation" string="Update Observation" type="object" class="btn-primary"/>
+                <br/>
+                <label for="observation_sale_order" />
+                <br/>
+                <field name="observation_sale_order" class="oe_inline"
+                placeholder="This information will appear in manufacture and delivery"/>
             </field>
         </field>
     </record>
