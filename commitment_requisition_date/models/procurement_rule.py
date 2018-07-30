@@ -13,8 +13,9 @@ class ProcurementRule(models.Model):
             location_id, name, origin, values, bom)
 
         res.update({
-            'commitment_date': values.get('commitment_date') or False,
-            'requisition_date': values.get('requisition_date') or False,
+            'commitment_date': values.get('commitment_date'),
+            'requisition_date': values.get('requisition_date'),
+            'observation_sale_order': values.get('observation_sale_order')
         })
 
         return res
