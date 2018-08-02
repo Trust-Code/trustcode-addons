@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+
+        <record id="action_view_correction_ratio" model="ir.actions.act_window">
+            <field name="name">Sale Subscription Ratio</field>
+            <field name="res_model">monetary.adjustment.ratio</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem id="ratio_sale_subscription_menu"
+            name="Sale Subscription Ratio"
+            parent="account.account_account_menu"
+            action="action_view_correction_ratio"
+            sequence="7"/>
+
+        <record id="view_monetary_adjustment_rate_tree" model="ir.ui.view">
+            <field name="name">monetary.adjustment.rate.tree</field>
+            <field name="model">monetary.adjustment.rate</field>
+            <field name="arch" type="xml">
+                <tree string="Adjustment Rates" editable="bottom">
+                    <field name="name"/>
+                    <field name="rate"/>
+                </tree>
+            </field>
+        </record>
+
+        <act_window
+           id="act_view_correction_ratio"
+           name="Adjustment Rates"
+           view_mode='tree,form'
+           view_id='view_monetary_adjustment_rate_tree'
+           domain="[('ratio_id','=', active_id)]"
+           context="{'default_ratio_id': active_id}"
+           res_model="monetary.adjustment.rate"/>
+
+        <record id="view_monetary_adjustment_ratio_tree" model="ir.ui.view">
+            <field name="name">monetary.adjustment.ratio.tree</field>
+            <field name="model">monetary.adjustment.ratio</field>
+            <field name="arch" type="xml">
+                <tree string="Monetary Adjustment Ratio">
+                    <field name="name"/>
+                    <field name="current_ratio"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_monetary_adjustment_ratio_form" model="ir.ui.view">
+            <field name="name">monetary.adjustment.ratio.form</field>
+            <field name="model">monetary.adjustment.ratio</field>
+            <field name="priority">2</field>
+            <field name="arch" type="xml">
+                <form string="Monetary Adjustment Ratio">
+                    <sheet>
+                        <div class="oe_button_box">
+                            <button class="oe_stat_button" string="Rates" type="action"
+                            name="%(act_view_correction_ratio)d" icon="fa-money" widget="statinfo"/>
+                        </div>
+                        <group>
+                            <field name="name"/>
+                            <field name="current_ratio" readonly="1"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_monetary_adjustment_rate_form" model="ir.ui.view">
+            <field name="name">monetary.adjustment.rate.form</field>
+            <field name="model">monetary.adjustment.rate</field>
+            <field name="arch" type="xml">
+                <form string="Adjustment Rate">
+                    <sheet>
+                        <group>
+                            <field name="name"/>
+                            <field name="rate"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+</odoo>
