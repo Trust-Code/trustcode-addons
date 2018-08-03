@@ -2,17 +2,22 @@
 # © 2017 Mackilem Van der Laan, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-{
-    'name': 'Purchase Order Kits',
-    'version': '1.0',
-    'category': 'Trustcode',
-    'sequence': 5,
-    'author': 'Trustcode',
-    'summary': 'Purchase order with kits',
-    'description': """
-""",
-    'website': 'https://www.trustcode.com.br',
-    'contributors': ['Mackilem Van der Laan <mack.vdl@gmail.com>'],
+
+{   # pylint: disable=C8101,C8103
+    'name': "Purchase Order Kits",
+
+    'summary': """
+        Purchase order with kits""",
+
+    'description': """""",
+    'author': "Trustcode",
+    'website': "http://www.trustcode.com.br",
+    'category': 'Uncategorized',
+    'version': '11.0.1.0.0',
+    'license': 'AGPL-3',
+    'contributors': [
+        'Mackilem Van der Laan <mack.vdl@gmail.com>',
+    ],
     'depends': ['purchase'],
     'data': ['views/purchase_order.xml'],
     'installable': True,
