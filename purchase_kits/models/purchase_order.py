@@ -45,9 +45,9 @@ class PurchaseOrder(models.Model):
                 amount_untaxed += line.price_subtotal
                 amount_tax += line.price_tax
             order.update({
-                 'amount_untaxed_kit': order.currency_id.round(amount_untaxed),
-                 'amount_tax_kit': order.currency_id.round(amount_tax),
-                 'amount_total_kit': amount_untaxed + amount_tax,
+                'amount_untaxed_kit': order.currency_id.round(amount_untaxed),
+                'amount_tax_kit': order.currency_id.round(amount_tax),
+                'amount_total_kit': amount_untaxed + amount_tax,
             })
 
     @api.depends('order_line.move_ids.returned_move_ids',
