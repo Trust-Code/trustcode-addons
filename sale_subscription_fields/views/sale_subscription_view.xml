@@ -9,10 +9,6 @@
                 <field name="due_date_behavior"/>
                 <field name="monetary_ratio"/>
             </field>
-            <field name="description" position="after">
-                <br/>
-                <field name="observations" invisible="1"/>
-            </field>
         </field>
     </record>
 </odoo>
