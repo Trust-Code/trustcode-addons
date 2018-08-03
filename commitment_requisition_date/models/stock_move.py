@@ -10,6 +10,8 @@ class StockMove(models.Model):
         res.update({
             'commitment_date': self.sale_line_id.order_id.commitment_date,
             'requisition_date': self.sale_line_id.order_id.requested_date,
+            'observation_sale_order':
+            self.line_id.order_id.observation_sale_order,
         })
         return res
 
@@ -19,5 +21,7 @@ class StockMove(models.Model):
         res.update({
             'commitment_date': self.sale_line_id.order_id.commitment_date,
             'requisition_date': self.sale_line_id.order_id.requested_date,
+            'observation_sale_order':
+            self.line_id.order_id.observation_sale_order,
         })
         return res

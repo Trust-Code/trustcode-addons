@@ -15,13 +15,15 @@
         'Johny Chen Jy <johnychenjy@gmail.com>',
     ],
     'depends': [
+        'sale',
         'mrp',
         'stock',
         'sale_order_dates',
     ],
     'data': [
         'views/mrp_production_view.xml',
-        'views/stock_picking_view.xml',
         'views/sale_order_view.xml',
+        'views/stock_picking_view.xml',
+        'wizard/observation_update.xml'
     ],
 }

@@ -1,3 +1,6 @@
+# © 2018 Johny Chen Jy, Trustcode
+# License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
+
 from odoo import models
 
 
@@ -13,9 +16,9 @@ class ProcurementRule(models.Model):
             location_id, name, origin, values, bom)
 
         res.update({
-            'commitment_date': values.get('commitment_date'),
-            'requisition_date': values.get('requisition_date'),
-            'observation_sale_order': values.get('observation_sale_order')
+            'projetista': bom.projetista,
+            'height': bom.height,
+            'width': bom.width,
+            'trat_perf': bom.trat_perf,
         })
-
         return res

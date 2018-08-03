@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="views_update_observation_form" model="ir.ui.view">
+            <field name="name">update.observation.wizard.form</field>
+            <field name="model">update.observation.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Update Observations">
+                    <group>
+                        <field name="old_observation"/>
+                        <field name="new_observation"/>
+                    </group>
+                    <footer>
+                        <button name="action_update_obs" string="Update" type="object" class="oe_highlight"/>
+                        <button special="cancel" string="Cancel" type="object" class="oe_link"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>
