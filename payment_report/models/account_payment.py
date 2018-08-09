@@ -6,10 +6,18 @@ class AccountPayment(models.Model):
     _inherit = "account.payment"
 
     @api.multi
-    def group_docs_by_user(self):
+    def group_docs_by_user(self, doc_list):
+        groups = defaultdict(list)
+        for payment in doc_list:
+            groups[payment.create_uid.id].append(payment)
+
+        return groups.values()
+
+    @api.multi
+    def group_docs_by_company(self):
         groups = defaultdict(list)
         for payment in self:
-            groups[payment.create_uid.id].append(payment)
+            groups[payment.company_id.id].append(payment)
 
         return groups.values()
 
