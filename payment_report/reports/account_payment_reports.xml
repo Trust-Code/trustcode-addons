@@ -38,6 +38,8 @@
         <div class="page">
             <div class="row">
                 <div class="col-xs-12" style="padding:0px;text-align:center;font-size:20px;">
+                    <strong><t t-esc="user_docs[0].company_id.name"/></strong>
+                    <br/>
                     Relatório de Pagamentos
                     <br/>
                     <h6 style="text-align:left"><strong>Usuário: </strong><t t-esc="user_docs[0].create_uid.name"/></h6>
@@ -48,7 +50,6 @@
                         <th class="text-left">Data de Pagamento</th>
                         <th class="text-left">Diário de Pagamento</th>
                         <th class="text-left">Fornecedor</th>
-                        <th class="text-left">Empresa</th>
                         <th class="text-left">Situação</th>
                         <th class="text-right">Valor do Pagamento</th>
                     </tr></thead>
@@ -57,7 +58,6 @@
                         <td class="text-left"><t t-esc="payment.payment_date" t-options='{"widget": "date"}'/></td>
                         <td class="text-left"><t t-esc="payment.journal_id.name"/></td>
                         <td class="text-left"><t t-esc="payment.partner_id.name"/></td>
-                        <td class="text-left"><t t-esc="payment.company_id.name"/></td>
                         <td class="text-left">
                             <t t-if="payment.state == 'draft'">
                                 <span>Provisório</span>
@@ -75,7 +75,7 @@
                         <td class="text-right"><t t-esc="payment.amount" t-options="{'widget': 'monetary', 'display_currency': payment.currency_id}"/></td>
                     </tr>
                     <tr>
-                        <td></td><td></td><td></td><td></td><td></td>
+                        <td></td><td></td><td></td><td></td>
                         <td class="text-right"><strong>Total:</strong></td>
                         <td class="text-right"><t t-esc="user_docs[0].get_total_value(user_docs)" t-options="{'widget': 'monetary', 'display_currency': user_docs[0].currency_id}"/></td>
                     </tr>
@@ -86,8 +86,10 @@
 
     <template id="print_batch_payment">
         <t t-call="report.html_container">
-            <t t-foreach="docs.group_docs_by_user()" t-as="user_docs">
-                <t t-call="payment_report.print_batch_payment_template" t-lang="docs[0].partner_id.lang"/>
+            <t t-foreach="docs.group_docs_by_company()" t-as="company_docs">
+                <t t-foreach="company_docs[0].group_docs_by_user(company_docs)" t-as="user_docs">
+                    <t t-call="payment_report.print_batch_payment_template" t-lang="docs[0].partner_id.lang"/>
+                </t>
             </t>
         </t>
     </template>
