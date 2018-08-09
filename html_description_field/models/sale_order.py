@@ -23,3 +23,6 @@ class SaleOrderLine(models.Model):
     @api.onchange('product_id')
     def onchange_product_id(self):
         self.quotation_description = self.product_id.display_name
+        if self.product_id.description_sale:
+            self.quotation_description = self.quotation_description + \
+                self.product_id.description_sale
