@@ -1,0 +1,155 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+#	* commitment_requisition_date
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 11.0+e\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-07-30 18:58+0000\n"
+"PO-Revision-Date: 2018-07-30 18:58+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: commitment_requisition_date
+#: model:ir.ui.view,arch_db:commitment_requisition_date.views_update_observation_form
+msgid "Cancel"
+msgstr "Cancelar"
+
+#. module: commitment_requisition_date
+#: model:ir.model.fields,field_description:commitment_requisition_date.field_update_observation_wizard_create_uid
+msgid "Created by"
+msgstr "Criado por"
+
+#. module: commitment_requisition_date
+#: model:ir.model.fields,field_description:commitment_requisition_date.field_update_observation_wizard_create_date
+msgid "Created on"
+msgstr "Criado em"
+
+#. module: commitment_requisition_date
+#: model:ir.model.fields,field_description:commitment_requisition_date.field_mrp_production_commitment_date
+#: model:ir.model.fields,field_description:commitment_requisition_date.field_stock_picking_commitment_date
+msgid "Data do Compromisso"
+msgstr "Data do Compromisso"
+
+#. module: commitment_requisition_date
+#: model:ir.model.fields,field_description:commitment_requisition_date.field_mrp_production_requisition_date
+#: model:ir.model.fields,field_description:commitment_requisition_date.field_stock_picking_requisition_date
+msgid "Data do Requisição"
+msgstr "Data do Requisição"
+
+#. module: commitment_requisition_date
+#: model:ir.model.fields,field_description:commitment_requisition_date.field_update_observation_wizard_display_name
+msgid "Display Name"
+msgstr "Nome de exibição"
+
+#. module: commitment_requisition_date
+#: model:ir.model.fields,field_description:commitment_requisition_date.field_update_observation_wizard_id
+msgid "ID"
+msgstr "ID"
+
+#. module: commitment_requisition_date
+#: model:ir.model.fields,field_description:commitment_requisition_date.field_update_observation_wizard___last_update
+msgid "Last Modified on"
+msgstr "Ultima Modificação em"
+
+#. module: commitment_requisition_date
+#: model:ir.model.fields,field_description:commitment_requisition_date.field_update_observation_wizard_write_uid
+msgid "Last Updated by"
+msgstr "Ultima atualização por"
+
+#. module: commitment_requisition_date
+#: model:ir.model.fields,field_description:commitment_requisition_date.field_update_observation_wizard_write_date
+msgid "Last Updated on"
+msgstr "Ultima atualização em"
+
+#. module: commitment_requisition_date
+#: model:ir.model,name:commitment_requisition_date.model_mrp_production
+msgid "Manufacturing Order"
+msgstr "Ordem de manufatura"
+
+#. module: commitment_requisition_date
+#: model:ir.model.fields,field_description:commitment_requisition_date.field_update_observation_wizard_new_observation
+msgid "Nova Observação"
+msgstr "Nova Observação"
+
+#. module: commitment_requisition_date
+#: model:ir.model.fields,field_description:commitment_requisition_date.field_sale_order_observation_sale_order
+#: model:ir.model.fields,field_description:commitment_requisition_date.field_stock_picking_observation_sale_order
+#: model:ir.ui.view,arch_db:commitment_requisition_date.mrp_production_dates_form_view
+#: model:ir.ui.view,arch_db:commitment_requisition_date.stock_picking_view_form_inherit_expedition_notes
+msgid "Observation"
+msgstr "Observação"
+
+#. module: commitment_requisition_date
+#: model:ir.model.fields,field_description:commitment_requisition_date.field_mrp_production_observation_sale_order
+msgid "Observations"
+msgstr "Observações"
+
+#. module: commitment_requisition_date
+#: model:ir.model.fields,field_description:commitment_requisition_date.field_update_observation_wizard_old_observation
+msgid "Observação Antiga"
+msgstr "Observação Antiga"
+
+#. module: commitment_requisition_date
+#: code:addons/commitment_requisition_date/models/mrp_production.py:27
+#: code:addons/commitment_requisition_date/models/stock_picking.py:22
+#, python-format
+msgid "Ordem de venda não definido. Para editar este campo, por favor, clique em editar, modifique e depois salve."
+msgstr "Ordem de venda não definido. Para editar este campo, por favor, clique em editar, modifique e depois salve."
+
+#. module: commitment_requisition_date
+#: model:ir.model,name:commitment_requisition_date.model_procurement_rule
+msgid "Procurement Rule"
+msgstr "Procurement Rule"
+
+#. module: commitment_requisition_date
+#: model:ir.model,name:commitment_requisition_date.model_sale_order
+msgid "Quotation"
+msgstr "Cotação"
+
+#. module: commitment_requisition_date
+#: model:ir.model.fields,field_description:commitment_requisition_date.field_mrp_production_sale_id
+msgid "Sale Order"
+msgstr "Ordem de Venda"
+
+#. module: commitment_requisition_date
+#: model:ir.model,name:commitment_requisition_date.model_stock_move
+msgid "Stock Move"
+msgstr "Movimento de Estoque"
+
+#. module: commitment_requisition_date
+#: model:ir.ui.view,arch_db:commitment_requisition_date.view_order_form_inherit_expedition_notes
+msgid "This information will appear in manufacture and delivery"
+msgstr "Essa informação será exibida na manufatura e ordem de entrega"
+
+#. module: commitment_requisition_date
+#: model:ir.model,name:commitment_requisition_date.model_stock_picking
+msgid "Transfer"
+msgstr "Transferir"
+
+#. module: commitment_requisition_date
+#: model:ir.ui.view,arch_db:commitment_requisition_date.views_update_observation_form
+msgid "Update"
+msgstr "Atualizar"
+
+#. module: commitment_requisition_date
+#: model:ir.ui.view,arch_db:commitment_requisition_date.mrp_production_dates_form_view
+#: model:ir.ui.view,arch_db:commitment_requisition_date.stock_picking_view_form_inherit_expedition_notes
+#: model:ir.ui.view,arch_db:commitment_requisition_date.view_order_form_inherit_expedition_notes
+msgid "Update Observation"
+msgstr "Atualizar Observação"
+
+#. module: commitment_requisition_date
+#: model:ir.ui.view,arch_db:commitment_requisition_date.views_update_observation_form
+msgid "Update Observations"
+msgstr "Atualizar Observação"
+
+#. module: commitment_requisition_date
+#: model:ir.model,name:commitment_requisition_date.model_update_observation_wizard
+msgid "update.observation.wizard"
+msgstr "update.observation.wizard"

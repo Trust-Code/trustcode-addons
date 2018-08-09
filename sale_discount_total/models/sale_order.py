@@ -40,10 +40,11 @@ class SaleOrder(models.Model):
         precision_discount = dp.get_precision('Discount')(self._cr)[1]
         precision_money = dp.get_precision('Product Price')(self._cr)[1]
         for item in self:
-            if item.discount_value == 0:
-                continue
             discount_percent = round(item.discount_value,
                                      precision_discount)
+            balance_line = item.get_balance_line()
+            if not balance_line:
+                continue
             if item.discount_type == 'amount':
                 discount_percent = round(
                     item.discount_value / item.total_bruto * 100,
@@ -53,7 +54,6 @@ class SaleOrder(models.Model):
             elif discount_percent < 0:
                 discount_percent = 0
             amount = 0
-            balance_line = item.get_balance_line()
             for line in item.order_line:
                 if line == balance_line:
                     continue
