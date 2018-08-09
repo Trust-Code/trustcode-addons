@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_order_form_inherit_sale_order_dates" model="ir.ui.view">
+        <field name="name">sale.order.date.form.inherit</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale_order_dates.view_order_form_inherit_sale_stock_inherit_sale_order_dates"/>
+        <field name="arch" type="xml">
+            <field name="requested_date" position="attributes">
+                <attribute name="readonly">0</attribute>
+                <attribute name="attrs">{'readonly': False}</attribute>
+            </field>
+            <field name="commitment_date" position="attributes">
+                <attribute name="readonly">0</attribute>
+            </field>
+        </field>
+    </record>
+    <record id="view_order_form_inherit_expedition_notes" model="ir.ui.view">
+        <field name="name">sale.order.form.inherit.expedition.notes</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <field name="note" position="after">
+                <br/>
+                
+                <button name="action_update_observation" string="Update Observation" type="object" class="btn-primary"/>
+                <br/>
+                <label for="observation_sale_order" />
+                <br/>
+                <field name="observation_sale_order" class="oe_inline"
+                placeholder="This information will appear in manufacture and delivery"/>
+            </field>
+        </field>
+    </record>
+</odoo>
