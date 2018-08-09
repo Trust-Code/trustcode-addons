@@ -24,4 +24,5 @@ class SaleOrderLine(models.Model):
     def onchange_product_id(self):
         self.quotation_description = self.product_id.display_name
         if self.product_id.description_sale:
-            self.quotation_description = self.quotation_description + self.product_id.description_sale
+            self.quotation_description = self.quotation_description + \
+                self.product_id.description_sale
