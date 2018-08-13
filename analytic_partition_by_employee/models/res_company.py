@@ -11,6 +11,6 @@ class ResCompany(models.Model):
     @api.model
     def create(self, vals):
         res = super(ResCompany, self).create(vals)
-        if res.parent_id:
+        if res.partner_id:
             res.partner_id.is_branch = True
         return res
