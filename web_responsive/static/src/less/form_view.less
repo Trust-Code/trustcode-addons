@@ -1,14 +1,83 @@
 /* Copyright 2016 Ponto Suprimentos Ltda.
+   Copyright 2018 Alexandre Díaz
  * License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl). */
+
+@sheet-margin: @sheet-padding;
+@chatter-side-width: 30%;
+
+// Sided Chatter
+@media (min-width: @screen-md) {
+    .o_chatter_position_sided {
+        .o_form_view:not(.o_form_nosheet) {
+            display: flex;
+            height: 100%;
+
+            .o_form_sheet_bg {
+                border-right: 1px solid @table-border-color;
+                overflow: auto;
+                flex: 1 1 auto;
+            }
+
+            .oe_chatter {
+                overflow: auto;
+                flex: 0 0 @chatter-side-width;
+
+                .o_chatter_topbar {
+                    height: auto;
+                    flex-wrap: wrap;
+
+                    button:last-of-type {
+                        flex: 1 0 auto;
+                        text-align: left;
+                    }
+
+                    .o_followers {
+                        order: -10;
+                        flex: 0 1 100%;
+                    }
+                }
+
+                &:empty {
+                    display: none;
+                }
+            }
+        }
+    }
+}
+
+// Normal Chatter
+.o_chatter_position_normal {
+    .oe_chatter {
+        max-width: initial;
+    }
+}
+
+// Sticky Header & Footer in List View
+.o_view_manager_content {
+    >div {
+        >.table-responsive {
+            >.o_list_view {
+                thead {
+                    position: sticky;
+                    top: 0;
+                }
+                tfoot {
+                    position: sticky;
+                    bottom: 0;
+                }
+            }
+        }
+    }
+}
 
 .o_form_view {
     // Form must fill 100% width in any size
     .o_form_sheet_bg {
-        padding: @sheet-padding;
 
         .o_form_sheet {
             min-width: auto;
             max-width: 100%;
+            margin: @sheet-margin;
         }
 
         @media (max-width: @screen-sm-max) {
@@ -16,6 +85,45 @@
 
             .o_form_sheet {
                 border: none;
+            }
+        }
+
+        .o_form_statusbar {
+            position: sticky;
+            top: 0;
+            z-index: 1;
+
+            .o-status-more > li > button {
+                border: 0;
+            }
+
+            .o_statusbar_buttons_container {
+                .o_statusbar_buttons_dropdown {
+                    height: 100%;
+
+                    >#dropdownMenuHeader {
+                        height: 100%;
+                        border-top: 0;
+                        border-bottom: 0;
+                        border-radius: 0;
+                    }
+                    >.dropdown-menu > li > button {
+                        width: 100%;
+                        border-radius: 0;
+                        border: 0;
+                    }
+                }
+
+                .o_statusbar_buttons_base > .o_statusbar_buttons {
+                    .o-flex-flow(row, wrap);
+                    >.btn {
+                        @o-statusbar-buttons-vmargin: 4px;
+                        min-height: @odoo-statusbar-height - 2 * @o-statusbar-buttons-vmargin;
+                        margin: @o-statusbar-buttons-vmargin 3px @o-statusbar-buttons-vmargin 0;
+                        padding-top: 2px;
+                        padding-bottom: 2px;
+                    }
+                }
             }
         }
     }
