@@ -6,9 +6,7 @@
 {
     'name': 'Trustcode - Change tax calculation',
     'summary': """
-        Change tax calculation to ZK Teco solicitation, and
-        IN SRF 237/09, 2003 may
-    """,
+        Change tax calculation to ZK Teco solicitation, and IN SRF 237/09 """,
     'description': 'Change tax calculation',
     'version': '10.0.1.0.0',
     'category': 'Tax',
