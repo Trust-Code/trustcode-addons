@@ -5,7 +5,7 @@
         <field name="inherit_id" ref="base.view_partner_form"/>
         <field name="arch" type="xml">
             <label for="street" position="before">
-                <field name="is_branch" string="É Filial" attrs="{'invisible': [('company_type', '=', 'person')]}"/>
+                <field name="is_branch" string="É Filial" invisible="1" />
             </label>
             <notebook position="inside">
                 <page name="partition" string="Controle de Rateio" attrs="{'invisible': [('is_branch', '=', False)]}">
