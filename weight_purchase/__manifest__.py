@@ -6,7 +6,7 @@
 {
     'name': 'Trustcode - Change tax calculation',
     'summary': """
-        Change tax calculation to ZK Teco solicitation, and 
+        Change tax calculation to ZK Teco solicitation, and
         IN SRF 237/09, 2003 may
     """,
     'description': 'Change tax calculation',
