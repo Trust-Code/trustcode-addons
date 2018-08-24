@@ -8,7 +8,7 @@
     'summary': """
         Change tax calculation to ZK Teco solicitation, and IN SRF 237/09 """,
     'description': 'Change tax calculation',
-    'version': '10.0.1.0.0',
+    'version': '11.0.1.0.0',
     'category': 'Tax',
     'author': 'Trustcode',
     'license': 'AGPL-3',
