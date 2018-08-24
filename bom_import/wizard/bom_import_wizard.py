@@ -21,6 +21,10 @@ class BomImportWizard(models.TransientModel):
         active_ids = context.get('active_ids', []) or []
         order = self.env['sale.order'].browse(active_ids)
 
+        if order.order_line:
+            order.order_line.mapped('mrp_bom_id').unlink()
+            order.order_line.unlink()
+
         line_env = self.env['sale.order.line']
         prod_env = self.env['product.product']
         bom_env = self.env['mrp.bom']
@@ -144,7 +148,8 @@ class BomImportWizard(models.TransientModel):
                 'order_id': order.id,
                 'product_id': product_id.id,
                 'product_uom_qty': float(tipologia.QTDE),
-                'price_unit': float(tipologia.PRECO_UNIT)
+                'price_unit': float(tipologia.PRECO_UNIT),
+                'mrp_bom_id': bom_id.id,
             })
 
         return {'type': 'ir.actions.act_window_close'}
