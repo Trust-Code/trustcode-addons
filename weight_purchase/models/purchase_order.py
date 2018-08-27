@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # © 2018 Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
@@ -42,6 +41,6 @@ class PurchaseOrder(models.Model):
             if line.product_id.fiscal_type == 'product':
                 full_weight += (line.product_id.weight * line.product_qty)
         if full_weight == 0:
-            raise UserError("Nenhum dos produtos possui peso cadastrado. \
-                    É necessario corrigir para o calculo do frete.")
+            raise UserError(_("Nenhum dos produtos possui peso cadastrado. \
+                    É necessário corrigir para o calculo do frete."))
         return full_weight
