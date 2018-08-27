@@ -34,7 +34,7 @@
                     </div>
 
                     <div class="row" style="border-bottom:1px solid black">
-                        <t t-set="partner_invoice" t-value="doc.partner_invoice_id" />
+                        <t t-set="partner_invoice" t-value="doc.partner_invoice_id.commercial_partner_id" />
                         <t t-set="partner_shipping" t-value="doc.partner_shipping_id" />
 
                         <t t-if="doc.partner_shipping_id != doc.partner_invoice_id">
@@ -55,7 +55,7 @@
                                 <span t-field="partner_invoice.city_id">--</span><span>/</span>
                                 <span t-field="partner_invoice.state_id.code"></span><span> - </span>
                                 <span t-field="partner_invoice.zip"></span><br />
-                                <strong class="small">Cnpj: </strong><span t-field="partner_invoice.cnpj_cpf"></span><br />
+                                <strong class="small">CNPJ: </strong><span t-field="partner_invoice.cnpj_cpf"></span><br />
                                 <strong class="small">IE: </strong><span t-field="partner_invoice.inscr_est"></span>
                             </div>
                             <div class="col-xs-4">
@@ -88,7 +88,7 @@
                                 <span t-field="partner_invoice.city_id">--</span><span>/</span>
                                 <span t-field="partner_invoice.state_id.code"/><span> - </span>
                                 <span t-field="partner_invoice.zip"/><br/>
-                                <strong class="small">Cnpj: </strong><span t-field="partner_invoice.cnpj_cpf"/><br/>
+                                <strong class="small">CNPJ: </strong><span t-field="partner_invoice.cnpj_cpf"/><br/>
                                 <strong class="small">IE: </strong><span t-field="partner_invoice.inscr_est"/>
                             </div>
                         </t>
