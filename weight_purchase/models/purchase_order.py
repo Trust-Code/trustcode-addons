@@ -9,7 +9,7 @@ from odoo.exceptions import UserError
 class PurchaseOrder(models.Model):
     _inherit = 'purchase.order'
 
-    @api.onchange('total_frete')
+    @api.onchange('total_frete', 'product_id')
     def _onchange_frete(self):
         super(PurchaseOrder, self)._onchange_despesas_frete_seguro()
         full_weight = self._calc_total_weight()
