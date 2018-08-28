@@ -2,7 +2,7 @@
 # © 2016 Danimar Ribeiro, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-{
+{  # pylint: disable=C8101,C8103
     'name': 'Modelo de Cotação de Venda Stock',
     'description': "Modelo de Cotação de Venda Stock",
     'summary': "Modelo de Cotação de Venda Stock",
