@@ -19,3 +19,10 @@ class SaleOrderLine(models.Model):
     def clean_html_text(self, string):
         doc = document_fromstring(string.replace('</p>', '\r\n'))
         return doc.text_content()
+
+    @api.onchange('product_id')
+    def onchange_product_id(self):
+        self.quotation_description = self.product_id.display_name
+        if self.product_id.description_sale:
+            self.quotation_description = self.quotation_description + \
+                self.product_id.description_sale

@@ -14,6 +14,9 @@ class AnalyticPartition(models.Model):
         'analytic.partition.line',
         'partition_id',
         string="Linhas de Rateio")
+    operation_type = fields.Selection(
+        [('out', 'Saída'),
+         ('in', 'Entrada')], string='Tipo de operação')
 
     def _check_percent_amount(self):
         amount = 0
@@ -46,7 +49,8 @@ class AnalyticPartition(models.Model):
 
     @api.multi
     def unlink(self):
-        self.partition_line_ids.unlink()
+        for item in self:
+            item.partition_line_ids.unlink()
         return super(AnalyticPartition, self).unlink()
 
 

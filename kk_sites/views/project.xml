@@ -39,7 +39,7 @@
                     <field name="qualidade" />
                     <field name="data_entrega" readonly="1" />
                     <field name="create_date" readonly="1" />
-                    <field name="ultima_alteracao" readonly="1" />
+                    <field name="date_delivered" readonly="1" />
                     <field name="arquivado_fisicamente" />
                     <field name="sale_line_id" />
                 </group>
@@ -55,13 +55,62 @@
             <templates position="before">
                 <field name="kk_site_id" />
                 <field name="data_entrega" />
-                <field name="ultima_alteracao" />
+                <field name="date_delivered" />
             </templates>
-            <xpath expr="//div/div/div/div/div" position="inside">
-                <br /><span>Site: <field name="kk_site_id" /></span><br />
-                <b>Data Previsão Entrega: <field name="data_entrega" /></b><br />
-                <span>Última Alteração: <field name="ultima_alteracao" /></span><br />
+            <xpath expr="//t/div/div/div/div/div/span[2]" position="replace">
+                <span t-if="record.partner_id.value">
+                    <strong style="color:#008784;" ><t t-esc="record.partner_id.value"/></strong>
+                </span>
             </xpath>
+            <xpath expr="//div/div/div/div/div" position="inside">
+                <br /><span style="color:#008784;">Site: <field name="kk_site_id" /></span><br />
+                <b>Data Previsão: <field name="data_entrega" /></b><br />
+                <span>Data de Conclusão: <field name="date_delivered" /></span><br />
+            </xpath>
+        </field>
+    </record>
+
+    <record id="kksite_id_search_view" model="ir.ui.view">
+            <field name="name">kksite search</field>
+            <field name="model">project.task</field>
+            <field name="inherit_id" ref="project.view_task_search_form"/>
+            <field name="arch" type="xml">
+            <field name="name" position="after">
+               <field name="kk_site_id" string="kk site" /> 
+            </field>
+            </field>
+    </record> 
+
+    <record model="ir.ui.view" id="view_project_task_type_form_kk">
+        <field name="name">view.project.task.type.form.kk</field>
+        <field name="model">project.task.type</field>
+        <field name="inherit_id" ref="project.task_type_edit" />
+        <field name="arch" type="xml">
+            <field name="mail_template_id" position="after">
+                <field name="is_done" />
+            </field>
+        </field>
+    </record>
+    <record id="project_search_kk_view" model="ir.ui.view">
+        <field name="name">project.search.kk.view</field>
+        <field name="model">project.project</field>
+        <field name="inherit_id" ref="project.view_project_project_filter"/>
+        <field name="arch" type="xml">
+            <search position="inside">
+                <field name="date_delivered" />
+                <separator />
+                <filter name="delivered_project" string="Projeto Entregue" domain="[('date_delivered', '!=', False)]"/>
+            </search>
+        </field>
+    </record>
+    <record model="ir.ui.view" id="view_project_tree_kk">
+        <field name="name">view.project.tree.kk</field>
+        <field name="model">project.project</field>
+        <field name="inherit_id" ref="project.view_project" />
+        <field name="arch" type="xml">
+            <tree position="inside">
+                <field name="date_delivered" />
+            </tree>
         </field>
     </record>
 </odoo>

@@ -13,8 +13,17 @@ class AccountMove(models.Model):
         for line in self.line_ids:
             partition = line.account_id.partition_id or\
                 line.analytic_account_id.partition_id
-            line._create_partition_move_lines(
-                partition_group=partition)
+            if not partition.operation_type:
+                line._create_partition_move_lines(
+                    partition_group=partition)
+            elif partition.operation_type == 'out' and\
+                    line.move_id.journal_id.type == 'sale':
+                line._create_partition_move_lines(
+                    partition_group=partition)
+            elif partition.operation_type == 'in' and\
+                    line.move_id.journal_id.type == 'purchase':
+                line._create_partition_move_lines(
+                    partition_group=partition)
         return super(AccountMove, self).post()
 
 

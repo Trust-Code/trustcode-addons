@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record model="ir.ui.view" id="survey_question_observations">
+            <field name="name">observation.survey.page</field>
+            <field name="model">survey.page</field>
+            <field name="inherit_id" ref="survey.survey_page_form"/>
+            <field name="arch" type="xml">
+                <field name='question_ids' position="before">
+                    <br/>
+                    <label for="page_description"/>
+                    <br/>
+                    <field name="page_description" style="font-size:12px"/>
+                    <br/>
+                    <br/>
+                </field>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="survey_page_observations">
+            <field name="name">observation.survey.question</field>
+            <field name="model">survey.question</field>
+            <field name="inherit_id" ref="survey.survey_question_form"/>
+            <field name="arch" type="xml">
+                <field name='question' position="after">
+                    <br/>
+                    <label for="question_description"/>
+                    <br/>
+                    <field name="question_description" style="font-size:12px"/>
+                    <br/>
+                </field>
+            </field>
+        </record>
+    </data>
+</odoo>
