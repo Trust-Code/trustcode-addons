@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
-{
-    # pylint: disable=C8101,C8103
+{  # pylint: disable=C8101,C8103
     'name': "sale_order_cancel",
 
     'summary': """
@@ -22,5 +21,5 @@
     'depends': [
         'base',
         'sale'
-    ],    
+    ],
 }

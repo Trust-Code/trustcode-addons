@@ -2,11 +2,8 @@
 # © 2018 Guilherme Lenon da Silva, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-from datetime import datetime, timedelta
+from odoo import api, models
 
-from odoo import api, fields, models, _
-from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT, float_compare
-from odoo.exceptions import UserError
 
 class SaleOrder(models.Model):
     _inherit = "sale.order"
