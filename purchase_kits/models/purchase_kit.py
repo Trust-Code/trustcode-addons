@@ -41,9 +41,9 @@ class PurchaseOrderLine(models.Model):
     def _create_stock_moves(self, picking):
         moves = self.env['stock.move']
         done = self.env['stock.move'].browse()
-        is_kit = True if self.order_id.is_kit else False
-        for line in self.search([('order_id', '=', self.order_id.id),
-                                 ('is_kit', '=', is_kit)]):
+        order_id = self[0].order_id
+        for line in self.search([('order_id', '=', order_id.id),
+                                 ('is_kit', '=', order_id.is_kit)]):
             for val in line._prepare_stock_moves(picking):
                 done += moves.create(val)
         return done
