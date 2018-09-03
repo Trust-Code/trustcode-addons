@@ -1,3 +1,4 @@
+
 # © 2017 Danimar Ribeiro, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
@@ -36,5 +37,21 @@ class MailMail(models.Model):
                 self.sudo().write(
                     {'mail_server_id': server_id[0].id,
                      'reply_to': email.email_from})
+            else:
+                
+                company_mail = self.env.user.company_id.email
+
+                server_id = self.env['ir.mail_server'].sudo().search(
+                            [('smtp_user', '=', company_mail)])
+
+                server_id = server_id and server_id[0] or False
+
+                if company_mail and server_id:
+                    self.sudo().write({
+                        'mail_server_id': server_id[0].id,
+                        'email_from': company_mail,
+                        'reply_to': company_mail,
+                    })
+
         return super(MailMail, self).send(auto_commit=auto_commit,
                                           raise_exception=raise_exception)
