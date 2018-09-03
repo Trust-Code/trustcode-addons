@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # © 2017 Danimar Ribeiro, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
@@ -14,7 +13,7 @@ class IrMailServer(models.Model):
                    smtp_port=None, smtp_user=None, smtp_password=None,
                    smtp_encryption=None, smtp_debug=False, smtp_session=None):
         from_rfc2822 = extract_rfc2822_addresses(message['From'])[-1]
-        server_id = self.env['ir.mail_server'].search([
+        server_id = self.env['ir.mail_server'].sudo().search([
             ('smtp_user', '=', from_rfc2822)])
         if server_id and server_id[0]:
             if 'Return-Path' in message:
@@ -28,13 +27,13 @@ class MailMail(models.Model):
     _inherit = 'mail.mail'
 
     def send(self, auto_commit=False, raise_exception=False):
-        for email in self.env['mail.mail'].browse(self.ids):
+        for email in self.env['mail.mail'].sudo().browse(self.ids):
             from_rfc2822 = extract_rfc2822_addresses(email.email_from)[-1]
-            server_id = self.env['ir.mail_server'].search([
+            server_id = self.env['ir.mail_server'].sudo().search([
                 ('smtp_user', '=', from_rfc2822)])
             server_id = server_id and server_id[0] or False
             if server_id:
-                self.write(
+                self.sudo().write(
                     {'mail_server_id': server_id[0].id,
                      'reply_to': email.email_from})
         return super(MailMail, self).send(auto_commit=auto_commit,
