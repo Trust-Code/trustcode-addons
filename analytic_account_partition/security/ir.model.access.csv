@@ -1,5 +1,0 @@
-id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_analytic_partition,access_analytic_partition,model_analytic_partition,account.group_account_invoice,1,1,0,0
-access_analytic_partition_manager,access_analytic_partition,model_analytic_partition,account.group_account_user,1,1,1,1
-access_analytic_partition_line,access_analytic_partition_line,model_analytic_partition_line,account.group_account_invoice,1,1,0,0
-access_analytic_partition_line_manager,access_analytic_partition_line,model_analytic_partition_line,account.group_account_user,1,1,1,1
