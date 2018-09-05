@@ -1,9 +1,8 @@
-# -*- coding: utf-8 -*-
 # © 2018 Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 
-{   # pylint: disable=C8101,C8103
+{   # pylint: disable=C8101,C8103,C7902
     'name': 'Trustcode - Change tax calculation',
     'summary': """
         Change tax calculation to ZK Teco solicitation, and IN SRF 237/09 """,
