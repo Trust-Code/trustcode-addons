@@ -31,7 +31,7 @@ class PurchaseOrder(models.Model):
                         'message': _("O produto %s tem peso igual a zero, \
                             caso não seja alterado, o rateio do frete \
                             não o considerará.") % (line.product_id.name)}}
-        if self.order_line[0]:
+        if self.order_line:
             self.order_line[0].update(
                 {'valor_frete': self.order_line[0].valor_frete + sub_frete})
         if 'warning' in res:
