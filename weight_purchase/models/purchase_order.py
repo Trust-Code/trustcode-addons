@@ -17,18 +17,22 @@ class PurchaseOrder(models.Model):
             return
         full_weight = self._calc_total_weight()
         res = {}
+        sub_frete = self.total_frete
         for line in self.order_line:
             valor_frete = self._calc_percentual_weight(
                 line, full_weight)
             line.update({
                 'valor_frete': valor_frete
             })
+            sub_frete -= round(valor_frete, 2)
             if valor_frete == 0:
                 res = {'warning': {
                         'title': _('Warning'),
                         'message': _("O produto %s tem peso igual a zero, \
                             caso não seja alterado, o rateio do frete \
                             não o considerará.") % (line.product_id.name)}}
+        self.order_line[0].update(
+            {'valor_frete': self.order_line[0].valor_frete + sub_frete})
         if 'warning' in res:
             return res
 
