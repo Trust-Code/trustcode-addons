@@ -61,7 +61,7 @@ class StockMove(models.Model):
     @api.depends('valor_bruto', 'product_uom_qty')
     def _compute_price_unit(self):
         for item in self:
-            if not item.price_unit:
+            if not item.price_unit and item.product_uom_qty:
                 item.price_unit = item.valor_bruto/item.product_uom_qty
 
 
