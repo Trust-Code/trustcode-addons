@@ -8,6 +8,7 @@ class AccountInvoice(models.Model):
         if self.fiscal_position_id:
             for line in self.invoice_line_ids:
                 price_unit = line.price_unit
+                account_analytic_id = line.account_analytic_id.id
                 line._onchange_product_id()
                 line._br_account_onchange_product_id()
 
@@ -22,4 +23,7 @@ class AccountInvoice(models.Model):
                 line.irrf_aliquota = line.tax_irrf_id.amount
                 line.inss_aliquota = line.tax_inss_id.amount
 
-                line.write({'price_unit': price_unit})
+                line.write({
+                    'price_unit': price_unit,
+                    'account_analytic_id': account_analytic_id
+                    })
