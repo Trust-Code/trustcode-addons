@@ -10,7 +10,7 @@ class PurchaseOrder(models.Model):
 
     @api.onchange('total_despesas', 'total_seguro', 'product_id',
                   'total_frete', 'total_despesas_aduana')
-    def _onchange_frete(self):
+    def _onchange_despesas_frete_seguro(self):
         super(PurchaseOrder, self)._onchange_despesas_frete_seguro()
         if self.total_frete == 0 or (
                 not self.fiscal_position_id.fiscal_type == 'import'):
