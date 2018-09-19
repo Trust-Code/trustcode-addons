@@ -25,7 +25,7 @@ msgstr "Acesso"
 #: model:ir.ui.view,arch_db:library_books.library_books_access_type_view_form
 #: model:ir.ui.view,arch_db:library_books.library_books_view_search
 msgid "Access Type"
-msgstr "Access Type"
+msgstr "Tipo de Acesso"
 
 #. module: library_books
 #: model:ir.ui.view,arch_db:library_books.library_books_view_form
@@ -46,7 +46,7 @@ msgstr "BISAC"
 #. module: library_books
 #: model:ir.model.fields,field_description:library_books.field_library_books_bisac_complem
 msgid "BISAC Complement"
-msgstr "BISAC Complement"
+msgstr "Complemento BISAC"
 
 #. module: library_books
 #: model:ir.model.fields,field_description:library_books.field_library_books_is_backoffice
@@ -62,43 +62,43 @@ msgstr "Bibliomundi"
 #: model:ir.ui.menu,name:library_books.menu_books
 #: model:ir.ui.menu,name:library_books.menu_library_books
 msgid "Books"
-msgstr "Books"
+msgstr "Livros"
 
 #. module: library_books
 #: model:res.groups,comment:library_books.group_library_books_category
 #: model:res.groups,name:library_books.group_library_books_category
 msgid "Category Library Books"
-msgstr "Category Library Books"
+msgstr "Categoria de Livros"
 
 #. module: library_books
 #: model:ir.ui.view,arch_db:library_books.library_books_view_form
 msgid "Central Ebooks"
-msgstr "Central Ebooks"
+msgstr "Ebooks Central"
 
 #. module: library_books
 #: model:ir.model.fields,field_description:library_books.field_library_books_chapters
 msgid "Chapters"
-msgstr "Chapters"
+msgstr "Capítulos"
 
 #. module: library_books
 #: model:ir.ui.view,arch_db:library_books.library_books_view_form
 msgid "Comment here ..."
-msgstr "Comment here ..."
+msgstr "Comentar aqui ..."
 
 #. module: library_books
 #: model:ir.model.fields,field_description:library_books.field_library_books_comments
 msgid "Comments"
-msgstr "Comments"
+msgstr "Comentários"
 
 #. module: library_books
 #: model:ir.ui.view,arch_db:library_books.library_books_view_form
 msgid "Content Verification"
-msgstr "Content Verification"
+msgstr "Verificação de conteúdo"
 
 #. module: library_books
 #: model:ir.model.fields,field_description:library_books.field_library_books_cover_pages
 msgid "Cover Pages"
-msgstr "Cover Pages"
+msgstr "Páginas de capa"
 
 #. module: library_books
 #: model:ir.model.fields,field_description:library_books.field_library_books_access_type_create_uid
@@ -145,22 +145,22 @@ msgstr "Data"
 #. module: library_books
 #: model:ir.model.fields,field_description:library_books.field_library_books_delivery_date
 msgid "Delivery Date"
-msgstr "Delivery Date"
+msgstr "Data de Entrega"
 
 #. module: library_books
 #: model:ir.ui.view,arch_db:library_books.library_books_view_form
 msgid "Diary"
-msgstr "Diary"
+msgstr "Diário"
 
 #. module: library_books
 #: model:ir.model.fields,help:library_books.field_library_books_doi
 msgid "Digital Object Identifier"
-msgstr "Digital Object Identifier"
+msgstr "Identificador digital do objeto"
 
 #. module: library_books
 #: model:ir.model.fields,field_description:library_books.field_library_books_is_digitized
 msgid "Digitized"
-msgstr "Digitized"
+msgstr "Digitalizado"
 
 #. module: library_books
 #: model:ir.model.fields,field_description:library_books.field_library_books_access_type_display_name
@@ -182,12 +182,12 @@ msgstr "EBSCO/EDS"
 #. module: library_books
 #: model:ir.model.fields,field_description:library_books.field_library_books_edition
 msgid "Edition"
-msgstr "Edition"
+msgstr "Edição"
 
 #. module: library_books
 #: model:ir.model.fields,help:library_books.field_library_books_edition
 msgid "Edition Number"
-msgstr "Edition Number"
+msgstr "Número de Edição"
 
 #. module: library_books
 #: model:ir.ui.view,arch_db:library_books.library_books_view_form
@@ -199,14 +199,14 @@ msgstr "ExLibris (Cousin)"
 #: model:ir.ui.menu,name:library_books.menu_library_books_feedback_type
 #: model:ir.ui.view,arch_db:library_books.library_books_feedback_type_view_form
 msgid "Feedback Type"
-msgstr "Feedback Type"
+msgstr "Tipo Feedback"
 
 #. module: library_books
 #: model:ir.model.fields,field_description:library_books.field_library_books_files_format_id
 #: model:ir.ui.menu,name:library_books.menu_library_books_files_format
 #: model:ir.ui.view,arch_db:library_books.library_books_files_format_view_form
 msgid "Files Format"
-msgstr "Files Format"
+msgstr "Formato Arquivos"
 
 #. module: library_books
 #: model:ir.ui.view,arch_db:library_books.library_books_view_form
@@ -226,17 +226,17 @@ msgstr "Agrupar Por"
 #. module: library_books
 #: model:ir.model.fields,field_description:library_books.field_library_books_has_parts
 msgid "Has Parts?"
-msgstr "Has Parts?"
+msgstr "Tem partes?"
 
 #. module: library_books
 #: model:ir.model.fields,field_description:library_books.field_library_books_has_printed
 msgid "Has Printed"
-msgstr "Has Printed"
+msgstr "Foi impresso"
 
 #. module: library_books
 #: model:ir.model.fields,field_description:library_books.field_library_books_highlights_date
 msgid "Highlights Date"
-msgstr "Highlights Date"
+msgstr "Data de destaque"
 
 #. module: library_books
 #: model:ir.model.fields,field_description:library_books.field_library_books_access_type_id
@@ -263,12 +263,12 @@ msgstr "Indexing"
 #. module: library_books
 #: model:ir.ui.view,arch_db:library_books.library_books_view_search
 msgid "Is Paid"
-msgstr "Is Paid"
+msgstr "É pago"
 
 #. module: library_books
 #: model:ir.ui.view,arch_db:library_books.library_books_view_search
 msgid "Is Published"
-msgstr "Is Published"
+msgstr "É publicado"
 
 #. module: library_books
 #: model:ir.ui.view,arch_db:library_books.library_books_view_form
@@ -335,35 +335,35 @@ msgstr "Última atualização em"
 #: model:ir.actions.act_window,name:library_books.library_books_action
 #: model:ir.ui.view,arch_db:library_books.library_books_view_form
 msgid "Library Books"
-msgstr "Library Books"
+msgstr "Livros"
 
 #. module: library_books
 #: model:ir.actions.act_window,name:library_books.library_books_access_type_action
 #: model:ir.ui.view,arch_db:library_books.library_books_access_type_view_form
 #: model:ir.ui.view,arch_db:library_books.library_books_access_type_view_tree
 msgid "Library Books Access Type"
-msgstr "Library Books Access Type"
+msgstr "Tipo de acesso aos livros"
 
 #. module: library_books
 #: model:ir.actions.act_window,name:library_books.library_books_feedback_type_action
 #: model:ir.ui.view,arch_db:library_books.library_books_feedback_type_view_form
 #: model:ir.ui.view,arch_db:library_books.library_books_feedback_type_view_tree
 msgid "Library Books Feedback Type"
-msgstr "Library Books Feedback Type"
+msgstr "Tipo de Feedback"
 
 #. module: library_books
 #: model:ir.actions.act_window,name:library_books.library_books_files_format_action
 #: model:ir.ui.view,arch_db:library_books.library_books_files_format_view_form
 #: model:ir.ui.view,arch_db:library_books.library_books_files_format_view_tree
 msgid "Library Books Files Format"
-msgstr "Library Books Files Format"
+msgstr "Formatos de Arquivos do Livro"
 
 #. module: library_books
 #: model:ir.actions.act_window,name:library_books.library_books_license_action
 #: model:ir.ui.view,arch_db:library_books.library_books_license_view_form
 #: model:ir.ui.view,arch_db:library_books.library_books_license_view_tree
 msgid "Library Books License"
-msgstr "Library Books License"
+msgstr "Licença dos Livros"
 
 #. module: library_books
 #: model:ir.actions.act_window,name:library_books.library_books_meeting_action
@@ -377,19 +377,19 @@ msgstr "Library Books Meeting"
 #: model:ir.ui.view,arch_db:library_books.library_books_publication_type_view_form
 #: model:ir.ui.view,arch_db:library_books.library_books_publication_type_view_tree
 msgid "Library Books Publication Type"
-msgstr "Library Books Publication Type"
+msgstr "Tipos de Publicação"
 
 #. module: library_books
 #: model:ir.actions.act_window,name:library_books.library_books_series_collection_action
 #: model:ir.ui.view,arch_db:library_books.library_books_series_collection_view_form
 #: model:ir.ui.view,arch_db:library_books.library_books_series_collection_view_tree
 msgid "Library Books Series/Collection"
-msgstr "Library Books Series/Collection"
+msgstr "Séries/Coleção"
 
 #. module: library_books
 #: model:ir.ui.view,arch_db:library_books.library_books_view_tree
 msgid "Library Books Tree"
-msgstr "Library Books Tree"
+msgstr "Árvore de Livros"
 
 #. module: library_books
 #: model:ir.model.fields,field_description:library_books.field_library_books_license_id_4805
@@ -406,17 +406,17 @@ msgstr "Marketing"
 #. module: library_books
 #: model:ir.ui.view,arch_db:library_books.library_books_view_form
 msgid "Marking"
-msgstr "Marking"
+msgstr "Marcação"
 
 #. module: library_books
 #: model:ir.model.fields,field_description:library_books.field_library_books_markup_lot
 msgid "Markup Lot"
-msgstr "Markup Lot"
+msgstr "Lote de Marcação"
 
 #. module: library_books
 #: model:ir.model.fields,field_description:library_books.field_library_books_markup_receipt_date
 msgid "Markup Receipt Date"
-msgstr "Markup Receipt Date"
+msgstr "Data Recebimento Marcação"
 
 #. module: library_books
 #: model:ir.model.fields,field_description:library_books.field_library_books_meeting_id_4787
@@ -428,7 +428,7 @@ msgstr "Meeting"
 #. module: library_books
 #: model:ir.ui.view,arch_db:library_books.library_books_view_form
 msgid "Monthly"
-msgstr "Monthly"
+msgstr "Mensal"
 
 #. module: library_books
 #: model:ir.model.fields,field_description:library_books.field_library_books_access_type_name
@@ -451,12 +451,12 @@ msgstr "Nome"
 #. module: library_books
 #: model:ir.model.fields,help:library_books.field_library_books_isbn
 msgid "National Standard Book Number"
-msgstr "National Standard Book Number"
+msgstr "ISBN"
 
 #. module: library_books
 #: selection:library.books,pdf_split:0
 msgid "Not Applicable"
-msgstr "Not Applicable"
+msgstr "Não aplicável"
 
 #. module: library_books
 #: model:ir.ui.view,arch_db:library_books.library_books_view_form
@@ -477,12 +477,12 @@ msgstr "OpenLibrary"
 #. module: library_books
 #: model:ir.model.fields,field_description:library_books.field_library_books_original_publication_id
 msgid "Original Pub."
-msgstr "Original Pub."
+msgstr "Pub. Original"
 
 #. module: library_books
 #: model:ir.ui.view,arch_db:library_books.library_books_view_search
 msgid "Original Publication"
-msgstr "Original Publication"
+msgstr "Publicação Original"
 
 #. module: library_books
 #: model:ir.ui.view,arch_db:library_books.library_books_view_form
@@ -492,22 +492,22 @@ msgstr "PDF"
 #. module: library_books
 #: model:ir.model.fields,field_description:library_books.field_library_books_pdf_split
 msgid "PDF Split"
-msgstr "PDF Split"
+msgstr "Separar PDF"
 
 #. module: library_books
 #: model:ir.model.fields,field_description:library_books.field_library_books_pages
 msgid "Pages"
-msgstr "Pages"
+msgstr "Páginas"
 
 #. module: library_books
 #: model:ir.model.fields,field_description:library_books.field_library_books_is_paid
 msgid "Paid"
-msgstr "Paid"
+msgstr "Pago"
 
 #. module: library_books
 #: model:ir.model.fields,field_description:library_books.field_library_books_prevision_date
 msgid "Prevision Date"
-msgstr "Prevision Date"
+msgstr "Data Previsão"
 
 #. module: library_books
 #: model:ir.ui.view,arch_db:library_books.library_books_view_form
@@ -518,22 +518,22 @@ msgstr "ProQuest (Summon)"
 #: selection:library.books,cover_pages:0
 #: selection:library.books,pdf_split:0
 msgid "Produce"
-msgstr "Produce"
+msgstr "Produzir"
 
 #. module: library_books
 #: model:ir.ui.view,arch_db:library_books.library_books_view_form
 msgid "Production"
-msgstr "Production"
+msgstr "Produção"
 
 #. module: library_books
 #: model:ir.model.fields,help:library_books.field_library_books_value_br_production
 msgid "Production Cost (Real - Brazilian Coin)"
-msgstr "Production Cost (Real - Brazilian Coin)"
+msgstr "Custo de Produção (Reais)"
 
 #. module: library_books
 #: model:ir.model.fields,help:library_books.field_library_books_value_usd_production
 msgid "Production Cost(USD - United States Dollar)"
-msgstr "Production Cost(USD - United States Dollar)"
+msgstr "Custo de Produção (USD)"
 
 #. module: library_books
 #: model:ir.model.fields,field_description:library_books.field_library_books_provider_id
@@ -543,44 +543,44 @@ msgstr "Fornecedor"
 #. module: library_books
 #: model:ir.ui.view,arch_db:library_books.library_books_view_form
 msgid "Publication"
-msgstr "Publication"
+msgstr "Publicação"
 
 #. module: library_books
 #: model:ir.model.fields,field_description:library_books.field_library_books_publication_date
 #: model:ir.ui.view,arch_db:library_books.library_books_view_search
 msgid "Publication Date"
-msgstr "Publication Date"
+msgstr "Data de publicação"
 
 #. module: library_books
 #: model:ir.ui.menu,name:library_books.menu_library_books_publication_type
 #: model:ir.ui.view,arch_db:library_books.library_books_publication_type_view_form
 msgid "Publication Type"
-msgstr "Publication Type"
+msgstr "Tipo de Publicação"
 
 #. module: library_books
 #: model:ir.model.fields,field_description:library_books.field_library_books_is_published
 msgid "Published"
-msgstr "Published"
+msgstr "Publicado"
 
 #. module: library_books
 #: model:ir.model.fields,field_description:library_books.field_library_books_publishing_company_id
 msgid "Publishing Company"
-msgstr "Publishing Company"
+msgstr "Editora Publicação"
 
 #. module: library_books
 #: model:ir.model.fields,field_description:library_books.field_library_books_original_publishing_company
 msgid "Publishing Company(Orig. Name)"
-msgstr "Publishing Company(Orig. Name)"
+msgstr "Editora Publicação(Nome original)"
 
 #. module: library_books
 #: model:ir.model.fields,help:library_books.field_library_books_value_br
 msgid "Real (Brazilian Coin)"
-msgstr "Real (Brazilian Coin)"
+msgstr "Reais"
 
 #. module: library_books
 #: model:ir.ui.view,arch_db:library_books.library_books_view_form
 msgid "Receipt"
-msgstr "Receipt"
+msgstr "Recibo"
 
 #. module: library_books
 #: model:ir.model.fields,field_description:library_books.field_library_books_synopsis_reference
@@ -590,43 +590,43 @@ msgstr "Referência"
 #. module: library_books
 #: model:ir.model.fields,field_description:library_books.field_library_books_references_number
 msgid "References Number"
-msgstr "References Number"
+msgstr "Número de Referências"
 
 #. module: library_books
 #: model:res.groups,name:library_books.group_employee
 msgid "Register Book - Employee"
-msgstr "Register Book - Employee"
+msgstr "Registrar Livro - Funcionário"
 
 #. module: library_books
 #: model:res.groups,name:library_books.group_manager
 msgid "Register Book - Manager"
-msgstr "Register Book - Manager"
+msgstr "Registrar Livro - Gerente"
 
 #. module: library_books
 #: model:ir.ui.menu,name:library_books.menu_library_books_register
 #: model:ir.ui.view,arch_db:library_books.library_books_view_form
 msgid "Register Books"
-msgstr "Register Books"
+msgstr "Registrar Livros"
 
 #. module: library_books
 #: model:ir.actions.act_window,help:library_books.library_books_access_type_action
 msgid "Register the first access type"
-msgstr "Register the first access type"
+msgstr "Registrar o primeiro tipo de acesso"
 
 #. module: library_books
 #: model:ir.actions.act_window,help:library_books.library_books_feedback_type_action
 msgid "Register the first feedback type"
-msgstr "Register the first feedback type"
+msgstr "Registrar o primeiro tipo de feedback"
 
 #. module: library_books
 #: model:ir.actions.act_window,help:library_books.library_books_files_format_action
 msgid "Register the first files format"
-msgstr "Register the first files format"
+msgstr "Registrar o primeiro formato de arquivo"
 
 #. module: library_books
 #: model:ir.actions.act_window,help:library_books.library_books_license_action
 msgid "Register the first license"
-msgstr "Register the first license"
+msgstr "Registrar a primeira licença"
 
 #. module: library_books
 #: model:ir.actions.act_window,help:library_books.library_books_meeting_action
@@ -636,32 +636,32 @@ msgstr "Register the first meeting"
 #. module: library_books
 #: model:ir.actions.act_window,help:library_books.library_books_publication_type_action
 msgid "Register the first publication type"
-msgstr "Register the first publication type"
+msgstr "Registrar o primeiro tipo de publicação"
 
 #. module: library_books
 #: model:ir.actions.act_window,help:library_books.library_books_series_collection_action
 msgid "Register the first series/collection"
-msgstr "Register the first series/collection"
+msgstr "Registrar a primeira série/coleção"
 
 #. module: library_books
 #: model:ir.actions.act_window,help:library_books.library_books_action
 msgid "Register the firtst book"
-msgstr "Register the firtst book"
+msgstr "Registrar o primeiro livro"
 
 #. module: library_books
 #: model:ir.model.fields,field_description:library_books.field_library_books_release_year
 msgid "Release Year"
-msgstr "Release Year"
+msgstr "Ano de Publicação"
 
 #. module: library_books
 #: model:ir.model.fields,field_description:library_books.field_library_books_request_date_doi
 msgid "Request Date DOI"
-msgstr "Request Date DOI"
+msgstr "Data Requisição DOI"
 
 #. module: library_books
 #: model:ir.model.fields,field_description:library_books.field_library_books_responsible_provider
 msgid "Responsible Provider for Marking"
-msgstr "Responsible Provider for Marking"
+msgstr "Reponsável por Marcação"
 
 #. module: library_books
 #: model:ir.model.fields,field_description:library_books.field_library_books_sbid
@@ -686,34 +686,34 @@ msgstr "SBID"
 #: model:ir.model.fields,field_description:library_books.field_library_books_proquest_send_date
 #: model:ir.model.fields,field_description:library_books.field_library_books_send_date
 msgid "Send Date"
-msgstr "Send Date"
+msgstr "Data Envio"
 
 #. module: library_books
 #: model:ir.model.fields,field_description:library_books.field_library_books_send_date_markup
 msgid "Send Date for Markup"
-msgstr "Send Date for Markup"
+msgstr "Data de Envio para marcação"
 
 #. module: library_books
 #: model:ir.model.fields,field_description:library_books.field_library_books_series_collection_id
 msgid "Series/Colection"
-msgstr "Series/Colection"
+msgstr "Séries/Coleção"
 
 #. module: library_books
 #: model:ir.ui.menu,name:library_books.menu_library_books_series_collection
 #: model:ir.ui.view,arch_db:library_books.library_books_series_collection_view_form
 msgid "Series/Collection"
-msgstr "Series/Collection"
+msgstr "Séries/Coleção"
 
 #. module: library_books
 #: model:ir.model.fields,field_description:library_books.field_library_books_synopsis
 #: model:ir.ui.view,arch_db:library_books.library_books_view_form
 msgid "Synopsis"
-msgstr "Synopsis"
+msgstr "Sinopse"
 
 #. module: library_books
 #: model:ir.ui.view,arch_db:library_books.library_books_view_form
 msgid "Technical Verification"
-msgstr "Technical Verification"
+msgstr "Verificação Técnica"
 
 #. module: library_books
 #: model:ir.model.fields,field_description:library_books.field_library_books_name
@@ -761,17 +761,17 @@ msgstr "Usuário"
 #. module: library_books
 #: model:ir.ui.view,arch_db:library_books.library_books_view_form
 msgid "Verification"
-msgstr "Verification"
+msgstr "Verificação"
 
 #. module: library_books
 #: model:ir.ui.view,arch_db:library_books.library_books_view_form
 msgid "Verification Date in Kindle"
-msgstr "Verification Date in Kindle"
+msgstr "Data de Verificação no Kindle"
 
 #. module: library_books
 #: model:ir.ui.view,arch_db:library_books.library_books_view_form
 msgid "Verification on the iPad"
-msgstr "Verification on the iPad"
+msgstr "Data Verificação no iPad"
 
 #. module: library_books
 #: model:ir.model.fields,field_description:library_books.field_library_books_volume
@@ -781,13 +781,13 @@ msgstr "Volume"
 #. module: library_books
 #: model:ir.ui.view,arch_db:library_books.library_books_view_form
 msgid "Weekly"
-msgstr "Weekly"
+msgstr "Semanal"
 
 #. module: library_books
 #: model:ir.model.fields,field_description:library_books.field_library_books_with_panding
 #: model:ir.ui.view,arch_db:library_books.library_books_view_search
 msgid "With Panding"
-msgstr "With Panding"
+msgstr "Com pendência"
 
 #. module: library_books
 #: model:ir.model.fields,field_description:library_books.field_library_books_eisbn
@@ -807,12 +807,12 @@ msgstr "ePUB"
 #. module: library_books
 #: model:ir.model.fields,field_description:library_books.field_library_books_is_epub_published
 msgid "ePUB Published"
-msgstr "ePUB Published"
+msgstr "ePUB Publicado"
 
 #. module: library_books
 #: model:ir.model.fields,field_description:library_books.field_library_books_epub_version
 msgid "ePUB Version"
-msgstr "ePUB Version"
+msgstr "ePUB Versão"
 
 #. module: library_books
 #: model:ir.model,name:library_books.model_library_books
@@ -863,4 +863,3 @@ msgstr "library.books.series.collection"
 #: model:ir.model.fields,help:library_books.field_library_books_original_publishing_company
 msgid "publishing company's original name"
 msgstr "publishing company's original name"
-
