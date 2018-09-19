@@ -22,11 +22,18 @@ class DynamicCsvImport(models.TransientModel):
     csv_quote_char = fields.Char(
         string=u'Quotation Char', size=3, default='"')
 
-    table_html = fields.Html(readonly=True)
+    table_html = fields.Html(readonly="1")
     coluna_ids = fields.One2many(
         'dynamic.import.line', 'importer_id', string="Columns")
 
     import_success = fields.Boolean(default=False)
+
+    create_if_not_found = fields.Boolean(
+        default=False, string="Create model object if not found?")
+
+    warnings = fields.Text(string='Warnings', readonly="1")
+
+    has_warning = fields.Boolean(default=False)
 
     @api.onchange('csv_file', 'has_quote_char', 'csv_quote_char',
                   'model_id', 'csv_delimiter')
@@ -97,9 +104,12 @@ select an Odoo field or put a domain on at least one line before proceeding.'))
                 continue
             lista.append((object_ids, vals, line))
 
+        # TODO: criar um arquivo .csv com as linhas que deram errado para
+        # facilitar o processo.
         if errors:
             raise UserError(errors)
 
+        warnings = ""
         for item in lista:
             object_ids = item[0]
             vals = item[1]
@@ -108,6 +118,17 @@ select an Odoo field or put a domain on at least one line before proceeding.'))
                 for obj in object_ids:
                     obj.write(vals)
             else:
+                if not self.create_if_not_found:
+                    for ident_line in identification_lines:
+                        if line[ident_line.name]:
+                            warnings += ident_line.name + ': ' + \
+                                line[ident_line.name] + _(' not found.\
+                                Line ignored. \n')
+                        else:
+                            warnings += ident_line.name + _(' has no value.\
+                                Line ignored. \n')
+                    continue
+
                 ident_vals, error = self._prepare_vals(
                     line, identification_lines, obj_dict, has_match_obj=False)
 
@@ -126,6 +147,8 @@ select an Odoo field or put a domain on at least one line before proceeding.'))
                 if res['messages'] and res['messages'][0]['type'] == 'error':
                     raise UserError(res['messages'][0]['message'])
         self.import_success = True
+
+        self.warnings = warnings
 
         # Maintaining wizard open
         return {

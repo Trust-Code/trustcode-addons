@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="mrp_production_dates_form_view" model="ir.ui.view">
+            <field name="name">mrp.production.dates.form</field>
+            <field name="model">mrp.production</field>
+            <field name="inherit_id" ref="mrp.mrp_production_form_view"/>
+            <field name="arch" type="xml">
+                <field name="date_planned_finished" position="after">
+                    <field name="requisition_date" readonly="1"/>
+                    <field name="commitment_date" readonly="1"/>
+                </field>
+                <field name="move_raw_ids" position="after">
+
+                    <field name="sale_id" invisible="1"/>
+                    <button name="action_update_observation"
+                    string="Update Observation" type="object"
+                    class="btn-primary" attrs="{'invisible': [('sale_id', '=', False)]}"/>
+
+                    <br/>
+                    <label for="observation_sale_order"></label>
+                    <br/>
+                    <field name="observation_sale_order"
+                    placeholder="Observation" class="oe_inline"
+                    attrs="{'readonly': [('sale_id', '!=', False)]}"/>
+
+                </field>
+            </field>
+        </record>
+    </data>
+</odoo>
