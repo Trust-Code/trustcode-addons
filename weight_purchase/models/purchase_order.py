@@ -26,11 +26,12 @@ class PurchaseOrder(models.Model):
             })
             sub_frete -= round(valor_frete, 2)
             if valor_frete == 0:
-                res = {'warning': {
+                res = {
+                    'warning': {
                         'title': _('Warning'),
                         'message': _("O produto %s tem peso igual a zero, \
-                            caso não seja alterado, o rateio do frete \
-                            não o considerará.") % (line.product_id.name)}}
+caso não seja alterado, o rateio do frete \
+não o considerará.") % (line.product_id.name)}}
         if self.order_line:
             self.order_line[0].update(
                 {'valor_frete': self.order_line[0].valor_frete + sub_frete})
