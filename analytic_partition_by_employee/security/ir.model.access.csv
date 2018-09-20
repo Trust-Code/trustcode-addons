@@ -1,3 +1,0 @@
-id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_hr_employee_partition,access_hr_employee_partition,model_hr_employee_partition,,1,0,0,0
-access_hr_employee_partition_manager,access_hr_employee_partition,model_hr_employee_partition,account.group_account_invoice,1,1,1,1
