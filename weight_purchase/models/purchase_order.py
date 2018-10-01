@@ -10,28 +10,31 @@ class PurchaseOrder(models.Model):
 
     @api.onchange('total_despesas', 'total_seguro', 'product_id',
                   'total_frete', 'total_despesas_aduana')
-    def _onchange_frete(self):
+    def _onchange_despesas_frete_seguro(self):
         super(PurchaseOrder, self)._onchange_despesas_frete_seguro()
         if self.total_frete == 0 or (
                 not self.fiscal_position_id.fiscal_type == 'import'):
             return
         full_weight = self._calc_total_weight()
         res = {}
+        sub_frete = self.total_frete
         for line in self.order_line:
             valor_frete = self._calc_percentual_weight(
                 line, full_weight)
             line.update({
                 'valor_frete': valor_frete
             })
+            sub_frete -= round(valor_frete, 2)
             if valor_frete == 0:
                 res = {
                     'warning': {
                         'title': _('Warning'),
                         'message': _("O produto %s tem peso igual a zero, \
-                            caso não seja alterado, o rateio do frete \
-                            não o considerará.") % (line.product_id.name),
-                    }
-                }
+caso não seja alterado, o rateio do frete \
+não o considerará.") % (line.product_id.name)}}
+        if self.order_line:
+            self.order_line[0].update(
+                {'valor_frete': self.order_line[0].valor_frete + sub_frete})
         if 'warning' in res:
             return res
 

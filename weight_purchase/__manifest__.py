@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # © 2018 Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
@@ -7,7 +6,7 @@
     'name': 'Trustcode - Change tax calculation',
     'summary': """
         Change tax calculation to ZK Teco solicitation, and IN SRF 237/09 """,
-    'description': 'Change tax calculation',
+    'description': """Change tax calculation""",
     'version': '11.0.1.0.0',
     'category': 'Tax',
     'author': 'Trustcode',
