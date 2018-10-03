@@ -12,6 +12,11 @@ class AccountInvoice(models.Model):
                 line._onchange_product_id()
                 line._br_account_onchange_product_id()
 
+                for icms in self.fiscal_position_id.icms_tax_rule_ids:
+                    if icms.tax_id == line.tax_icms_id:
+                        line.tem_difal = icms.tem_difal
+                        break
+
                 line.icms_aliquota = line.tax_icms_id.amount
                 line.icms_st_aliquota = line.tax_icms_st_id.amount
                 line.pis_aliquota = line.tax_pis_id.amount
