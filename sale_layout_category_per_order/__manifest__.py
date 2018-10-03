@@ -3,7 +3,7 @@
 # @author Alexis de Lattre <alexis.delattre@akretion.com>
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
-{
+{   # pylint: disable=C8101,C8103
     'name': 'Sale Layout Category per Order',
     'version': '11.0.1.0.0',
     'category': 'Sale Management',
@@ -18,9 +18,13 @@ With this module, you can have:
 * generic Sale report layout categories (native)
 * per-order Sale Report categories (added by this module)
 
-One limitation to be aware of: when you create a sale report layout category from the form view of a new quotation that hasn't been saved yet, the default affectation to the sale order won't work (for obvious technical reasons).
+One limitation to be aware of: when you create a sale report layout
+category from the form view of a new quotation that hasn't been saved yet,
+the default affectation to the sale order won't work
+(for obvious technical reasons).
 
-This module has been written by Alexis de Lattre from Akretion <alexis.delattre@akretion.com>.
+This module has been written by
+Alexis de Lattre from Akretion <alexis.delattre@akretion.com>.
     """,
     'author': 'Akretion',
     'website': 'http://www.akretion.com',
