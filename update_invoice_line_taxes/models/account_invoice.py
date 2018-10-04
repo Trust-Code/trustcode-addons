@@ -7,6 +7,7 @@ class AccountInvoice(models.Model):
     def update_taxes(self):
         if self.fiscal_position_id:
             for line in self.invoice_line_ids:
+                line.tem_difal = False
                 price_unit = line.price_unit
                 account_analytic_id = line.account_analytic_id.id
                 line._onchange_product_id()
