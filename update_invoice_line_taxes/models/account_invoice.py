@@ -7,15 +7,11 @@ class AccountInvoice(models.Model):
     def update_taxes(self):
         if self.fiscal_position_id:
             for line in self.invoice_line_ids:
+                line.tem_difal = False
                 price_unit = line.price_unit
                 account_analytic_id = line.account_analytic_id.id
                 line._onchange_product_id()
                 line._br_account_onchange_product_id()
-
-                for icms in self.fiscal_position_id.icms_tax_rule_ids:
-                    if icms.tax_id == line.tax_icms_id:
-                        line.tem_difal = icms.tem_difal
-                        break
 
                 line.icms_aliquota = line.tax_icms_id.amount
                 line.icms_st_aliquota = line.tax_icms_st_id.amount
