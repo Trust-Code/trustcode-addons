@@ -1,0 +1,73 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+#	* sale_revision_history
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 11.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-03-06 18:03+0000\n"
+"PO-Revision-Date: 2018-03-06 18:03+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: sale_revision_history
+#: model:ir.model.fields,field_description:sale_revision_history.field_sale_order_active
+msgid "Active"
+msgstr "Ativo"
+
+#. module: sale_revision_history
+#: model:ir.model.fields,field_description:sale_revision_history.field_sale_order_current_revision_id
+msgid "Current revision"
+msgstr "Versão Atual"
+
+#. module: sale_revision_history
+#: model:ir.model.fields,field_description:sale_revision_history.field_sale_order_old_revision_ids
+msgid "Old revisions"
+msgstr "Revisões Antigas"
+
+#. module: sale_revision_history
+#: model:ir.model.fields,field_description:sale_revision_history.field_sale_order_unrevisioned_name
+msgid "Order Reference"
+msgstr "Referência do Pedido"
+
+#. module: sale_revision_history
+#: model:ir.model,name:sale_revision_history.model_sale_order
+msgid "Quotation"
+msgstr "Cotação"
+
+#. module: sale_revision_history
+#: model:ir.ui.view,arch_db:sale_revision_history.sale_order_view_form
+msgid "Revise"
+msgstr "Revisar"
+
+#. module: sale_revision_history
+#: model:ir.model.fields,field_description:sale_revision_history.field_sale_order_revision_number
+msgid "Revision"
+msgstr "Revisão"
+
+#. module: sale_revision_history
+#: model:ir.ui.view,arch_db:sale_revision_history.sale_order_view_form
+msgid "Revisions"
+msgstr "Revisões"
+
+#. module: sale_revision_history
+#: code:addons/sale_revision_history/models/sale_order.py:33
+#, python-format
+msgid "Sales Order"
+msgstr "Ordem de venda"
+
+#. module: sale_revision_history
+#: model:ir.ui.view,arch_db:sale_revision_history.sale_order_view_form
+msgid "Superseeded by"
+msgstr "Revisado por"
+
+#. module: sale_revision_history
+#: model:ir.ui.view,arch_db:sale_revision_history.sale_order_view_form
+msgid "Superseeded on"
+msgstr "Revisado em"
+
