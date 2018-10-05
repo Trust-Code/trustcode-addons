@@ -88,6 +88,7 @@
                             attrs="{'invisible': [('send_to_s3', '=', False)],
                             'required': [('send_to_s3', '=', True)]}"
                             password="True" />
+                        <field name="aws_bucket_prefix" attrs="{'invisible': [('send_to_s3', '=', False)]}"/>
                         <field name="next_backup" />
                     </group>
                 </sheet>
