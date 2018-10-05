@@ -2,6 +2,7 @@
 # © 2016 Danimar Ribeiro, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
+import re
 import os
 import time
 import socket
@@ -76,6 +77,9 @@ class BackupConfig(models.Model):
     send_to_s3 = fields.Boolean(u'Enviar Amazon S3 ?')
     aws_access_key = fields.Char(string=u"Chave API S3", size=100)
     aws_secret_key = fields.Char(string=u"Chave Secreta API S3", size=100)
+    aws_bucket_prefix = fields.Char(
+        string="Prefixo Bucket",
+        help="Usado quando o nome do bucket dá conflito com existente")
     backup_dir = fields.Char(string=u"Diretório", size=300,
                              default="/opt/backups/database/")
 
@@ -99,10 +103,11 @@ class BackupConfig(models.Model):
     def execute_backup(self):
         try:
             self.schedule_backup(True)
-        except Exception:
+        except Exception as e:
             _logger.error(u'Erro ao efetuar backup', exc_info=True)
+            mensagem = str(e)
             raise Warning(
-                u'Erro ao executar backup - Verifique o log de erros')
+                'Erro ao executar backup:\n%s' % mensagem)
 
     @api.model
     def schedule_backup(self, manual_backup=False):
@@ -131,12 +136,15 @@ class BackupConfig(models.Model):
                 backup_env = self.env['backup.executed']
 
                 if rec.send_to_s3:
-                    rec.send_for_amazon_s3(
-                        zip_file, zip_name, self.env.cr.dbname)
-                    backup_env.create({'backup_date': datetime.now(),
-                                       'configuration_id': rec.id,
-                                       'name': zip_name,
-                                       'state': 'concluded'})
+                    try:
+                        rec.send_for_amazon_s3(
+                            zip_file, zip_name, self.env.cr.dbname)
+                        backup_env.create({'backup_date': datetime.now(),
+                                           'configuration_id': rec.id,
+                                           'name': zip_name,
+                                           'state': 'concluded'})
+                    finally:
+                        os.remove(zip_file)
                 else:
                     backup_env.create(
                         {'backup_date': datetime.now(), 'name': zip_name,
@@ -149,7 +157,10 @@ class BackupConfig(models.Model):
         if self.aws_access_key and self.aws_secret_key:
             conexao = client('s3', aws_access_key_id=self.aws_access_key,
                              aws_secret_access_key=self.aws_secret_key)
-            bucket_name = '%s_bkp' % database
+
+            database = re.sub('[^a-z]', '', database or '')
+            prefix = re.sub('[^a-z]', '', self.aws_bucket_prefix or '')
+            bucket_name = '%s%s-bkp' % (prefix, database)
             conexao.create_bucket(Bucket=bucket_name)
             conexao.upload_file(file_to_send, bucket_name, name_to_store)
         else:
