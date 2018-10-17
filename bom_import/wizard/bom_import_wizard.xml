@@ -7,11 +7,11 @@
         <field name="arch" type="xml">
             <form>
               <p>
-                  O processo de impo
+                  O processo de importação cria uma nova cotação ou atualiza
+                  uma cotação existente se o código já existir no Odoo
               </p>
               <group>
                   <field name="xml_file" />
-                  <field name="create_product" />
               </group>
               <footer>
                 <button name="action_import" string="Import" type="object" default_focus="1" class="oe_highlight"/>
@@ -22,19 +22,17 @@
     </record>
 
     <record id="action_bom_import_wizard_form" model="ir.actions.act_window">
-            <field name="name">BoM Import Wizard</field>
-            <field name="res_model">bom.import.wizard</field>
-            <field name="view_type">form</field>
-            <field name="view_mode">form</field>
-            <field name="target">new</field>
+        <field name="name">BoM Import Wizard</field>
+        <field name="res_model">bom.import.wizard</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
     </record>
 
-    <act_window id="bom_import_xml_action"
-        name="Importar componentes via XML"
-        src_model="sale.order"
-        res_model="bom.import.wizard"
-        view_mode="form"
-        target="new"
-        key2="client_action_relate"/>
+    <menuitem id="menu_sale_order"
+        name="Importar Cotação via XML"
+        action="action_bom_import_wizard_form"
+        parent="sale.sale_order_menu"
+        sequence="10" groups="sales_team.group_sale_salesman"/>
 
 </odoo>

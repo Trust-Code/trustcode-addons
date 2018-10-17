@@ -6,22 +6,67 @@ from lxml import objectify
 from odoo import api, fields, models
 
 
+def cnpj_cpf_format(cnpj_cpf):
+    if len(cnpj_cpf) == 14:
+        cnpj_cpf = (cnpj_cpf[0:2] + '.' + cnpj_cpf[2:5] +
+                    '.' + cnpj_cpf[5:8] +
+                    '/' + cnpj_cpf[8:12] +
+                    '-' + cnpj_cpf[12:14])
+    else:
+        cnpj_cpf = (cnpj_cpf[0:3] + '.' + cnpj_cpf[3:6] +
+                    '.' + cnpj_cpf[6:9] + '-' + cnpj_cpf[9:11])
+    return cnpj_cpf
+
+
 class BomImportWizard(models.TransientModel):
     _name = "bom.import.wizard"
 
     xml_file = fields.Binary(string="Arquivo XML", required=True)
-    create_product = fields.Boolean(string='Criar Produto?')
 
     @api.multi
     def action_import(self):
         xml_file = base64.decodestring(self.xml_file)
         xml = objectify.fromstring(xml_file)
 
-        context = dict(self._context or {})
-        active_ids = context.get('active_ids', []) or []
-        order = self.env['sale.order'].browse(active_ids)
+        so_code = str(xml.DADOS_OBRA.CODIGO)
+        cnpj_cpf = cnpj_cpf_format(xml.DADOS_CLIENTE.CNPJ_CPF.text)
 
-        if order.order_line:
+        order = self.env['sale.order'].search(
+            [('name', 'like', so_code[:-3])])
+        if order:
+            order.name = so_code
+        if not order:
+            partner_id = self.env['res.partner'].search(
+                [('cnpj_cpf', '=', cnpj_cpf)])
+            if not partner_id:
+                partner_type = 'person' if len(cnpj_cpf) == 14 else 'company'
+                state = self.env['res.country.state'].search(
+                    [('code', '=', xml.DADOS_CLIENTE.END_UF),
+                     ('country_id.code', '=', 'BR')])
+                city = self.env['res.state.city'].search(
+                    [('name', 'ilike', xml.DADOS_CLIENTE.END_CIDADE),
+                     ('state_id', '=', state.id)])
+                partner_id = self.env['res.partner'].create({
+                    'name': xml.DADOS_CLIENTE.NOME,
+                    'cnpj_cpf': cnpj_cpf,
+                    'street': xml.DADOS_CLIENTE.END_LOGR,
+                    'number': xml.DADOS_CLIENTE.END_NUMERO,
+                    'street2': xml.DADOS_CLIENTE.END_COMPL,
+                    'district': xml.DADOS_CLIENTE.END_BAIRRO,
+                    'city': xml.DADOS_CLIENTE.END_CIDADE,
+                    'city_id': city.id,
+                    'zip': xml.DADOS_CLIENTE.END_CEP,
+                    'state_id': state.id,
+                    'company_type': partner_type,
+                    'is_company': True if partner_type == 'company' else False,
+                    'customer': True,
+                })
+
+            order = self.env['sale.order'].create({
+                'partner_id': partner_id.id,
+                'name': so_code,
+            })
+        elif order.order_line:
             order.order_line.mapped('mrp_bom_id').unlink()
             order.order_line.unlink()
 
@@ -52,7 +97,6 @@ class BomImportWizard(models.TransientModel):
                 'product_tmpl_id': product_id.product_tmpl_id.id,
                 'product_qty': 1.0,
                 'code': str(tipologia.TIPO),
-                # projetista ta string...se pa, tem que mudar dps
                 'projetista': str(tipologia.PROJETISTA),
                 'width': float(tipologia.LARGURA),
                 'height': float(tipologia.ALTURA),
