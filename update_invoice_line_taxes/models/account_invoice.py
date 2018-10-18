@@ -28,3 +28,6 @@ class AccountInvoice(models.Model):
                     'price_unit': price_unit,
                     'account_analytic_id': account_analytic_id
                     })
+
+        self.write({'tax_line_ids': [(6, 0, [])]})
+        self._onchange_invoice_line_ids()
