@@ -20,7 +20,7 @@
     'version': '11.0.1.0.0',
     'license': 'AGPL-3',
     'contributors': [],
-    'depends': ['sale'],
+    'depends': ['br_sale'],
     'data': [
         'views/sale_order_view.xml'
     ],
