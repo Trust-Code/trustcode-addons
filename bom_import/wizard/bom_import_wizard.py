@@ -72,27 +72,43 @@ class BomImportWizard(models.TransientModel):
 
         line_env = self.env['sale.order.line']
         prod_env = self.env['product.product']
+        prod_tmpl_env = self.env['product.template']
         bom_env = self.env['mrp.bom']
         bomline_env = self.env['mrp.bom.line']
         route_manuf_id = self.env.ref('mrp.route_warehouse0_manufacture').id
         route_mto_id = self.env.ref('stock.route_warehouse0_mto').id
+        attr_descr = self.env.ref('bom_import.product_attribute').id
+        attr_env = self.env['product.attribute.value']
 
         for tipologia in xml.TIPOLOGIAS.TIPOLOGIA:
-            product_id = prod_env.search(
-                [('default_code', '=', str(tipologia.CODESQD))], limit=1)
+            product_tmpl_id = prod_tmpl_env.search(
+                [('name', '=', str(tipologia.CODESQD))], limit=1)
             vals = {
-                'name': str(tipologia.DESCR),
-                'standard_price': float(tipologia.PRECO_UNIT),
-                'list_price': float(tipologia.PRECO_UNIT),
+                'name': str(tipologia.CODESQD),
+                'standard_price': 0.0,
+                'list_price': 0.0,
                 'default_code': str(tipologia.CODESQD),
-                'weight': float(tipologia.PESO_UNIT),
                 'type': 'product',
+                'attribute_line_ids': [(0, 0, {'attribute_id': attr_descr})],
                 'route_ids': [(6, None, [route_manuf_id, route_mto_id])],
             }
-            if not product_id:
-                product_id = prod_env.create(vals)
-            else:
-                product_id.write(vals)
+            if not product_tmpl_id:
+                product_tmpl_id = prod_tmpl_env.create(vals)
+            # Sempre cadastra um novo produto filho do template acima
+            codigo = self.env['ir.sequence'].next_by_code('product.template')
+            attr_value = attr_env.create({'attribute_id': attr_descr,
+                                          'name': str(tipologia.DESCR)})
+            vals = {
+                'name': str(tipologia.CODESQD),
+                'standard_price': float(tipologia.PRECO_UNIT),
+                'default_code': codigo,
+                'weight': float(tipologia.PESO_UNIT),
+                'type': 'product',
+                'attribute_value_ids': [(0, 0, [attr_value])],
+                'product_tmpl_id': product_tmpl_id.id,
+            }
+            product_id = prod_env.create(vals)
+
             bom_id = bom_env.create({
                 'product_tmpl_id': product_id.product_tmpl_id.id,
                 'product_qty': 1.0,
