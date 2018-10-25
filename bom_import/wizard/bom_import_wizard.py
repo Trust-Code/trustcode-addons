@@ -96,15 +96,17 @@ class BomImportWizard(models.TransientModel):
                 product_tmpl_id = prod_tmpl_env.create(vals)
             # Sempre cadastra um novo produto filho do template acima
             codigo = self.env['ir.sequence'].next_by_code('product.template')
+            descr = "%s [%sx%s]" % (str(tipologia.DESCR),
+                                    str(tipologia.LARGURA),
+                                    str(tipologia.ALTURA))
             attr_value = attr_env.create({'attribute_id': attr_descr,
-                                          'name': str(tipologia.DESCR)})
+                                          'name': descr})
             vals = {
-                'name': str(tipologia.CODESQD),
+                # 'name': str(tipologia.CODESQD),
                 'standard_price': float(tipologia.PRECO_UNIT),
                 'default_code': codigo,
                 'weight': float(tipologia.PESO_UNIT),
-                'type': 'product',
-                'attribute_value_ids': [(0, 0, [attr_value])],
+                'attribute_value_ids': [(6, 0, [attr_value.id])],
                 'product_tmpl_id': product_tmpl_id.id,
             }
             product_id = prod_env.create(vals)
@@ -204,9 +206,11 @@ class BomImportWizard(models.TransientModel):
                         'is_glass': True,
                     })
 
+            name = product_id.attribute_value_ids.name
             line_env.create({
                 'order_id': order.id,
                 'product_id': product_id.id,
+                'name': name,
                 'product_uom_qty': float(tipologia.QTDE),
                 'price_unit': float(tipologia.PRECO_UNIT),
                 'mrp_bom_id': bom_id.id,
