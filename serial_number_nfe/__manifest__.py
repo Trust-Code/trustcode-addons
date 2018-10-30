@@ -11,7 +11,7 @@
         It needs some special configuration like:
          - invoice only delivered quantities
     """,
-    'version': '10.0.1.0.0',
+    'version': '11.0.1.0.0',
     'category': 'Stock',
     'author': 'Trustcode',
     'license': 'AGPL-3',
