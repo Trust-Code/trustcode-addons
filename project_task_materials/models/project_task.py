@@ -114,6 +114,7 @@ class ProjectTask(models.Model):
         if moves:
             vals = {
                 'name': pick_type.sequence_id.next_by_id(),
+                'origin': self.name,
                 'partner_id': self.partner_id.id,
                 'picking_type_id': pick_type.id,
                 'location_id': pick_type.default_location_src_id.id,
