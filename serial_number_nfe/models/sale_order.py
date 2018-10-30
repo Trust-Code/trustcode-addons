@@ -23,5 +23,6 @@ class SaleOrderLine(models.Model):
                         info += "/Vencimento: %s" % date.strftime("%d/%m/%Y")
                     info += "\n"
                 break
-        res['informacao_adicional'] = info
+        if info:
+            res['informacao_adicional'] = info
         return res
