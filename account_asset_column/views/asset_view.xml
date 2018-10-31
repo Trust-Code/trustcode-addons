@@ -1,0 +1,16 @@
+<?xml version="1.0" ?>
+<odoo>
+    <data>
+        <record id="view_accont_asset_column_number" model="ir.ui.view">
+            <field name="name">account.asset.asset.inherited.tree</field>
+            <field name="model">account.asset.asset</field>
+            <field name="inherit_id" ref="account_asset.view_account_asset_asset_purchase_tree"/>
+            <field name="arch" type="xml">
+                <field name="name" position="after">
+                    <field name="asset_number"/>
+                </field>
+            </field>
+        </record>
+
+    </data>
+</odoo>
