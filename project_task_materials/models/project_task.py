@@ -111,15 +111,10 @@ class ProjectTask(models.Model):
                 })
                 moves.append(material.move_id)
                 self.create_analytic_line(material)
-            elif material.move_id and not material.requested:
-                pick = material.move_id.picking_id
-                material.move_id.unlink()
-                material.stage_requested = ''
-                if not pick.move_lines:
-                    pick.unlink()
         if moves:
             vals = {
                 'name': pick_type.sequence_id.next_by_id(),
+                'origin': self.name,
                 'partner_id': self.partner_id.id,
                 'picking_type_id': pick_type.id,
                 'location_id': pick_type.default_location_src_id.id,
