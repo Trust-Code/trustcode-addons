@@ -12,14 +12,14 @@ class StockPicking(models.Model):
     commitment_date = fields.Datetime(
         'Data do Compromisso', track_visibility='onchange')
     requisition_date = fields.Datetime(
-        'Data do Requisição', track_visibility='onchange')
+        'Data da Requisição', track_visibility='onchange')
     observation_sale_order = fields.Text(
         'Observation', track_visibility='onchange')
 
     @api.multi
     def action_update_observation(self):
         if not self.sale_id:
-            raise UserError(_(u'Ordem de venda não definido. Para editar \
+            raise UserError(_(u'Ordem de venda não definida. Para editar \
 este campo, por favor, clique em editar, modifique e depois salve.'))
 
         return {

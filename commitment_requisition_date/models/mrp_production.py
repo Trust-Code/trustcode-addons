@@ -12,7 +12,7 @@ class MrpProduction(models.Model):
     commitment_date = fields.Datetime(
         'Data do Compromisso', track_visibility='onchange')
     requisition_date = fields.Datetime(
-        'Data do Requisição', track_visibility='onchange')
+        'Data da Requisição', track_visibility='onchange')
     observation_sale_order = fields.Text(
         'Observations', track_visibility='onchange')
     sale_id = fields.Many2one('sale.order',

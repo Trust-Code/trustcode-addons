@@ -13,36 +13,41 @@ class SaleOrder(models.Model):
     observation_sale_order = fields.Text(
         'Observation', track_visibility='onchange')
 
-    def _sale_order_fields_update(self, vals):
+    @api.onchange('observation_sale_order')
+    def _update_observation(self):
+        for pcking in self.picking_ids.filtered(lambda p: p.state != 'cancel'):
+            pcking.write(
+                {'observation_sale_order': self.observation_sale_order})
+
+        mrp_production = self.env['mrp.production'].search([
+                ('procurement_group_id', '=', self.procurement_group_id.id)])
+        for production in mrp_production:
+            production.write(
+                {'observation_sale_order': self.observation_sale_order})
+
+    def _sale_order_dates_update(self, vals):
         if self.procurement_group_id:
             mrp_production = self.env['mrp.production'].search([
                 ('procurement_group_id', '=', self.procurement_group_id.id)])
             for production in mrp_production:
                 production.update({
                     'commitment_date': vals.get('commitment_date'),
-                    'requisition_date': vals.get('requested_date'),
-                    'observation_sale_order':
-                    vals.get('observation_sale_order'),
+                    'requisition_date': vals.get('requested_date')
                 })
 
-        picking_ids = self.picking_ids.filtered(lambda x: x.state != 'cancel')
-
-        for picking in picking_ids:
-            picking.update({
+        for pcking in self.picking_ids.filtered(lambda p: p.state != 'cancel'):
+            pcking.write({
                 'commitment_date': vals.get('commitment_date'),
-                'requisition_date': vals.get('requested_date'),
-                'observation_sale_order':  vals.get('observation_sale_order'),
+                'requisition_date': vals.get('requested_date')
             })
 
     @api.multi
     def write(self, vals):
         res = super(SaleOrder, self).write(vals)
-        if any(item in vals for item in ['commitment_date', 'requested_date',
-                                         'observation_sale_order']):
-            self._sale_order_fields_update({
+        if any(item in vals for item in ['commitment_date', 'requested_date']):
+            self._sale_order_dates_update({
                 'commitment_date': vals.get('commitment_date'),
-                'requested_date': vals.get('requested_date'),
-                'observation_sale_order': vals.get('observation_sale_order'),
+                'requested_date': vals.get('requested_date')
             })
         return res
 

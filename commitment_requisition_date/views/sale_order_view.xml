@@ -12,6 +12,9 @@
             <field name="commitment_date" position="attributes">
                 <attribute name="readonly">0</attribute>
             </field>
+            <field name="commitment_date" position="after">
+                <field name="observation_sale_order" invisible="1"/>
+            </field>
         </field>
     </record>
     <record id="view_order_form_inherit_expedition_notes" model="ir.ui.view">
