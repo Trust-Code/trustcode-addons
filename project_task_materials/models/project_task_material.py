@@ -46,7 +46,7 @@ class ProjectTaskMaterial(models.Model):
 
     @api.multi
     def unlink(self):
-        if self.mapped('move_id').status != 'done':
+        if self.mapped('move_id').state != 'done':
             self.mapped('move_id')._action_cancel()
         status = self.mapped('move_id').picking_id.move_lines.mapped('state')
         if all([s == 'cancel' for s in status]):
