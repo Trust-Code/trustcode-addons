@@ -14,7 +14,7 @@ class StockPicking(models.Model):
     requisition_date = fields.Datetime(
         'Data da Requisição', track_visibility='onchange')
     observation_sale_order = fields.Text(
-        'Observation', track_visibility='onchange')
+        'Observation')
 
     @api.multi
     def action_update_observation(self):
