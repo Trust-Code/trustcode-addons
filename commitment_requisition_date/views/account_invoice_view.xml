@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="account_invoice_dates_form_view" model="ir.ui.view">
+            <field name="name">invoice.dates.form</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="account.invoice_form"/>
+            <field name="arch" type="xml">
+                <field name="user_id" position="after">
+                    <field name="requisition_date" readonly="1"/>
+                    <field name="commitment_date" readonly="1"/>
+                    <field name="observation_sale_order" invisible="1"/>
+                </field>
+                <field name="invoice_line_ids" position="after">
+                    <field name="sale_id" invisible="1"/>
+                    <br/>
+
+                    <button name="action_update_observation"
+                        string="Update Observation" type="object" class="btn-primary"
+                        attrs="{'invisible': [('sale_id', '=', False)]}"/>
+                        <br/>
+
+                        <label for="observation_sale_order"/>
+                        <br/>
+                        <field name="observation_sale_order"
+                        placeholder="Observation" class="oe_inline"
+                        attrs="{'readonly': [('sale_id', '!=', False)]}"/>
+
+                </field>
+            </field>
+        </record>
+    </data>
+</odoo>
