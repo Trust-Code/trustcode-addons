@@ -108,6 +108,7 @@ class ProjectTask(models.Model):
                     'product_id': material.product_id.id,
                     'product_uom_qty': material.quantity,
                     'product_uom': material.product_id.uom_id.id,
+                    'picking_type_id': pick_type.id,
                 })
                 moves.append(material.move_id)
                 self.create_analytic_line(material)
@@ -122,5 +123,16 @@ class ProjectTask(models.Model):
             }
             picking = self.env['stock.picking'].create(vals)
             picking.move_lines = [(6, 0, [item.id for item in moves])]
+            for item in moves:
+                self.env['stock.move.line'].create({
+                    'reference': item.name,
+                    'location_id': item.location_id.id,
+                    'location_dest_id': item.location_dest_id.id,
+                    'product_id': item.product_id.id,
+                    'qty_done': item.product_uom_qty,
+                    'product_uom_id': item.product_id.uom_id.id,
+                    'move_id': item.id,
+                    'picking_id': picking.id,
+                })
             picking.action_confirm()
             picking.action_assign()
