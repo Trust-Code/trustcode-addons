@@ -51,4 +51,6 @@ class ProjectTaskMaterial(models.Model):
         status = self.mapped('move_id').picking_id.move_lines.mapped('state')
         if all([s == 'cancel' for s in status]):
             self.mapped('move_id').picking_id.action_cancel()
+        self.env['account.analytic.line'].search(
+            [('task_material_id', 'in', self.ids)]).unlink()
         return super(ProjectTaskMaterial, self).unlink()
