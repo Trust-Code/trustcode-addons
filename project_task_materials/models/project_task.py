@@ -87,9 +87,11 @@ class ProjectTask(models.Model):
             'date': (datetime.date.today()).strftime('%Y-%m-%d'),
             'product_id': material.product_id.id,
             'unit_amount': material.quantity,
+            'product_uom_id': material.product_id.uom_id.id or unit.id,
+            'task_material_id': material.id,
+            'company_id': self.env.user.company_id.id,
         })
-        line.product_uom_id = material.product_id.uom_id or unit
-        line.amount = material.product_id.lst_price * material.quantity
+        line.amount = material.product_id.standard_price * material.quantity
         return line
 
     def check_resquested_materials(self):
