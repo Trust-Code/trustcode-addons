@@ -18,5 +18,5 @@ The
     'depends': [
         'stock'
     ],
-    'installable': True,
+    'installable': False,
 }

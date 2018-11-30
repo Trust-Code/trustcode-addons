@@ -19,4 +19,5 @@
     'data': [
         'wizard/dynamic_csv_importer_view.xml',
     ],
+    'installable': False,
 }

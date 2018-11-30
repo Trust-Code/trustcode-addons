@@ -23,4 +23,5 @@
         'security/ir.model.access.csv',
         'views/mail_activity.xml',
     ],
+    'installable': False,
 }

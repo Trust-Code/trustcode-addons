@@ -16,7 +16,6 @@
     ],
     "author": "Openworx",
     "license": "LGPL-3",
-    "installable": True,
     "depends": [
         'web_responsive',
     ],
@@ -27,4 +26,5 @@
         'views/sidebar.xml',
         'views/web.xml',
     ],
+    'installable': False,
 }

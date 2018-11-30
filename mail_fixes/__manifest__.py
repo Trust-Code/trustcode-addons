@@ -20,4 +20,5 @@
     'depends': [
         'mail'
     ],
+    'installable': False,
 }

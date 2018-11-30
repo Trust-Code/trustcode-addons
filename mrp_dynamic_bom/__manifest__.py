@@ -21,4 +21,5 @@
         'views/mrp_dynamic_bom_views.xml',
         'security/ir.model.access.csv',
     ],
+    'installable': False,
 }

@@ -27,4 +27,5 @@
         'views/stock_picking_view.xml',
         'wizard/observation_update.xml'
     ],
+    'installable': False,
 }

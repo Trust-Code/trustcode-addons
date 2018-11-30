@@ -19,4 +19,5 @@
         'br_purchase_stock', 'br_stock_account'
     ],
     'data': [],
+    'installable': False,
 }

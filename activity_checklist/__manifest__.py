@@ -25,4 +25,5 @@
         'views/project.xml',
     ],
     'qweb': ['static/src/xml/*.xml'],
+    'installable': False,
 }

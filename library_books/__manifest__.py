@@ -19,4 +19,5 @@
         'views/scielo_livros_view.xml',
         'views/scielo_livros_menu.xml',
     ],
+    'installable': False,
 }

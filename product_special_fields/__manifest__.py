@@ -26,4 +26,5 @@ o valor do IMEI, ICCID, No linha""",
         'views/stock_move_line_views.xml',
         'views/res_partner.xml',
     ],
+    'installable': False,
 }

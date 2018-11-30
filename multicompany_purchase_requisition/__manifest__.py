@@ -29,4 +29,5 @@
         "views/purchase_order.xml",
         "reports/report_romaneio.xml",
     ],
+    'installable': False,
 }

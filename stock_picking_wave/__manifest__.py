@@ -20,4 +20,5 @@
         'views/stock_location.xml',
         'security/ir.model.access.csv'
     ],
+    'installable': False,
 }

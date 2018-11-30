@@ -26,4 +26,5 @@
         'views/mrp_production.xml',
         'data/attribute.xml',
     ],
+    'installable': False,
 }

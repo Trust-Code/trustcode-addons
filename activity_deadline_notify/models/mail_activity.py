@@ -60,7 +60,8 @@ class MailActivity(models.Model):
         if vals.get('datetime_deadline'):
             vals = self.update_date_deadline(vals)
         res = super(MailActivity, self).create(vals)
-        res.create_notification(vals)
+        if vals.get('datetime_deadline'):
+            res.create_notification(vals)
         return res
 
     @api.multi
