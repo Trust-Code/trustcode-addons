@@ -1,33 +1,45 @@
-from odoo import models
+from odoo import models, api
 
 
 class AccountInvoice(models.Model):
     _inherit = "account.invoice"
 
     def update_taxes(self):
-        if self.fiscal_position_id:
+        fpos = self.fiscal_position_id
+        if fpos:
             for line in self.invoice_line_ids:
-                line.tem_difal = False
-                price_unit = line.price_unit
-                account_analytic_id = line.account_analytic_id.id
-                line._onchange_product_id()
-                line._br_account_onchange_product_id()
+                self.clear_line_tax_ids(line)
+                line._set_taxes_from_fiscal_pos()
+                unused_fields = fpos.map_tax_extra_values_unused(
+                    self.company_id, line.product_id, self.partner_id)
+                for field in unused_fields:
+                    if field in line._fields:
+                        line.update({field: False})
 
-                line.icms_aliquota = line.tax_icms_id.amount
-                line.icms_st_aliquota = line.tax_icms_st_id.amount
-                line.pis_aliquota = line.tax_pis_id.amount
-                line.cofins_aliquota = line.tax_cofins_id.amount
-                line.ipi_aliquota = line.tax_ipi_id.amount
-                line.ii_aliquota = line.tax_ii_id.amount
-                line.issqn_aliquota = line.tax_issqn_id.amount
-                line.csll_aliquota = line.tax_csll_id.amount
-                line.irrf_aliquota = line.tax_irrf_id.amount
-                line.inss_aliquota = line.tax_inss_id.amount
+    def clear_line_tax_ids(self, line):
+        line.tem_difal = False
+        taxes = [
+            'tax_pis_id', 'tax_icms_id', 'tax_icms_st_id', 'tax_ipi_id',
+            'tax_cofins_id', 'tax_issqn_id', 'tax_ii_id', 'tax_csll_id',
+            'tax_irrf_id', 'tax_inss_id']
+        for tax in taxes:
+            line.update({tax: False})
 
-                line.write({
-                    'price_unit': price_unit,
-                    'account_analytic_id': account_analytic_id
-                    })
 
-        self.write({'tax_line_ids': [(6, 0, [])]})
-        self._onchange_invoice_line_ids()
+class AccountFiscalPosition(models.Model):
+    _inherit = 'account.fiscal.position'
+
+    @api.model
+    def map_tax_extra_values_unused(self, company, product, partner):
+        to_state = partner.state_id
+
+        taxes = ('icms', 'simples', 'ipi', 'pis', 'cofins',
+                 'issqn', 'ii', 'irrf', 'csll', 'inss')
+        res = []
+        for tax in taxes:
+            vals = self._filter_rules(
+                self.id, tax, partner, product, to_state)
+            for k, v in vals.items():
+                if not v:
+                    res.append(k)
+        return res
