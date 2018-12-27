@@ -23,11 +23,12 @@
         'Marina Domingues <mgd.marinadomingues@gmail.com>',
     ],
 
-    'depends': ['sale', 'stock', 'br_delivery'],
+    'depends': ['sale', 'stock'],
     'data': [
         "views/stock_move_view.xml",
         "views/stock_picking_view.xml",
         "views/res_partner_view.xml",
+        "views/report.xml"
     ],
 
 }
