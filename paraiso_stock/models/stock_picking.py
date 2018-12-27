@@ -8,7 +8,7 @@ from odoo import fields, models
 class StockPicking(models.Model):
     _inherit = 'stock.picking'
 
-    entregador = fields.Many2one(
+    entregador_id = fields.Many2one(
         comodel_name='res.partner',
         string="Responsável pela entrega",
         domain=[('entregador', '=', True)])
