@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="stock_picking_colors" model="ir.ui.view">
+        <field name="name">paraiso.stock.picking.colors</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+        <xpath expr="//field[@name='move_lines']/tree" position="inside">
+            <field name="stock_state" invisible="1"/>
+        </xpath>
+            <xpath expr="//field[@name='move_lines']/tree" position="attributes">
+            <attribute name="decoration-danger">stock_state=='red'</attribute>
+            <attribute name="decoration-success">stock_state=='green'</attribute>
+            <attribute name="decoration-primary">stock_state=='purple'</attribute>
+            </xpath>
+        </field>
+    </record>
+</odoo>
