@@ -3,6 +3,7 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 import os
+import re
 import time
 import socket
 import logging
@@ -62,7 +63,7 @@ class BackupConfig(models.Model):
         for backup in self:
             result.append(
                 (backup.id,
-                 backup.database_name +
+                 self.env.cr.dbname +
                  " - " +
                  backup.interval))
         return result
@@ -72,10 +73,7 @@ class BackupConfig(models.Model):
             item.backup_count = self.env['backup.executed'].search_count(
                 [('configuration_id', '=', item.id)])
 
-    host = fields.Char(string=u"Endereço", size=200, default='localhost')
-    port = fields.Char(string=u"Porta", size=10, default='8069')
     database_name = fields.Char(string=u'Banco de dados', size=100)
-    admin_password = fields.Char(string=u'Senha Admin', size=100)
     interval = fields.Selection(
         string=u"Período",
         selection=[('hora', u'1 hora'), ('seis', u'6 horas'),
@@ -84,6 +82,9 @@ class BackupConfig(models.Model):
     send_to_s3 = fields.Boolean(u'Enviar Amazon S3 ?')
     aws_access_key = fields.Char(string=u"Chave API S3", size=100)
     aws_secret_key = fields.Char(string=u"Chave Secreta API S3", size=100)
+    aws_bucket_prefix = fields.Char(
+        string="Prefixo Bucket",
+        help="Usado quando o nome do bucket dá conflito com existente")
     backup_dir = fields.Char(string=u"Diretório", size=300,
                              default="/opt/backups/database/")
 
@@ -126,35 +127,27 @@ class BackupConfig(models.Model):
             if (next_backup < datetime.now()) or manual_backup:
 
                 if not os.path.isdir(rec.backup_dir):
-                        os.makedirs(rec.backup_dir)
+                    os.makedirs(rec.backup_dir)
 
-                zip_name = '%s_%s.zip' % (rec.database_name,
+                zip_name = '%s_%s.zip' % (self.env.cr.dbname,
                                           time.strftime('%Y%m%d_%H_%M_%S'))
                 zip_file = '%s/%s' % (rec.backup_dir, zip_name)
 
                 with open(zip_file, 'wb') as dump_zip:
                     odoo.service.db.dump_db(
-                        rec.database_name, dump_zip, 'zip')
+                        self.env.cr.dbname, dump_zip, 'zip')
 
                 backup_env = self.env['backup.executed']
 
                 if rec.send_to_s3:
-                    key = rec.send_for_amazon_s3(zip_file, zip_name,
-                                                 rec.database_name)
-                    loc = ''
-                    if not key:
-                        key = u'Erro ao enviar para o Amazon S3'
-                        loc = zip_file
-                    else:
-                        loc = 'https://s3.amazonaws.com/%s_bkp_pelican/%s' % (
-                            rec.database_name, key
-                        )
-                    backup_env.create({'backup_date': datetime.now(),
-                                       'configuration_id': rec.id,
-                                       's3_id': key, 'name': zip_name,
-                                       'state': 'concluded',
-                                       'local_path': loc})
-                    if key:
+                    try:
+                        rec.send_for_amazon_s3(
+                            zip_file, zip_name, self.env.cr.dbname)
+                        backup_env.create({'backup_date': datetime.now(),
+                                           'configuration_id': rec.id,
+                                           'name': zip_name,
+                                           'state': 'concluded'})
+                    finally:
                         os.remove(zip_file)
                 else:
                     backup_env.create(
@@ -165,22 +158,20 @@ class BackupConfig(models.Model):
                     rec._set_next_backup()
 
     def send_for_amazon_s3(self, file_to_send, name_to_store, database):
-        try:
-            if self.aws_access_key and self.aws_secret_key:
-                access_key = self.aws_access_key
-                secret_key = self.aws_secret_key
+        if self.aws_access_key and self.aws_secret_key:
+            access_key = self.aws_access_key
+            secret_key = self.aws_secret_key
 
-                conexao = S3Connection(access_key, secret_key)
-                bucket_name = '%s_bkp_pelican' % database
-                bucket = conexao.create_bucket(bucket_name)
+            conexao = S3Connection(access_key, secret_key)
 
-                k = Key(bucket)
-                k.key = name_to_store
-                k.set_contents_from_filename(file_to_send)
-                return k.key
-            else:
-                _logger.error(
-                    u'Configurações do Amazon S3 não setadas, \
-                    pulando armazenamento de backup')
-        except Exception:
-            _logger.error(u'Erro ao enviar dados para S3', exc_info=True)
+            database = re.sub('[^a-z]', '', database or '')
+            prefix = re.sub('[^a-z]', '', self.aws_bucket_prefix or '')
+            bucket_name = '%s%s-bkp' % (prefix, database)
+            bucket = conexao.create_bucket(bucket_name)
+
+            k = Key(bucket)
+            k.key = name_to_store
+            k.set_contents_from_filename(file_to_send)
+            return k.key
+        else:
+            raise Exception('Configure a chave de acesso e chave secreta AWS')
