@@ -33,10 +33,6 @@
                         </button>
                     </div>
                     <group>
-                        <field name="host" />
-                        <field name="port" />
-                        <field name="database_name" />
-                        <field name="admin_password" password="True"/>
                         <field name="interval" />
                         <field name="backup_dir" />
                         <field name="send_to_s3" />
@@ -48,6 +44,7 @@
                             attrs="{'invisible': [('send_to_s3', '=', False)],
                             'required': [('send_to_s3', '=', True)]}"
                             password="True" />
+                        <field name="aws_bucket_prefix" attrs="{'invisible': [('send_to_s3', '=', False)]}"/>
                         <field name="next_backup" />
                     </group>
                 </sheet>
@@ -60,7 +57,6 @@
         <field name="type">tree</field>
         <field name="arch" type="xml">
             <tree string="Test">
-                <field name='host' />
                 <field name='database_name' />
                 <field name='interval' />
                 <field name='send_to_s3' />
