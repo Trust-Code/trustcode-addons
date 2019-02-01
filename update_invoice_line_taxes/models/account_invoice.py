@@ -22,6 +22,7 @@ class AccountInvoice(models.Model):
                     'price_unit': price_unit,
                     'account_analytic_id': account_analytic_id
                 })
+            self._onchange_invoice_line_ids()
 
     def clear_line_tax_ids(self, line):
         line.tem_difal = False
