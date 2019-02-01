@@ -128,7 +128,7 @@ class ProjectTask(models.Model):
             picking = self.env['stock.picking'].create(vals)
             picking.move_lines = [(6, 0, [item.id for item in moves])]
             for item in moves:
-                if item.product_id not in [line.product_id for line in picking.move_lines]:
+                if item.product_id.qty_available <= 0:
                     self.env['stock.move.line'].create({
                         'reference': item.name,
                         'location_id': item.location_id.id,
