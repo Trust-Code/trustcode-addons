@@ -23,8 +23,7 @@
                                 <span t-field="doc.company_id.street2" />
                                 <br/>
                                 CEP: <span t-field="doc.company_id.zip" /> |
-                                Tel: <span t-field="doc.company_id.phone" /> |
-                                Fax: <span t-field="doc.company_id.fax" />
+                                Tel: <span t-field="doc.company_id.phone" />
                             </address>
                             <div>
                                 Inscrição Estadual nº <span t-field="doc.company_id.inscr_est" /><br />
