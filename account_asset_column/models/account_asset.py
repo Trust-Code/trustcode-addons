@@ -7,3 +7,5 @@ class AccountAssetAsset(models.Model):
     asset_number = fields.Char(
         related='asset_id.asset_number',
         string='Asset Number')
+
+    project_id = fields.Many2one('project.project', string="Project")
