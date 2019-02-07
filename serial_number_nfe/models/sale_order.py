@@ -15,13 +15,15 @@ class SaleOrderLine(models.Model):
         info = ''
         for procurement in self.procurement_ids:
             for move in procurement.move_ids:
-                # Verifica a entrega mais recente finalizada e adiciona os lotes
+                # Verifica a entrega mais recente 
+                # finalizada e adiciona os lotes
                 if move.state == 'done':
                     for lote in move.lot_ids:
                         date = fields.Datetime.from_string(lote.life_date)
                         info += u"Lote/Série: %s" % lote.name
                         if date:
-                            info += "/ Vencimento: %s" % date.strftime("%d/%m/%Y")
+                            info += ("/ Vencimento: %s"
+                                     % date.strftime("%d/%m/%Y"))
                         info += "\n"
         res['informacao_adicional'] = info
         return res
