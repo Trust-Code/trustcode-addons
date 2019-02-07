@@ -15,7 +15,7 @@ class SaleOrderLine(models.Model):
         info = ''
         for procurement in self.procurement_ids:
             for move in procurement.move_ids:
-                # Verifica a entrega mais recente 
+                # Verifica a entrega mais recente
                 # finalizada e adiciona os lotes
                 if move.state == 'done':
                     for lote in move.lot_ids:
