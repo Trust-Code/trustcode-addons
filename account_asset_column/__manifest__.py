@@ -16,9 +16,10 @@
         'Marina Domingues <marina.domingues@gmail.com>',
     ],
     'depends': [
-        'account_asset', 'asset_account'
+        'account_asset', 'asset_account', 'project'
     ],
     'data': [
         'views/asset_view.xml',
+        'views/project_view.xml',
     ],
 }
