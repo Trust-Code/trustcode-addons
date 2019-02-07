@@ -13,15 +13,17 @@ class SaleOrderLine(models.Model):
         res = super(SaleOrderLine, self)._prepare_invoice_line(qty)
 
         info = ''
-        for move in self.procurement_ids.move_ids:
-            # Verifica a entrega mais recente finalizada e adiciona os lotes
-            if move.state == 'done':
-                for lote in move.lot_ids:
-                    date = fields.Datetime.from_string(lote.life_date)
-                    info += u"Lote/Série: %s" % lote.name
-                    if date:
-                        info += "/ Vencimento: %s" % date.strftime("%d/%m/%Y")
-                    info += "\n"
-                break
+        for procurement in self.procurement_ids:
+            for move in procurement.move_ids:
+                # Verifica a entrega mais recente
+                # finalizada e adiciona os lotes
+                if move.state == 'done':
+                    for lote in move.lot_ids:
+                        date = fields.Datetime.from_string(lote.life_date)
+                        info += u"Lote/Série: %s" % lote.name
+                        if date:
+                            info += ("/ Vencimento: %s"
+                                     % date.strftime("%d/%m/%Y"))
+                        info += "\n"
         res['informacao_adicional'] = info
         return res
