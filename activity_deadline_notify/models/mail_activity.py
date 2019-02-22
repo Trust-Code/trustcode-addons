@@ -90,6 +90,12 @@ class MailActivity(models.Model):
         self.update_notify_time()
         return res
 
+    @api.multi
+    def unlink(self):
+        notify_env = self.env['mail.activity.notify']
+        notify_env.search([('activity_id', 'in', self.ids)]).unlink()
+        return super(MailActivity, self).unlink()
+
 
 class MailActivityNotification(models.Model):
     _name = 'mail.activity.notify'
