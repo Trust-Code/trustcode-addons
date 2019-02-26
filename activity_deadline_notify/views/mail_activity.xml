@@ -6,7 +6,7 @@
         <field name="inherit_id" ref="mail.mail_activity_view_form_popup"/>
         <field name="arch" type="xml">
             <field name="user_id" position="after">
-                <field name="datetime_deadline" />
+                <field name="datetime_deadline" attrs="{'required': [('enable_notification', '!=', False)]}" />
                 <field name="enable_notification" />
                 <label for="notification_time" attrs="{'invisible': [('enable_notification', '=', False)]}"/>
                 <div class="row" attrs="{'invisible': [('enable_notification', '=', False)]}">
