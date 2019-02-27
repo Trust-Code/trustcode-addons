@@ -207,10 +207,11 @@ class KKSites(models.Model):
                 raise UserError('Já existe um site com este código')
 
     def seq_cod_site_kk(self, vals):
-        sites = self.search(
-            [('partner_id', '=', vals['partner_id'])])
         partner = self.env['res.partner'].search(
             [('id', '=', vals['partner_id'])])
+        partner = partner.commercial_partner_id
+        sites = self.search(
+            [('partner_id', '=', partner.id)])
         cod = ''
         if vals.get('cod_site_kk'):
             self.check_cod_site_kk(vals['cod_site_kk'], partner, sites)
@@ -335,22 +336,27 @@ class KKSites(models.Model):
     @api.multi
     def write(self, vals):
         if vals.get('cod_site_kk'):
-            sites = self.search(
-                [('partner_id', '=', self.partner_id.id)])
-            self.check_cod_site_kk(vals['cod_site_kk'], self.partner_id, sites)
+            partner = self.partner_id.commercial_partner_id
+            sites = self.search([('partner_id', '=', partner.id)])
+            self.check_cod_site_kk(vals['cod_site_kk'], partner, sites)
         if vals.get('coordenadas'):
             vals['coordenadas'] = self._mask_coordenadas(vals['coordenadas'])
         if vals.get('dimensoes_fundacao'):
             vals['dimensoes_fundacao'] = self._mask_dimensoes_fundacao(
                 vals['dimensoes_fundacao'])
         if vals.get('partner_id'):
-            vals['cod_site_kk'] = self.seq_cod_site_kk(vals)
+            partner = self.env['res.partner'].browse(
+                vals.get('partner_id')).commercial_partner_id
+            sites = self.search([('partner_id', '=', partner.id)])
+            cod_site = vals.get('cod_site_kk') or self.cod_site_kk
+            self.check_cod_site_kk(cod_site, partner, sites)
         return super(KKSites, self).write(vals)
 
     def _get_company_folder(self, vals):
         host = self.env.user.company_id.egnyte_host
         partner = self.env['res.partner'].search([
             ('id', '=', vals['partner_id'])])
+        partner = partner.commercial_partner_id
         if partner.pasta_servidor:
             return partner.pasta_servidor.replace(
                 'https://' + host + '.egnyte.com/app/index.do#storage/files/1',
