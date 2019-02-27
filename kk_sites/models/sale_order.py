@@ -26,6 +26,12 @@ class SaleOrder(models.Model):
         else:
             return super(SaleOrder, self)._prepare_invoice()
 
+    @api.multi
+    @api.onchange('partner_id')
+    def onchange_partner_id(self):
+        super(SaleOrder, self).onchange_partner_id()
+        self.update({'partner_invoice_id': False})
+
 
 class SaleOrderLine(models.Model):
     _inherit = 'sale.order.line'
