@@ -42,7 +42,7 @@
                             <field name="site_id" /></h1>
                         </div>
                         <div class="col-xs-7">
-                            <h3><field name="partner_id" domain="[('customer', '=', True)]" placeholder="Cliente Fantasia" /></h3>
+                            <h3><field name="partner_id" domain="[('customer', '=', True), ('type', '=', 'invoice')]" placeholder="Cliente Fantasia" /></h3>
                         </div>
                     </div>
                     <notebook>
