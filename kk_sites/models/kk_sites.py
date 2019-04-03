@@ -210,8 +210,7 @@ class KKSites(models.Model):
         partner = self.env['res.partner'].search(
             [('id', '=', vals['partner_id'])])
         partner = partner.commercial_partner_id
-        sites = self.search(
-            [('partner_id', '=', partner.id)])
+        sites = self.search([('partner_id', 'in', partner.child_ids.ids)])
         cod = ''
         if vals.get('cod_site_kk'):
             self.check_cod_site_kk(vals['cod_site_kk'], partner, sites)
@@ -337,7 +336,7 @@ class KKSites(models.Model):
     def write(self, vals):
         if vals.get('cod_site_kk'):
             partner = self.partner_id.commercial_partner_id
-            sites = self.search([('partner_id', '=', partner.id)])
+            sites = self.search([('partner_id', 'in', partner.child_ids.ids)])
             self.check_cod_site_kk(vals['cod_site_kk'], partner, sites)
         if vals.get('coordenadas'):
             vals['coordenadas'] = self._mask_coordenadas(vals['coordenadas'])
@@ -347,7 +346,7 @@ class KKSites(models.Model):
         if vals.get('partner_id'):
             partner = self.env['res.partner'].browse(
                 vals.get('partner_id')).commercial_partner_id
-            sites = self.search([('partner_id', '=', partner.id)])
+            sites = self.search([('partner_id', '=', partner.child_ids.ids)])
             cod_site = vals.get('cod_site_kk') or self.cod_site_kk
             self.check_cod_site_kk(cod_site, partner, sites)
         return super(KKSites, self).write(vals)
