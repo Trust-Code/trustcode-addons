@@ -209,7 +209,7 @@ class KKSites(models.Model):
     def seq_cod_site_kk(self, vals):
         partner = self.env['res.partner'].search(
             [('id', '=', vals['partner_id'])])
-        partner = partner.commercial_partner_id
+        partner = partner.parent_id
         sites = self.search([('partner_id', 'in', partner.child_ids.ids)])
         cod = ''
         if vals.get('cod_site_kk'):
@@ -335,7 +335,7 @@ class KKSites(models.Model):
     @api.multi
     def write(self, vals):
         if vals.get('cod_site_kk'):
-            partner = self.partner_id.commercial_partner_id
+            partner = self.partner_id.parent_id
             sites = self.search([('partner_id', 'in', partner.child_ids.ids)])
             self.check_cod_site_kk(vals['cod_site_kk'], partner, sites)
         if vals.get('coordenadas'):
@@ -345,7 +345,7 @@ class KKSites(models.Model):
                 vals['dimensoes_fundacao'])
         if vals.get('partner_id'):
             partner = self.env['res.partner'].browse(
-                vals.get('partner_id')).commercial_partner_id
+                vals.get('partner_id')).parent_id
             sites = self.search([('partner_id', '=', partner.child_ids.ids)])
             cod_site = vals.get('cod_site_kk') or self.cod_site_kk
             self.check_cod_site_kk(cod_site, partner, sites)
@@ -355,7 +355,7 @@ class KKSites(models.Model):
         host = self.env.user.company_id.egnyte_host
         partner = self.env['res.partner'].search([
             ('id', '=', vals['partner_id'])])
-        partner = partner.commercial_partner_id
+        partner = partner.parent_id
         if partner.pasta_servidor:
             return partner.pasta_servidor.replace(
                 'https://' + host + '.egnyte.com/app/index.do#storage/files/1',
