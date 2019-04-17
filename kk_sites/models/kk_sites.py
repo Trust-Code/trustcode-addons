@@ -334,7 +334,7 @@ class KKSites(models.Model):
 
     @api.multi
     def write(self, vals):
-        if vals.get('cod_site_kk'):
+        if vals.get('cod_site_kk') and not vals.get('partner_id', False):
             partner = self.partner_id.parent_id
             sites = self.search([('partner_id', 'in', partner.child_ids.ids)])
             self.check_cod_site_kk(vals['cod_site_kk'], partner, sites)
