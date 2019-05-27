@@ -14,6 +14,7 @@ addons:
       - libxmlsec1-dev
       - libxslt-dev
       - python-libxml2
+  postgresql: '9.5'
 
 env:
   - VERSION="11.0" LINT_CHECK="1"
