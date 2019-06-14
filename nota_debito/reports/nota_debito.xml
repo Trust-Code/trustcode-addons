@@ -49,7 +49,7 @@
                             <h3 class="panel-title center">Nota de Débito</h3>
                         </div>
                         <div class="panel-body" style="padding: 5px 15px;">
-                            <strong style="center">Data de emissão: <span t-field="doc.date_invoice" /></strong><br />
+                            <strong style="center">Data de emissão: <span t-field="doc.date_invoice"  t-options='{"format": "dd/MM/yyyy"}'/></strong><br />
                         </div>
                     </div>
                 </div>
