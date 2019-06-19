@@ -1,15 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <data>
     <!-- Import Inventory Wizard form -->
         <record id="view_import_inventory" model="ir.ui.view">
-            <field name="name">import.inventory.form</field>
+            <field name="name">import inventory form</field>
             <field name="model">import.inventory</field>
-            <field name="type">form</field>
             <field name="arch" type="xml">
-                <form string="Importar Inventário">
-                <label string="O arquivo deve ter duas colunas com o seguinte nome:
-                'codigo' => para a referencia do produto
-                'quantidade' => para a quantidade do produto"/>
+                <form string="Importar Inventario">
+                <h3 class="oe_grey">Instruções</h3>
+                <ul class="oe_grey">
+                    O arquivo deve conter duas colunas com os seguintes nomes: <br/>
+                    'codigo' => para a referencia do produto <br/>
+                    'quantidade' => para a quantidade do produto" <br/>
+                </ul>
                     <group>
                         <group>
                             <field name="location"/>
@@ -40,4 +43,5 @@
     </record>
 
     <!-- <menuitem  id="menu_import_inventory" name="Import Inventory" action="action_import_inventory" parent="stock.menu_stock_inventory_control"/> -->
+    </data>
 </odoo>

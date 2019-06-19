@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<odoo>
-  <record id="attribute_descricao" model="product.attribute">
-    <field name="name">Descrição</field>
-    <field name="create_variant" eval="0"/>
-  </record>
-</odoo>

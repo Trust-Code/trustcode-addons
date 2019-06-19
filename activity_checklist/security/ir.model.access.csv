@@ -1,5 +1,0 @@
-id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_activity_checklist_all,activity.checklist.all,model_activity_checklist,,0,0,0,0
-access_activity_checklist_user,activity.checklist.user,model_activity_checklist,base.group_user,1,1,1,1
-access_activity_checklist_item_all,activity.checklist.item.all,model_activity_checklist_item,,0,0,0,0
-access_activity_checklist_item_user,activity.checklist.item.user,model_activity_checklist_item,base.group_user,1,1,1,1
