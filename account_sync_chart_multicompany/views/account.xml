@@ -1,0 +1,66 @@
+<odoo>
+    <record id="view_sync_chart_account_form" model="ir.ui.view" >
+        <field name="name">view_sync_chart_account_form</field>
+        <field name="model">account.account</field>
+        <field name="inherit_id" ref="account.view_account_form" />
+        <field name="arch" type="xml">
+            <field name="deprecated" position="after">
+                <field name="create_in_child_companies" />
+            </field>
+        </field>
+    </record>
+
+    <record id="view_sync_chart_account_multi_company_form"  model="ir.ui.view">
+        <field name="name">view_sync_chart_account_multi_company_form</field>
+        <field name="model">account.multi.company.synchronize</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_reload_items_to_sync" string="Reload Items" states="draft" type="object"/>
+                    <button name="action_confirm_sync" string="Confirm Synchronization" states="draft" type="object" class="oe_highlight"/>
+                    <field name="state" widget="statusbar"
+                        statusbar_colors="{'draft':'blue','done':'green'}" />
+                </header>
+                <group>
+                    <field name="base_company_id" />
+                </group>
+                <group string="Items that will be created">
+                    <field name="sync_item_ids" nolabel="1">
+                        <tree>
+                            <field name="company_id" />
+                            <field name="account_id" invisible="1"/>
+                            <field name="account_code" />
+                            <field name="account_name" />
+                            <field name="create_account" />
+                        </tree>
+                    </field>
+                </group>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_sync_chart_account_multi_company_tree"  model="ir.ui.view">
+        <field name="name">view_sync_chart_account_multi_company_tree</field>
+        <field name="model">account.multi.company.synchronize</field>
+        <field name="type">tree</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="state" />
+                <field name="base_company_id" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_sync_chart_account_multi_company" model="ir.actions.act_window">
+        <field name="name">Synchronize Chart of Accounts</field>
+        <field name="res_model">account.multi.company.synchronize</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_type">form</field>
+        <field name="view_id" ref="view_sync_chart_account_multi_company_tree"/>
+    </record>
+
+    <menuitem id="menu_sync_chart_account_multi_company" parent="account.account_account_menu" action="action_sync_chart_account_multi_company" sequence="0" />
+
+</odoo>
