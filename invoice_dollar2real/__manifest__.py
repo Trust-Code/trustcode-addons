@@ -13,7 +13,7 @@
     'author': "Trustcode",
     'website': "http://www.trustcode.com.br",
     'category': 'Uncategorized',
-    'version': '10.0.1.0.0',
+    'version': '12.0.1.0.0',
     'license': 'AGPL-3',
     'contributors': [
         'Felipe Paloschi <paloschi.eca@gmail.com>',
