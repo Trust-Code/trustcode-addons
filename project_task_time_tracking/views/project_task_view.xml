@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_project_task_work_automatic_account_analytic_form" model="ir.ui.view">
+        <field name="name">project.task.work.automatic.account.analytic.form</field>
+        <field name="model">project.task</field>
+        <field name="inherit_id" ref="hr_timesheet.view_task_form2_inherited"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='timesheet_ids']/tree/field[@name='project_id']" position="after">
+                <field name="running_time" readonly="1" />
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_trust_project_task_time_form" model="ir.ui.view">
+        <field name="name">trust_task_time_control.task_type_form</field>
+        <field name="model">project.task.type</field>
+        <field name="inherit_id" ref="project.task_type_edit"/>
+        <field name="arch" type="xml">
+            <field name="mail_template_id" position="after">
+                <field name="tracking_time"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="view_account_analytic_line_form" model="ir.ui.view">
+        <field name="name">account.analytic.line.form.inherit.analytic</field>
+        <field name="model">account.analytic.line</field>
+        <field name="inherit_id" ref="analytic.view_account_analytic_line_form"/>
+        <field name="arch" type="xml">
+            <field name="date" position="after">
+                <field name="running_time" readonly="1" />
+                <field name="start_date" />
+                <field name="end_date" />
+            </field>
+        </field>
+    </record>
+
+</odoo>
