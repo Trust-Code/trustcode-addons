@@ -18,7 +18,7 @@ class AccountAccount(models.Model):
         companies = self.env['res.company'].sudo().search(
             [('id', '!=', account.company_id.id)])
         for company in companies:
-            account.copy({
+            account.sudo().copy({
                 'code': account.code,
                 'create_in_child_companies': False,
                 'company_id': company.id,
