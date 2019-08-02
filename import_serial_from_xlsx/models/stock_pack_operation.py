@@ -2,11 +2,17 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 import base64
+import logging
 from io import BytesIO
-from openpyxl import load_workbook
 
 from odoo import api, fields, models
-from odoo.exceptions import UserError
+
+_logger = logging.getLogger(__name__)
+
+try:
+    from openpyxl import load_workbook
+except ImportError:
+    _logger.error('Cannot import openpyxl', exc_info=True)
 
 
 # class StockPackOperationLot(models.Model):
@@ -14,14 +20,14 @@ from odoo.exceptions import UserError
 #
 #     @api.model
 #     def create(self, vals):
-#         if "lot_name" in vals and "operation_id" in vals and vals['lot_name']:
-#             op = self.env['stock.pack.operation'].browse(vals['operation_id'])
+#        if "lot_name" in vals and "operation_id" in vals and vals['lot_name']:
+#            op = self.env['stock.pack.operation'].browse(vals['operation_id'])
 #             total = self.search_count(
 #                 [('lot_name', '=', vals['lot_name']),
 #                  ('operation_id', '=', op.id)])
 #             if total > 0:
 #                 raise UserError(
-#                     u'Você já mencionou este nome de lote em outra linha: %s' %
+#                  u'Você já mencionou este nome de lote em outra linha: %s' %
 #                     vals['lot_name'])
 #         return super(StockPackOperationLot, self).create(vals)
 

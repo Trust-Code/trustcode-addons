@@ -3,7 +3,7 @@
 
     <template id="assets_backend" name="trust_base assets" inherit_id="web.assets_backend">
         <xpath expr="." position="inside">
-            <script src="/dashboard/static/src/js/plotly-latest.min.js"></script>
+            <script src="/dashboard/static/src/lib/plotly-latest.min.js"></script>
             <link rel="stylesheet" href="/dashboard/static/src/css/dashboards.css"/>
         </xpath>
     </template>

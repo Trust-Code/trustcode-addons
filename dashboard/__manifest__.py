@@ -2,10 +2,10 @@
 # © 2016 Danimar Ribeiro, Trustcode
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-{
+{   # pylint: disable=C8101,C8103
     'name': 'Gráficos customizados para Odoo',
     'summary': """Gráficos customizados para Odoo""",
-    'description': """Gráficos customizados para Odoo - Mantido por Trustcode""",
+    'description': "Gráficos customizados para Odoo - Mantido por Trustcode",
     'version': '12.0.1.0.0',
     'category': 'Charts',
     'author': 'Trustcode',
