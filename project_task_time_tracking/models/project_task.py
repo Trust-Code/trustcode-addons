@@ -74,7 +74,7 @@ class ProjectTask (models.Model):
         message += self.insert_new_line('Duração', self.to_hours(
             vals['unit_amount']))
         message += '</ul>'
-        self.message_post(message)
+        self.message_post(body=message)
 
     def message_post_timesheet_change(self, changes):
         for change in changes:
@@ -109,7 +109,7 @@ class ProjectTask (models.Model):
                 after = change[2]['name']
             message += self.insert_new_line('Descrição', timesheet.name, after)
             message += '</ul>'
-            self.message_post(message)
+            self.message_post(body=message)
 
     @api.multi
     def write(self, vals):
