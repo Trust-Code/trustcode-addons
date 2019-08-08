@@ -54,17 +54,13 @@ class StockMove(models.Model):
                         lot_names.append(row[x].value)
 
         self.serials_xlsx = None
-        for lote in lot_names:
-            line_id = self.move_line_ids.filtered(
-                lambda x: x.lot_id.name == lote or x.lot_name == lote)
+        for indice in range(len(lot_names)):
+            line_id = self.move_line_ids[indice]
+            lote = lot_names[indice]
             if line_id:
-                line_id.qty_done += 1
-            else:
-                line_id = self.move_line_ids.filtered(
-                    lambda x: not x.lot_name and not x.lot_id)
-                if line_id:
-                    lot_id = self.env['stock.production.lot'].search(
-                        [('name', '=', lote),
-                         ('product_id', '=', self.product_id.id)])
-                    line_id[0].update({'lot_name': lote, 'qty_done': 1,
-                                       'lot_id': lot_id.id})
+                lot_id = self.env['stock.production.lot'].search(
+                    [('name', '=', lote),
+                     ('product_id', '=', self.product_id.id)])
+                line_id.update({
+                    'lot_name': lote, 'qty_done': 1, 'lot_id': lot_id.id,
+                })
