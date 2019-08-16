@@ -29,7 +29,8 @@ class WizardExportBankTransactions(models.TransientModel):
         ]
         if self.journal_ids:
             domain.append(('journal_id', 'in', self.journal_ids.ids))
-        moves = self.env['account.move'].search(domain, order='journal_id, date asc')
+        moves = self.env['account.move'].search(
+            domain, order='journal_id, date asc')
 
         output = StringIO()
         writer = csv.writer(output, quoting=csv.QUOTE_ALL, delimiter=';')
@@ -40,9 +41,11 @@ class WizardExportBankTransactions(models.TransientModel):
         total = 0
         for move in moves:
             debit_id = move.line_ids.filtered(
-                lambda x: x.account_id == move.journal_id.default_debit_account_id)
+                lambda x:
+                    x.account_id == move.journal_id.default_debit_account_id)
             credit_id = move.line_ids.filtered(
-                lambda x: x.account_id == move.journal_id.default_credit_account_id)
+                lambda x:
+                    x.account_id == move.journal_id.default_credit_account_id)
 
             line = [
                 move.journal_id.name,
