@@ -4,7 +4,7 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 
-from odoo import api, fields, models, tools
+from odoo import api, fields, models
 from datetime import datetime
 
 
@@ -14,13 +14,12 @@ class ProjectTask (models.Model):
     _order = "priority desc, date_deadline, sequence, date_start, name, id"
 
     def start_track_time(self, stage_name, user_id):
-        df = tools.DEFAULT_SERVER_DATETIME_FORMAT
         self.env['account.analytic.line'].sudo().create(
             {'name': u'Tempo Automático (%s)' % (stage_name),
              'task_id': self.id,
              'project_id': self.project_id.id,
-             'date': datetime.now().strftime(df),
-             'start_date': datetime.now().strftime(df),
+             'date': datetime.now(),
+             'start_date': datetime.now(),
              'user_id': user_id,
              'partner_id': self.partner_id.id,
              'unit_amount': 0.0,
@@ -35,9 +34,7 @@ class ProjectTask (models.Model):
             order='id desc', limit=1)
 
         if task_work:
-            ff = tools.DEFAULT_SERVER_DATETIME_FORMAT
-            count_time = datetime.now() - datetime.strptime(
-                task_work.start_date, ff)
+            count_time = datetime.now() - task_work.start_date
 
             task_work.write({
                 'unit_amount': count_time.total_seconds() / 60.0 / 60.0,
@@ -45,11 +42,6 @@ class ProjectTask (models.Model):
                 'end_date': datetime.now()
             })
         return
-
-    def fix_date(self, date):
-        if len(date) != 10:
-            return ''
-        return '{}/{}/{}'.format(date[-2:], date[5:7], date[0:4])
 
     def to_hours(self, val):
         hour = int(val)
@@ -67,7 +59,7 @@ class ProjectTask (models.Model):
         message = 'Registro de horas criado por {}:'.format(
             self.env.user.partner_id.name)
         message += '<ul>'
-        message += self.insert_new_line('Data', self.fix_date(vals['date']))
+        message += self.insert_new_line('Data', vals['date'])
         employee = self.env['hr.employee'].browse(vals['employee_id']).name
         message += self.insert_new_line('Funcionário', employee)
         message += self.insert_new_line('Descrição', vals['name'])
@@ -89,9 +81,9 @@ class ProjectTask (models.Model):
             message += '<ul>'
             after = False
             if change[2].get('date'):
-                after = self.fix_date(change[2]['date'])
+                after = change[2]['date']
             message += self.insert_new_line(
-                'Data', self.fix_date(timesheet.date), after)
+                'Data', timesheet.date.strftime('%d-%m-%Y'), after)
             employee = False
             if change[2].get('employee_id'):
                 employee = self.env['hr.employee'].browse(
