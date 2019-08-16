@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_invoice_payment_date_tree" model="ir.ui.view">
+        <field name="name">view_invoice_payment_date_tree</field>
+        <field name="model">account.invoice</field>
+        <field name="inherit_id" ref="account.invoice_tree" />
+        <field name="arch" type="xml">
+            <field name="date_due" position="after">
+                <field name="last_payment_date" />
+            </field>
+        </field>
+    </record>
+</odoo>
