@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record model="ir.ui.view" id="view_export_bank_transaction_form">
+        <field name="name">view_export_bank_transaction_form</field>
+        <field name="model">wizard.export.bank.transaction</field>
+        <field name="arch" type="xml">
+            <form string="Exportar NFe">
+                <field name="state" invisible="1" />
+                <group states="init">
+                    <group name='dates'>
+                        <field name="start_date"/>
+                        <field name="end_date"/>
+                        <field name="journal_ids" domain="[('type', '=', 'bank')]" widget="many2many_tags"/>
+                    </group>
+                </group>
+                <group states="done">
+                    <field name="zip_file_name" invisible="1" />
+                    <field name="zip_file" filename="zip_file_name" />
+                </group>
+                <footer>
+                    <button name="action_export_transactions"
+                        string="Exportar" type="object"
+                        class="oe_highlight" />
+                    <button string="Cancelar" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_export_bank_transaction_wizard" model="ir.actions.act_window">
+        <field name="name">Exportar Transações Bancárias</field>
+        <field name="res_model">wizard.export.bank.transaction</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="menu_nfe_export"
+        name="Exportar Transações Bancárias"
+        parent="account.account_reports_management_menu"
+        action="action_export_bank_transaction_wizard"
+        sequence="14" />
+
+</odoo>
