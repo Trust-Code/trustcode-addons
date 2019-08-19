@@ -1,0 +1,15 @@
+.o_kanban_view.o_kanban_dashboard.o_custom_dashboard .o_kanban_record-one {
+    flex: 1 1 24%;
+}
+
+.o_kanban_view.o_kanban_dashboard.o_custom_dashboard .o_kanban_record-two {
+    flex: 1 1 48%;
+}
+
+.o_kanban_view.o_kanban_dashboard.o_custom_dashboard .o_kanban_record-three {
+    flex: 1 1 72%;
+}
+
+.o_kanban_view.o_kanban_dashboard.o_custom_dashboard .o_kanban_record-four {
+    flex: 1 1 96%;
+}
