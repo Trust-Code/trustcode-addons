@@ -1,5 +1,6 @@
 <?odoo version="1.0"?>
 <odoo>
+
   <record id="invoice_stock_picking_fiscal_position_form" model="ir.ui.view">
     <field name="name">invoice_stock_picking.fiscal.positionform</field>
     <field name="model">account.fiscal.position</field>
@@ -12,4 +13,5 @@
         </page>
     </field>
   </record>
+
 </odoo>
