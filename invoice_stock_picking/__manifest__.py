@@ -5,7 +5,7 @@
     'name': 'Fatura Gera Picking',
     'version': '12.0.1.0.0',
     'category': 'Account addons',
-    'license': 'AGPL-3.0',
+    'license': 'AGPL-3',
     'author': 'Trustcode',
     'website': 'http://www.trustcode.com.br',
     'description': """
