@@ -9,14 +9,13 @@ class AccountInvoice(models.Model):
 
     @api.multi
     def action_invoice_open(self):
-        res = super(AccountInvoice, self).action_invoice_open()
-        if res and self.fiscal_position_id.picking_type_id:
+        if self.fiscal_position_id.picking_type_id:
             picking_type_id = self.fiscal_position_id.picking_type_id
             picking_id = self._prepare_stock_picking_vals(picking_type_id)
             picking_id = self.env['stock.picking'].create(picking_id)
             picking_id.action_confirm()
 
-        return res
+        return super(AccountInvoice, self).action_invoice_open()
 
     def _prepare_stock_picking_vals(self, picking_type_id):
         vals = {
