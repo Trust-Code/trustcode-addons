@@ -6,7 +6,7 @@ class AccountInvoice(models.Model):
 
     def update_taxes(self):
         fpos = self.fiscal_position_id
-        if fpos:
+        if fpos and self.state == 'draft':
             for line in self.invoice_line_ids:
                 price_unit = line.price_unit
                 if price_unit == 0.0:
