@@ -15,6 +15,7 @@ Quotation sale revision history
     """,
     "data": [
         'views/sale_order_views.xml',
+        'wizard/restore_items.xml',
     ],
     "auto_install": False,
     "installable": True,
