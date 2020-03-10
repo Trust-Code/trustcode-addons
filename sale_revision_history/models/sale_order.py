@@ -56,7 +56,9 @@ class SaleOrder(models.Model):
             revno = self.revision_number
             self.write({
                 'revision_number': revno + 1,
-                'name': '%s-%02d' % (self.unrevisioned_name, revno + 1)})
+                'name': '%s-%02d' % (self.unrevisioned_name or self.name, revno + 1),
+                'unrevisioned_name': self.unrevisioned_name or self.name,
+            })
             defaults.update({
                 'name': prev_name,
                 'revision_number': revno,
@@ -66,3 +68,15 @@ class SaleOrder(models.Model):
                 'unrevisioned_name': self.unrevisioned_name,
             })
         return super(SaleOrder, self).copy(defaults)
+
+    def action_restore_items_wizard(self):
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Select Items to Restore'),
+            'res_model': 'restore.items.wizard',
+            'view_type': 'form',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {'default_order_id': self.id},
+            'nodestroy': True,
+        }
