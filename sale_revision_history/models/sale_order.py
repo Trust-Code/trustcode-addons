@@ -11,7 +11,7 @@ class SaleOrder(models.Model):
         readonly=True, context={'active_test': False})
     revision_number = fields.Integer('Revision', copy=False)
     unrevisioned_name = fields.Char(
-        'Order Reference', copy=True, readonly=True)
+        'Order Reference', copy=False, readonly=True)
     active = fields.Boolean('Active', default=True, copy=True)
 
     @api.model
