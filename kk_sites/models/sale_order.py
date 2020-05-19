@@ -81,17 +81,29 @@ class SaleOrderLine(models.Model):
         pasta = project.kk_site_id.pasta_servidor.replace(
             'https://' + host + '.egnyte.com/app/index.do#storage/files/1',
             '').replace('%20', ' ')
+
+        numero = 2 if number == 0 else number
         name = '{0}_{1} ({2})'.format(
-            str(number + 1).zfill(2), self.product_id.default_code,
+            str(numero + 1).zfill(2), self.product_id.default_code,
             self.order_id.name).replace(':', '_').strip()
         name = normalize(
             'NFKD', name).encode('ASCII', 'ignore').decode('ASCII').upper()
         name = name.replace('[', '(').replace(']', ')')
-        pasta += '/' + name
-        domain = 'https://' + host + '.egnyte.com/pubapi/v1/fs' + pasta
+        pasta1 = pasta + '/' + '00_ART'
+        pasta2 = pasta + '/' + '01_{0}'.format(self.order_id.partner_id.name.upper())
+        pasta3 = pasta + '/' + name
+
+        domain = 'https://' + host + '.egnyte.com/pubapi/v1/fs'
         data = {"action": "add_folder"}
         data = json.dumps(data)
-        response = requests.post(domain, headers=headers, data=data)
+
+        if number == 0:
+            response = requests.post(domain + pasta1, headers=headers, data=data)
+            response = requests.post(domain + pasta2, headers=headers, data=data)
+            response = requests.post(domain + pasta3, headers=headers, data=data)
+        else:
+            response = requests.post(domain + pasta3, headers=headers, data=data)
+
         link = project.kk_site_id.pasta_servidor + '/' + name
         if response.ok:
             self.order_id.message_post(
