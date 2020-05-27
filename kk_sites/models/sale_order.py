@@ -90,7 +90,8 @@ class SaleOrderLine(models.Model):
             'NFKD', name).encode('ASCII', 'ignore').decode('ASCII').upper()
         name = name.replace('[', '(').replace(']', ')')
         pasta1 = pasta + '/' + '00_ART'
-        pasta2 = pasta + '/' + '01_{0}'.format(self.order_id.partner_id.name.upper())
+        pasta2 = pasta + '/' + '01_DADOS {0}'.format(
+            self.order_id.partner_id.commercial_partner_id.name.upper())
         pasta3 = pasta + '/' + name
 
         domain = 'https://' + host + '.egnyte.com/pubapi/v1/fs'
