@@ -82,7 +82,7 @@ class SaleOrderLine(models.Model):
             'https://' + host + '.egnyte.com/app/index.do#storage/files/1',
             '').replace('%20', ' ')
 
-        numero = 2 if number == 0 else number
+        numero = 1 if number == 0 else number
         name = '{0}_{1} ({2})'.format(
             str(numero + 1).zfill(2), self.product_id.default_code,
             self.order_id.name).replace(':', '_').strip()
