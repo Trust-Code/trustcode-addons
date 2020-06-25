@@ -100,7 +100,15 @@ class SaleOrderLine(models.Model):
 
         if number == 0:
             response = requests.post(domain + pasta1, headers=headers, data=data)
+            if not response.ok:
+                self.order_id.message_post(
+                    'Problemas ao criar pasta no servidor do egnyte: %s'
+                    % response.text)
             response = requests.post(domain + pasta2, headers=headers, data=data)
+            if not response.ok:
+                self.order_id.message_post(
+                    'Problemas ao criar pasta no servidor do egnyte: %s'
+                    % response.text)
             response = requests.post(domain + pasta3, headers=headers, data=data)
         else:
             response = requests.post(domain + pasta3, headers=headers, data=data)
