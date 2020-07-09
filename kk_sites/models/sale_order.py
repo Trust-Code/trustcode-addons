@@ -4,6 +4,7 @@
 
 from odoo import fields, models, api
 import json
+import time
 import requests
 from unicodedata import normalize
 from odoo.exceptions import UserError
@@ -104,14 +105,18 @@ class SaleOrderLine(models.Model):
                 self.order_id.message_post(
                     'Problemas ao criar pasta no servidor do egnyte: %s'
                     % response.text)
+            time.sleep(0.5)
             response = requests.post(domain + pasta2, headers=headers, data=data)
             if not response.ok:
                 self.order_id.message_post(
                     'Problemas ao criar pasta no servidor do egnyte: %s'
                     % response.text)
+            time.sleep(0.5)
             response = requests.post(domain + pasta3, headers=headers, data=data)
+            time.sleep(0.5)
         else:
             response = requests.post(domain + pasta3, headers=headers, data=data)
+            time.sleep(0.5)
 
         link = project.kk_site_id.pasta_servidor + '/' + name
         if response.ok:
