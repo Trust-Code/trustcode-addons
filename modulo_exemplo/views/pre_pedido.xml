@@ -1,0 +1,76 @@
+<odoo>
+
+    <record id="action_pre_pedido" model="ir.actions.act_window">
+        <field name="name">Pré-Pedido</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">pre.pedido</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_type">form</field>
+    </record>
+
+    <menuitem id="menu_pre_pedido" name="Pre-Pedido" 
+        parent="sale.sale_order_menu" sequence="0" action="action_pre_pedido"/>
+
+   <record id="view_pre_pedido_tree" model="ir.ui.view">
+        <field name="name">view.pre.pedido.tree</field>
+        <field name="model">pre.pedido</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="currency_id"/>
+                <field name="desconto"/>
+                <field name="valor_total" />
+            </tree>
+        </field>
+    </record>
+
+   <record id="view_pre_pedido_item_tree" model="ir.ui.view">
+        <field name="name">view.pre.pedido.item.tree</field>
+        <field name="model">pre.pedido.item</field>
+        <field name="arch" type="xml">
+            <tree editable="bottom">
+                <field name="name"/>
+                <field name="product_id"/>
+                <field name="currency_id"/>
+                <field name="quantidade"/>
+                <field name="preco_unitario" />
+                <field name="desconto" />
+                <field name="total" />                
+            </tree>
+        </field>
+    </record>
+
+   <record id="view_pre_pedido_form" model="ir.ui.view">
+        <field name="name">view.pre.pedido.form</field>
+        <field name="model">pre.pedido</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <group>
+                        <field name="name"/>
+                        <field name="partner_id"/>
+                    </group>
+                    <group>
+                        <field name="currency_id"/>
+                    </group>
+                </group>
+                
+                <group string="Itens do Pedido">
+                    <field name="item_ids" nolabel="1" widget="section_and_note_one2many"/>
+                </group>
+                <group>
+                    <group>
+                        <field name="desconto_no_total"/>
+                        <field name="novo_valor_total"/>
+                    </group>
+                </group>
+                <group class="oe_subtotal_footer oe_right">
+                    <field name="desconto"/>
+                    <field name="valor_total"/>
+                </group>
+            </form>
+        </field>
+    </record>
+
+</odoo>
