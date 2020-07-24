@@ -1,12 +1,19 @@
 
 
 from odoo import api, fields, models
+from odoo.exceptions import ValidationError, UserError
 
 
 class PrePedido(models.Model):
     _name = 'pre.pedido'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
+    
     
     name = fields.Char(string="Numero do pedido")
+
+    state = fields.Selection(
+        [('draft', 'Provisório'), ('done', 'Confirmado')],
+        string="Situação", default='draft')
 
     partner_id = fields.Many2one("res.partner", string="Cliente")
     currency_id = fields.Many2one('res.currency')
@@ -57,6 +64,12 @@ class PrePedido(models.Model):
             item.desconto = sum([x.desconto for x in item.item_ids])
             item.valor_total = sum([x.total for x in item.item_ids])
     
+    
+    def action_cancel_document(self):
+        self.write({'state': 'draft'})
+        
+    def action_confirm_document(self):
+        self.write({'state': 'done'})
 
 class PrePedidoItem(models.Model):
     _name = 'pre.pedido.item'
@@ -70,8 +83,21 @@ class PrePedidoItem(models.Model):
 
     quantidade = fields.Float(string="Quantidade")
     preco_unitario = fields.Float(string="Preço Unitário")
-    desconto = fields.Float(string="Desconto")
+    desconto = fields.Monetary(string="Desconto")
+    subtotal = fields.Monetary(string="SubTotal", compute='_compute_total_item', store=True)
     total = fields.Monetary(string="Total", compute='_compute_total_item', store=True)
+
+
+    @api.constrains('quantidade', 'preco_unitario', 'desconto')
+    def validate_values_item(self):
+        for item in self:
+            if item.quantidade <= 0:
+                raise ValidationError('Quantidade deve ser maior que 0')
+            if item.preco_unitario <= 0:
+                raise ValidationError('Preço deve ser maior que 0')
+            if item.desconto > (item.quantidade * item.preco_unitario):
+                raise ValidationError('O desconto deve ser menor que o valor dos produtos')
+
 
     @api.onchange('product_id')
     def _onchange_product_id(self):
@@ -81,6 +107,7 @@ class PrePedidoItem(models.Model):
     @api.depends('quantidade', 'preco_unitario', 'desconto')
     def _compute_total_item(self):
         for item in self:
+            item.subtotal = round(item.quantidade * item.preco_unitario, 2)
             item.total = round((item.quantidade * item.preco_unitario) - item.desconto, 2)
     
 
