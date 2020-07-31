@@ -68,29 +68,34 @@
                     <field name="state" widget="statusbar" statusbar_visible="draft,done" clickable="1" />
                 </header>
                 <sheet string="Pré-Pedido">
-                <group>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_orders" type="object" class="oe_stat_button" icon="fa-pencil-square-o" attrs="{'invisible': [('sale_order_count', '=', 0)]}">
+                            <field name="sale_order_count" widget="statinfo" string="Pedidos"/>
+                        </button>
+                    </div>
                     <group>
-                        <field name="name"/>
-                        <field name="partner_id"/>
+                        <group>
+                            <field name="name"/>
+                            <field name="partner_id"/>
+                        </group>
+                        <group>
+                            <field name="currency_id"/>
+                        </group>
+                    </group>
+                    
+                    <group string="Itens do Pedido">
+                        <field name="item_ids" nolabel="1" widget="section_and_note_one2many"/>
                     </group>
                     <group>
-                        <field name="currency_id"/>
+                        <group>
+                            <field name="desconto_no_total"/>
+                            <field name="novo_valor_total"/>
+                        </group>
                     </group>
-                </group>
-                
-                <group string="Itens do Pedido">
-                    <field name="item_ids" nolabel="1" widget="section_and_note_one2many"/>
-                </group>
-                <group>
-                    <group>
-                        <field name="desconto_no_total"/>
-                        <field name="novo_valor_total"/>
+                    <group class="oe_subtotal_footer oe_right">
+                        <field name="desconto"/>
+                        <field name="valor_total"/>
                     </group>
-                </group>
-                <group class="oe_subtotal_footer oe_right">
-                    <field name="desconto"/>
-                    <field name="valor_total"/>
-                </group>
                 </sheet>
                 <div class="oe_chatter">
                     <field name="message_follower_ids" widget="mail_followers" groups="base.group_user"/>

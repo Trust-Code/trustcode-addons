@@ -14,5 +14,6 @@
     'data': [
         'security/ir.model.access.csv',
         'views/pre_pedido.xml',
+        'views/sale_order.xml',
     ],
 }

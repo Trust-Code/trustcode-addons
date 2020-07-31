@@ -13,7 +13,7 @@ class PrePedido(models.Model):
 
     state = fields.Selection(
         [('draft', 'Provisório'), ('done', 'Confirmado')],
-        string="Situação", default='draft')
+        string="Situação", default='draft', track_visibility='always')
 
     partner_id = fields.Many2one("res.partner", string="Cliente")
     currency_id = fields.Many2one('res.currency')
@@ -25,6 +25,10 @@ class PrePedido(models.Model):
     
     desconto_no_total = fields.Monetary(string="Aplicar desconto")
     novo_valor_total = fields.Monetary(string="Novo Valor total")
+
+    sale_order_count = fields.Integer(compute='compute_sale_order')
+    
+    order_ids = fields.One2many('sale.order', 'pre_pedido_id')
 
     @api.onchange('desconto_no_total')
     def _onchange_desconto_no_total(self):
@@ -58,6 +62,11 @@ class PrePedido(models.Model):
             item.item_ids[-1].desconto += resto
             item.novo_valor_total = 0
 
+    def compute_sale_order(self):
+        for pre in self:
+            pre.sale_order_count = self.env['sale.order'].search_count(
+                [('pre_pedido_id', '=', pre.id)])
+
     @api.depends('item_ids', 'item_ids.total')
     def _compute_totais(self):
         for item in self:
@@ -66,10 +75,64 @@ class PrePedido(models.Model):
     
     
     def action_cancel_document(self):
+        self.order_ids.filtered(lambda x: x.state in ('draft', 'sent')).action_cancel()
         self.write({'state': 'draft'})
-        
+
+    
+    def _prepare_sale_order(self):
+        items = []
+        for line in self.item_ids:
+            vals = line._prepare_sale_order_item()
+            items.append((0, None, vals))
+            
+        return {
+            'partner_id': self.partner_id.id,
+            'currency_id': self.currency_id.id,
+            'order_line': items,
+            'pre_pedido_id': self.id,
+        }
+    
     def action_confirm_document(self):
+        
+        for pre in self:
+            vals = pre._prepare_sale_order()
+            order = self.env['sale.order'].create(vals)
+            
+            message = "Este pedido foi criado a partir de: <a href=# data-oe-model=pre.pedido data-oe-id=%d>%s</a><br>" % (pre.id, pre.name)
+            order.message_post(body=message)
+
         self.write({'state': 'done'})
+        
+    def action_view_orders(self):    
+        if self.sale_order_count == 1:
+            # Buscando a referencia para a ação
+            dummy, act_id = self.env['ir.model.data'].get_object_reference(
+                'sale', 'action_quotations_with_onboarding')
+            # buscando a referencia para o formulario que vai abrir
+            dummy, view_id = self.env['ir.model.data'].get_object_reference(
+                'sale', 'view_order_form')
+
+            # aqui eu modifico a view da ação
+            vals = self.env['ir.actions.act_window'].browse(act_id).read()[0]
+            vals['view_id'] = (view_id, 'sale.order.form')
+            vals['views'][1] = (view_id, 'form')
+            vals['views'] = [vals['views'][1], vals['views'][0]]
+
+            # aqui eu vou buscar o id do pedido que precisa abrir
+            order = self.env['sale.order'].search(
+                [('pre_pedido_id', '=', self.id)], limit=1)
+    
+            vals['res_id'] = order.id
+            return vals
+        else:
+            dummy, act_id = self.env['ir.model.data'].get_object_reference(
+                    'sale', 'action_quotations_with_onboarding')
+            vals = self.env['ir.actions.act_window'].browse(act_id).read()[0]
+            vals['domain'] = [('pre_pedido_id', '=', self.id)]
+            vals['context'] = {}
+            return vals
+
+        
 
 class PrePedidoItem(models.Model):
     _name = 'pre.pedido.item'
@@ -110,8 +173,12 @@ class PrePedidoItem(models.Model):
             item.subtotal = round(item.quantidade * item.preco_unitario, 2)
             item.total = round((item.quantidade * item.preco_unitario) - item.desconto, 2)
     
-
-
+    def _prepare_sale_order_item(self):
+        return {
+            'product_id': self.product_id.id,
+            'product_uom_qty': self.quantidade,
+            'price_unit': self.total / self.quantidade,
+        }
     
 
     
