@@ -28,8 +28,11 @@ class MailThread(models.AbstractModel):
         for record in self:
             
             template_name = 'mail.message_user_assigned'
+            vals = {}
+            subject = None
             if self._name == 'account.invoice':
                 template_name = 'kk_messages.message_invoice_created'
+                vals['subject'] = 'Fatura criada'
             
             record.message_post_with_view(
                 template_name,
@@ -38,4 +41,4 @@ class MailThread(models.AbstractModel):
                 auto_delete=True,
                 auto_delete_message=True,
                 parent_id=False, # override accidental context defaults
-                subtype_id=self.env.ref('mail.mt_note').id)
+                subtype_id=self.env.ref('mail.mt_note').id, **vals)
