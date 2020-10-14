@@ -73,9 +73,6 @@
 				<xpath expr="//field[@name='company_id']" position="attributes">
 					<attribute name="attrs">{'readonly':[('state', '=', 'sent')]}</attribute>
 				</xpath>
-				<xpath expr="//field[@name='fiscal_position_id']" position="attributes">
-					<attribute name="attrs">{'readonly':[('state', '=', 'sent')]}</attribute>
-				</xpath>
 				<xpath expr="//field[@name='invoice_status']" position="attributes">
 					<attribute name="attrs">{'readonly':[('state', '=', 'sent')]}</attribute>
 				</xpath>
