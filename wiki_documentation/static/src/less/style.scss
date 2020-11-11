@@ -1,0 +1,73 @@
+ul.nav-stacked > li > a {
+  padding: 6px 15px;
+}
+
+.doc-tag {
+  border-radius: 4px;
+  margin: 4px;
+  margin-left: 0;
+  font-size: 12px;
+  padding: 0.4em 0.5em;
+  background-color: #e1ecf4;
+
+  &:hover {
+    color: #00315d;
+    text-decoration: underline;
+  }
+}
+
+#document {
+  @media (min-width: 800px) {
+    padding-left: 40px;
+    padding-right: 0px;
+  }
+
+  padding-top: 30px;
+}
+
+#categories_sidebar {
+  padding-top: 20px;
+  max-width: 270px;
+  position: sticky;
+  top: 0;
+  // min-height: 800px;
+}
+
+#rating {
+  text-align: center;
+
+  .card {
+    margin: auto;
+    width: 300px;
+  }
+
+  a.fa-heart:hover {
+    color: darken($green, 10%);
+    text-decoration: none;
+  }
+
+  a.fa-thumbs-down:hover {
+    color: darken($red, 10%);
+    text-decoration: none;
+  }
+}
+
+#doc-list {
+  margin-left: 15px;
+
+  p {
+    margin: 0;
+  }
+
+  .fa {
+    margin-right: 16px;
+    font-size: 16px;
+    text-align: center;
+    width: 20px;
+  }
+}
+
+#document_search {
+  max-width: 650px;
+  margin: auto;
+}

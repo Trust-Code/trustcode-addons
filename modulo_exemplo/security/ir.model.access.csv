@@ -1,3 +1,0 @@
-id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_pre_pedido,access_pre_pedido,model_pre_pedido,base.group_user,1,1,1,1
-access_pre_pedido_item,access_pre_pedido_item,model_pre_pedido_item,base.group_user,1,1,1,1

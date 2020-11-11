@@ -1,0 +1,359 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="portal_layout_documents" name="Portal My Home: project entries" inherit_id="portal.portal_my_home" priority="40">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+            <li class="list-group-item">
+                <a t-attf-href="/my/documents">Documentação</a>
+            </li>
+        </xpath>
+    </template>
+
+    <template id="breadcrumb_documentation" name="Portal layout: documents" inherit_id="portal.portal_breadcrumbs" priority="40">
+         <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
+            <li t-if="page_name == 'document' or documents">
+               <span>Documentation</span>
+             </li>
+        </xpath>
+    </template>
+
+    <template id="documentation_list_item" name="List Item Document">
+      <div class="documento" style="margin-left: 20px">
+
+        <div class="document_title" style="display: flex; aling-item: center;">
+          <a t-att-href="'/my/document/{}'.format(slug(doc))" style="color:#504F53;">
+              <h4 t-field="doc.name" style="display: inline;">Publicação sem Título</h4>
+          </a>
+          <span t-if="not doc.website_published" class="label label-danger" style="display: inline; margin-left: 0.5em; margin-bottom: 10px;">não publicado</span>
+        </div>
+
+        <div class="text-muted">
+            <p t-field="doc.teaser" class="mb12 mt12 o_blog_post_teaser" style="display: none;"/>
+            <div name="blog_post_data" class="mb0">
+                <span t-field="doc.responsible_id" style="display: inline-block;" t-options="{'widget': 'contact', 'fields': ['name']}"/>
+                &amp;mdash;
+                <span t-field="doc.write_date" t-options="{'format': 'MMMM yyyy'}"/>
+                &amp;mdash;
+                <a t-att-href="'/my/documents/?categoria={}'.format(doc.category_id.id)" t-field="doc.category_id" />
+                <span t-if="doc.version &gt;= 0">
+                  &amp;mdash; <t t-esc="doc.views"/>
+                    <t t-if="doc.views &lt;= 1">visualizar</t>
+                    <t t-if="doc.views &gt; 1">visualizações</t>
+                </span>
+
+            </div>
+            <span class="fa fa-tags" style="margin-right: 0.5em; margin-top: 0.5em;"/>
+            <t t-foreach="doc.tag_ids" t-as="one_tag"><a t-att-href="'/my/documents/?tag={}'.format(one_tag.id)" style="border-radius: 4px; margin-right: 10px; font-size: 12px; padding: .4em .5em; background-color: #E1ECF4;" t-esc="one_tag.name"/></t>
+            <hr/>
+        </div>
+
+      </div>
+    </template>
+
+    <template id="portal_my_documents" name="Documentation Index">
+      <t t-set="title" t-value="'Início | Documentação Trustcode'"/>
+      <t t-call="website.layout" t-if="not categoria and not tag">
+        <div id="wrap" class="oe_structure oe_empty">
+          <section class="s_text_block_image_fw mt0 oe_img_bg oe_custom_bg" style="background-color: rgb(43, 44, 53); box-shadow: rgba(0, 0, 0, 0.08) 0px 5px 20px 0px inset; background-position: 47.68% 98.57%; background-image: url(/wiki_documentation/static/src/img/blocks/Topography.png);">
+            <div class="container">
+              <div class="row">
+                <div class="col-md-12 mt64 mb16">
+                  <h1 class="text-center text-white">Documentação/Manuais</h1>
+                  <p style="font-size: 22px;color:white;" class="text-center">O que você vai aprender hoje?</p>
+                  <form style="max-width: 650px; margin: auto;" class="mt16 input-group" method="get" action="">
+                    <input name="search" type="text" class="form-control" placeholder="Procure documentos, tópicos, categorias" />
+                    <span class="input-group-btn">
+                      <button class="btn btn-primary" type="submit">
+                        <span class="fa fa-search"/>
+                      </button>
+                    </span>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </section>
+          <div class="container" t-if="not search">
+            <h3 class="mt48">Categorias</h3>
+            <div class="row mb24">
+              <t t-foreach="categories" t-as="cat">
+                <div class="col-md-3 col-xs-6" t-if="len(cat.document_ids) > 0">
+                  <div class="card">
+                    <div class="card-body" style="min-height: 200px;">
+                      <span t-att-class="'fa %s' % cat.icon" style="font-size: 34px; margin-bottom: 14px;"/>
+                      <h4 class="card-title mt0">
+                        <a t-att-href="'/my/documents/?categoria={}'.format(cat.id)">
+                          <span t-field="cat.name" />
+                        </a>
+                      </h4>
+                      <p class="card-text" t-field="cat.description"/>
+                    </div>
+                  </div>
+                </div>
+              </t>
+            </div>
+            <h3 class="text-center mt48">Marcadores</h3>
+            <div class="mb24" style="max-width: 800px; margin: auto; text-align: center;">
+              <nav>
+                <ul class="nav nav-pills" style="margin-bottom: 25px;">
+                  <t t-foreach="tags" t-as="one_tag">
+                    <li style="display: inline-block; margin: 2px;">
+                      <a t-att-href="'/my/documents/?tag={}'.format(one_tag.id)" class="doc-tag">
+                        <span t-field="one_tag.name" />
+                      </a>
+                    </li>
+                  </t>
+                </ul>
+              </nav>
+            </div>
+            <div class="row">
+              <div class="col-md-6 mb92 mt92">
+                <h3>Últimos Documentos</h3>
+                <hr/>
+                <table id="doc-list">
+                  <tbody>
+                    <tr t-foreach="recentes" t-as="doc" class="mt16 mb16">
+                      <t t-call="wiki_documentation.document_index_single"/>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="col-md-6 mb92 mt92">
+                <h3>Mais Lidos</h3>
+                <hr/>
+                <table id="doc-list">
+                  <tbody>
+                    <tr t-foreach="vistos" t-as="doc" class="mt16 mb16">
+                      <t t-call="wiki_documentation.document_index_single"/>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div id="document_search" class="container" t-if="search">
+            <div class="mb92" t-if="len(documents) != 0">
+              <h2 class="mt48">
+                <span>
+                  <span t-esc="len(documents)"/>
+ resultado<span t-if="len(documents) > 1">s</span> para "<span t-esc="search"/>
+"</span>
+              </h2>
+              <div class="mt24">
+                <table id="doc-list">
+                  <tbody>
+                    <tr t-foreach="documents" t-as="doc" class="mt16 mb16">
+                      <t t-call="wiki_documentation.document_index_single"/>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="mb92" t-if="len(documents) == 0">
+              <h2 class="mt48">
+                <span>Nenhum resultado encontrado para "<span t-esc="search"/>
+"</span>
+              </h2>
+              <div class="text-center">
+                <img class="text-center mb92" src="/wiki_documentation/static/src/img/blocks/download.png"/>
+                <div class="card mt32 mb32">
+                  <p>Precisa de ajuda?</p>
+                  <a href="/my/tickets" class="btn btn-danger">
+                    <span class="fa fa-life-ring mr8"/>
+Contate o Suporte</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </t>
+      <t t-call="website.layout" t-if="categoria or tag">
+        <div id="wrap" class="oe_structure oe_empty">
+          <div class="container">
+            <div class="mb64" id="document">
+              <div class="header mb16">
+                <div class="breadcrumb_div">
+                  <ol class="breadcrumb o_portal_submenu">
+                    <li>
+                      <a href="/my/documents">
+                        <span class="fa fa-angle-left mr8"/>
+Voltar</a>
+                    </li>
+                  </ol>
+                </div>
+              </div>
+              <div i-if="categoria">
+                <t t-foreach="categories" t-as="cat">
+                  <h1 t-if="cat.id == categoria">
+                    <span t-field="cat.name" />
+                  </h1>
+                </t>
+              </div>
+              <div i-if="tag">
+                <t t-foreach="tags" t-as="one_tag">
+                  <h1 t-if="one_tag.id == tag">
+                    <span t-field="one_tag.name" />
+                  </h1>
+                </t>
+              </div>
+              <div class="row mb92">
+                <div class="col-md-12">
+                  <i>
+                    <span t-esc="len(documents)"/> documento<span t-if="len(documents) >1">s </span>
+                    <span t-if="categoria">nesta categoria</span>
+                    <span t-if="tag">com este marcador</span>
+                  </i>
+                  <hr/>
+                  <table id="doc-list">
+                    <tbody>
+                      <tr t-foreach="documents" t-as="doc" class="mt16 mb16">
+                        <t t-call="wiki_documentation.document_index_single"/>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <div t-if="len(documents) == 0">
+                    <span>Nenhum documento encontrado</span>
+                  </div>
+                </div>
+              </div>
+              <h4>Outras Categorias</h4>
+              <div class="row mb24">
+                <t t-foreach="categories" t-as="cat">
+                  <div class="col-md-3 col-xs-6" t-if="len(cat.document_ids) > 0">
+                    <div class="card">
+                      <div class="card-body">
+                        <h4 class="mt0 mb0 card-title">
+                          <span t-att-class="'fa %s' % cat.icon" style="font-size: 20px; margin-bottom: 14px;"/>
+                          <a t-att-href="'/my/documents/?categoria={}'.format(cat.id)">
+                            <span t-field="cat.name" />
+                          </a>
+                        </h4>
+                      </div>
+                    </div>
+                  </div>
+                </t>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </t>
+    </template>
+
+    <template id="documentation_controller">
+      <div id="website_published_button"
+         groups="wiki_documentation.group_documentation_user">
+         <t t-call="website.publish_management">
+            <t t-set="object" t-value="doc"/>
+            <t t-set="publish_edit" t-value="True"/>
+            <t t-set="action" t-value="'wiki_documentation.documentation_action_form'"/>
+          </t>
+      </div>
+    </template>
+
+    <template id="portal_my_document" name="Document Page">
+        <t t-call="website.layout">
+          <t t-set="title" t-value="'%s | Documentação Trustcode' % doc.name"/>
+          <div class="container">
+            <div class="row">
+              <div class="col-md-3 hidden-sm hidden-xs" id="categories_sidebar">
+                <h4>Categorias</h4>
+                <div class="card">
+                  <nav>
+                      <ul class="nav flex-column">
+                          <t t-foreach="categories" t-as="cat">
+                              <li class="nav-item" t-if="cat.id != doc.category_id.id and len(cat.document_ids) > 0">
+                                  <a class="nav-link" t-att-href="'/my/documents/?categoria={}'.format(cat.id)">
+                                      <span t-att-class="'fa %s mr8' % cat.icon"/>
+                                      <span t-esc="cat.name"/>
+                                  </a>
+                              </li>
+                              <li class="nav-item" t-if="cat.id == doc.category_id.id">
+                                  <a class="nav-link active" t-att-href="'/my/documents/?categoria={}'.format(cat.id)">
+                                      <span t-att-class="'fa %s mr8' % cat.icon"/>
+                                      <span t-field="cat.name" />
+                                  </a>
+                              </li>
+                          </t>
+                      </ul>
+                  </nav>
+                </div>
+              </div>
+              <div class="col-md-9 col-sm-12 mb64" id="document">
+                <div>
+                  <t t-call="wiki_documentation.documentation_controller"/>
+
+                  <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb o_portal_submenu">
+                      <li class="breadcrumb-item"><a href="/my/documents">Documentação</a></li>
+                      <li class="breadcrumb-item active"><a t-att-href="'/my/documents/?categoria={}'.format(doc.category_id.id)"><span t-esc="doc.category_id.name"/></a></li>
+                      <li class="breadcrumb-item"></li>
+                    </ol>
+                  </nav>
+
+                  <h1 t-field="doc.name" class="mt16" style="max-width: 600px;"></h1>
+                  <div class="mb8">
+                    <t t-foreach="doc.tag_ids" t-as="one_tag">
+                      <a t-att-href="'/my/documents/?tag={}'.format(one_tag.id)" class="doc-tag" t-esc="one_tag.name"/>
+                    </t>
+                    <span style="font-size:10px;"><t t-esc="doc.views" /> visualizações</span>
+                  </div>
+                  <a t-if="doc.type == 'process'" t-att-href="'/bpmn/modeler/{}/{}/{}'.format('doc.docs', 'bpmn_process', doc.id)" class="label label-info" target="_blank">Editar processo</a>
+                </div>
+                <div name="view_main_content" class="mb32">
+                    <t t-if="doc.type == 'process'">
+                      <div id="canvas_bpm" style="height:400px;"></div>
+                      <div class="clear" />
+                      <hr />
+                      <h1 class="page-header">Descrição do processo</h1>
+                    </t>
+                    <div itemprop="description" t-field="doc.description" class="oe_structure" id="doc_description" />
+                </div>
+                <div name="document_info mb64">
+                  <div t-if="related_documents">
+                    <h5><i>Outros Manuais Relacionados:</i></h5>
+                    <ul>
+                      <t t-foreach="related_documents" t-as="rel">
+                        <li>
+                          <a t-att-href="'/my/document/{}'.format(slug(rel))">
+                            <span t-field="rel.name"/>
+                          </a>
+                        </li>
+                      </t>
+                    </ul>
+                  </div>
+                </div>
+                <div id="rating">
+                  <hr/>
+                  <div class="card mt32 mb32">
+                      <h4>Este documento te ajudou?</h4>
+                      <p class="thumbs-like">
+                        <span t-att-data-id="doc.id" class="fa fa-thumbs-up fa-2x thumbs-up-doc" name="thumbs-up"/>
+                        <span t-att-data-id="doc.id" class="fa fa-thumbs-down fa-2x mr16 thumbs-down-doc" name="thumbs-down"/>
+                      </p>
+                      <p class="thanks-like badge" style="display:none;">Obrigado pelo feedback</p>
+                      <p>Precisa de mais ajuda?</p>
+                      <a href="/requests" class="btn btn-danger"><span class="fa fa-life-ring mr8"/>Contate o Suporte</a>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </t>
+    </template>
+
+    <template id="document_index_single" name="List Item Document 2">
+      <td>
+        <span t-att-class="'fa %s' % doc.category_id.icon" t-att-title="doc.category_id.name"/>
+      </td>
+      <td height="50">
+        <a t-att-href="'/my/document/{}'.format(slug(doc))" class="muted mr8" t-att-title="doc.name">
+            <span t-esc='doc.name'/>
+        </a>
+        <span style="font-size:10px;"><t t-esc="doc.views" /> visualizações</span>
+        <t t-if="search or tag or categoria" t-foreach="doc.tag_ids" t-as="one_tag"><a t-att-href="'/my/documents/?tag={}'.format(one_tag.id)" class="doc-tag" t-esc="one_tag.name"/></t>
+        <span t-if="not doc.website_published" class="label label-danger">não publicado</span>
+      </td>
+    </template>
+
+</odoo>

@@ -1,0 +1,143 @@
+<?odoo version="1.0"?>
+<odoo>
+
+    <record id="documentation_view_form" model="ir.ui.view">
+      <field name="name">documentation.form</field>
+      <field name="model">doc.docs</field>
+      <field name="arch" type="xml">
+        <form string="documentation">
+          <header>
+            <button name="button_approval" groups="wiki_documentation.group_documentation_manager" string="Approval" class="oe_highlight" states="draft,approval" type="object"/>
+            <button name="button_review" groups="wiki_documentation.group_documentation_manager" class="oe_highlight" string="Review" states="approved,approval" type="object"/>
+            <button name="%(wiki_documentation.document_review_wizard_action)d" type="action" string="Submit Review" states="review" class="oe_highlight"/>
+            <field name="state" widget="statusbar" statusbar_visible="draft, approved, review, approval"/>
+          </header>
+          <div groups="wiki_documentation.group_documentation_manager" class="alert alert-info" role="alert" style="margin-bottom:0px;" states="approval">
+            <a class="alert-link">Submitted Approval</a><a><field name="improvements" /></a>
+          </div>
+          <sheet>
+            <div class="oe_button_box" name="button_box">
+                <button class="oe_stat_button" name="website_publish_button" type="object">
+                    <field name="website_published" widget="website_redirect_button"/>
+                </button>
+            </div>
+            <div class="oe_title">
+              <h1>
+                <field name="active" invisible="1"/>
+                <field name="improvements" invisible="1"/>
+                <field name="name" placeholder="Name of Document" attrs="{'readonly': [('state', '=', 'approved')]}"/>
+              </h1>
+              <h2><i>
+                <field name="type" attrs="{'readonly': [('state', '=', 'approved')]}"/>
+              </i></h2>
+            </div>
+            <widget name="web_ribbon" title="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
+            <group name="general">
+              <group name="identification">
+                  <field name="responsible_id"
+                       domain="[('is_company', '!=', True)]"
+                       attrs="{'readonly': [('state', '=', 'approved')]}"/>
+                  <field name="category_id" required="True" attrs="{'readonly': [('state', '=', 'approved')]}"/>
+                  <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color', 'no_create_edit': True}" placeholder="Tags..." />
+              </group>
+              <group name="basics">
+                <field name="views"  />
+                <field name="likes"  />
+                <field name="dislikes"  />
+                <field name="version"  />
+                <field name="next_review" attrs="{'readonly': [('state', '=', 'approved')]}"/>
+                <field name="company_id" options="{'no_create': True}" groups="base.group_multi_company"/>
+              </group>
+            </group>
+            <group string="Critical Information" name="critical_information">
+              <group colspan="4" name="partners_enabled">
+                <field name="enabled_partner_ids" widget="many2many_tags"
+                  domain="[('is_company', '!=', True), ('id', '!=', responsible_id)]"
+                  attrs="{'readonly': [('state', '=', 'approved')]}"/>
+              </group>
+            </group>
+            <group name="description" string="Description">
+              <field name="description" nolabel="1" readonly="1" />
+            </group>
+          </sheet>
+          <div class="oe_chatter">
+              <field name="message_follower_ids" widget="mail_followers"/>
+              <field name="activity_ids" widget="mail_activity"/>
+              <field name="message_ids" widget="mail_thread" options="{'post_refresh': 'recipients'}"/>
+          </div>
+        </form>
+      </field>
+    </record>
+
+    <record id="documentation_view_tree" model="ir.ui.view">
+      <field name="name">documentation.tree</field>
+      <field name="model">doc.docs</field>
+      <field name="arch" type="xml">
+        <tree string="Documentation" default_order="name, version desc" decoration-info="state in ('draft')" decoration-warning="state in ('review')">
+          <field name="name"/>
+          <field name="responsible_id"/>
+          <field name="version"/>
+          <field name="next_review" />
+          <field name="type" />
+          <field name="category_id" />
+          <field name="state"/>
+        </tree>
+      </field>
+    </record>
+
+    <record id="documentation_view_search" model="ir.ui.view">
+      <field name="name">doc.docs.search</field>
+      <field name="model">doc.docs</field>
+      <field name="arch" type="xml">
+        <search string="Documentation">
+          <field name="name"/>
+          <field name="responsible_id"/>
+          <field name="category_id"/>
+          <filter string="Draft" name="draft" domain="[('state','=', 'draft')]"/>
+          <filter string="Review" name="review" domain="[('state','=', 'review')]"/>
+          <filter string="Approved" name="approved" domain="[('state','=', 'approved')]"/>
+          <filter string="For Approval" name="forapproval" domain="[('state','=', 'approval')]"/>
+          <separator />
+          <filter string="Archived" name="inactive" domain="[('active','=',False)]"/>
+          <filter name="process" string="Process" domain="[('type', '=', 'process')]"/>
+          <filter name="document" string="Document" domain="[('type', '=', 'manual')]"/>
+          <group expand="0" string="Group By">
+              <filter string="Stage" name="groupby_stage" domain="[]" context="{'group_by':'state'}"/>
+              <filter string="Responsible" name="groupby_responsible" domain="[]" context="{'group_by':'responsible_id'}"/>
+              <filter string="Category" name="groupby_category" domain="[]" context="{'group_by':'category_id'}"/>
+          </group>
+        </search>
+      </field>
+    </record>
+
+    <record id="documentation_action_form" model="ir.actions.act_window">
+      <field name="name">Documentação</field>
+      <field name="res_model">doc.docs</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="menu_documentation"
+        name="Documentation"
+        web_icon="wiki_documentation,static/description/icon.png"
+        sequence="10"
+        groups="wiki_documentation.group_documentation_user"/>
+
+    <menuitem id="menu_documentation_documentation"
+        name="Documentation"
+        action="documentation_action_form"
+        parent="menu_documentation"
+        sequence="1"/>
+
+    <record id="action_wiki_documentation" model="ir.actions.act_url">
+        <field name="name">Documentação</field>
+        <field name="url">/my/documents</field>
+        <field name="target">self</field>
+    </record>
+
+    <menuitem id="menu_documentation_website"
+        name="Wiki"
+        action="action_wiki_documentation"
+        parent="menu_documentation"
+        sequence="1"/>
+
+</odoo>

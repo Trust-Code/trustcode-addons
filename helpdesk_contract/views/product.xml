@@ -1,0 +1,16 @@
+<odoo>
+    <record id="view_helpdesk_contract_product_template_form" model="ir.ui.view">
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="sale.product_template_form_view_invoice_policy" />
+        <field name="arch" type="xml">
+            <group name="invoicing" position="after">
+                <group>
+                    <field name="has_support_contract" />
+                </group>
+            </group>
+        </field>
+    </record>
+</odoo>
+
+
+

@@ -1,0 +1,12 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_documentation_employee,doc.documentation.user,wiki_documentation.model_doc_docs,wiki_documentation.group_documentation_user,1,1,1,0
+access_documentation_edit,doc.documentation.reviewer,wiki_documentation.model_doc_docs,wiki_documentation.group_documentation_reviewer,1,1,1,1
+access_documentation_doc_public,doc.documentation.public,model_doc_docs,base.group_public,1,0,0,0
+access_documentation_category_employee,doc.category.user,wiki_documentation.model_doc_category,wiki_documentation.group_documentation_user,1,0,0,0
+access_documentation_category_edit,doc.category.reviewer,wiki_documentation.model_doc_category,wiki_documentation.group_documentation_reviewer,1,1,1,1
+access_documentation_category_portal,doc.category.portal,wiki_documentation.model_doc_category,base.group_portal,1,0,0,0
+access_documentation_category_public,doc.category.public,wiki_documentation.model_doc_category,base.group_public,1,0,0,0
+access_documentation_tag_employee,doc.category.user,wiki_documentation.model_doc_tags,wiki_documentation.group_documentation_user,1,0,0,0
+access_documentation_tag_edit,doc.category.reviewer,wiki_documentation.model_doc_tags,wiki_documentation.group_documentation_reviewer,1,1,1,1
+access_documentation_tag_portal,doc.category.portal,wiki_documentation.model_doc_tags,base.group_portal,1,0,0,0
+access_documentation_tag_public,doc.tags.public,wiki_documentation.model_doc_tags,base.group_public,1,0,0,0

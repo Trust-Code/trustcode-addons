@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+
+    <template id="estilos_trustcode_snippets" inherit_id="web.assets_frontend" name="Estilo Snippets">
+        <xpath expr="//link[last()]" position="after">
+          <script src="/wiki_documentation/static/src/js/documentation.js" type="text/javascript"></script>
+          <link href="/wiki_documentation/static/src/less/style.scss" rel="stylesheet" type="text/scss"/>
+        </xpath>
+    </template>
+
+    <template id="s_note" name="Nota">
+      <section class="alert alert-info trust_alert">
+          <div class="container">
+             <i class="fa fa-info-circle trust_icon_snippet"></i>
+                <div>
+                    <p>
+                    <font style="padding-left: 1.5em;">
+                      <strong>Importante!</strong><br />
+                      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</font>
+                    </p>
+                </div>
+          </div>
+      </section>
+    </template>
+
+    <template id="s_alert" name="Alerta">
+      <section class="alert alert-warning trust_alert">
+          <div class="container">
+              <i class="fa fa-warning trust_icon_snippet"></i>
+              <div>
+                  <p>
+                    <font style="padding-left: 1.5em;">
+                      <strong>Importante!</strong><br />
+                      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</font>
+                  </p>
+              </div>
+          </div>
+      </section>
+    </template>
+
+    <template id="s_attention" name="Atenção">
+      <section class="alert alert-danger trust_alert">
+          <div class="container">
+              <i class="fa fa-exclamation-triangle trust_icon_snippet"></i>
+                <div>
+                  <p>
+                    <font style="padding-left: 1.5em;">
+                      <strong>Importante!</strong><br />
+                      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</font>
+                  </p>
+                </div>
+          </div>
+      </section>
+    </template>
+
+    <template id="s_header_1" name="Título 1">
+      <section class="trust_doc_title">
+          <div class="container">
+              <h1>Headline</h1>
+          </div>
+      </section>
+    </template>
+
+    <template id="s_header_2" name="Título 2">
+      <section class="trust_doc_title">
+          <div class="container">
+              <h2>Headline</h2>
+          </div>
+      </section>
+    </template>
+
+    <template id="s_header_3" name="Título">
+      <section class="trust_doc_title">
+          <div class="container">
+              <h3>Headline</h3>
+          </div>
+      </section>
+    </template>
+
+    <template id="s_header_4" name="Sub Título">
+      <section class="trust_doc_title">
+          <div class="container">
+              <h4>Headline</h4>
+          </div>
+      </section>
+    </template>
+
+    <template id="s_paragraph" name="Parágrafos">
+      <section class="trust_doc_paragrafo">
+          <div class="container">
+              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+              <p>Nome de campos: <b>Referência Interna</b></p>
+              <p>Valores dos campos<i><font style="color: rgb(57, 132, 198);">Serviços, Produtos</font></i></p>
+              <p>Nome de módulos: <i><font class="text-gamma" style="">br_account</font></i></p>
+              <p>Janelas e menus: <b>Faturamento ‣ Configurações ‣ Contabilidade ‣ Regras de Rateio</b></p>
+          </div>
+      </section>
+    </template>
+
+    <template id="s_picture" name="Imagem/GIF">
+      <section class="trust_image_section">
+          <div class="container">
+              <div>
+                <img class="trust_image" src="/wiki_documentation/static/src/img/blocks/default.gif"/>
+              </div>
+              <div class="trust_legenda">
+                  <p>Aqui vai a legenda da sua imagem.</p>
+              </div>
+          </div>
+      </section>
+    </template>
+
+    <template id="s_two_picture" name="Duas Imagens">
+       <section class="trust_image_section">
+           <div class="container">
+               <div class="row">
+                 <div class="col-md-6">
+                   <img class="trust_image" src="/wiki_documentation/static/src/img/blocks/default.gif"/>
+                 </div>
+                 <div class="col-md-6">
+                   <img class="trust_image" src="/wiki_documentation/static/src/img/blocks/default.gif"/>
+                 </div>
+               </div>
+           </div>
+       </section>
+     </template>
+
+     <template id="s_picture_text" name="Imagens e Texto">
+       <section class="trust_image_section">
+           <div class="container">
+               <div class="row">
+                 <div class="col-md-6">
+                   <img class="trust_image" src="/wiki_documentation/static/src/img/blocks/default.gif"/>
+                 </div>
+                 <div class="trust_doc_paragrafo col-md-6">
+                   <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+                 </div>
+               </div>
+           </div>
+       </section>
+     </template>
+
+     <template id="s_code" name="Código">
+       <section>
+           <div class="container">
+             <pre class="trust_code">from odoo import api, fields, models</pre>
+           </div>
+       </section>
+     </template>
+
+    <!-- Snippets menu -->
+    <template id="snippets_trustcode" inherit_id="website.snippets">
+      <xpath expr="//div[@id='snippet_structure']" position="before">
+        <div class="o_panel_header">
+          <i class="fa fa-th-large"/>Trustcode Snippets
+        </div>
+        <div class="o_panel_body">
+          <t t-snippet="wiki_documentation.s_note" t-thumbnail="/wiki_documentation/static/src/img/blocks/note1.png"/>
+          <t t-snippet="wiki_documentation.s_alert" t-thumbnail="/wiki_documentation/static/src/img/blocks/note2.png"/>
+          <t t-snippet="wiki_documentation.s_attention" t-thumbnail="/wiki_documentation/static/src/img/blocks/note3.png"/>
+          <!-- <t t-snippet="wiki_documentation.s_header_1" t-thumbnail="/wiki_documentation/static/src/img/blocks/title.png"/>
+          <t t-snippet="wiki_documentation.s_header_2" t-thumbnail="/wiki_documentation/static/src/img/blocks/title.png"/> -->
+          <t t-snippet="wiki_documentation.s_header_3" t-thumbnail="/wiki_documentation/static/src/img/blocks/title.png"/>
+          <t t-snippet="wiki_documentation.s_header_4" t-thumbnail="/wiki_documentation/static/src/img/blocks/title.png"/>
+          <t t-snippet="wiki_documentation.s_paragraph" t-thumbnail="/wiki_documentation/static/src/img/blocks/paragraph.png"/>
+          <t t-snippet="wiki_documentation.s_picture" t-thumbnail="/wiki_documentation/static/src/img/blocks/image.png"/>
+          <t t-snippet="wiki_documentation.s_two_picture" t-thumbnail="/wiki_documentation/static/src/img/blocks/2image.png"/>
+          <t t-snippet="wiki_documentation.s_picture_text" t-thumbnail="/wiki_documentation/static/src/img/blocks/image_text.png"/>
+          <t t-snippet="wiki_documentation.s_code" t-thumbnail="/wiki_documentation/static/src/img/blocks/code.png"/>
+        </div>
+      </xpath>
+    </template>
+
+  </data>
+</odoo>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <record id="wizard_document_review_wizard" model="ir.ui.view">
+      <field name="name">document.review.wizard</field>
+      <field name="model">doc.review.wizard</field>
+      <field name="type">form</field>
+      <field name="arch" type="xml">
+        <form string="Wizard for Document Review">
+          <div>
+            <h3><i>Explain above all your improvements, using structured topics with the problem occurred and then solution.</i></h3>
+          </div>
+          <group string="Improvements">
+            <field name="improvements" required="1" nolabel="1"/>
+          </group>
+          <footer>
+            <button name="request_approval" string="Request Approval" class="oe_highlight" type="object" />
+            or
+            <button string="Cancel" class="oe_link" special="cancel"/>
+          </footer>
+        </form>
+      </field>
+     </record>
+
+    <act_window
+        name="Submit your review"
+        res_model="doc.review.wizard"
+        binding_model="doc.docs"
+        binding_views="form"
+        view_mode="form"
+        target="new"
+        view_id="wizard_document_review_wizard"
+        id="document_review_wizard_action"
+    />
+
+
+</odoo>

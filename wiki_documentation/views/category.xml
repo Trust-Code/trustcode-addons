@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <record id="category_view_form" model="ir.ui.view">
+    <field name="name">doc.category.form</field>
+    <field name="model">doc.category</field>
+    <field name="arch" type="xml">
+      <form string="category">
+        <sheet>
+          <div class="oe_title">
+            <h2>
+              <field name="name"/>
+            </h2>
+          </div>
+          <group >
+            <group>
+              <field name="group_ids" widget="many2many_tags"/>
+              <field name="days_review"/>
+            </group>
+            <group>
+              <field name="icon" />
+              <field name="description" />
+            </group>
+          </group>
+        </sheet>
+      </form>
+    </field>
+  </record>
+
+    <record id="category_view_tree" model="ir.ui.view">
+        <field name="name">doc.category.form</field>
+        <field name="model">doc.category</field>
+        <field name="arch" type="xml">
+            <tree string="category">
+              <field name="sequence" widget="handle"/>
+              <field name="name"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="category_action_form" model="ir.actions.act_window">
+        <field name="name">Category</field>
+        <field name="res_model">doc.category</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <record id="action_documentation_tags" model="ir.actions.act_window">
+        <field name="name">Tags</field>
+        <field name="res_model">doc.tags</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="menu_config"
+        name="Configuration"
+        parent="menu_documentation"
+        sequence="99"/>
+
+    <menuitem id="menu_category"
+        name="Category"
+        parent="menu_config"
+        action="category_action_form"
+        sequence="1"/>
+
+    <menuitem id="menu_documentation_tags"
+        name="Tags"
+        parent="menu_config"
+        action="action_documentation_tags"
+        sequence="1"/>
+
+</odoo>

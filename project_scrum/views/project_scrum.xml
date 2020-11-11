@@ -1,0 +1,325 @@
+<odoo>
+    <menuitem id="menu_scrum_in_config"
+        name="Scrum"
+        parent="project.menu_main_pm" sequence="55"/>
+
+    <record id="view_ps_task_search" model="ir.ui.view">
+        <field name="model">project.task</field>
+        <field name="inherit_id" ref="project.view_task_search_form"/>
+        <field name="arch" type="xml">
+            <field name="project_id" position="after">
+                <field name="sprint_id"/>
+            </field>
+            <filter name="project" position="after">
+                <filter string="Sprint" name="group_by_sprint" context="{'group_by':'sprint_id'}"/>
+            </filter>
+        </field>
+    </record>
+
+    <!--access to task kanban view from sprint-->
+    <record id="action_ps_sprint_backlog" model="ir.actions.act_window">
+        <field name="name">Sprint Backlog</field>
+        <field name="res_model">project.task</field>
+        <field name="view_mode">kanban,tree,form</field>
+        <field name="context">{
+            'search_default_sprint_id': [active_id],
+            'default_sprint_id': active_id,
+            'search_default_User': 1,
+        }</field>
+        <field name="search_view_id" ref="view_ps_task_search"/>
+    </record>
+
+
+    <!--Scrum Sprint-->
+    <!--sprint tree view-->
+    <record id="view_ps_sprint_tree" model="ir.ui.view">
+        <field name="name">project.scrum.sprint.tree</field>
+        <field name="model">project.scrum.sprint</field>
+        <field name="type">tree</field>
+        <field name="arch" type="xml">
+            <tree string="Scrum Sprint">
+                <field name="name"/>    
+                <field name="date_start"/>
+                <field name="date_stop"/>
+                <field name="planned_hours" widget="float_time"/>
+                <field name="effective_hours" widget="float_time"/>
+                <field name="progress" widget="progressbar"/>
+                <field name="date_duration"/> 
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+
+    <!--sprint form view-->
+    <record id="view_ps_sprint_form" model="ir.ui.view">
+        <field name="name">project.scrum.sprint.form</field>
+        <field name="model">project.scrum.sprint</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="Scrum Sprint">
+                <!--Header States-->
+                <header>
+                    <button name="start_sprint" type="object" string="Iniciar Sprint"
+                        class="oe_highlight" states="draft"/>
+                    <button name="finish_sprint" type="object" string="Finalizar Sprint"
+                        class="oe_highlight" states="open"
+                        confirm="Deseja finalizar o sprint? Esta ação não pode ser desfeita" />
+                    <field name="state" string="State" widget="statusbar" clickable="true"/>
+                </header>
+                <sheet string="Sprint">
+                    <h1>
+                        <field name="name" placeholder="Sprint..." class="oe_inline"/>
+                    </h1>
+                    <group>
+                        <field name="scrum_team_id" />
+                        <field name="progress" widget="progressbar"/>
+                    </group>
+                    <group colspan="4" col="6">
+                        <field name="planned_hours" widget="float_time"/>
+                        <field name="effective_hours" widget="float_time"/>
+                        <field name="date_duration"/>
+                        <field name="date_start"/>
+                        <field name="date_stop"/>
+                    </group>
+                    <notebook colspan="5">
+                        <page string="Tasks">
+                            <group col="1">
+                                <field name="task_ids" string="Task" context="{
+                                    'default_sprint_id': id,
+                                    }" widget="many2many">
+                                    <tree string="Task">
+                                        <field name="sequence" widget="handle"/>
+                                        <field name="priority"/>
+                                        <field name="name"/>
+                                        <field name="user_id"/>
+                                        <field name="date_deadline"/>
+                                        <field name="kanban_state"/>
+                                        <field name="stage_id"/>
+                                    </tree>
+                                </field>
+                            </group>
+                        </page>
+                        <page string="Review">
+                            <!--page for review-->
+                            <group col="1">
+                                <field name="review"/>
+                            </group>
+                        </page>
+                        <page string="Retrospective">
+                            <!--page for retropective-->
+                            <field name="retrospective"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!--sprint calendar view-->
+    <record id="view_ps_sprint_calendar" model="ir.ui.view">
+        <field name="name">project.scrum.sprint.calendar</field>
+        <field name="model">project.scrum.sprint</field>
+        <field name="type">calendar</field>
+        <field name="arch" type="xml">
+            <calendar string="Scrum Sprint" date_start="date_start">
+                <field name="name"/>
+                <field name="scrum_team_id"/>
+            </calendar>
+        </field>
+    </record>
+
+    <!--sprint gantt view-->
+   <record id="view_ps_sprint_gantt" model="ir.ui.view">
+        <field name="name">project.scrum.sprint.gantt</field>
+        <field name="model">project.scrum.sprint</field>
+        <field name="type">gantt</field>
+        <field name="arch" type="xml">
+            <gantt date_start="date_start" date_stop="date_stop" progress="progress" string="Projects">
+            </gantt>
+        </field>
+    </record>
+
+    <!--sprint graph view-->
+    <record id="view_ps_sprint_graph" model="ir.ui.view">
+        <field name="name">project.scrum.sprint.graph</field>
+        <field name="model">project.scrum.sprint</field>
+        <field name="type">graph</field>
+        <field name="arch" type="xml">
+            <graph string="Scrum Sprint" type="bar">
+                <field name="scrum_team_id" type="row"/>
+            </graph>
+        </field>
+    </record>
+
+    <!--sprint search bar-->
+    <record id="view_ps_sprint_search" model="ir.ui.view">
+        <field name="name">project.scrum.sprint.search</field>
+        <field name="model">project.scrum.sprint</field>
+        <field name="type">search</field>
+        <field name="arch" type="xml">
+            <search string="Sprints">
+                <field name="name"/>
+                <field name="date_start"/>
+                <field name="date_stop"/>
+                <field name="date_duration"/>
+                <field name="scrum_team_id"/>
+                <field name="task_ids"/>
+                <group string="Filter By...">
+                    <filter  name="draft" string="Draft" domain="[('state','=','draft')]"/>
+                    <separator orientation="vertical"/>
+                    <filter name="open" string="Open" domain="[('state','=','open')]"/>
+                    <separator orientation="vertical"/>
+                    <filter name="pending" string="Pending" domain="[('state','=','pending')]"/>
+                    <separator orientation="vertical"/>
+                    <filter name="cancelled" string="Cancelled" domain="[('state','=','cancel')]"/>
+                    <separator orientation="vertical"/>
+                    <filter name="done" string="Done" domain="[('state','=','done')]"/>
+                </group>
+                <newline/>
+                <group expand="0" string="Group By...">
+                    <filter name="team_by" string="Team" domain="[]" context="{'group_by':'scrum_team_id'}"/>
+                    <separator orientation="vertical"/>
+                    <filter name="month_by" string="Month" domain="[]" context="{'group_by':'date_start'}" help="Sprint Month"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!--access to all sprint tree view-->
+    <record id="action_ps_sprint_all" model="ir.actions.act_window">
+        <field name="name">Sprints</field>
+        <field name="res_model">project.scrum.sprint</field>
+        <field name="view_mode">tree,form,calendar,gantt,graph</field>
+        <field name="view_id" ref="view_ps_sprint_tree"/>
+        <field name="domain">[("hide", "=", False)]</field>
+        <field name="search_view_id" ref="view_ps_sprint_search"/>
+        <field name="help">The scrum agile methodology is used in software development projects. In this methodology,
+            a sprint is a short period of time (e.g. one month) during which the team implements a list of product backlogs.
+            The sprint review is organized when the team presents its work to the customer and product owner.</field>
+    </record>
+
+    <!--access to current sprint tree view-->
+    <record id="action_ps_sprint_current" model="ir.actions.act_window">
+        <field name="name">Sprints</field>
+        <field name="res_model">project.scrum.sprint</field>
+        <field name="view_mode">tree,form,calendar,gantt,graph</field>
+        <field name="view_id" ref="view_ps_sprint_tree"/>
+        <field name="context">{
+            'search_default_project_id': [active_id],
+            'default_project_id': active_id,
+            'search_default_group_by_sprint': 1,
+            'active_test': False,
+        }</field>
+        <field name="search_view_id" ref="view_ps_sprint_search"/>
+        <field name="help">The scrum agile methodology is used in software development projects. In this methodology,
+        a sprint is a short period of time (e.g. one month) during which the team implements a list of product backlogs.
+        The sprint review is organized when the team presents its work to the customer and product owner.</field>
+    </record>
+
+    <record id="scrum_team_view" model="ir.ui.view">
+        <field name="name">project.scrum.team.form</field>
+        <field name="model">project.scrum.team</field>
+        <field name="arch" type="xml">
+            <form string="Create Team">
+                <group>
+                    <group>
+                        <field name="name"/>
+                    </group>
+                    <group></group>
+                </group>
+                <group>
+                    <field name="member_ids" widget="many2many_tags"/>
+                </group>
+            </form>
+        </field>
+    </record>
+
+    <record id="scrum_team" model="ir.actions.act_window">
+        <field name="name">Scrum Team</field>
+        <field name="res_model">project.scrum.team</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <record id="action_sprint_backlog" model="ir.actions.server">
+        <field name="sequence" eval="5"/>
+        <field name="state">code</field>
+        <field name="type">ir.actions.server</field>
+        <field name="model_id" ref="model_project_task"/>
+        <field name="code">action = env['project.task'].action_sprint_backlog()</field>
+        <field name="name">Backlog</field>
+    </record>
+
+    <record id="action_current_sprint" model="ir.actions.server">
+        <field name="sequence" eval="5"/>
+        <field name="state">code</field>
+        <field name="type">ir.actions.server</field>
+        <field name="model_id" ref="model_project_task"/>
+        <field name="code">action = env['project.task'].filter_current_sprint()</field>
+        <field name="name">Sprint Atual</field>
+    </record>
+
+    <menuitem
+        action="action_sprint_backlog"
+        id="menu_sprint_backlog"
+        sequence="17"
+        parent="menu_scrum_in_config">
+    </menuitem>
+
+
+    <!--menu for accessing current sprint-->
+    <menuitem
+        action="action_current_sprint"
+        id="menu_open_project_attachment_view"
+        sequence="15"
+        parent="menu_scrum_in_config">
+    </menuitem>
+
+    <!-- menu item for accessing scrum team -->
+    <menuitem
+        action="scrum_team"
+        id="scrum_team_menu"
+        sequence="24"
+        parent="menu_scrum_in_config">
+    </menuitem>
+
+    <!--menu for accessing to sprint-->
+    <menuitem
+        sequence="21"
+        action="action_ps_sprint_all" id="menu_action_ps_sprint_all" parent="menu_scrum_in_config"/>
+
+    <menuitem id="menu_scrum"
+        name="Scrum" sequence="30"
+        web_icon="project_scrum,static/description/icon.png"/>
+
+    <!--menu for accessing current sprint-->
+    <menuitem
+        action="action_current_sprint"
+        id="menu_current_sprint_main"
+        sequence="15"
+        parent="menu_scrum">
+    </menuitem>
+
+    <!--menu for accessing backlog -->
+    <menuitem
+        action="action_sprint_backlog"
+        id="menu_sprint_backlog_main"
+        sequence="17"
+        parent="menu_scrum">
+    </menuitem>
+
+    <!-- menu item for accessing all sprints -->
+    <menuitem
+        sequence="21"
+        action="action_ps_sprint_all"
+        id="menu_sprints_main"
+        parent="menu_scrum"/>
+
+    <!-- menu item for accessing scrum team -->
+    <menuitem
+        action="scrum_team"
+        id="menu_scrum_team_main"
+        sequence="24"
+        parent="menu_scrum">
+    </menuitem>
+
+</odoo>
