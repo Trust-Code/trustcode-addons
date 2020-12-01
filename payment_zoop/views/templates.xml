@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="zoop_confirmation" inherit_id="website_sale.confirmation">
+        <xpath expr="//div[@class='col-12 col-xl-auto']" position="after">
+            <link rel="stylesheet" href="/payment_zoop/static/src/css/website_sale.css"/>
+            <t t-set="payment_tx_id" t-value="order.get_portal_last_transaction()"/>
+            <t t-if="payment_tx_id.transaction_url">
+                <iframe id="boleto_frame" t-att-src="payment_tx_id.transaction_url" frameBorder="0"
+                        scrolling="no"/>
+            </t>
+        </xpath>
+    </template>
+</odoo>
