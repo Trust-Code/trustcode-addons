@@ -18,7 +18,7 @@
             <t t-if="payment_tx_id.acquirer_id.provider == 'zoop'">
                 <span>Seu pedido foi processado com sucesso. Para realizar o pagamento, por favor clique no botão abaixo para visualizar o boleto.</span>
                 <br/>
-                <a role="button" class="btn btn-primary text-white float-right" target="_blank" title="Visualizar Boleto" aria-label="Visualizar Boleto"
+                <a role="button" class="btn btn-light float-right" target="_blank" title="Visualizar Boleto" aria-label="Visualizar Boleto"
                    t-att-href="payment_tx_id.transaction_url">
                     <span>Visualizar Boleto</span>
                 </a>
