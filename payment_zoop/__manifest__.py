@@ -10,6 +10,7 @@
         'views/payment_views.xml',
         'views/zoop.xml',
         'views/account_journal.xml',
+        'views/templates.xml',
         'data/zoop.xml',
     ],
     'application': True,

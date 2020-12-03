@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="zoop_confirmation" inherit_id="website_sale.confirmation">
+        <xpath expr="//t[@t-call='website_sale.payment_confirmation_status']" position="replace">
+            <t t-set="payment_tx_id" t-value="order.get_portal_last_transaction()"/>
+            <t t-if="payment_tx_id.acquirer_id.provider == 'zoop'">
+                <t t-call="payment_zoop.zoop_confirmation_status"/>
+            </t>
+            <t t-else="">
+                <t t-call="website_sale.payment_confirmation_status"/>
+            </t>
+        </xpath>
+    </template>
+
+    <template id="zoop_confirmation_status" inherit_id="website_sale.payment_confirmation_status">
+        <xpath expr="//div[@class='card-header']/t[1]" position="replace">
+            <t t-set="payment_tx_id" t-value="order.get_portal_last_transaction()"/>
+            <t t-if="payment_tx_id.acquirer_id.provider == 'zoop'">
+                <span>Seu pedido foi processado com sucesso. Para realizar o pagamento, por favor clique no botão abaixo para visualizar o boleto.</span>
+                <br/>
+                <a role="button" class="btn btn-light float-right" target="_blank" title="Visualizar Boleto" aria-label="Visualizar Boleto"
+                   t-att-href="payment_tx_id.transaction_url">
+                    <span>Visualizar Boleto</span>
+                </a>
+            </t>
+        </xpath>
+    </template>
+</odoo>
