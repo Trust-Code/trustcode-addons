@@ -1,0 +1,47 @@
+<odoo>
+    <record id="view_crm_lead_form" model="ir.ui.view">
+        <field name="name">Customization</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_lead_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='action_set_won_rainbowman']" position="before">
+                <button string="Nova Negociação" name="action_new_quotation" type="object" class="oe_highlight"
+                    attrs="{'invisible': ['|', ('type', '=', 'lead'), '&amp;', ('probability', '=', 0), ('active', '=', False)]}"/>
+            </xpath>
+            <notebook position="inside">
+                <page string="Universidade">
+                    <group>
+                        <field name="codigo_coligada" />
+                        <field name="nome_da_coligada" />
+                        <field name="codigo_da_filial" />
+                        <field name="nome_fantasia" />
+                        <field name="cnpj_da_filial" />
+                    </group>
+                </page>
+                <page string="Informações Acadêmicas">
+                    <group>
+                        <field name="curso" />
+                        <field name="universidade"/>
+                        <field name="data_matricula"/>
+                        <field name="periodo"/>
+                        <field name="semestre"/>
+                        <field name="situacao_curso"/>
+                        <field name="situacao_estudante"/>
+                    </group>
+                </page>
+            </notebook>
+            <field name="phone" position="after">
+                <field name="data_vencimento"/>
+                 <div class="o_row">
+                    <label for="vencido_ha" />
+                    <field name="vencido_ha"/><span>dias</span>
+                </div>
+                <field name="valor_original"/>
+                <field name="bolsa_pontualidade"/>
+                <field name="demais_bolsas"/>
+                <field name="valor_a_cobrar"/>
+                <field name="currency_id" invisible="1" />
+            </field>
+        </field>
+    </record>
+</odoo>

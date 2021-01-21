@@ -1,0 +1,38 @@
+<odoo>
+    <record id="action_view_negotation_rule" model="ir.actions.act_window">
+        <field name="name">Negociação</field>
+        <field name="res_model">negotiation.rule</field>
+        <field name="view_mode">tree,form</field> 
+    </record>
+
+    <menuitem id="menu_negotiation_rule" parent="crm.crm_menu_config" name="Regras de Negociação"
+        action="action_view_negotation_rule"/>
+
+    <record id="negotiation_tree_view" model="ir.ui.view">
+        <field name="name">Negotiation Tree</field>
+        <field name="model">negotiation.rule</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="vencido_ate_dias"/>
+                <field name="percentual_multa"/>
+                <field name="percentual_juros_mora"/>
+            </tree>
+        </field>
+    </record>
+    <record id="negotiation_form_view" model="ir.ui.view">
+		<field name="name">Negotiation Form</field>
+		<field name="model">negotiation.rule</field>
+		<field name="arch" type="xml">
+            <form string="Negociação">
+                <group>
+                    <group>
+                        <field name="vencido_ate_dias"/>
+                        <field name="percentual_multa"/>
+                        <field name="percentual_juros_mora"/>
+                    </group>
+                </group>
+            </form>
+        </field>
+    </record>
+    	
+</odoo>
