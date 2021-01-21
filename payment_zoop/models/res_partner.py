@@ -21,10 +21,11 @@ class ResPartner(models.Model):
 
             commercial_part = partner.commercial_partner_id
             complete_name = commercial_part.l10n_br_legal_name or commercial_part.name
+            name, *surname = complete_name.split(' ', 1)
             vals = {
                 'email': partner.email,
-                'first_name': complete_name.split(' ')[0],
-                'last_name': complete_name.split(' ')[1],
+                'first_name': name,
+                'last_name': surname[0] if surname else '',
                 'taxpayer_id': commercial_part.l10n_br_cnpj_cpf,
                 'address': {
                     'postal_code': re.sub('[^0-9]', '', commercial_part.zip or ''),

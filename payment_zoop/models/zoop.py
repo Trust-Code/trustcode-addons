@@ -82,7 +82,7 @@ class ZoopBoleto(models.Model):
         }
 
 
-class TransactionZoop(models.Model):
+class PaymentTransaction(models.Model):
     _inherit = "payment.transaction"
 
     invoice_url = fields.Char(string="Fatura", size=300)
@@ -107,10 +107,9 @@ class TransactionZoop(models.Model):
             return False
 
     def action_verify_transaction(self):
-        super(TransactionZoop, self).action_verify_transaction()
+        super(PaymentTransaction, self).action_verify_transaction()
         if self.acquirer_id.provider != 'zoop':
             return
-
         url = "https://api.zoop.ws/v1/marketplaces/%s/transactions/%s" % (
             self.acquirer_id.zoop_marketplace_id, self.acquirer_reference)
         auth = HTTPBasicAuth(self.acquirer_id.zoop_api_key, "")
@@ -121,6 +120,8 @@ class TransactionZoop(models.Model):
         response.raise_for_status()
         data = response.json()
 
-        if data["status"] == "paid":
+        if data["status"] == "succeeded" and self.state not in ('done', 'authorized'):
             self._set_transaction_done()
             self._post_process_after_done()
+            if self.origin_move_line_id:
+                self.origin_move_line_id._create_bank_tax_move(data.get('fees') or 0)

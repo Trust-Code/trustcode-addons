@@ -97,7 +97,7 @@ class AccountMove(models.Model):
             elif response.status_code in (401, 403, 405):
                 raise UserError("Configure corretamente as credenciais do Zoop")
             if response.status_code != 201:
-                raise UserError("Erro ao se conectar com o Zoop")
+                raise UserError("Erro ao se conectar com o Zoop: %s".format(response.message()))
 
             data = response.json()
             transaction.write({
