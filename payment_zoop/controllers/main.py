@@ -23,6 +23,10 @@ class PagHiperController(WebsiteSale):
     def zoop_checkout_redirect(self, **post):
         if 'secure_url' in post:
             order = request.website.sale_get_order()
+            if not order:
+                # todo might fail when consecutive requests are sent. Needs more testing.
+                tx_id = max(request.session.get('__payment_tx_ids__'))
+                order = request.env['payment.transaction'].sudo().browse(tx_id).sale_order_ids
             order.action_confirm()
             order.transaction_ids[0].write({
                 'state': 'pending',
