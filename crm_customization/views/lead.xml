@@ -11,11 +11,8 @@
             <notebook position="inside">
                 <page string="Universidade">
                     <group>
-                        <field name="codigo_coligada" />
-                        <field name="nome_da_coligada" />
-                        <field name="codigo_da_filial" />
-                        <field name="nome_fantasia" />
-                        <field name="cnpj_da_filial" />
+                        <field name="coligada_id" />
+                        <field name="cfo_partner_id" />
                     </group>
                 </page>
                 <page string="Informações Acadêmicas">
@@ -30,6 +27,9 @@
                     </group>
                 </page>
             </notebook>
+            <field name="partner_id" position="after">
+                <field name="registro_aluno" />
+            </field>
             <field name="phone" position="after">
                 <field name="data_vencimento"/>
                  <div class="o_row">
@@ -44,4 +44,15 @@
             </field>
         </field>
     </record>
+
+    <record id="view_crm_lead_filter" model="ir.ui.view">
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.view_crm_case_opportunities_filter"/>
+        <field name="arch" type="xml">
+            <field name="name" position="after">
+                <field name="registro_aluno" />
+            </field>
+        </field>
+    </record>
+
 </odoo>

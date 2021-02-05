@@ -6,8 +6,8 @@
             <notebook position="inside">
                 <page string="Informações Acadêmicas">
                     <group>
-                        <field name="codigo_coligada"/>
-                        <field name="codigo_cfo" />
+                        <field name="coligada_id" domain="[('company_type', '=', 'company')]"/>
+                        <field name="cfo_partner_id" domain="[('company_type', '=', 'company')]"/>
                         <field name="registro_aluno"/>
                         <field name="data_nascimento"/>
                         <field name="estado_civil"/>
@@ -17,4 +17,15 @@
             </notebook>
         </field>
     </record>
+
+    <record id="view_res_partner_filter" model="ir.ui.view">
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_res_partner_filter"/>
+        <field name="arch" type="xml">
+            <field name="name" position="after">
+                <field name="registro_aluno" />
+            </field>
+        </field>
+    </record>
+
 </odoo>

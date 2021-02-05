@@ -6,11 +6,14 @@ from odoo.exceptions import UserError
 class CrmLead(models.Model):
     _inherit ='crm.lead'
    
-    codigo_coligada = fields.Char(size=30)
-    nome_da_coligada = fields.Char(size=300)
-    codigo_da_filial = fields.Char(size=30)
-    nome_fantasia = fields.Char(size=300)
-    cnpj_da_filial = fields.Char(size=30)
+    _sql_constraints = [
+        ('name_unique', 'unique(name)', 'Já existe um registro com esse código!')
+    ]
+
+    registro_aluno = fields.Char(related='partner_id.registro_aluno', store=True)
+    
+    coligada_id = fields.Many2one(related='partner_id.coligada_id', store=True)
+    cfo_partner_id = fields.Many2one(related='partner_id.cfo_partner_id', store=True)
 
     curso = fields.Char(size=150, string="Curso")
     universidade = fields.Char(size=150, string="Universidade")
@@ -35,6 +38,8 @@ class CrmLead(models.Model):
     bolsa_pontualidade = fields.Monetary()
     demais_bolsas = fields.Monetary()
     valor_a_cobrar = fields.Monetary()
+    
+    planned_revenue = fields.Monetary(compute='_compute_planned_revenue', store=True)
 
     @api.depends('data_vencimento')
     def _compute_overdue_days(self):
@@ -48,6 +53,11 @@ class CrmLead(models.Model):
 
             item.vencido_ha = int(days)
 
+    @api.depends('valor_a_cobrar')
+    def _compute_planned_revenue(self):
+        for item in self:
+            item.planned_revenue = item.valor_a_cobrar
+        
     def action_new_quotation(self):
         rule = self.env['negotiation.rule'].search([('vencido_ate_dias', '>', self.vencido_ha)], limit=1)
         if not rule:
