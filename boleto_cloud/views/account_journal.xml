@@ -6,6 +6,7 @@
         <field name="arch" type="xml">
             <field name="outbound_payment_method_ids" position="after">
                 <field name="use_boleto_cloud"/>
+                <field name="boleto_cloud_bank_account_api_key"/>
             </field>
         </field>
     </record>

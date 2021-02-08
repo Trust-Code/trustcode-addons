@@ -6,4 +6,6 @@ class AccountJournal(models.Model):
     
     use_boleto_cloud = fields.Boolean('Usar Boleto Cloud')
 
+    boleto_cloud_bank_account_api_key = fields.Char('Chave API da Conta')
+
 

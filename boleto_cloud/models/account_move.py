@@ -43,7 +43,8 @@ class AccountMove(models.Model):
             raise ValidationError(msg)
 
     def send_information_to_boleto_cloud(self):
-        if not self.payment_journal_id.use_boleto_cloud:
+        if not self.payment_journal_id.use_boleto_cloud or not \
+                self.payment_journal_id.boleto_cloud_bank_account_api_key:
             return
 
         base_url = (
@@ -67,35 +68,23 @@ class AccountMove(models.Model):
             url = 'https://sandbox.boletocloud.com/api/v1/boletos'
 
             api_token = self.company_id.boleto_cloud_api_token
-
+            import ipdb
+            ipdb.set_trace()
             vals = {
-                'boleto.conta.banco': "237", 
-                'boleto.conta.agencia': "1234-5" ,
-                'boleto.conta.numero': "123456-0",
-                'boleto.conta.carteira': "12",
-                'boleto.beneficiario.nome': "DevAware Solutions",
-                'boleto.beneficiario.cprf': "15.719.277/0001-46",
-                'boleto.beneficiario.endereco.cep': "59020-000",
-                'boleto.beneficiario.endereco.uf': "RN",
-                'boleto.beneficiario.endereco.localidade': "Natal",
-                'boleto.beneficiario.endereco.bairro': "Petrópolis",
-                'boleto.beneficiario.endereco.logradouro': "Avenida Hermes da Fonseca",
-                'boleto.beneficiario.endereco.numero': "384",
-                'boleto.beneficiario.endereco.complemento': "Sala 2A, segundo andar",
-                'boleto.emissao': "2014-07-11",
-                'boleto.vencimento': "2020-05-30",
-                'boleto.documento': "EX3",
-                'boleto.numero': "1234567890-3P",
-                'boleto.titulo': "DM",
-                'boleto.valor': "1250.43", 
-                'boleto.pagador.nome': "Alberto Santos Dumont",
-                'boleto.pagador.cprf': "111.111.111-11",
-                'boleto.pagador.endereco.cep': "36240-000",
-                'boleto.pagador.endereco.uf': "MG",
-                'boleto.pagador.endereco.localidade': "Santos Dumont",
-                'boleto.pagador.endereco.bairro': "Casa Natal",
-                'boleto.pagador.endereco.logradouro': "BR-499",
-                'boleto.pagador.endereco.numero': "s/n",
+                'boleto.conta.token': self.payment_journal_id.boleto_cloud_bank_account_api_key,
+                'boleto.emissao': self.invoice_date,
+                'boleto.vencimento': self.invoice_date_due,
+                'boleto.documento': self.name,
+                'boleto.titulo': self.name,
+                'boleto.valor': self.amount_total,
+                'boleto.pagador.nome': self.partner_id.name,
+                'boleto.pagador.cprf': self.partner_id.l10n_br_cnpj_cpf,
+                'boleto.pagador.endereco.cep': self.partner_id.zip,
+                'boleto.pagador.endereco.uf': self.partner_id.state_id.code,
+                'boleto.pagador.endereco.localidade': self.partner_id.city_id.name,
+                'boleto.pagador.endereco.bairro': self.partner_id.l10n_br_district,
+                'boleto.pagador.endereco.logradouro': self.partner_id.street,
+                'boleto.pagador.endereco.numero': self.partner_id.l10n_br_number,
                 'boleto.pagador.endereco.complemento': "Sítio - Subindo a serra da Mantiqueira",
                 'boleto.instrucao': "Atenção! NÃO RECEBER ESTE BOLETO.",
                 'boleto.instrucao': "Este é apenas um teste utilizando a API Boleto Cloud",
