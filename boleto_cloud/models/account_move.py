@@ -2,7 +2,7 @@ import re
 import base64
 import requests
 from odoo import api, fields, models
-from odoo.exceptions import ValidationError
+from odoo.exceptions import ValidationError, UserError
 
 
 
@@ -53,17 +53,18 @@ class AccountMove(models.Model):
 
         for moveline in self.receivable_move_line_ids:
 
-            # acquirer = self.env['payment.acquirer'].search([('provider', '=', 'boleto.cloud')])
-            # transaction = self.env['payment.transaction'].create({
-            #     'acquirer_id': acquirer.id,
-            #     'amount': moveline.amount_residual,
-            #     'currency_id': moveline.move_id.currency_id.id,
-            #     'partner_id': moveline.partner_id.id,
-            #     'type': 'server2server',
-            #     'date_maturity': moveline.date_maturity,
-            #     'origin_move_line_id': moveline.id,
-            #     'invoice_ids': [(6, 0, self.ids)]
-            # })
+            # TODO
+            acquirer = self.env['payment.acquirer'].search([('provider', '=', 'boleto.cloud')])
+            transaction = self.env['payment.transaction'].create({
+                'acquirer_id': acquirer,
+                'amount': moveline.amount_residual,
+                'currency_id': moveline.move_id.currency_id.id,
+                'partner_id': moveline.partner_id.id,
+                'type': 'server2server',
+                'date_maturity': moveline.date_maturity,
+                'origin_move_line_id': moveline.id,
+                'invoice_ids': [(6, 0, self.ids)],
+            })
 
             url = 'https://sandbox.boletocloud.com/api/v1/boletos'
 
@@ -91,31 +92,32 @@ class AccountMove(models.Model):
                 'boleto.instrucao': "Mais info em http://boleto"
             }
 
-            
             response = requests.post(url, data=vals, auth=(api_token, 'token'))
             
             if response.status_code == 201:
                 
-                moveline.boleto_pdf = base64.b64encode(response.text.encode('utf-8'))
-                
+                # moveline.boleto_pdf = base64.b64encode(response.text.encode('utf-8'))
 
                 boleto_id = response.headers['X-BoletoCloud-Token']
                 boleto_url = response.headers['Location']
                 boleto_numero = response.headers['X-BoletoCloud-NIB-Nosso-Numero']
-            
+
             elif response.status_code == 409:
+                # TODO
                 # ja foi criado previamente
                 # buscar o que ja foi emitido
-                pass
+                # fazer get na api
+                boleto_id = ''
+                boleto_url = ''
+            else:
+                raise UserError('Houve um erro com a API do Boleto Cloud')
 
+            print(response.text)
 
-            # print(response.text)
-
-            # transaction.write({
-            #     'acquirer_reference': data['id'],
-            #     'transaction_url': data['secure_url'],
-            # })
-
+            transaction.write({
+                'acquirer_reference': boleto_id,
+                'transaction_url': boleto_url,
+            })
 
     def generate_boleto_cloud_transactions(self):
         for item in self:
@@ -126,3 +128,7 @@ class AccountMove(models.Model):
         result = super(AccountMove, self).action_post()
         self.generate_boleto_cloud_transactions()
         return result
+
+    # account.bank.statement and statement.line (CNAB) - importacao
+    # CNAB deixar salvo para caso queira baixar - exportacao
+    # importação e exportação CNAB
