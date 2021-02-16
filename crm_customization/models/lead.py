@@ -58,6 +58,31 @@ class CrmLead(models.Model):
         for item in self:
             item.planned_revenue = item.valor_a_cobrar
         
+    def action_merge_and_create_quotation(self):
+        result = None
+        for item in self:
+            result = item.action_new_quotation()
+        return result
+
+    def get_or_create_quotation(self):
+        order = self.env['sale.order'].search([
+            ('state', '=', 'draft'),
+            ('partner_id', '=', self.partner_id.id,)
+        ], limit=1)
+        if not order:
+            order = self.env['sale.order'].create({
+                'opportunity_id': self.id,
+                'partner_id': self.partner_id.id,
+                'team_id': self.team_id.id,
+                'campaign_id': self.campaign_id.id,
+                'medium_id': self.medium_id.id,
+                'origin': self.name,
+                'source_id': self.source_id.id,
+                'company_id': self.company_id.id or self.env.company.id,
+                'tag_ids': self.tag_ids.ids,
+            })
+        return order
+
     def action_new_quotation(self):
         rule = self.env['negotiation.rule'].search([('vencido_ate_dias', '>', self.vencido_ha)], limit=1)
         if not rule:
@@ -65,17 +90,7 @@ class CrmLead(models.Model):
             if not rule:
                 raise UserError('Configure uma regra de juros para calcular o valor a ser cobrado')
            
-        order = self.env['sale.order'].create({
-            'opportunity_id': self.id,
-            'partner_id': self.partner_id.id,
-            'team_id': self.team_id.id,
-            'campaign_id': self.campaign_id.id,
-            'medium_id': self.medium_id.id,
-            'origin': self.name,
-            'source_id': self.source_id.id,
-            'company_id': self.company_id.id or self.env.company.id,
-            'tag_ids': self.tag_ids.ids,
-        })
+        order = self.get_or_create_quotation()
 
         juros = self.valor_a_cobrar * ((rule.percentual_multa / 100 / 30) * self.vencido_ha)
         multa = self.valor_a_cobrar * (rule.percentual_multa / 100)
@@ -83,7 +98,7 @@ class CrmLead(models.Model):
         self.env['sale.order.line'].create({
             'order_id': order.id,
             'product_id': self.env['product.product'].search([], limit=1).id,  # TODO Ajustar isso depois
-            'name': 'Cobrança',
+            'name': 'Cobrança - %s' % self.name,
             'original_amount': self.valor_a_cobrar,
             'product_uom_qty': 1,
             'product_uom': 1,

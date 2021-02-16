@@ -55,4 +55,17 @@
         </field>
     </record>
 
+    <record id="ir_actions_server_new_negotiation" model="ir.actions.server">
+        <field name="name">Criar negociação</field>
+        <field name="type">ir.actions.server</field>
+        <field name="model_id" ref="model_crm_lead"/>
+        <field name="state">code</field>
+        <field name="code">
+            if records:
+                action = records.action_merge_and_create_quotation()
+        </field>
+        <field name="binding_model_id" ref="crm.model_crm_lead"/>
+        <field name="binding_view_types">list,form</field>
+    </record>
+
 </odoo>

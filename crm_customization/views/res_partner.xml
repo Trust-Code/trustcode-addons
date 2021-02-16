@@ -3,12 +3,16 @@
         <field name="model">res.partner</field>
         <field name="inherit_id" ref="base.view_partner_form"/>
         <field name="arch" type="xml">
+            <xpath expr="//div[hasclass('o_row')]" position="before">
+                <h3>
+                    <field name="registro_aluno" placeholder="Registro do Aluno" nolabel="1"/>
+                </h3>
+            </xpath>
             <notebook position="inside">
                 <page string="Informações Acadêmicas">
                     <group>
                         <field name="coligada_id" domain="[('company_type', '=', 'company')]"/>
                         <field name="cfo_partner_id" domain="[('company_type', '=', 'company')]"/>
-                        <field name="registro_aluno"/>
                         <field name="data_nascimento"/>
                         <field name="estado_civil"/>
                         <field name="sexo"/>
