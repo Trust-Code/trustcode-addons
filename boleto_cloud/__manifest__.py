@@ -12,7 +12,9 @@
         'l10n_br_automated_payment',
     ],
     'data': [
+        'data/acquirer.xml',
         'views/account_journal.xml',
         'views/res_company.xml',
+        'views/payment_transaction.xml',
     ],
 }

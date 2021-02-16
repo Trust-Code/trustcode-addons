@@ -6,7 +6,7 @@
         <field name="arch" type="xml">
             <group position="inside">
                 <group string="Boleto Cloud">
-                    <field name="boleto_cloud_api_token"/>
+                    <field name="boleto_cloud_api_token" password="1"/>
                 </group>
             </group>
         </field>
