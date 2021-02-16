@@ -87,9 +87,9 @@ class AccountMove(models.Model):
                 'boleto.pagador.endereco.logradouro': self.partner_id.street,
                 'boleto.pagador.endereco.numero': self.partner_id.l10n_br_number,
                 'boleto.pagador.endereco.complemento': "Sítio - Subindo a serra da Mantiqueira",
-                'boleto.instrucao': "Atenção! NÃO RECEBER ESTE BOLETO.",
-                'boleto.instrucao': "Este é apenas um teste utilizando a API Boleto Cloud",
-                'boleto.instrucao': "Mais info em http://boleto"
+                'boleto.instrucao': "Atenção! NÃO RECEBER ESTE BOLETO."
+                                    "Este é apenas um teste utilizando a API Boleto Cloud"
+                                    "Mais info em http://boleto",
             }
 
             response = requests.post(url, data=vals, auth=(api_token, 'token'))
@@ -107,8 +107,10 @@ class AccountMove(models.Model):
                 # ja foi criado previamente
                 # buscar o que ja foi emitido
                 # fazer get na api
-                boleto_id = ''
-                boleto_url = ''
+                url = url + transaction.acquirer_reference
+                response = requests.get(url, auth=(api_token, 'token'))
+                boleto_id = transaction.acquirer_reference
+                boleto_url = url
             else:
                 raise UserError('Houve um erro com a API do Boleto Cloud')
 
