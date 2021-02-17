@@ -39,6 +39,7 @@
             <form>
                 <group>
                     <field name="cnab_file" />
+                    <field name="journal_id"/>
                 </group>
                 <footer>
                     <button name="action_import_cnab_file" string="Importar" type="object" class="btn-primary" />

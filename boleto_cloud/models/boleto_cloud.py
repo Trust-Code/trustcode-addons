@@ -31,7 +31,6 @@ class CnabRemessa(models.Model):
     data_emissao_cnab = fields.Datetime('Data de Emissão do CNAB')
 
     def action_get_remessa(self):
-        # TODO Conectar na API e pegar o arquivo de remessa
         acquirer = self.env['payment.acquirer'].search([('provider', '=', 'boleto.cloud')])
         if acquirer.state == 'enabled':
             url = 'https://app.boletocloud.com/api/v1/arquivos/cnab/remessas'
@@ -62,27 +61,39 @@ class WizardImportCnabRetorno(models.TransientModel):
     _name = 'wizard.import.cnab.retorno'
 
     cnab_file = fields.Binary('Arquivo CNAB')
+    journal_id = fields.Many2one('account.journal', string='Diário')
 
     def action_import_cnab_file(self):
-        url = "api/v1/arquivos/cnab/remessas"
-        # TODO CHAMAR A API
+        if not self.cnab_file:
+            raise UserError('Arquivo CNAB não definido.')
+        if not (self.journal_id or self.journal_id.use_boleto_cloud):
+            raise UserError('Diário não definido ou não configurado para usar o Boleto Cloud.')
+
+        acquirer = self.env['payment.acquirer'].search([('provider', '=', 'boleto.cloud')])
+        if acquirer.state == 'enabled':
+            url = 'https://app.boletocloud.com/api/v1/arquivos/cnab/retornos'
+        else:
+            url = 'https://sandbox.boletocloud.com/api/v1/arquivos/cnab/retornos'
+        api_token = self.company_id.boleto_cloud_api_token
+
+        response = requests.post(url, files=self.cnab_file, auth=(api_token, 'token'))
+        last_statement = self.env['account.bank.statement'].search([], order='id_desc', limit=1)
 
         statement = self.env['account.bank.statement'].create({
-            'name': '',
-            'journal_id': '',
+            'name': response['arquivo']['protocolo']['numero'],
+            'journal_id': self.journal_id.id,
             'date': datetime.now().date(),
-            'balance_start_real': 0.0,
-            'balance_end_real': 0.0,
+            'balance_start_real': last_statement.balance_end_real,
+            'balance_end_real': last_statement.balance_end_real + last_statement.total_entry_encoding,
         })
 
         for titulo in response['arquivo']['titulos']:
-
+            transaction = self.env['payment.transaction'].search([('acquirer_reference', '=', titulo['token'])])
             self.env['account.bank.statement.line'].create({
                 'bank_statement_id': statement.id,
-                'date': None,
-                'name': '',
-                'partner_id': None,  # achar a linha original,
-                'ref': None,
+                'date': datetime.strptime(titulo['vencimento'], '%Y-%m-%d'),
+                'name': titulo['numero'],
+                'partner_id': transaction.partner_id.id,
+                'ref': titulo['token'],
                 'amount': 0.0,
             })
-
