@@ -47,15 +47,15 @@ class AccountMove(models.Model):
                 self.payment_journal_id.boleto_cloud_bank_account_api_key:
             return
 
-        base_url = (
-            self.env["ir.config_parameter"].sudo().get_param("web.base.url")
-        )
+        # base_url = (
+        #     self.env["ir.config_parameter"].sudo().get_param("web.base.url")
+        # )
 
         for moveline in self.receivable_move_line_ids:
             acquirer = self.env['payment.acquirer'].search([('provider', '=', 'boleto.cloud')])
             if not acquirer:
                 raise UserError('Configure o modo de pagamento do boleto cloud')
-            transaction = self.env['payment.transaction'].sudo().create({
+            transaction = self.env['payment.transaction'].create({
                 'acquirer_id': acquirer.id,
                 'amount': moveline.amount_residual,
                 'currency_id': moveline.move_id.currency_id.id,
@@ -72,10 +72,8 @@ class AccountMove(models.Model):
 
             api_token = self.company_id.boleto_cloud_api_token
 
-            instrucao =  "Atenção! NÃO RECEBER ESTE BOLETO. Este é apenas um teste utilizando a API Boleto Cloud Mais info em http://boleto"
-            x = 95
-            # TODO Criar campo instrucoes
-            instrucoes =[instrucao[y-x:y] for y in range(x, len(instrucao)+x,x)]
+            instrucao = self.payment_journal_id.instrucoes
+            instrucoes = [instrucao[y-95:y] for y in range(95, len(instrucao)+95, 95)]
 
             vals = {
                 'boleto.conta.token': self.payment_journal_id.boleto_cloud_bank_account_api_key,
@@ -92,7 +90,7 @@ class AccountMove(models.Model):
                 'boleto.pagador.endereco.bairro': self.partner_id.l10n_br_district,
                 'boleto.pagador.endereco.logradouro': self.partner_id.street,
                 'boleto.pagador.endereco.numero': self.partner_id.l10n_br_number,
-                'boleto.pagador.endereco.complemento': "Sítio - Subindo a serra da Mantiqueira",
+                'boleto.pagador.endereco.complemento': "",
                 'boleto.instrucao': instrucoes[:8],
             }
 
@@ -104,14 +102,17 @@ class AccountMove(models.Model):
                 boleto_numero = response.headers['X-BoletoCloud-NIB-Nosso-Numero']
 
             elif response.status_code == 409:
-                # TODO  Testar ainda.
-                # ja foi criado previamente
-                # buscar o que ja foi emitido
-                # fazer get na api
-                url = url + transaction.acquirer_reference
+                transaction = self.env['payment.transaction'].search([
+                    ('acquirer_id', '=', acquirer.id),
+                    ('amount', '=', moveline.amount_residual),
+                    ('currency_id', '=', moveline.move_id.currency_id.id),
+                    ('partner_id', '=', moveline.partner_id.id),
+                    ('invoice_ids', '=', self.ids)], limit=1)
+
+                url = "%s/api/v1/boletos" % url + transaction.acquirer_reference
                 response = requests.get(url, auth=(api_token, 'token'))
+                boleto_pdf = base64.b64encode(response.content)
                 boleto_id = transaction.acquirer_reference
-                boleto_url = url
             else:
                 jsonp = response.json()
                 message = '\n'.join([x['mensagem'] for x in jsonp['erro']['causas']])
@@ -132,7 +133,3 @@ class AccountMove(models.Model):
         result = super(AccountMove, self).action_post()
         self.generate_boleto_cloud_transactions()
         return result
-
-    # account.bank.statement and statement.line (CNAB) - importacao
-    # CNAB deixar salvo para caso queira baixar - exportacao
-    # importação e exportação CNAB

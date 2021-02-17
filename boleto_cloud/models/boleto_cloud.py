@@ -1,5 +1,8 @@
+import requests
+import base64
 from datetime import datetime
 from odoo import fields, models
+from odoo.exceptions import UserError
 
 
 class BoletoCloud(models.Model):
@@ -28,16 +31,30 @@ class CnabRemessa(models.Model):
     data_emissao_cnab = fields.Datetime('Data de Emissão do CNAB')
 
     def action_get_remessa(self):
-
         # TODO Conectar na API e pegar o arquivo de remessa
-        url = "api/v1/arquivos/cnab/remessas"
+        acquirer = self.env['payment.acquirer'].search([('provider', '=', 'boleto.cloud')])
+        if acquirer.state == 'enabled':
+            url = 'https://app.boletocloud.com/api/v1/arquivos/cnab/remessas'
+        else:
+            url = 'https://sandbox.boletocloud.com/api/v1/arquivos/cnab/remessas'
+        api_token = self.company_id.boleto_cloud_api_token
+        data = {
+            'boleto.conta.token': self.payment_journal_id.boleto_cloud_bank_account_api_key,
+        }
+        response = requests.post(url, data=data, auth=(api_token, 'token'))
 
-        arquivo = None
-
-        remessa = self.write({
-            'cnab_file': arquivo,
-            'data_emissao_cnab': datetime.now(),
-        })
+        if response.status_code == '204':
+            raise UserError('Não há remessas CNAB a serem geradas.')
+        elif response.status_code == '201':
+            arquivo = base64.b64encode(response.content)
+            remessa = self.write({
+                'cnab_file': arquivo,
+                'data_emissao_cnab': datetime.now(),
+            })
+        else:
+            jsonp = response.json()
+            message = '\n'.join([x['mensagem'] for x in jsonp['erro']['causas']])
+            raise UserError('Houve um erro com a API do Boleto Cloud:\n%s' % message)
         return remessa
 
 
@@ -45,7 +62,6 @@ class WizardImportCnabRetorno(models.TransientModel):
     _name = 'wizard.import.cnab.retorno'
 
     cnab_file = fields.Binary('Arquivo CNAB')
-
 
     def action_import_cnab_file(self):
         url = "api/v1/arquivos/cnab/remessas"
