@@ -95,5 +95,5 @@ class WizardImportCnabRetorno(models.TransientModel):
                 'name': titulo['numero'],
                 'partner_id': transaction.partner_id.id,
                 'ref': titulo['token'],
-                'amount': 0.0,
+                'amount': titulo['valor'],
             })
