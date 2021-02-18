@@ -17,19 +17,34 @@
         <field name="arch" type="xml">
             <form>
                 <header>
-                    <button name="action_get_remessa" type="object" string="Gerar arquivo CNAB" />
+                    <button name="action_get_remessa" type="object" string="Gerar arquivo CNAB" states="draft" />
+                    <field name="state" invisible="1" />
                 </header>
                 <sheet>
                     <group>
-                        <field name="name"/>
-                        <field name="company_id" />
-                        <field name="user_id" />
+                        <field name="name" readonly="1" force_save="1"/>
+                        <field name="company_id" readonly="1" force_save="1"/>
+                        <field name="user_id" readonly="1" force_save="1" />
                         <field name="journal_id" />
-                        <field name="cnab_file" />
+                        <field name="cnab_file" filename="name"/>
                         <field name="data_emissao_cnab" />
                     </group>
                 </sheet>
             </form>
+        </field>
+    </record>
+
+    <record id="view_cnab_remessa_tree" model="ir.ui.view">
+        <field name="model">cnab.remessa</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name" readonly="1" force_save="1"/>
+                <field name="company_id" readonly="1" force_save="1"/>
+                <field name="user_id" readonly="1" force_save="1" />
+                <field name="journal_id" />
+                <field name="cnab_file" filename="name" widget="binary"/>
+                <field name="data_emissao_cnab" />
+            </tree>
         </field>
     </record>
 

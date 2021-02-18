@@ -72,7 +72,7 @@ class AccountMove(models.Model):
 
             api_token = self.company_id.boleto_cloud_api_token
 
-            instrucao = self.payment_journal_id.instrucoes
+            instrucao = self.payment_journal_id.instrucoes or ''
             instrucoes = [instrucao[y-95:y] for y in range(95, len(instrucao)+95, 95)]
 
             vals = {
