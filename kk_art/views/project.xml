@@ -1,0 +1,51 @@
+<odoo>
+
+    <record id="project_art_action" model="ir.actions.act_window">
+        <field name="name">KK ARTs</field>
+        <field name="res_model">project.art</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                Aqui você pode criar novos ARTs.
+            </p>
+            <p>
+                No momento não há nenhum ART cadastrado.
+            </p>
+        </field>
+    </record>
+
+    <record id="view_art_form" model="ir.ui.view">
+        <field name="name">project.art.form</field>
+        <field name="model">project.art</field>
+        <field name="arch" type="xml">
+            <form string="ART" class="o_form_project_tasks">
+                <div class="oe_title">
+                    <h1 class="o_row">
+                        <field name="project_name" placeholder="Nome do Projeto..."/>
+                    </h1>
+                </div>
+                <group>
+                    <group>
+                        <field name="partner_id"/>
+                        <field name="requester_id"/>
+                    </group>
+                    <group>
+                        <field name="kk_code"/>
+                        <field name="site_id"/>
+                        <field name="date_deadline"/>
+                    </group>
+                    <group>
+                        <field name="art"/>
+                    </group>
+                </group>
+            </form>
+        </field>
+    </record>
+
+    <menuitem id="project_art_menu"
+              name="ARTs"
+              parent="project.menu_project_management"
+              action="project_art_action"
+              sequence="24"/>
+</odoo>
