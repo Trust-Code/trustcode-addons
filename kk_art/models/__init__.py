@@ -1,1 +1,1 @@
-from .  import project_art
+from .  import project

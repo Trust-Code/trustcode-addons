@@ -13,7 +13,7 @@
     'contributors': [
         'Johny Chen Jy',
     ],
-    'depends': ['project'],
+    'depends': ['project', 'kk_sites'],
     'data': [
         'views/project.xml'
     ],
