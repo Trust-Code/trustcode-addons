@@ -1,5 +1,27 @@
 <odoo>
 
+    <record id="view_project_art_filter" model="ir.ui.view">
+        <field name="name">ART Filter</field>
+        <field name="model">project.project</field>
+        <field name="priority" eval="20"/>
+        <field name="arch" type="xml">
+            <search string="Search ART">
+                <field name="name" string="Nome do Projeto"/>
+                <field name="partner_id"/>
+                <field name="date_delivered"/>
+                <field name="kk_site_id"/>
+                <field name="kk_site_code"/>
+                <field name="art"/>
+                <group expand="0" string="Agrupar por...">
+                    <filter name="group_partner" string="Parceiro" domain="[]" context="{'group_by':'partner_id'}"/>
+                    <filter name="group_date_delivery" string="Data Entrega" domain="[]" context="{'group_by':'date_delivered'}"/>
+                    <filter name="group_kk_site_id" string="ID Site" domain="[]" context="{'group_by':'kk_site_id'}"/>
+                    <filter name="group_art" string="ART" domain="[]" context="{'group_by':'art'}"/>
+               </group>
+           </search>
+        </field>
+    </record>
+
     <record id="project_art_action" model="ir.actions.act_window">
         <field name="name">ART</field>
         <field name="res_model">project.project</field>
@@ -25,28 +47,6 @@
                 <field name="kk_site_id" readonly="1"/>
                 <field name="art"/>
             </tree>
-        </field>
-    </record>
-
-    <record id="view_project_art_filter" model="ir.ui.view">
-        <field name="name">ART Filter</field>
-        <field name="model">project.project</field>
-        <field name="priority" eval="20"/>
-        <field name="arch" type="xml">
-            <search string="Search ART">
-                <field name="name" string="Nome do Projeto"/>
-                <field name="partner_id"/>
-                <field name="date_delivered"/>
-                <field name="kk_site_id"/>
-                <field name="kk_site_code"/>
-                <field name="art"/>
-                <group expand="0" string="Agrupar por...">
-                    <filter name="group_partner" string="Parceiro" domain="[]" context="{'group_by':'partner_id'}"/>
-                    <filter name="group_date_delivery" string="Data Entrega" domain="[]" context="{'group_by':'date_delivered'}"/>
-                    <filter name="group_kk_site_id" string="ID Site" domain="[]" context="{'group_by':'kk_site_id'}"/>
-                    <filter name="group_art" string="ART" domain="[]" context="{'group_by':'art'}"/>
-               </group>
-           </search>
         </field>
     </record>
 
