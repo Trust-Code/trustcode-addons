@@ -1,0 +1,78 @@
+<odoo>
+
+    <record id="action_cnab_remessa_form" model="ir.actions.act_window">
+        <field name="name">Remessas de CNAB</field>
+        <field name="res_model">cnab.remessa</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="menu_bank_payments" name="Automação de Pagamentos" parent="account.menu_finance_entries" sequence="2"/>
+
+    <menuitem sequence="30" action="action_cnab_remessa_form"
+              id="menu_action_payment_order"
+              parent="menu_bank_payments"/>
+
+    <record id="view_cnab_remessa_form" model="ir.ui.view">
+        <field name="model">cnab.remessa</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_get_remessa" type="object" string="Gerar arquivo CNAB" states="draft" />
+                    <field name="state" invisible="1" />
+                </header>
+                <sheet>
+                    <group>
+                        <field name="name" readonly="1" force_save="1"/>
+                        <field name="company_id" readonly="1" force_save="1"/>
+                        <field name="user_id" readonly="1" force_save="1" />
+                        <field name="journal_id" />
+                        <field name="cnab_file" filename="name"/>
+                        <field name="data_emissao_cnab" />
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_cnab_remessa_tree" model="ir.ui.view">
+        <field name="model">cnab.remessa</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name" readonly="1" force_save="1"/>
+                <field name="company_id" readonly="1" force_save="1"/>
+                <field name="user_id" readonly="1" force_save="1" />
+                <field name="journal_id" />
+                <field name="cnab_file" filename="name" widget="binary"/>
+                <field name="data_emissao_cnab" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_wizard_import_cnab_retorno_form" model="ir.ui.view">
+        <field name="model">wizard.import.cnab.retorno</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <field name="cnab_file" />
+                    <field name="journal_id"/>
+                </group>
+                <footer>
+                    <button name="action_import_cnab_file" string="Importar" type="object" class="btn-primary" />
+                    <button string="Cancel" class="btn-default" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_import_bank_receivables_cnab" model="ir.actions.act_window">
+        <field name="name">Importar CNAB de Boletos</field>
+        <field name="res_model">wizard.import.cnab.retorno</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem sequence="40" action="action_import_bank_receivables_cnab"
+              id="menu_import_bank_receivables_cnab"
+              parent="menu_bank_payments"/>
+
+</odoo>

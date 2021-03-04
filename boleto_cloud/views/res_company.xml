@@ -1,0 +1,15 @@
+<odoo>
+
+    <record id="view_res_company_form" model="ir.ui.view" >
+        <field name="model">res.company</field>
+        <field name="inherit_id" ref="base.view_company_form" />
+        <field name="arch" type="xml">
+            <group position="inside">
+                <group string="Boleto Cloud">
+                    <field name="boleto_cloud_api_token" password="1"/>
+                </group>
+            </group>
+        </field>
+    </record>
+
+</odoo>
