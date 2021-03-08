@@ -4,8 +4,8 @@ from odoo import models, fields, api
 class ProjectArt(models.Model):
     _inherit = 'project.project'
 
-    kk_site_code = fields.Char('Código KK', related='kk_site_id.cod_site_kk')
-    # id_site = fields.Char('Código KK', related='kk_site_id.site_id')
+    kk_site_code = fields.Char('Código KK', related='kk_site_id.cod_site_kk', store=True)
+    id_site_code = fields.Char('ID Site', related='kk_site_id.site_id', store=True)
 
     @api.depends('sale_line_id', 'sale_line_id.price_total')
     def _compute_art(self):
