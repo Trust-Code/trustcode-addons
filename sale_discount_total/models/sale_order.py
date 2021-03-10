@@ -56,6 +56,9 @@ class SaleOrder(models.Model):
             amount = 0
             for line in item.order_line:
                 if line == balance_line:
+                    if item.discount_type == 'percent':
+                        amount = round(discount_percent / 100 * line.valor_bruto,
+                                precision_money)
                     continue
                 line.discount = discount_percent
                 amount += round(discount_percent / 100 * line.valor_bruto,
@@ -63,5 +66,8 @@ class SaleOrder(models.Model):
             if item.discount_type == 'amount':
                 balance_line.discount = (item.discount_value - amount) /\
                     balance_line.valor_bruto * 100
+                vlr_desc = item.discount_value
             else:
                 balance_line.discount = discount_percent
+                vlr_desc = amount
+            balance_line.valor_desconto = vlr_desc
