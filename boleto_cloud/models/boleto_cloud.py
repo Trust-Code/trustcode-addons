@@ -41,7 +41,7 @@ class CnabRemessa(models.Model):
     cnab_file_name = fields.Binary('CNAB Name', readonly=True)
     data_emissao_cnab = fields.Datetime('Data de Emissão do CNAB', readonly=True)
     cnab_location = fields.Char()
-    state = fields.Selection([('draft', 'Provisorio'), ('done', 'Pronto')])
+    state = fields.Selection([('draft', 'Provisorio'), ('done', 'Pronto')], default='draft')
 
     def action_get_remessa(self):
         if self.state == 'done':
