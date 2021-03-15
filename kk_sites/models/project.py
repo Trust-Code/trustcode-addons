@@ -13,7 +13,7 @@ class Project(models.Model):
         'kk.sites',
         string="Site",
         store=True)
-    art = fields.Char('ART', compute='_compute_art')
+    art = fields.Char('ART', compute='_compute_art', store=True)
     qualidade = fields.Char('Qualidade')
     data_entrega = fields.Date(
         'Data Previsão',
