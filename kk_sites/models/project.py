@@ -13,7 +13,7 @@ class Project(models.Model):
         'kk.sites',
         string="Site",
         store=True)
-    art = fields.Char('ART')
+    art = fields.Char('ART', compute='_compute_art')
     qualidade = fields.Char('Qualidade')
     data_entrega = fields.Date(
         'Data Previsão',
@@ -31,6 +31,12 @@ class Project(models.Model):
                 order="date_deadline desc", limit=1).date_deadline
             if data_entrega:
                 project.update({'data_entrega': data_entrega})
+
+    @api.multi
+    def _compute_art(self):
+        for project in self:
+            if not self.sale_line_id or self.sale_line_id.price_total == 0:
+                project.update({'art': 'N/E'})
 
 
 class Task(models.Model):
