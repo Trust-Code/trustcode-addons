@@ -13,7 +13,7 @@ class Project(models.Model):
         'kk.sites',
         string="Site",
         store=True)
-    art = fields.Char('ART', compute='_compute_art', store=True)
+    art = fields.Char('ART', compute='_compute_art', store=True, readonly=False)
     qualidade = fields.Char('Qualidade')
     data_entrega = fields.Date(
         'Data Previsão',
@@ -33,9 +33,10 @@ class Project(models.Model):
                 project.update({'data_entrega': data_entrega})
 
     @api.multi
+    @api.depends('sale_line_id', 'sale_line_id.price_total')
     def _compute_art(self):
         for project in self:
-            if not self.sale_line_id or self.sale_line_id.price_total == 0:
+            if project.sale_line_id and not project.sale_line_id.price_total:
                 project.update({'art': 'N/E'})
 
 
