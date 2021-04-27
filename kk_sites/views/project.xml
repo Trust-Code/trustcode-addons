@@ -57,6 +57,9 @@
                 <field name="data_entrega" />
                 <field name="date_delivered" />
             </templates>
+            <xpath expr="//kanban" position="attributes">
+                <attribute name="default_order">create_date desc</attribute>
+            </xpath>
             <xpath expr="//t/div/div/div/div/div/span[2]" position="replace">
                 <span t-if="record.partner_id.value">
                     <strong style="color:#008784;" ><t t-esc="record.partner_id.value"/></strong>
@@ -108,9 +111,29 @@
         <field name="model">project.project</field>
         <field name="inherit_id" ref="project.view_project" />
         <field name="arch" type="xml">
+            <xpath expr="//tree" position="attributes">
+                <attribute name="default_order">x_data_conclusao desc</attribute>
+            </xpath>
+            <xpath expr="//tree/field[@name='name']" position="attributes">
+                <attribute name="options">"&quot;bg_color&quot;: &quot;rgb(255, 179, 179): color == 1;
+                    rgb(255, 217, 179): color == 2; rgb(255, 255, 224): color == 3; rgb(176, 196, 222): color == 4;
+                    rgb(178, 255, 177): color == 10&quot;}</attribute>
+            </xpath>
             <tree position="inside">
                 <field name="date_delivered" />
             </tree>
+        </field>
+    </record>
+    <record model="ir.ui.view" id="view_project_calendar_kk">
+        <field name="name">view.project.calendar.kk</field>
+        <field name="model">project.project</field>
+        <field name="inherit_id" ref="project.view_task_calendar"/>
+        <field name="arch" type="xml">
+            <xpath expr="/calendar/field[1]" position="after">
+              <field name="project_id"/>
+              <field name="kk_site_id"/>
+              <field name="planned_hours"/>
+            </xpath>
         </field>
     </record>
 </odoo>
