@@ -25,9 +25,10 @@ class ContractContract(models.Model):
     code = fields.Char(
         string="Reference",
     )
-    group_id = fields.Many2one(
-        string="Group",
-        comodel_name='account.analytic.account',
+    invoice_to_parent_company = fields.Boolean(string="Faturar para Matriz")
+    parent_partner_id = fields.Many2one(
+        string="Empresa Matriz",
+        comodel_name='res.partner',
         ondelete='restrict',
     )
 
@@ -260,18 +261,18 @@ class ContractContract(models.Model):
             'auto_post':self.auto_post,
             'type': invoice_type,
             'journal_id': journal.id,
-            'invoice_origin': _('Contrato')+' '+self.name,
+            'invoice_origin': '%s - %s' % (self.name or '', self.code or ''),
             'company_id': self.company_id.id,
             'currency_id': currency.id,
             'invoice_user_id': self.user_id and self.user_id.id,
-            'partner_id': self.invoice_partner_id.id,
-            'fiscal_position_id': self.fiscal_position_id.id or self.invoice_partner_id.property_account_position_id.id,
+            'partner_id': self.parent_partner_id.id or self.invoice_partner_id.id,
+            'fiscal_position_id': self.fiscal_position_id.id or self.parent_partner_id.property_account_position_id.id or self.invoice_partner_id.property_account_position_id.id,
             'invoice_incoterm_id': self.incoterm_id.id, 
             'invoice_payment_term_id': self.payment_term_id.id,
             'payment_journal_id': self.payment_journal_id.id,
             'invoice_line_ids': [],
             'user_id': self.user_id.id,
-            'contract_id':self.id,
+            'contract_id': self.id,
         }
         return invoice_vals
 
