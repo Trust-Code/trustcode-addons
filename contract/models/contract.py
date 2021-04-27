@@ -391,17 +391,22 @@ class ContractContract(models.Model):
         :return: list of dictionaries (invoices values)
         """
         invoices_values = []
-        for contract in self:
-            if not date_ref:
-                date_ref = contract.recurring_next_date
-            if not date_ref:
-                # this use case is possible when recurring_create_invoice is
-                # called for a finished contract
-                continue
-            contract_lines = contract._get_lines_to_invoice(date_ref)
-            if not contract_lines:
-                continue
-            invoice_values = contract._prepare_invoice(date_ref)
+        partners = self.mapped('parent_partner_id').ids + [False]
+        for partner_id in partners:
+            contract_lines = self.env['contract.line'].browse()
+            invoice_values = {}
+            for contract in self.filtered(lambda x: x.parent_partner_id.id == partner_id):
+                if not date_ref:
+                    date_ref = contract.recurring_next_date
+                if not date_ref:
+                    # this use case is possible when recurring_create_invoice is
+                    # called for a finished contract
+                    continue
+                contract_lines += contract._get_lines_to_invoice(date_ref)
+                if not contract_lines:
+                    continue
+                invoice_values = contract._prepare_invoice(date_ref)
+
             for line in contract_lines:
                 invoice_values.setdefault('invoice_line_ids', [])
                 invoice_line_values = line._prepare_invoice_line() # function in contact_line
