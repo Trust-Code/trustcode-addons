@@ -95,7 +95,7 @@ class KKSites(models.Model):
     secao_transversal = fields.Selection(
         [
             ('circular', 'Circular'),
-            ('dodecagonal', 'Dodecagonal'),
+            ('dodecagonal', 'Poligonal'),
             ('quadrada', 'Quadrada'),
             ('triangular', 'Triangular'),
             ('triangular_quadrada', 'Triangular + Quadrada'),
@@ -109,7 +109,10 @@ class KKSites(models.Model):
 
     modelo = fields.Char('Modelo EV')
 
-    altura_total = fields.Float('Altura Total EV (m)')
+    altura_total = fields.Float(
+        string='Altura Total EV (m)',
+        help="Para rooftop inserir o mastro de maior altura"
+    )
 
     ampliada = fields.Boolean('EV Ampliada?')
 
@@ -119,45 +122,107 @@ class KKSites(models.Model):
         [
             ('cantoneira', 'Cantoneira (L)'),
             ('cantoneira_dobrada', 'Cantoneira Dobrada 60º (S)'),
-            ('dobrada_l', 'Cantoneira Dobrada 60º (S) + Cantoneira (L)'),
             ('dobrada_dubla', 'Cantoneira Dobrada 60º Dupla (2S)'),
             ('cantoneira_dupla', 'Cantoneira Dupla (2L)'),
             ('chapa_dobrada', 'Chapa Dobrada (V)'),
-            ('chapa_dob_cant_l', 'Chapa Dobrada (V) + Cantoneira (L)'),
-            ('chapa_dob_cant_dob', 'Chapa Dobrada (V) +\
-                 Cantoneira Dobrada 60º (S)'),
-            ('chapa_dob_omega', 'Chapa Dobrada (V) + Ômega (O)'),
             ('omega', 'Ômega (O)'),
-            ('omega_dupla', 'Ômega Dupla (2O)'),
             ('tubular', 'Tubular (TB)'),
-            ('tubular_cantoneira', 'Tubular (TB) + Cantoneira (L)'),
-            ('perfil_u', 'Perfil U (U)'),
-            ('barra_redonda_macica', 'Barra Redonda Maciça (BR)')
+            ('tubular_coracao', 'Tubular Coração (PSA)'),
+            ('barra_maciça', 'Barra Maciça (BR)'),
+            # ITENS REMOVIDOS DA LISTA
+            # ('dobrada_l', 'Cantoneira Dobrada 60º (S) + Cantoneira (L)'),
+            # ('chapa_dob_cant_l', 'Chapa Dobrada (V) + Cantoneira (L)'),
+            # ('chapa_dob_cant_dob', 'Chapa Dobrada (V) +\
+            #      Cantoneira Dobrada 60º (S)'),
+            # ('chapa_dob_omega', 'Chapa Dobrada (V) + Ômega (O)'),
+            # ('omega_dupla', 'Ômega Dupla (2O)'),
+            # ('tubular_cantoneira', 'Tubular (TB) + Cantoneira (L)'),
+            # ('perfil_u', 'Perfil U (U)'),
+            # ('barra_redonda_macica', 'Barra Redonda Maciça (BR)')
         ],
         string='Perfil do Montante EV')
 
+    perfil_montante_reforco = fields.Selection(
+        [
+            ('cantoneira', 'Cantoneira (L)'),
+            ('cantoneira_dobrada', 'Cantoneira Dobrada 60º (S)'),
+            ('dobrada_dubla', 'Cantoneira Dobrada 60º Dupla (2S)'),
+            ('cantoneira_dupla', 'Cantoneira Dupla (2L)'),
+            ('chapa_dobrada', 'Chapa Dobrada (V)'),
+            ('omega', 'Ômega (O)'),
+            ('tubular', 'Tubular (TB)'),
+            ('tubular_coracao', 'Tubular Coração (PSA)'),
+            ('barra_macica', 'Barra Maciça (BR)'),
+        ],
+        string='Perfil do Montante Reforço EV')
+
     tipo_fundacao = fields.Selection(
         [
-            ('estaca_raiz', 'Estaca Raiz'),
-            ('estaca_raiz_tirantes', 'Estaca Raiz + Tirantes'),
+            ('bloco', 'Bloco'),
+            ('bloco_tubulacoes', 'Bloco com Tubulações'),
             ('chapa_metal', 'Chapa Metálica'),
+            ('estaca_helicoidal', 'Estaca Helicoidal'),
             ('estaca_metal', 'Estaca Metálica'),
             ('estaca_raiz', 'Estaca Raiz'),
+            ('estaca_strauss', 'Estaca Strauss'),
             ('estacao', 'Estacão'),
+            ('pre_moldado', 'Pré-Moldado'),
             ('raider', 'Radier'),
             ('sapata', 'Sapata'),
             ('tirante', 'Tirante'),
             ('tubo_metalico', 'Tubo Metálico'),
             ('tubulao', 'Tubulão'),
-            ('tubulao_estaca', 'Tubulão + Estaca'),
             ('viga', 'Viga'),
         ],
-        string="Tipo de Fundação")
+        string="Tipo de Fundação"
+    )
+
+    numero_elementos = fields.Integer(
+        string="Número de Elementos",
+        help="Número de estacas ou tubulações no bloco"
+    )
+
+    tipo_fundacao_reforco = fields.Selection(
+        [
+            ('bloco', 'Bloco'),
+            ('bloco_tubulacoes', 'Bloco com Tubulações'),
+            ('chapa_metal', 'Chapa Metálica'),
+            ('estaca_helicoidal', 'Estaca Helicoidal'),
+            ('estaca_metal', 'Estaca Metálica'),
+            ('estaca_raiz', 'Estaca Raiz'),
+            ('estaca_strauss', 'Estaca Strauss'),
+            ('estacao', 'Estacão'),
+            ('pre_moldado', 'Pré-Moldado'),
+            ('raider', 'Radier'),
+            ('sapata', 'Sapata'),
+            ('tirante', 'Tirante'),
+            ('tubo_metalico', 'Tubo Metálico'),
+            ('tubulao', 'Tubulão'),
+            ('viga', 'Viga'),
+        ],
+        string="Tipo de Fundação Reforço"
+    )
+
+    numero_elementos_reforco = fields.Integer(
+        string="Número de Elementos Reforço",
+        help="Número de estacas ou tubulações no bloco"
+    )
 
     dimensoes_fundacao = fields.Char(string="Dimensões da Fundação (cm x cm)")
 
+    dimensao_fundacao_lado1 = fields.Integer(
+        string="Dimensões Fundação Lado 1"
+    )
+    dimensao_fundacao_lado2 = fields.Integer(
+        string="Dimensões Fundação Lado 2"
+    )
+    dimensao_fundacao_altura = fields.Integer(
+        string="Dimensões Fundação Altura"
+    )
+
     profundidade_fundacao = fields.Integer(
-        string='Profundidade da Fundação (cm)')
+        string="Cota de Assentamento (cm)"
+    )
 
     notes = fields.Text("Observações")
 
