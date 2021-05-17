@@ -124,7 +124,7 @@
             </tree>
         </field>
     </record>
-    <record model="ir.ui.view" id="view_project_calendar_kk">
+    <!-- <record model="ir.ui.view" id="view_project_calendar_kk">
         <field name="name">view.project.calendar.kk</field>
         <field name="model">project.project</field>
         <field name="inherit_id" ref="project.view_task_calendar"/>
@@ -135,5 +135,5 @@
               <field name="planned_hours"/>
             </xpath>
         </field>
-    </record>
+    </record> -->
 </odoo>

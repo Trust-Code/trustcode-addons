@@ -74,6 +74,7 @@
                                     <field name="ampliada" />
                                     <field name="abertura_base" />
                                     <field name="perfil_montante" />
+                                    <field name="perfil_montante_reforco" />
                                 </group>
                             </group>
                             <group>
@@ -86,8 +87,19 @@
                                 </group>
                                 <group>
                                     <field name="tipo_fundacao" />
+                                    <field name="numero_elementos" />
                                     <field name="dimensoes_fundacao" placeholder="XXX x XXX" />
+                                    <label for="dimensao_fundacao_lado1"
+                                        string="Dimensões da Fundação (cm)"
+                                        help="Em caso de Tubulão usar: Fuste x Saia. Em caso de Bloco ou Radier usar: Largura Maior x Largura Menor x Altura." />
+                                    <div class="o_row">
+                                        <field name="dimensao_fundacao_lado1" nolabel="1" class="oe_inline" help="Em caso de Tubulão usar: Fuste x Saia. Em caso de Bloco ou Radier usar: Largura Maior x Largura Menor x Altura."/> X
+                                        <field name="dimensao_fundacao_lado2" nolabel="1" class="oe_inline" help="Em caso de Tubulão usar: Fuste x Saia. Em caso de Bloco ou Radier usar: Largura Maior x Largura Menor x Altura."/> X
+                                        <field name="dimensao_fundacao_altura" nolabel="1" class="oe_inline" help="Em caso de Tubulão usar: Fuste x Saia. Em caso de Bloco ou Radier usar: Largura Maior x Largura Menor x Altura."/>
+                                    </div>
                                     <field name="profundidade_fundacao" />
+                                    <field name="tipo_fundacao_reforco" />
+                                    <field name="numero_elementos_reforco" />
                                 </group>
                                 <group>
                                     <field name="pasta_servidor" widget="url" />
