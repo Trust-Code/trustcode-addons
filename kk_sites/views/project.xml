@@ -115,7 +115,7 @@
                 <attribute name="default_order">x_data_conclusao desc</attribute>
             </xpath>
             <xpath expr="//tree/field[@name='name']" position="attributes">
-                <attribute name="options">"&quot;bg_color&quot;: &quot;rgb(255, 179, 179): color == 1;
+                <attribute name="options">{&quot;bg_color&quot;: &quot;rgb(255, 179, 179): color == 1;
                     rgb(255, 217, 179): color == 2; rgb(255, 255, 224): color == 3; rgb(176, 196, 222): color == 4;
                     rgb(178, 255, 177): color == 10&quot;}</attribute>
             </xpath>
