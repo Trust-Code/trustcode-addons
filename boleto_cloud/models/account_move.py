@@ -78,10 +78,10 @@ class AccountMove(models.Model):
             vals = {
                 'boleto.conta.token': self.payment_journal_id.boleto_cloud_bank_account_api_key,
                 'boleto.emissao': self.invoice_date,
-                'boleto.vencimento': self.invoice_date_due,
-                'boleto.documento': self.name,
+                'boleto.vencimento': moveline.date_maturity,
+                'boleto.documento': moveline.name,
                 'boleto.titulo': "DM",
-                'boleto.valor': "%.2f" % self.amount_total,
+                'boleto.valor': "%.2f" % moveline.balance,
                 'boleto.pagador.nome': self.partner_id.name,
                 'boleto.pagador.cprf': self.partner_id.l10n_br_cnpj_cpf,
                 'boleto.pagador.endereco.cep': "%s-%s" % (self.partner_id.zip[:5], self.partner_id.zip[-3:]),
