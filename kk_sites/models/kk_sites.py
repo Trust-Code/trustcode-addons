@@ -208,8 +208,6 @@ class KKSites(models.Model):
         help="Número de estacas ou tubulações no bloco"
     )
 
-    dimensoes_fundacao = fields.Char(string="Dimensões da Fundação (cm x cm)")
-
     dimensao_fundacao_lado1 = fields.Integer(
         string="Dimensões Fundação Lado 1"
     )
