@@ -4,10 +4,10 @@ import logging
 from odoo import _, api, models
 from odoo.exceptions import UserError
 
-from odoo.addons.base_iban.models.res_partner_bank import (
-    _map_iban_template,
-    validate_iban,
-)
+# from odoo.addons.base_iban.models.res_partner_bank import (
+#     _map_iban_template,
+#     validate_iban,
+# )
 
 _logger = logging.getLogger(__name__)
 
@@ -21,19 +21,19 @@ except ImportError:
 class AccountBankStatementImport(models.TransientModel):
     _inherit = "account.bank.statement.import"
 
-    def _check_journal_bank_account(self, journal, account_number):
-        res = super()._check_journal_bank_account(journal, account_number)
-        if not res:
-            e_acc_num = journal.bank_account_id.sanitized_acc_number
-            e_acc_num = e_acc_num.replace(" ", "")
-            validate_iban(e_acc_num)
-            country_code = e_acc_num[:2].lower()
-            iban_template = _map_iban_template[country_code].replace(" ", "")
-            e_acc_num = "".join(
-                [c for c, t in zip(e_acc_num, iban_template) if t == "C"]
-            )
-            res = e_acc_num == account_number
-        return res
+    # def _check_journal_bank_account(self, journal, account_number):
+    #     res = super()._check_journal_bank_account(journal, account_number)
+    #     if not res:
+    #         e_acc_num = journal.bank_account_id.sanitized_acc_number
+    #         e_acc_num = e_acc_num.replace(" ", "")
+    #         validate_iban(e_acc_num)
+    #         country_code = e_acc_num[:2].lower()
+    #         iban_template = _map_iban_template[country_code].replace(" ", "")
+    #         e_acc_num = "".join(
+    #             [c for c, t in zip(e_acc_num, iban_template) if t == "C"]
+    #         )
+    #         res = e_acc_num == account_number
+    #     return res
 
     @api.model
     def _check_ofx(self, data_file):
