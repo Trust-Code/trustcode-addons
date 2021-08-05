@@ -3,14 +3,14 @@
     <template id="website_product" name="Product" inherit_id="website_sale.product_price">
         <div position="inside">
             <span t-field="product.brl_list_price" t-options="{'widget': 'monetary', 'display_currency': product.brl_currency_id}"/>
-            <span> *estimativa em reais</span>
+            <span> *valor em dólar</span>
         </div>
     </template>
 
     <template id="website_order_total" name="Order Total" inherit_id="website_sale.total">
         <tr id="order_total" position="after">
             <tr id="order_total_brl">
-                <td class="text-right"><strong>Valor em Reais:</strong></td>
+                <td class="text-right"><strong>Valor em Dólar:</strong></td>
                 <td class="text-xl-right">
                     <strong t-field="website_sale_order.brl_amount_total" t-options="{'widget': 'monetary', 'display_currency': website_sale_order.brl_currency_id}"/>
                 </td>
@@ -21,7 +21,7 @@
     <template id="website_portal_total" name="Portal Total Sidebar" inherit_id="portal.portal_record_sidebar">
         <xpath expr="//div[@class='card-body text-center pb-2 pt-3']" position="inside">
             <span t-field="sale_order.brl_amount_total" t-options="{'widget': 'monetary', 'display_currency': sale_order.brl_currency_id}"/>
-            <span> *estimativa em reais</span>
+            <span> *valor em dólar</span>
         </xpath>
     </template>
 

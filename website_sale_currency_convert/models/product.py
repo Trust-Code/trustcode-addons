@@ -6,7 +6,7 @@ class ProductTemplate(models.Model):
     _inherit = 'product.template'
 
     def _compute_brl_price(self):
-        brl_id = self.env['res.currency'].search([('name', '=', 'BRL')])
+        brl_id = self.env['res.currency'].search([('name', '=', 'USD')])
         for item in self:
             item.brl_currency_id = brl_id.id
             item.brl_list_price = brl_id.compute(item.list_price, brl_id)
