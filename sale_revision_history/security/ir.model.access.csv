@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_restore_sale_order_line_item,access_restore_sale_order_line_item,model_restore_sale_order_line_item,base.group_user,1,1,1,1
+access_restore_items_wizard,access_restore_items_wizard,model_restore_items_wizard,base.group_user,1,1,1,1
