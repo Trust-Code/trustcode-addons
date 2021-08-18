@@ -15,6 +15,7 @@
           'sale',
     ],
     'data': [
+        'security/ir.model.access.csv',
         'views/sale_pricelist_simple_pricelist_view.xml',
         'views/sale_pricelist_simple_product_view.xml',
     ]

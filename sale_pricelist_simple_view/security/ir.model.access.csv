@@ -1,2 +1,3 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_project_scrum_sprint_project_scrum_sprint,project_scrum_sprint.project_scrum_sprint,model_project_scrum_sprint_project_scrum_sprint,,1,0,0,0
+access_product_pricelist_line,access_product_pricelist_line,model_product_pricelist_line,base.group_user,1,1,1,1
+access_product_pricelist_tag,access_product_pricelist_tag,model_product_pricelist_tag,base.group_user,1,1,1,1
