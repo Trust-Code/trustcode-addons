@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+    <data>
+        <!--Form View-->
+        <record id="sale_pricelist_simple_view_id" model="ir.ui.view">
+            <field name="name">sale.pricelist.simple.view.id</field>
+            <field name="model">product.pricelist</field>
+            <field name="inherit_id" ref="product.product_pricelist_view"/>
+            <field name="arch" type="xml">
+
+
+              <xpath expr="/form/*" position="before">
+                  <header>
+                     <button name="change_pricelist_product" string="Aplicar alterações" type="object" style="margin: 2px;"/>
+                  </header>
+              </xpath>
+             
+           
+
+               <xpath expr="//div[@class='oe_title']" position="after">
+                   <label for="show_list" />
+                   <field name="show_list" />
+              </xpath>
+
+
+              <field name="currency_id" position="after">
+                  <field name="color_id" widget="many2many_tags" options="{'color_field': 'color', 'no_create_edit': False}"/>
+              </field>
+
+            </field>
+        </record>
+       
+       <!--Tree View-->
+        <record id="sale_pricelist_simple_view_tree_id" model="ir.ui.view">
+          <field name="name">sale.pricelist.simple.view.tree.id</field>
+          <field name="model">product.pricelist</field>
+          <field name="inherit_id" ref="product.product_pricelist_view_tree"/>
+          <field name="arch" type="xml">
+            <field name="currency_id" position="after">
+                   <field name="show_list" />
+                  <field name="color_id" widget="many2many_tags" options="{'color_field': 'color', 'no_create_edit': False}"/>
+            </field>
+      
+          </field>  
+       </record>   
+
+       <!--From Tag View-->
+       <record id="sale_pricelist_simple_view_color_id" model="ir.ui.view">
+        <field name="name">sale.pricelist.simple.view.color.id</field>
+        <field name="model">product.pricelist.tag</field>
+        <field name='type'>form</field>
+        <field name="arch" type="xml"> 
+            <form string="Lead Tags">
+                <group>
+                    <field name="name"/>
+                    <field name="color" groups="base.group_no_one"/>
+                </group>
+            </form>
+        </field>
+      </record>
+
+    </data>
+  </odoo>
