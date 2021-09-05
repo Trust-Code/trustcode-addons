@@ -25,5 +25,7 @@ class WordpressController(http.Controller):
                 "phone": kwargs.get("phone_number"),
                 "description": kwargs.get("message"),
                 "partner_id": partner.id,
+                "type": "opportunity",
+                "team_id": 2,
             })
         return "OK"
