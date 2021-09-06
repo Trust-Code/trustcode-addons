@@ -5,16 +5,10 @@ from odoo import fields, models
 class ProductTemplate(models.Model):
     _inherit = 'product.template'
 
-    def _compute_brl_price(self):
-        brl_id = self.env['res.currency'].search([('name', '=', 'BRL')])
-        usd_id = self.env['res.currency'].search([('name', '=', 'USD')])
-        for item in self:
-            dolar_price = item.item_ids.filtered(lambda x: x.currency_id == usd_id)
-            item.brl_currency_id = usd_id.id
-            if dolar_price:
-                item.brl_list_price = dolar_price.fixed_price
-            else:
-                item.brl_list_price = 0.0
+    def _get_combination_info(self, combination=False, product_id=False, add_qty=1, pricelist=False, parent_combination=False, only_template=False):
+        res = super(ProductTemplate, self)._get_combination_info(combination, product_id, add_qty, pricelist, parent_combination, only_template)
 
-    brl_currency_id = fields.Many2one('res.currency', compute="_compute_brl_price")
-    brl_list_price = fields.Monetary(currency="brl_currency_id", compute="_compute_brl_price")
+        brl_id = self.env['res.currency'].search([('name', '=', 'BRL')], limit=1)
+        usd_id = self.env['res.currency'].search([('name', '=', 'USD')], limit=1)
+        res["usd_list_price"] = brl_id.compute(res['price'], usd_id)
+        return res

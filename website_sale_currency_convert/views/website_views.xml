@@ -1,10 +1,11 @@
 <odoo>
 
     <template id="website_product" name="Product" inherit_id="website_sale.product_price">
-        <div position="inside">
-            <span t-field="product.brl_list_price" t-options="{'widget': 'monetary', 'display_currency': product.brl_currency_id}"/>
+        <h4 position="inside">
+            <br />
+            <span class="span-dolar-price" style="white-space: nowrap;" t-esc="combination_info['usd_list_price']" t-options="{'widget': 'monetary', 'display_currency': website.usd_currency_id}"/>
             <span> *valor em dólar</span>
-        </div>
+        </h4>
     </template>
 
     <template id="website_order_total" name="Order Total" inherit_id="website_sale.total">

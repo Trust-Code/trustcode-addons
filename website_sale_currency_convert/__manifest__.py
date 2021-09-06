@@ -18,5 +18,6 @@
     ],
     'data': [
         'views/website_views.xml',
+        'views/templates.xml',
     ],
 }
