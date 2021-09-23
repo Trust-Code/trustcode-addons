@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_order_form" model="ir.ui.view">
+        <field name="name">view_project_quotation_order_form</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale_timesheet.view_order_form_inherit_sale_timesheet" />
+        <field name="arch" type="xml">
+            <button name="preview_sale_order" position="before">
+                <button name="action_create_project" type="object"
+                    class="oe_stat_button" icon="fa-pencil-square-o"
+                    attrs="{'invisible':['|',('state','not in', ('sale', 'done')), ('project_id', '!=', False)]}">
+                    <div class="o_field_widget o_stat_info">
+                        <span class="o_stat_text">Criar</span>
+                        <span class="o_stat_text">Projeto</span>
+                    </div>
+                </button>
+            </button>
+        </field>
+    </record>
+</odoo>
