@@ -2,3 +2,5 @@ Fabric3==1.13.1.*
 boto3>=1.5.12
 twilio
 openpyxl>=2.6.2
+pandas
+plotly

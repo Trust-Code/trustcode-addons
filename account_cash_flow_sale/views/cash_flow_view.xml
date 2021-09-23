@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+		<record id="cash_flow_forecast_view_form" model="ir.ui.view">
+			<field name="name">cash.flow.forecast.form</field>
+			<field name="model">account.cash.flow</field>
+			<field name="inherit_id" ref="account_cash_flow.view_account_cash_flow_wizard_form"/>
+			<field name="arch" type="xml">
+				<field name="end_date" position="after">
+					<field name="include_confirmed_quotations" />
+				</field>
+			</field>
+		</record>
+
+	</data>
+</openerp>
