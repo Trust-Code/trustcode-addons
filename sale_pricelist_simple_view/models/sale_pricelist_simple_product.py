@@ -32,6 +32,8 @@ class Sale_pricelist_simple_view_product(models.Model):
                         'show_list': l.show_list,
                         'color': l.color_id.color}))
 
+            product_id.invalidate_cache(ids=[product_id.id])
+
         self.lines_prices_id.unlink()
         self.lines_prices_id = prices
         self.get_scale_list()
