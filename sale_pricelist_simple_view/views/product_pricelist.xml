@@ -1,0 +1,39 @@
+<odoo>
+    <data>
+        <record id="simple_view_product_pricelist_item_search" model="ir.ui.view">
+            <field name="name">simple.view.product.pricelist.item.search</field>
+            <field name="model">product.pricelist.item</field>
+            <field name="inherit_id" ref="product.product_pricelist_item_view_search"/>
+            <field name="arch" type="xml">
+                <xpath expr="//search/filter[last()]" position="after">
+                    <filter name="Regra Categoria Fiscal" domain="[('applied_on', '=', '4_fiscal_category')]"/>
+                </xpath>
+            </field>
+        </record>
+<!--        <record id="simple_view_product_pricelist_item_tree_view_from_product" model="ir.ui.view">-->
+<!--            <field name="name">simple.view.product.pricelist.item.tree</field>-->
+<!--            <field name="model">product.pricelist.item</field>-->
+<!--            <field name="inherit_id" ref="product.product_pricelist_item_tree_view_from_product"/>-->
+<!--            <field name="arch" type="xml">-->
+<!--                <field name="fiscal_category"-->
+<!--                      attrs="{'required': [('applied_on', '=', '4_fiscal_category')],-->
+<!--                      'invisible': [('applied_on', '!=', '4_fiscal_category')]}"-->
+<!--                      options="{'no_create_edit':1, 'no_open': 1}"/>-->
+<!--            </field>-->
+<!--        </record>-->
+
+        <record id="simple_view_product_pricelist_item_form_view" model="ir.ui.view">
+            <field name="name">simple.view.product.pricelist.item.form</field>
+            <field name="model">product.pricelist.item</field>
+            <field name="inherit_id" ref="product.product_pricelist_item_form_view"/>
+            <field name="arch" type="xml">
+                <field name="categ_id" position="before">
+                    <field name="fiscal_category" attrs="{
+                          'invisible':[('applied_on', '!=', '4_fiscal_category')],
+                          'required':[('applied_on', '=', '4_fiscal_category')]}"
+                        options="{'no_create':1}"/>
+                </field>
+            </field>
+        </record>
+    </data>
+</odoo>
