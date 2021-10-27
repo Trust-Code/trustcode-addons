@@ -106,7 +106,7 @@ class WizardImportCnabRetorno(models.TransientModel):
             message = '\n'.join([x['mensagem'] for x in jsonp['erro']['causas']])
             raise UserError('Houve um erro com a API do Boleto Cloud:\n%s' % message)
 
-        last_statement = self.env['account.bank.statement'].search([], order='id_desc', limit=1)
+        last_statement = self.env['account.bank.statement'].search([], order='id desc', limit=1)
 
         statement = self.env['account.bank.statement'].create({
             'name': response['arquivo']['protocolo']['numero'],
