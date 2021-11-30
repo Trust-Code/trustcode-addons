@@ -5,7 +5,8 @@
         <field name="inherit_id" ref="payment.transaction_form" />
         <field name="arch" type="xml">
             <field name="date" position="after">
-                <field name="boleto_pdf"/>
+                <field name="boleto_pdf_name" invisible="1"/>
+                <field name="boleto_pdf" filename="boleto_pdf_name"/>
             </field>
         </field>
     </record>

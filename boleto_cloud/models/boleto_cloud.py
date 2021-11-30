@@ -15,6 +15,7 @@ class PaymentTransaction(models.Model):
     _inherit = 'payment.transaction'
 
     boleto_pdf = fields.Binary(string="Boleto PDF")
+    boleto_pdf_name = fields.Char(string="Nome Boleto")
 
 
 class CnabRemessa(models.Model):

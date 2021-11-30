@@ -1,6 +1,6 @@
 {  # pylint: disable=C8101,C8103
     'name': 'Integração Boleto Cloud',
-    'version': '13.0.1.0.0',
+    'version': '13.0.1.0.1',
     'category': 'account',
     'author': 'Trustcode',
     'website': 'http://www.trustcode.com.br',
@@ -19,5 +19,6 @@
         'views/res_company.xml',
         'views/payment_transaction.xml',
         'views/cnab_remessa.xml',
+        'views/account_move.xml',
     ],
 }
