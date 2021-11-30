@@ -33,7 +33,8 @@ class IrActionsReport(models.Model):
                 continue
 
             tmp_boleto = BytesIO()
-            tmp_boleto.write(logo)
+            boleto = base64.b64decode(transaction.boleto_pdf)
+            tmp_boleto.write(boleto)
             tmp_boleto.seek(0)
 
             pdf_merge.append(tmp_boleto)
