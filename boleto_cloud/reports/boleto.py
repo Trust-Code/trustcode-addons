@@ -28,7 +28,7 @@ class IrActionsReport(models.Model):
 
         pdf_merge = PyPDF2.PdfFileMerger()
         
-        for transaction in move_ids.transaction_ids:
+        for transaction in move_ids.transaction_ids.sorted(lambda x: x.date_maturity):
             if not transaction.boleto_pdf:
                 continue
 
