@@ -70,7 +70,7 @@ class AccountMove(models.Model):
             instrucoes = [instrucao[y-95:y] for y in range(95, len(instrucao)+95, 95)]
 
             partner = self.partner_id.commercial_partner_id
-            duplicata =  "%s_%s" % (self.nfe_number, str(count))
+            duplicata =  "%s-%s" % (self.nfe_number, str(count))
             vals = {
                 'boleto.conta.token': self.payment_journal_id.boleto_cloud_bank_account_api_key,
                 'boleto.emissao': self.invoice_date,
