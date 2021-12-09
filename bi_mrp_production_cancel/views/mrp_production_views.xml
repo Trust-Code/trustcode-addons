@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+        <record id="mrp_production_form_view_cancel_inherit" model="ir.ui.view">
+            <field name="name">mrp.production.cancel.inherit.form</field>
+            <field name="model">mrp.production</field>
+            <field name="inherit_id" ref="mrp.mrp_production_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//button[@name='action_cancel']" position="replace">
+                    <button name="action_cancel" states="planned,confirmed,done,progress,to_close,draft" string="Cancel" type="object"/>
+                </xpath>
+                <xpath expr="//button[@name='action_cancel']" position="after">
+                    <button name="action_set_to_comfirmed" states="cancel" string="Set To Draft" type="object" class="oe_highlight"/>
+                </xpath>
+            </field>
+        </record>
+
+</odoo>

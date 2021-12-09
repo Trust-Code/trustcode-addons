@@ -1,0 +1,19 @@
+13.0.0.1
+
+when cancelled the MO then its not cancelled/deleted generated accounting entries from the MO (It should delete generated all accounting entries from the MO , Finished goods and RM both)
+
+13.0.0.2 
+
+Fixed warning issue because of unlink method of stock picking line .
+
+
+13.0.0.2 
+
+set to draft button state = draft 
+
+13.0.0.4
+
+==> solved issue of set to draft button.
+
+13.0.0.5 ==>solved issue of generate more product move for grater on hand quantity of a product.
+13.0.0.6==>fixed issue of warning when Unreserve the quantity in MO.
