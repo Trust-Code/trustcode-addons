@@ -50,8 +50,8 @@ class MrpProduction(models.Model):
                 all_moves = (production.move_finished_ids | production.move_raw_ids)
                 # cancel routing picking
                 pickings = pick_obj.search([('origin', '=', production.name)])
-                if pickings:
-                    pick_obj.with_context(mrp=True).action_cancel([x.id for x in pickings])
+                # if pickings:
+                #     pick_obj.with_context(mrp=True).action_cancel([x.id for x in pickings])
 
                 for move in all_moves :
                     account_move = self.env['account.move'].sudo().search([('stock_move_id','=',move.id)],order="id desc", limit=1)

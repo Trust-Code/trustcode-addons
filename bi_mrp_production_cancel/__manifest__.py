@@ -3,7 +3,7 @@
 
 {
     'name': 'Manufacturing Order Cancel/Reverse in Odoo',
-    'version': '13.0.0.6',
+    'version': '13.0.0.7',
     'category': 'Manufacturing',
     'summary': 'Apps for allow to cancel Manufacturing Order cancel Manufacturing cancel order MO cancel Manufacturing reverse mrp cancel mrp order cancel reverse manufacturing order cancel stock reverse stock of MO production cancel order production order cancel' ,
     'description': """
