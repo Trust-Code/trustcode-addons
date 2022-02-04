@@ -8,7 +8,7 @@ from odoo.exceptions import UserError
 class BoletoCloud(models.Model):
     _inherit = "payment.acquirer"
 
-    provider = fields.Selection(selection_add=[("boleto.cloud", "Boleto Cloud")])
+    provider = fields.Selection(selection_add=[("boleto.cloud", "Boleto Cloud")], ondelete={'boleto.cloud': 'set default'})
 
 
 class PaymentTransaction(models.Model):
