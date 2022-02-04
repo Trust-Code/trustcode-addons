@@ -11,6 +11,7 @@
         'l10n_br_account',
         'l10n_br_automated_payment',
         'l10n_br_eletronic_document',
+        'l10n_br_sale',
     ],
     'data': [
         'security/ir.model.access.csv',
