@@ -259,7 +259,7 @@ class ContractContract(models.Model):
             'invoice_date': date_invoice,
             'date': date_invoice,
             'auto_post':self.auto_post,
-            'type': invoice_type,
+            'move_type': invoice_type,
             'journal_id': journal.id,
             'invoice_origin': '%s - %s' % (self.name or '', self.code or ''),
             'company_id': self.company_id.id,
@@ -422,7 +422,8 @@ class ContractContract(models.Model):
 
     def _recurring_create_invoice(self, date_ref=False):
         invoices_values = self._prepare_recurring_invoices_values(date_ref)
-        return self._finalize_and_create_invoices(invoices_values)
+        invoices = self.env['account.move'].create(invoices_values)
+        return invoices
 
     @api.model
     def cron_recurring_create_invoice(self):

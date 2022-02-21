@@ -19,7 +19,7 @@ class ContractLine(models.Model):
     display_type = fields.Selection([
         ('line_section', "Section"),
         ('line_note', "Note")], default=False, help="Technical field for UX purpose.")
- 
+
     analytic_account_id = fields.Many2one(
         string="Analytic account",
         comodel_name='account.analytic.account',
@@ -368,6 +368,7 @@ class ContractLine(models.Model):
             recurring_interval,
             max_date_end=False,
         )
+
     @api.model
     def get_next_invoice_date(
         self,
@@ -465,7 +466,6 @@ class ContractLine(models.Model):
                 next_period_date_start = False
             rec.next_period_date_start = next_period_date_start
 
-    
     @api.depends(
         'next_period_date_start',
         'recurring_invoicing_type',
@@ -624,27 +624,24 @@ class ContractLine(models.Model):
         dates = self._get_period_to_invoice(
             self.last_date_invoiced, self.recurring_next_date
         )
-        if self.contract_id.contract_type =='sale':
+        if self.contract_id.contract_type == 'sale':
             account_type = 'income'
         else:
             account_type = 'expense'
 
-
         return {
+            'display_type': self.display_type,
             'sequence': self.sequence,
-            'name': self._insert_markers(dates[0], dates[1]),
-            'account_id':self.product_id.product_tmpl_id._get_product_accounts()[account_type].id,
+            'name': self.name,
             'product_id': self.product_id.id,
             'product_uom_id': self.uom_id.id,
-            'quantity': self._get_quantity_to_invoice(*dates),#self.quantity
+            'quantity': self._get_quantity_to_invoice(*dates),
             'discount': self.discount,
             'price_unit': self.price_unit,
             'tax_ids': [(6, 0, self.tax_id.ids)],
             'analytic_account_id': self.analytic_account_id.id,
-#            'analytic_tag_ids': [(6, 0, self.product_id.analytic_tag_ids.ids)],
-            'contract_line_id': [(4, self.id)],
+            'contract_id': [(4, self.id)],
         }
-
 
     def _get_period_to_invoice(
         self, last_date_invoiced, recurring_next_date, stop_at_date_end=True
@@ -743,7 +740,6 @@ class ContractLine(models.Model):
             return relativedelta(months=interval, day=1)
         else:
             return relativedelta(years=interval)
-
 
     def _delay(self, delay_delta):
         """
@@ -1204,4 +1200,3 @@ class ContractLine(models.Model):
     ):
         self.ensure_one()
         return self.quantity
-
