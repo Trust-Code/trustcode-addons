@@ -640,7 +640,7 @@ class ContractLine(models.Model):
             'price_unit': self.price_unit,
             'tax_ids': [(6, 0, self.tax_id.ids)],
             'analytic_account_id': self.analytic_account_id.id,
-            'contract_id': [(4, self.id)],
+            'contract_line_id': [(4, self.id)],
         }
 
     def _get_period_to_invoice(
