@@ -9,7 +9,7 @@ class WordpressController(http.Controller):
     def trustcode_my_document_like(self, **kwargs):
         if request.httprequest.headers.get("Token") == "ABC123DEF456":
             partner = request.env["res.partner"].with_user(SUPERUSER_ID).search(
-                [("email", "=", kwargs.get("email_address"))])
+                [("email", "=", kwargs.get("email_address"))], limit=1)
             if not partner:
                 partner = request.env["res.partner"].with_user(SUPERUSER_ID).create({
                     "name": kwargs.get("first_name") + " " + kwargs.get("last_name"),
