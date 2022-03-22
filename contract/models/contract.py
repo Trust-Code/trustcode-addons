@@ -353,6 +353,10 @@ class ContractContract(models.Model):
                 self._finalize_invoice_values(invoice_values)
             )
         invoices = self.env['account.move'].create(final_invoices_values)
+
+        for obj in invoices:
+            obj._onchange_partner_id()
+            
         return invoices
 
     @api.model
