@@ -28,5 +28,8 @@ from . import report_aged_partner
 from . import report_journal_audit
 from . import report_financial
 from . import cash_flow_report
+from . import account_bank_book
+from . import account_cash_book
+from . import account_day_book
 from . import account_asset_report
-
+from . import multiple_invoice_report

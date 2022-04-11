@@ -35,8 +35,7 @@ class AccountMove(models.Model):
 
     asset_depreciation_ids = fields.One2many('account.asset.depreciation.line',
                                              'move_id',
-                                             string='Assets Depreciation Lines',
-                                             ondelete="restrict")
+                                             string='Assets Depreciation Lines')
 
     def button_cancel(self):
         for move in self:
@@ -105,7 +104,7 @@ class AccountInvoiceLine(models.Model):
                     raise UserError(_(
                         'The number of depreciations or the period length of your asset category cannot be null.'))
                 months = cat.method_number * cat.method_period
-                if record.move_id.type in ['out_invoice', 'out_refund']:
+                if record.move_id in ['out_invoice', 'out_refund']:
                     record.asset_mrr = record.price_subtotal_signed / months
                 if record.move_id.invoice_date:
                     start_date = datetime.strptime(
@@ -123,7 +122,7 @@ class AccountInvoiceLine(models.Model):
                     'code': record.move_id.name or False,
                     'category_id': record.asset_category_id.id,
                     'value': record.price_subtotal,
-                    'partner_id': record.move_id.partner_id.id,
+                    'partner_id': record.partner_id.id,
                     'company_id': record.move_id.company_id.id,
                     'currency_id': record.move_id.company_currency_id.id,
                     'date': record.move_id.invoice_date,
@@ -140,9 +139,9 @@ class AccountInvoiceLine(models.Model):
 
     @api.onchange('asset_category_id')
     def onchange_asset_category_id(self):
-        if self.move_id.type == 'out_invoice' and self.asset_category_id:
+        if self.move_id == 'out_invoice' and self.asset_category_id:
             self.account_id = self.asset_category_id.account_asset_id.id
-        elif self.move_id.type == 'in_invoice' and self.asset_category_id:
+        elif self.move_id == 'in_invoice' and self.asset_category_id:
             self.account_id = self.asset_category_id.account_asset_id.id
 
     @api.onchange('product_uom_id')
@@ -155,9 +154,9 @@ class AccountInvoiceLine(models.Model):
     def _onchange_product_id(self):
         vals = super(AccountInvoiceLine, self)._onchange_product_id()
         if self.product_id:
-            if self.move_id.type == 'out_invoice':
+            if self.move_id == 'out_invoice':
                 self.asset_category_id = self.product_id.product_tmpl_id.deferred_revenue_category_id
-            elif self.move_id.type == 'in_invoice':
+            elif self.move_id == 'in_invoice':
                 self.asset_category_id = self.product_id.product_tmpl_id.asset_category_id
         return vals
 

@@ -36,6 +36,6 @@
               name="Aged Partner Balance"
               sequence="2"
               action="action_account_aged_balance_view"
-              parent="base_accounting_kit.account_reports_partner"/>
+              parent="account.menu_finance_reports"/>
 
 </odoo>

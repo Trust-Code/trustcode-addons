@@ -10,7 +10,7 @@
                                 <div class="dash-header">
                                     <h1 class="custom-h1 dashboard-h1">Dashboard </h1>
                                     <input type="checkbox" style="display:none" data-toggle="toggle" data-on="" data-off="">
-                                    <input type="checkbox" id="toggle-two" ></input>
+                                    <input type="checkbox" id="toggle-two"></input>
                                     </input>
                                 </div>
                             </div>
@@ -26,7 +26,7 @@
                                 <!--                   Net Profit or Loss          -->
                                 <div class="tile wide invoice box-1">
                                     <div class="headers">
-                                        <div class="main-title">Receita líquita ou prejuízo</div>
+                                        <div class="main-title">Net Profit or Loss</div>
                                         <div id="monthly_invoice">
                                             <div class="left">
                                                 <div class="count">
@@ -46,7 +46,7 @@
                             <div class="col-md-3">
                                 <div class="tile wide invoice box-2">
                                     <div class="header">
-                                        <div class="main-title">Total Receitas</div>
+                                        <div class="main-title">Total Income</div>
                                         <div id="monthly_income">
                                             <div class="left">
                                                 <div class="count">
@@ -66,7 +66,7 @@
                             <div class="col-md-3">
                                 <div class="tile wide invoice box-3">
                                     <div class="header">
-                                        <div class="main-title">Total Despesas</div>
+                                        <div class="main-title">Total Expenses</div>
                                         <div id="monthly_expense">
                                             <div class="left">
                                                 <div class="count">
@@ -86,7 +86,7 @@
                             <div class="col-md-3">
                                 <div class="tile wide invoice box-4">
                                     <div class="header">
-                                        <div class="main-title">Itens não reconciliados</div>
+                                        <div class="main-title">Unreconciled items</div>
                                         <div id="monthly_unreconciled">
                                             <div class="left">
                                                 <div class="count">
@@ -114,25 +114,25 @@
                             <div class="card-header">
                                 <div class="card-title">
                                     <b>
-                                        <h3 class="custom-h3">Receita/Despesa</h3>
+                                        <h3 class="custom-h3">Income/Expense</h3>
                                     </b>
                                 </div>
                                 <div class="card-tools">
-                                    <select>
-                                        <option id="income_this_year">Este ano</option>
-                                        <option id="income_this_month">Este mês</option>
+                                    <select id="income_expense_values">
+                                        <option id="income_this_year" value="income_this_year">This Year</option>
+                                        <option id="income_this_month" value="income_this_month">This Month</option>
                                         <div role="separator" class="dropdown-divider" />
-                                        <option id="income_last_month">Último mês</option>
-                                        <option id="income_last_year">Último ano</option>
+                                        <option id="income_last_month" value="income_last_month">Last Month</option>
+                                        <option id="income_last_year" value="income_this_year">Last Year</option>
                                     </select>
                                 </div>
                             </div>
                             <div class="card-body mt-3" id="in_ex_body_hide">
                                 <div class="row">
                                     <div class="col-md-12">
-                                        <p id="myelement1"></p>
+                                        <p id="myelement1"> </p>
                                         <div class="chart">
-                                            <canvas id="canvas" width="300" height="200"></canvas>
+                                            <canvas id="canvas" width="300" height="200"> </canvas>
                                         </div>
                                     </div>
                                 </div>
@@ -144,13 +144,13 @@
                             <div class="card-header">
                                 <div class="card-title">
                                     <b>
-                                        <h3 class="custom-h3">FATURAS</h3>
+                                        <h3 class="custom-h3">INVOICES</h3>
                                     </b>
                                 </div>
                                 <div class="card-tools">
-                                    <select>
-                                        <option id="invoice_this_month">Este mês</option>
-                                        <option id="invoice_this_year">Este ano</option>
+                                    <select id="invoice_values">
+                                        <option id="invoice_this_month" value="this_month">This Month</option>
+                                        <option id="invoice_this_year" value="this_year">This Year</option>
                                     </select>
                                 </div>
                             </div>
@@ -158,7 +158,7 @@
                             <div class="card-body" id="">
                                 <div class="row">
                                     <div class="col-md-12 mt-3">
-                                        <h1 class="custom-h1" style="margin-bottom: 0;">Faturas de Clientes</h1>
+                                        <h1 class="custom-h1" style="margin-bottom: 0;">Customer Invoice</h1>
                                         <ul class="skill-list">
                                             <li class="skill" style="display: flex;justify-content: space-between;color: #000;">
                                                 <p id="total_customer_invoice_paid" />
@@ -185,14 +185,14 @@
                                             </li>
                                         </ul>
                                         <div role="separator" class="dropdown-divider" />
-                                        <h1 class="custom-h1" style="margin-bottom: 0;">Fatura Fornecedor</h1>
+                                        <h1 class="custom-h1" style="margin-bottom: 0;">Supplier Invoice</h1>
                                         <ul class="skill-list">
                                             <li class="skill" style="display: flex;justify-content: space-between;color: #000;">
-                                                <p id="total_supplier_invoice_paid" />
+                                                <p id="total_supplier_invoice_paid"/>
                                                 <p id="total_supplier_invoice" />
-                                                <p id="total_supplier_invoice_paid_current_year" />
+                                                <p id="total_supplier_invoice_paid_current_year"/>
                                                 <p id="total_supplier_invoice_current_year" />
-                                                <p id="total_supplier_invoice_paid_current_month" />
+                                                <p id="total_supplier_invoice_paid_current_month"/>
                                                 <p id="total_supplier_invoice_current_month" />
                                             </li>
                                             <li>
@@ -221,7 +221,7 @@
                             <div class="card-body p-0" style=" height: 287px; overflow-y: auto; ">
                                 <div class="card-header" style=" padding: 17px 1.5rem !important; display: flex !IMPORTANT; justify-content: space-between; align-items: center; ">
                                     <h3 class="custom-h3 card-title">
-                                        <b>SALDO EM BANCO E CAIXA</b>
+                                        <b>BANK AND CASH BALANCE</b>
                                     </h3>
                                 </div>
                                 <div class="card-body p-0" style=" height: 100px; " id="bank_balance_body_hide">
@@ -235,13 +235,13 @@
                             <div class="card-header">
                                 <div class="card-title">
                                     <b>
-                                        <h3 class="custom-h3">Recebíveis em atraso</h3>
+                                        <h3 class="custom-h3">Aged Receivable</h3>
                                     </b>
                                 </div>
                                 <div class="card-tools">
-                                    <select>
-                                        <option id="aged_payable_this_month">Este mês</option>
-                                        <option id="aged_payable_this_year">Este ano</option>
+                                    <select id="aged_receivable_values">
+                                        <option id="aged_payable_this_month" value="this_month">This Month</option>
+                                        <option id="aged_payable_this_year" value="this_year">This Year</option>
                                     </select>
                                 </div>
                             </div>
@@ -262,13 +262,13 @@
                             <div class="card-header">
                                 <div class="card-title">
                                     <b>
-                                        <h3 class="custom-h3">Pagamentos em atraso</h3>
+                                        <h3 class="custom-h3">Aged Payable</h3>
                                     </b>
                                 </div>
                                 <div class="card-tools">
-                                    <select>
-                                        <option id="aged_receivable_this_month">Este mês</option>
-                                        <option id="aged_receivable_this_year">Este ano</option>
+                                    <select id="aged_payable_value">
+                                        <option id="aged_receivable_this_month" value="this_month">This Month</option>
+                                        <option id="aged_receivable_this_year" value="this_year">This Year</option>
                                     </select>
                                 </div>
                             </div>
@@ -288,24 +288,24 @@
                         <div class="card" style="height:366px;">
                             <div class="card-header" style=" padding: 17px 1.5rem !important; display: flex !IMPORTANT; justify-content: space-between; align-items: center; ">
                                 <h3 class="custom-h3 card-title">
-                                    <b>TOP 10 CLIENTES</b>
+                                    <b>TOP 10 CUSTOMERS</b>
                                 </h3>
 
                                 <div class="card-tools">
-                                    <select>
-
-                                        <option id="top_10_customer_this_month">Este mês</option>
+                                    <select id="top_10_customer_value">
+<!--                                        <option id="null" value="null"></option>-->
+                                        <option id="top_10_customer_this_month" value="this_month">This Month</option>
                                         <div role="separator" class="dropdown-divider" />
-                                        <option id="top_10_customer_last_month">Último mês</option>
+                                        <option id="top_10_customer_last_month" value="last_month">Last Month</option>
 
                                     </select>
                                 </div>
                             </div>
 
                             <div class="card-body p-0" style=" height: 287px; overflow-y: auto; " id="top_10_body">
-                                <ul class="users-list clearfix" id="top_10_customers"></ul>
+<!--                                <ul class="users-list clearfix" id="top_10_customers"></ul>-->
                                 <ul class="users-list clearfix" id="top_10_customers_this_month"></ul>
-                                <ul class="users-list clearfix" id="top_10_customers_last_month"></ul>
+<!--                                <ul class="users-list clearfix" id="top_10_customers_last_month"></ul>-->
                             </div>
                         </div>
                     </div>

@@ -32,8 +32,8 @@ class ResPartner(models.Model):
                                    string="Invoice Details",
                                    readonly=True,
                                    domain=(
-                                   [('invoice_payment_state', '=', 'not_paid'),
-                                    ('type', '=', 'out_invoice')]))
+                                   [('payment_state', '=', 'not_paid'),
+                                    ('move_type', '=', 'out_invoice')]))
     total_due = fields.Monetary(compute='_compute_for_followup', store=False,
                                 readonly=True)
     next_reminder_date = fields.Date(compute='_compute_for_followup',
@@ -56,12 +56,13 @@ class ResPartner(models.Model):
             total_overdue = 0
             today = fields.Date.today()
             for am in record.invoice_list:
-                if am.company_id == self.env.user.company_id:
+                if am.company_id == self.env.company:
                     amount = am.amount_residual
                     total_due += amount
+
                     is_overdue = today > am.invoice_date_due if am.invoice_date_due else today > am.date
                     if is_overdue:
-                        total_overdue += not am.invoice_sent and amount or 0
+                        total_overdue += amount or 0
             min_date = record.get_min_date()
             action = record.action_after()
             if min_date:
@@ -85,10 +86,11 @@ class ResPartner(models.Model):
         today = date.today()
         for this in self:
             if this.invoice_list:
-                min_list = this.invoice_list.mapped('invoice_date_due')
-                while False in min_list:
-                    min_list.remove(False)
-                return min(min_list)
+                if this.invoice_list.mapped('invoice_date_due'):
+                    min_list = this.invoice_list.mapped('invoice_date_due')
+                    while False in min_list:
+                        min_list.remove(False)
+                    return min(min_list)
             else:
                 return today
 
@@ -96,13 +98,16 @@ class ResPartner(models.Model):
         delay = """select id,delay from followup_line where followup_id =
         (select id from account_followup where company_id = %s)
          order by delay limit 1"""
-        self._cr.execute(delay, [self.env.user.company_id.id])
-        record = self.env.cr.dictfetchall()
+        self._cr.execute(delay, [self.env.company.id])
+        record = self._cr.dictfetchall()
+
         return record
+
 
     def action_after(self):
         lines = self.env['followup.line'].search([(
-            'followup_id.company_id', '=', self.env.user.company_id.id)])
+            'followup_id.company_id', '=', self.env.company.id)])
+
         if lines:
             record = self.get_delay()
             for i in record:

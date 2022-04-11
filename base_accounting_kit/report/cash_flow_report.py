@@ -204,12 +204,12 @@ class ReportFinancial(models.AbstractModel):
             raise UserError(
                 _("Form content is missing, this report cannot be printed."))
 
-        self.model = self.env.context.get('active_model')
-        docs = self.env[self.model].browse(self.env.context.get('active_id'))
+        model = self.env.context.get('active_model')
+        docs = self.env[model].browse(self.env.context.get('active_id'))
         report_lines = self.get_account_lines(data.get('form'))
         return {
             'doc_ids': self.ids,
-            'doc_model': self.model,
+            'doc_model': model,
             'data': data['form'],
             'docs': docs,
             'time': time,

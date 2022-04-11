@@ -25,7 +25,7 @@ from odoo import models
 
 class AccountTaxReport(models.TransientModel):
     _inherit = "account.common.report"
-    _name = 'account.tax.report'
+    _name = 'kit.account.tax.report'
     _description = 'Tax Report'
 
     def _print_report(self, data):

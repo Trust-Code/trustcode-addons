@@ -31,14 +31,14 @@ class CashBookWizard(models.TransientModel):
 
     company_id = fields.Many2one('res.company', string='Company',
                                  readonly=True,
-                                 default=lambda self: self.env.user.company_id)
+                                 default=lambda self: self.env.company)
     target_move = fields.Selection([('posted', 'All Posted Entries'),
                                     ('all', 'All Entries')], string='Target Moves', required=True,
                                    default='posted')
     date_from = fields.Date(string='Start Date', default=date.today(),
-                            requred=True)
+                            required=True)
     date_to = fields.Date(string='End Date', default=date.today(),
-                          requred=True)
+                          required=True)
     display_account = fields.Selection(
         [('all', 'All'), ('movement', 'With movements'),
          ('not_zero', 'With balance is not equal to 0')],
@@ -54,7 +54,7 @@ class CashBookWizard(models.TransientModel):
         journals = self.env['account.journal'].search([('type', '=', 'cash')])
         accounts = []
         for journal in journals:
-            accounts.append(journal.default_credit_account_id.id)
+            accounts.append(journal.payment_credit_account_id.id)
         return accounts
 
     account_ids = fields.Many2many('account.account',
@@ -76,7 +76,7 @@ class CashBookWizard(models.TransientModel):
                 [('type', '=', 'cash')])
             accounts = []
             for journal in journals:
-                accounts.append(journal.default_credit_account_id.id)
+                accounts.append(journal.payment_credit_account_id.id)
             domain = {'account_ids': [('id', 'in', accounts)]}
             return {'domain': domain}
 

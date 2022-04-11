@@ -1121,6 +1121,13 @@ progress::-moz-progress-bar {
     border-radius: 50%;
 }
 
+.accounts-dashboard-wrap .btn-primary {
+
+    color: #FFFFFF;
+    background-color: #7C7BAD;
+    border-color: #7C7BAD;
+
+}
 
 .accounts-dashboard-wrap .toggle-on.btn {
 
@@ -1147,7 +1154,7 @@ progress::-moz-progress-bar {
 
 .accounts-dashboard-wrap .toggle {
 
-    width: 260px !important;
+    width: 160px !important;
     height: auto !important;
 
 }

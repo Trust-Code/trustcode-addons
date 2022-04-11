@@ -118,15 +118,16 @@ class AccountMove(models.Model):
         """To check the selected customers due amount is exceed than
         blocking stage"""
         pay_type = ['out_invoice', 'out_refund', 'out_receipt']
-        if self.partner_id.active_limit and self.type in pay_type \
-                and self.partner_id.enable_credit_limit:
-            if self.due_amount >= self.partner_id.blocking_stage:
-                if self.partner_id.blocking_stage != 0:
-                    raise UserError(_(
-                        "%s is in  Blocking Stage and "
-                        "has a due amount of %s %s to pay") % (
-                                        self.partner_id.name, self.due_amount,
-                                        self.currency_id.symbol))
+        for rec in self:
+            if rec.partner_id.active_limit and rec.move_type in pay_type \
+                    and rec.partner_id.enable_credit_limit:
+                if rec.due_amount >= rec.partner_id.blocking_stage:
+                    if rec.partner_id.blocking_stage != 0:
+                        raise UserError(_(
+                            "%s is in  Blocking Stage and "
+                            "has a due amount of %s %s to pay") % (
+                                            rec.partner_id.name, rec.due_amount,
+                                            rec.currency_id.symbol))
         return super(AccountMove, self).action_post()
 
     @api.onchange('partner_id')
