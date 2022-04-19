@@ -17,6 +17,24 @@ class PaymentTransaction(models.Model):
     boleto_pdf = fields.Binary(string="Boleto PDF")
     boleto_pdf_name = fields.Char(string="Nome Boleto")
 
+    def _find_attachment_ids_email(self):
+        atts = super(PaymentTransaction, self)._find_attachment_ids_email()
+
+        attachment_obj = self.env['ir.attachment']
+        for transaction in self:
+
+            if transaction.boleto_pdf:
+                pdf_id = attachment_obj.create(dict(
+                    name=transaction.boleto_pdf_name,
+                    datas=transaction.boleto_pdf,
+                    mimetype='application/pdf',
+                    res_model='account.move',
+                    res_id=transaction.invoice_ids[0].id,
+                ))
+                atts.append(pdf_id.id)
+
+        return atts
+
 
 class CnabRemessa(models.Model):
     _name = 'cnab.remessa'
