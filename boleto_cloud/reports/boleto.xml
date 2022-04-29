@@ -1,0 +1,15 @@
+<odoo>
+    <data>
+        <report
+            id="report_boleto_cloud_boleto"
+            string="Impressão de Boleto"
+            model="account.move"
+            report_type="qweb-pdf"
+            file="boleto_cloud.multiple_boleto"
+            name="boleto_cloud.multiple_boleto" />
+
+        <record id="report_boleto_cloud_boleto" model="ir.actions.report">
+            <field name="print_report_name">'Boleto %s' % object.nfe_number</field>
+        </record>
+    </data>
+</odoo>
