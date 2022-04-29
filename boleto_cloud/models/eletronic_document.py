@@ -12,7 +12,7 @@ class EletronicDocument(models.Model):
 
             if transaction.boleto_pdf:
                 pdf_id = attachment_obj.create(dict(
-                    name="%s.pdf" % transaction.reference.replace('/', '-'),
+                    name=transaction.boleto_pdf_name,
                     datas=transaction.boleto_pdf,
                     mimetype='application/pdf',
                     res_model='account.move',

@@ -5,13 +5,6 @@ from odoo import api, fields, models
 from odoo.exceptions import ValidationError, UserError
 
 
-
-class AccountMoveLine(models.Model):
-    _inherit = 'account.move.line'
-    
-    boleto_pdf = fields.Binary()
-    
-
 class AccountMove(models.Model):
     _inherit = 'account.move'
 
@@ -51,7 +44,8 @@ class AccountMove(models.Model):
         #     self.env["ir.config_parameter"].sudo().get_param("web.base.url")
         # )
 
-        for moveline in self.receivable_move_line_ids:
+        count = 1
+        for moveline in self.receivable_move_line_ids.sorted(lambda x: x.date_maturity):
             acquirer = self.env['payment.acquirer'].search([('provider', '=', 'boleto.cloud')])
             if not acquirer:
                 raise UserError('Configure o modo de pagamento do boleto cloud')
@@ -75,24 +69,27 @@ class AccountMove(models.Model):
             instrucao = self.payment_journal_id.instrucoes or ''
             instrucoes = [instrucao[y-95:y] for y in range(95, len(instrucao)+95, 95)]
 
+            partner = self.partner_id.commercial_partner_id
+            duplicata =  "%s-%s" % (self.nfe_number, str(count))
             vals = {
                 'boleto.conta.token': self.payment_journal_id.boleto_cloud_bank_account_api_key,
                 'boleto.emissao': self.invoice_date,
                 'boleto.vencimento': moveline.date_maturity,
-                'boleto.documento': moveline.name,
+                'boleto.documento': duplicata,
                 'boleto.titulo': "DM",
                 'boleto.valor': "%.2f" % moveline.balance,
-                'boleto.pagador.nome': self.partner_id.name,
-                'boleto.pagador.cprf': self.partner_id.l10n_br_cnpj_cpf,
-                'boleto.pagador.endereco.cep': "%s-%s" % (self.partner_id.zip[:5], self.partner_id.zip[-3:]),
-                'boleto.pagador.endereco.uf': self.partner_id.state_id.code,
-                'boleto.pagador.endereco.localidade': self.partner_id.city_id.name,
-                'boleto.pagador.endereco.bairro': self.partner_id.l10n_br_district,
-                'boleto.pagador.endereco.logradouro': self.partner_id.street,
-                'boleto.pagador.endereco.numero': self.partner_id.l10n_br_number,
+                'boleto.pagador.nome': partner.l10n_br_legal_name or partner.name,
+                'boleto.pagador.cprf': partner.l10n_br_cnpj_cpf,
+                'boleto.pagador.endereco.cep': "%s-%s" % (partner.zip[:5], partner.zip[-3:]),
+                'boleto.pagador.endereco.uf': partner.state_id.code,
+                'boleto.pagador.endereco.localidade': partner.city_id.name,
+                'boleto.pagador.endereco.bairro': partner.l10n_br_district,
+                'boleto.pagador.endereco.logradouro': partner.street,
+                'boleto.pagador.endereco.numero': partner.l10n_br_number,
                 'boleto.pagador.endereco.complemento': "",
                 'boleto.instrucao': instrucoes[:8],
             }
+            count += 1
 
             response = requests.post("%s/api/v1/boletos" % url, data=vals, auth=(api_token, 'token'))
             if response.status_code == 201:
@@ -122,6 +119,7 @@ class AccountMove(models.Model):
                 'acquirer_reference': boleto_id,
                 'transaction_url': "%s/boleto/2via/%s" % (url, boleto_id),
                 'boleto_pdf': boleto_pdf,
+                'boleto_pdf_name': "Boleto %s" % duplicata,
             })
 
     def generate_boleto_cloud_transactions(self):
