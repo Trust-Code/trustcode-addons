@@ -119,7 +119,7 @@ class AccountMove(models.Model):
                 'acquirer_reference': boleto_id,
                 'transaction_url': "%s/boleto/2via/%s" % (url, boleto_id),
                 'boleto_pdf': boleto_pdf,
-                'boleto_pdf_name': "Boleto %s" % duplicata,
+                'boleto_pdf_name': "Boleto %s.pdf" % duplicata,
             })
 
     def generate_boleto_cloud_transactions(self):

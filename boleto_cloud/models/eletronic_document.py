@@ -8,7 +8,7 @@ class EletronicDocument(models.Model):
         atts = super(EletronicDocument, self)._find_attachment_ids_email()
 
         attachment_obj = self.env['ir.attachment']
-        for transaction in self.move_id.transaction_ids:
+        for transaction in self.move_id.transaction_ids.filtered(lambda x: not x.email_sent):
 
             if transaction.boleto_pdf:
                 pdf_id = attachment_obj.create(dict(
