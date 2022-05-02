@@ -35,7 +35,7 @@ class Sale_pricelist_simple_view_product_line(models.Model):
         result = []
         for record in self:
             name = str(record.pricelist_ids.currency_id.symbol) + str(
-                record.price_required).replace(".", ",") + "0"
+                round(record.price_required, 2)).replace(".", ",") + "0"
             result.append((record.id, name))
         return result
 
