@@ -54,7 +54,6 @@ class AccountMove(models.Model):
                 'amount': moveline.amount_residual,
                 'currency_id': moveline.move_id.currency_id.id,
                 'partner_id': moveline.partner_id.id,
-                'type': 'server2server',
                 'date_maturity': moveline.date_maturity,
                 'invoice_ids': [(6, 0, self.ids)],
             })
