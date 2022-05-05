@@ -4,7 +4,7 @@
         <field name="model">account.journal</field>
         <field name="inherit_id" ref="account.view_account_journal_form" />
         <field name="arch" type="xml">
-            <field name="outbound_payment_method_line_ids" position="after">
+            <field name="outbound_payment_method_ids" position="after">
                 <field name="use_boleto_cloud"/>
                 <field name="boleto_cloud_bank_account_api_key" password="1"
                        attrs="{'invisible': [('use_boleto_cloud', '=', False)]}"/>
