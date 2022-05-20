@@ -1,2 +1,3 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_cnab_remessa,access_cnab_remessa,model_cnab_remessa,base.group_user,1,1,1,0
+access_wizard_import_cnab_retorno,access_wizard_import_cnab_retorno,model_wizard_import_cnab_retorno,base.group_user,1,1,1,1

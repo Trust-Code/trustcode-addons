@@ -157,7 +157,7 @@ class WizardImportCnabRetorno(models.TransientModel):
         data = {"arquivo": base64.b64decode(self.cnab_file)}
         response = requests.post(url, files=data, auth=(api_token, "token"))
 
-        if response.status_code == 400:
+        if response.status_code in (400, 401):
             jsonp = response.json()
             message = "\n".join(
                 [x["mensagem"] for x in jsonp["erro"]["causas"]]
@@ -165,7 +165,13 @@ class WizardImportCnabRetorno(models.TransientModel):
             raise UserError(
                 "Houve um erro com a API do Boleto Cloud:\n%s" % message
             )
+        if response.status_code == 409:  # Ja enviado anteriormente, vamos fazer download
+            error = response.json()["erro"]
+            message = error["causas"][0]["mensagem"]
+            url = url + "/" + message.split("/")[-1]
+            response = requests.get(url, headers={"Accept": "application/json"}, auth=(api_token, "token"))
 
+        response = response.json()
         last_statement = self.env["account.bank.statement"].search(
             [], order="id desc", limit=1
         )
@@ -175,24 +181,27 @@ class WizardImportCnabRetorno(models.TransientModel):
                 "name": response["arquivo"]["protocolo"]["numero"],
                 "journal_id": self.journal_id.id,
                 "date": datetime.now().date(),
-                "balance_start_real": last_statement.balance_end_real,
+                "balance_start": last_statement.balance_end_real,
                 "balance_end_real": last_statement.balance_end_real
                 + last_statement.total_entry_encoding,
             }
         )
 
         for titulo in response["arquivo"]["titulos"]:
+            if not titulo["token"]:
+                continue
             transaction = self.env["payment.transaction"].search(
                 [("acquirer_reference", "=", titulo["token"])]
             )
             self.env["account.bank.statement.line"].create(
                 {
-                    "bank_statement_id": statement.id,
+                    "statement_id": statement.id,
                     "date": datetime.strptime(
                         titulo["vencimento"], "%Y-%m-%d"
                     ),
                     "name": titulo["numero"],
                     "partner_id": transaction.partner_id.id,
+                    "payment_ref": titulo["numero"],
                     "ref": titulo["token"],
                     "amount": titulo["valor"],
                 }
