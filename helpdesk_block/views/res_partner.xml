@@ -1,0 +1,23 @@
+<odoo>
+    <record id="view_res_partner_form" model="ir.ui.view">
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form" />
+        <field name="arch" type="xml">
+            <field name="barcode" position="after">
+                
+            </field>
+            <notebook position="inside">
+                <page string="Informações Complementares">
+                    <group>
+                        <field name="estrategia"/>
+                        <field name="perfil_suporte_id" />
+                        <field name="br_account_cnae_id" />
+                        <field name="equipamento_ids" />
+                        <field name="segmento_ids"/>
+                        <field name="plataforma_id" />
+                    </group>
+                </page>
+            </notebook>
+        </field>
+    </record>
+</odoo> 
