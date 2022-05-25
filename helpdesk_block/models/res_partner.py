@@ -30,10 +30,10 @@ class ResPartner(models.Model):
 
     @api.model
     def _commercial_fields(self):
-        super(ResPartner, self)._commercial_fields()
+        res = super(ResPartner, self)._commercial_fields()
         """ Returns the list of fields that are managed by the commercial entity
         to which a partner belongs. These fields are meant to be hidden on
         partners that aren't `commercial entities` themselves, and will be
         delegated to the parent `commercial entity`. The list is meant to be
         extended by inheriting classes. """
-        return ['vat', 'credit_limit', 'estrategia']
+        return res + ["estrategia", "perfil_suporte_id", "br_account_cnae_id", "equipamento_ids", "segmento_ids", "plataforma_id"]
