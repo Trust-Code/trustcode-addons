@@ -2,3 +2,4 @@ id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 acess_partner_segment,access_partner_segment,model_partner_segment,base.group_user,1,1,1,1
 acess_partner_platform,access_partner_platform,model_partner_platform,base.group_user,1,1,1,1
 acess_partner_support,access_partner_support,model_partner_support,base.group_user,1,1,1,1
+acess_partner_equipment,access_partner_equipment,model_partner_equipment,base.group_user,1,1,1,1

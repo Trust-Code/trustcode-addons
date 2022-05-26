@@ -12,7 +12,7 @@ class HelpdeskTicket(models.Model):
         )
 
     @api.onchange('partner_id')
-    def _onchange_partner_id(self):
+    def block_onchange_partner_id(self):
         if self.partner_id:
             self.partner_name = self.partner_id.name
             self.partner_email = self.partner_id.email

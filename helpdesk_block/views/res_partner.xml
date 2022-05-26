@@ -7,30 +7,16 @@
             <notebook position="inside">
                 <page string="Informações Complementares">
                     <group>
-                        <field name="estrategia"/>
-                        <field name="perfil_suporte_id">
-                            <form>
-                                <group>
-                                    <field name="name"/>
-                                </group>
-                            </form>
-                        </field>
-                        <field name="br_account_cnae_id" />
-                        <field name="equipamento_ids" />
-                        <field name="segmento_ids">
-                            <form>
-                                <group>
-                                    <field name="name"/>
-                                </group>
-                            </form>
-                        </field>
-                        <field name="plataforma_id">
-                            <form>
-                                <group>
-                                    <field name="name"/>
-                                </group>
-                            </form>
-                        </field>
+                        <group>
+                            <field name="estrategia"/>
+                            <field name="perfil_suporte_id" />
+                            <field name="br_account_cnae_id" />
+                            <field name="plataforma_id"/>
+                        </group>
+                        <group>
+                            <field name="equipamento_ids" widget="many2many_tags" />
+                            <field name="segmento_ids" widget="many2many_tags" />
+                        </group>
                     </group>
                 </page>
             </notebook>
