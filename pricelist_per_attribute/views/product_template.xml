@@ -9,6 +9,7 @@
                     <tree editable="bottom">
                         <field name="min_quantity" />
                         <field name="fixed_price" />
+                        <field name="price_type" />
                     </tree>
                 </field>
             </field>
