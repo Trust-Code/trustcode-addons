@@ -34,7 +34,7 @@ class ProductProduct(models.Model):
             for prd_value in product.product_template_attribute_value_ids:
 
                 attr_value = prd_value.product_attribute_value_id
-                prices = attr_value.value_price_ids.filtered(lambda x: x.min_quantity < quantity).sorted("min_quantity")
+                prices = attr_value.value_price_ids.filtered(lambda x: x.min_quantity < quantity).sorted("min_quantity", reverse=True)
                 if prices:
                     price_type = prices[0].price_type
 
