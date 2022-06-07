@@ -9,16 +9,17 @@ class ProductAttributeValuePrice(models.Model):
     _order = "min_quantity"
 
     min_quantity = fields.Float(string="Quantidade Mínima")
-    fixed_price = fields.Float(string="Preço fixo")
+    fixed_price = fields.Float(string="Preço")
     price_type = fields.Selection([
-        ("unit", "Unitário"), ("thousand", "Milheiro"), ("fixed", "Fixo")], default="unit")
+        ("unit", "Unitário"), ("thousand", "Milheiro"), ("fixed", "Fixo")],
+        default="unit", string="Tipo de Preço")
 
 
-class ProductTemplateAttributeValue(models.Model):
-    _inherit = 'product.template.attribute.value'
+class ProductAttributeValue(models.Model):
+    _inherit = 'product.attribute.value'
 
     value_price_ids = fields.Many2many(
-        "product.attribute.value.price", relation="product_attribute_value_price_rel", string="Preço extra por quantidade")
+        "product.attribute.value.price", string="Preço extra por quantidade")
 
 
 class ProductProduct(models.Model):
@@ -30,10 +31,11 @@ class ProductProduct(models.Model):
             quantity = self.env.context.get("quantity", 1)
 
             total_price = 0
-            for value in product.product_template_attribute_value_ids:
-                prices = value.value_price_ids.filtered(lambda x: x.min_quantity < quantity).sorted("min_quantity")
-                if prices:
+            for prd_value in product.product_template_attribute_value_ids:
 
+                attr_value = prd_value.product_attribute_value_id
+                prices = attr_value.value_price_ids.filtered(lambda x: x.min_quantity < quantity).sorted("min_quantity")
+                if prices:
                     price_type = prices[0].price_type
 
                     if price_type == "unit":
