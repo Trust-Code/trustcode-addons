@@ -18,6 +18,9 @@ class ProductAttributeValuePrice(models.Model):
 class ProductAttributeValue(models.Model):
     _inherit = 'product.attribute.value'
 
+    multiply_attribute_cost = fields.Boolean(string="Multiplicar o custo de gravacao?")
+    cost_multiplier = fields.Integer(string="Multiplicador")
+
     value_price_ids = fields.Many2many(
         "product.attribute.value.price", string="Preço extra por quantidade")
 
@@ -31,6 +34,7 @@ class ProductProduct(models.Model):
             quantity = self.env.context.get("quantity", 1)
 
             total_price = 0
+            multiplier = product.product_template_attribute_value_ids.filtered(lambda x: x.product_attribute_value_id.multiply_attribute_cost)
             for prd_value in product.product_template_attribute_value_ids:
 
                 attr_value = prd_value.product_attribute_value_id
@@ -50,5 +54,8 @@ class ProductProduct(models.Model):
 
                     elif price_type == "fixed":
                         total_price += prices[0].fixed_price / quantity
+
+            if multiplier:
+                total_price = total_price * multiplier.product_attribute_value_id.cost_multiplier
 
             product.price_extra = product.price_extra + total_price

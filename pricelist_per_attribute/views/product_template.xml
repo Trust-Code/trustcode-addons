@@ -34,6 +34,8 @@
                     <field name="is_custom" />
                     <field name="html_color" widget="color" />
                     <field name="display_type" />
+                    <field name="multiply_attribute_cost" />
+                    <field name="cost_multiplier" attrs="{'invisible': [('multiply_attribute_cost', '=', False)]}" />
                     <field name="value_price_ids" widget="one2many">
                         <tree editable="bottom">
                             <field name="min_quantity" />
