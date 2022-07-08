@@ -83,10 +83,10 @@ class ProductProduct(models.Model):
                     if price_type == "unit":
                         total_price += prices[0].fixed_price
                     elif price_type == "thousand":
-                        multiplier = quantity // 1000
+                        multiple = quantity // 1000
                         remainder = quantity % 1000
 
-                        total_price += (prices[0].fixed_price / quantity) * multiplier
+                        total_price += (prices[0].fixed_price / quantity) * multiple
                         if remainder:
                             total_price += prices[0].fixed_price / remainder
 
