@@ -206,3 +206,28 @@ class WizardImportCnabRetorno(models.TransientModel):
                     "amount": titulo["valor"],
                 }
             )
+        suspense_acc_id = self.journal_id.suspense_account_id
+        lines_to_reconcile = []
+        for line in statement.line_ids:
+            transaction_id = self.env["payment.transaction"].search(
+                [("acquirer_reference", "=", line.ref)]
+            )
+            receivable_line_id = transaction_id.invoice_ids.line_ids.filtered(
+                lambda x: not x.reconciled
+                and x.account_id.reconcile
+                and x.debit == line.amount
+            )
+            if receivable_line_id:
+                receivable_line_id = receivable_line_id[0]
+                suspense_line_id = line.move_id.line_ids.filtered(
+                    lambda x: x.account_id == suspense_acc_id
+                )
+                suspense_line_id.account_id = receivable_line_id.account_id
+                lines_to_reconcile.append(
+                    receivable_line_id + suspense_line_id
+                )
+        statement.button_post()
+        [
+            lines.reconcile() for lines in lines_to_reconcile
+        ]
+        return statement.action_bank_reconcile_bank_statements()
