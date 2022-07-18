@@ -5,8 +5,46 @@
         <field name="model">purchase.order</field>
         <field name="inherit_id" ref="purchase.purchase_order_form" />
         <field name="arch" type="xml">
+
+            <field name="payment_term_id" position="attributes">
+                <attribute name="options">{'no_create': True}</attribute>
+            </field>
+
+            <!-- CHANGES DATE_PLANNED ON THE PURCHASE.ORDER MODEL -->
+            <xpath expr="//page[2]//field[@name='date_planned']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//page[2]//field[@name='date_planned']" position="after">
+                <field name="kk_date_planned" nolabel="1" required="1" attrs="{'readonly': [('state', 'not in', ('draft', 'sent'))]}" />
+            </xpath>
+            <!-- CHANGES DATE_PLANNED ON THE PURCHASE.ORDER.LINE MODEL -->
+            <field name="date_planned" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </field>
+            <field name="date_planned" position="after">
+                <field name="kk_date_planned" required="1"/>
+                <field name="kk_delivery_date" />
+            </field>
+
             <xpath expr="//field[@name='order_line']/tree/field[@name='product_id']" position="after">
                 <field name="kk_site_id" can_create="false"/>
+                <field name="kk_site_partner_id" can_create="false" readonly="1" />
+            </xpath>
+            <xpath expr="//field[@name='order_line']/tree/field[@name='name']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='order_line']/tree/field[@name='company_id']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='order_line']//form//field[@name='product_id']" position="after">
+                <field name="kk_site_id" can_create="false"/>
+                <field name="kk_site_partner_id" can_create="false" readonly="1" />
+            </xpath>
+            <xpath expr="//field[@name='order_line']//form//field[@name='date_planned']" position="after">
+                <separator />
+                <field name="create_uid" readonly="1" />
+                <field name="create_date" readonly="1" />
+                <field name="kk_delivery_date" readonly="1" />
             </xpath>
         </field>
     </record>

@@ -48,12 +48,23 @@ class Task(models.Model):
         string="Site",
         store=True)
 
+    purchase_order_id = fields.Many2one(
+        comodel_name="purchase.order", string="Pedido de Compra"
+    )
+    kk_delivery_date = fields.Date(string="Data de Entrega 3º")
+    kk_po_partner_id = fields.Many2one(
+        comodel_name="res.partner",
+        related="purchase_order_id.partner_id",
+        string="Fornecedor Relacionado",
+    )
+
     @api.model
     def create(self, vals):
         project = self.env['project.project'].browse(vals['project_id'])
         if not vals.get('kk_site_id'):
             vals.update({'kk_site_id': project.kk_site_id.id})
         res = super(Task, self).create(vals)
+        res._set_po_delivery_date()
         if vals.get('stage_id'):
             res.update_date_delivered(vals)
         return res
@@ -63,6 +74,7 @@ class Task(models.Model):
         res = super(Task, self).write(vals)
         if vals.get('stage_id'):
             self.update_date_delivered(vals)
+        self._set_po_delivery_date()
         return res
 
     def update_date_delivered(self, vals):
@@ -73,6 +85,14 @@ class Task(models.Model):
                self.project_id.task_ids):
             value = datetime.datetime.now()
         self.project_id.date_delivered = value
+
+    @api.multi
+    def _set_po_delivery_date(self):
+        for item in self:
+            if item.kk_delivery_date and item.purchase_order_id:
+                item.purchase_order_id.order_line.write(
+                    {"kk_delivery_date": item.kk_delivery_date}
+                )
 
 
 class ProjectTaskType(models.Model):

@@ -441,7 +441,7 @@ class KKSites(models.Model):
                 %s' % message)
 
     def _create_server_dir(self, vals):
-        access_token = self.env.user.company_id.egnyte_acess_token
+        access_token = self.env.user.company_id.egnyte_acess_token or ''
         headers = {'Authorization': 'Bearer ' + access_token,
                    'Content-Type': 'application/json'}
         company_folder, company_pasta_servidor = self._get_company_folder(vals)
