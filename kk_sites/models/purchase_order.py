@@ -20,6 +20,12 @@ class PurchaseOrder(models.Model):
                     datetime.strptime(item.kk_date_planned, DF), time(15)
                 )
 
+    @api.multi
+    def action_set_date_planned(self):
+        super(PurchaseOrder, self).action_set_date_planned()
+        for order in self:
+            order.order_line.update({'kk_date_planned': order.kk_date_planned})
+
 
 class PurchaseOrderLine(models.Model):
     _inherit = "purchase.order.line"
@@ -32,6 +38,22 @@ class PurchaseOrderLine(models.Model):
     )
     kk_date_planned = fields.Date(string="Data Programada")
     kk_delivery_date = fields.Date(string="Data de Entrega")
+    kk_site_city_state = fields.Char(
+        string="Cidade/UF", compute="_compute_kk_site_city_state"
+    )
+
+    @api.multi
+    @api.onchange("kk_site_id")
+    def _compute_kk_site_city_state(self):
+        for item in self:
+            item.kk_site_city_state = (
+                "{}/{}".format(
+                    item.kk_site_id.city_id.name,
+                    item.kk_site_id.state_id.code,
+                )
+                if item.kk_site_id
+                else ""
+            )
 
     @api.onchange("kk_date_planned")
     def _onchange_kk_date_planned(self):

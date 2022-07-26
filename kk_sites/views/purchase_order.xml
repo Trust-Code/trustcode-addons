@@ -48,4 +48,62 @@
             </xpath>
         </field>
     </record>
+
+    <record id="kk_site_purchase_line_tree" model="ir.ui.view">
+        <field name="name">kk.site.purchase.line.tree</field>
+        <field name="model">purchase.order.line</field>
+        <field name="arch" type="xml">
+            <tree string="Linhas do Pedido de Compra" create="0" delete="0">
+                <field name="order_id" />
+                <field name="partner_id" />
+                <field name="product_id" />
+                <field name="kk_site_id" />
+                <field name="kk_site_city_state" />
+                <field name="kk_site_partner_id" />
+                <field name="product_qty" />
+                <field name="create_uid" />
+                <field name="create_date" />
+                <field name="kk_date_planned" />
+                <field name="kk_delivery_date" />
+                <field name="state" />
+                <field name="price_subtotal" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="kk_site_purchase_line_tree_search" model="ir.ui.view">
+        <field name="name">kk.site.purchase.line.tree.search</field>
+        <field name="model">purchase.order.line</field>
+        <field name="arch" type="xml">
+            <search string="Linhas do Pedido de Compra">
+                <filter string="Compras Entregues" name="purchase_delivered" domain="[('kk_delivery_date', '!=', False)]"/>
+                <field name="order_id"/>
+                <field name="partner_id"/>
+                <field name="kk_site_id"/>
+                <field name="kk_site_city_state"/>
+                <field name="kk_site_partner_id"/>
+                <field name="product_id"/>
+                <field name="create_uid"/>
+                <group expand="1" string="Agrupar">
+                    <filter string="Referência PDC" name="group_order_id" context="{'group_by':'order_id'}"/>
+                    <filter string="Fornecedor" name="group_partner_id" context="{'group_by':'partner_id'}"/>
+                    <filter string="Site" name="group_kk_site_id" context="{'group_by':'kk_site_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="kk_site_purchase_line_action" model="ir.actions.act_window">
+        <field name="name">Linhas do Pedido de Compra</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">purchase.order.line</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="kk_site_purchase_line_tree_search"/>
+        <field name="view_id" ref="kk_site_purchase_line_tree"/>
+    </record>
+
+    <menuitem name="Linha do Pedido de Compra" id="menu_purchase_line_tree" action="kk_site_purchase_line_action"
+          parent="purchase.menu_procurement_management" sequence="9"/>
+
 </odoo>
+

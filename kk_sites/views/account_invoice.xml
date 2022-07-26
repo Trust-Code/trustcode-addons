@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_kk_invoice_form" model="ir.ui.view">
+        <field name="name">view.kk.invoice.form</field>
+        <field name="model">account.invoice</field>
+        <field name="inherit_id" ref="br_account.view_br_account_invoice_supplier_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='invoice_line_ids']/tree//field[@name='product_id']" position="after">
+                <field name="kk_site_id" />
+                <field name="kk_site_partner_id" readonly="1" />
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_kk_invoice_line_form" model="ir.ui.view">
+        <field name="name">view.kk.invoice.line.form</field>
+        <field name="model">account.invoice.line</field>
+        <field name="inherit_id" ref="br_account.view_br_account_invoice_line_form" />
+        <field name="arch" type="xml">
+            <field name="product_id" position="after">
+                <field name="invoice_type" invisible="1" />
+                <field name="kk_site_id" />
+                <field name="kk_site_partner_id" readonly="1" />
+            </field>
+        </field>
+    </record>
+
+</odoo>
