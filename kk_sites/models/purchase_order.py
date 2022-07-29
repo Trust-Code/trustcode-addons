@@ -24,7 +24,9 @@ class PurchaseOrder(models.Model):
     def action_set_date_planned(self):
         super(PurchaseOrder, self).action_set_date_planned()
         for order in self:
-            order.order_line.update({'kk_date_planned': order.kk_date_planned})
+            order.order_line.update(
+                {"kk_date_planned": order.kk_date_planned}
+            )
 
 
 class PurchaseOrderLine(models.Model):
@@ -62,3 +64,18 @@ class PurchaseOrderLine(models.Model):
                 item.date_planned = datetime.combine(
                     datetime.strptime(item.kk_date_planned, DF), time(15)
                 )
+
+    @api.multi
+    def write(self, vals):
+        res = super(PurchaseOrderLine, self).write(vals)
+        if vals.get("kk_delivery_date"):
+            for item in self:
+                item.order_id.message_post(
+                    body="Data de entrega do produto {} definida para {}".format(
+                        item.product_id.name,
+                        datetime.strptime(item.kk_delivery_date, DF).strftime(
+                            "%d/%m/%Y"
+                        ),
+                    )
+                )
+        return res

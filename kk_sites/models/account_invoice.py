@@ -26,8 +26,16 @@ class AccountInvoice(models.Model):
     @api.multi
     def action_invoice_open(self):
         for item in self:
-            if item.type == "in_invoice" and not item.reference:
-                raise UserError(
-                    "Favor preencher o campo 'Referência do Fornecedor'"
-                )
+            if item.type == "in_invoice":
+                if not item.reference:
+                    raise UserError(
+                        "Favor preencher o campo 'Referência do Fornecedor'"
+                    )
+                if not all(
+                    line.purchase_line_id.kk_delivery_date
+                    for line in item.invoice_line_ids
+                ):
+                    raise UserError(
+                        "Favor solicitar que o responsável preencha o campo Data de Entrega no Pedido de Compra!"
+                    )
         return super(AccountInvoice, self).action_invoice_open()
