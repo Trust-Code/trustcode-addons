@@ -30,7 +30,10 @@
         'security/ir.model.access.csv',
         'views/res_partner.xml',
         'views/product.xml',
-        'views/res_company.xml'
+        'views/res_company.xml',
+        'views/account_invoice.xml',
+        'views/purchase_requisition.xml',
+        'reports/kk_report_purchaseorder.xml',
     ],
 
 }

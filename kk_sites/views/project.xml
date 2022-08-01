@@ -8,6 +8,12 @@
             <xpath expr="//field[@name='project_id']" position="after">
                 <field name="kk_site_id" />
             </xpath>
+            <field name="tag_ids" position="after">
+                <separator/>
+                <field name="purchase_order_id" />
+                <field name="kk_delivery_date" />
+                <field name="kk_po_partner_id" readonly="1" />
+            </field>
         </field>
     </record>
     <record id="view_task_kanban_inherited_progress" model="ir.ui.view">

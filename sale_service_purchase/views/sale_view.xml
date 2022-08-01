@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        
+        
+        <record model="ir.ui.view" id="view_order_form_inherit_create_purchaseorder">
+            <field name="name">sale.order.view</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//form/header" position="inside">
+                     <button string="Create Purchase Order" type="action" name="%(action_create_purchase_order)d"
+                             class="oe_highlight" attrs="{'invisible': [('need_external_service', '=', False)]}"/>
+                 </xpath>
+                 <field name="payment_term_id" position="after">
+                     <field name="need_external_service"/>
+                     <field name="so_created" invisible="1"/>
+                </field>
+                <xpath expr="//form/sheet/notebook/page[2]" position="after">
+                    <page string="Purchase Order" attrs="{'invisible': [('need_external_service', '=', False)]}">
+                        <group >
+                            <field name="purchase_order_ids" nolabel="1" readonly="1"/>
+                        </group>
+                    </page>
+                </xpath>
+                <xpath expr="//form/sheet/notebook/page[1]/field[1]/tree/field[@name='product_id']" position="before">
+                    <field name="is_po_created" invisible="1"/>
+                </xpath>
+                <xpath expr="//form/sheet/notebook/page[1]/field[1]/form/field[@name='name']" position="after">
+                    <field name="is_po_created"/>
+                </xpath>
+                <xpath expr="/form/sheet/div[1]" position="inside">
+                        <button class="oe_stat_button" type="object" name="get_purchase_order" 
+                        icon="fa-street-view" string="Purchase Orders"/>
+                </xpath>
+            </field>
+         </record>
+         
+         
+      </data>
+</odoo>

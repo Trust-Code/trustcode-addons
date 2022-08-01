@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <report
+        string="KK Pedido de Compra" 
+        id="action_kk_report_purchase_order" 
+        model="purchase.order" 
+        report_type="qweb-pdf"
+        name="kk_sites.kk_report_purchaseorder" 
+        file="kk_sites.kk_report_purchaseorder"
+        print_report_name="'Pedido de Compras KK %s' % object.name"
+    />
+
+    <template id="kk_report_purchaseorder_document">
+        <t t-call="web.basic_layout">
+            <t t-set="o" t-value="o.with_context(lang=o.partner_id.lang)"/>
+            <div class="header container">
+                <style>
+                    .color-purple{
+                        color: #5F5E97;
+                    }
+                    .bordered-table tr td{
+                        border: solid 2px lightgray;
+                    }
+                </style>
+                <table class="table bordered-table" style="font-size: 12px;">
+                    <tbody>
+                        <tr>
+                            <td rowspan="6"><img t-att-src="'data:image/png;base64,%s' % to_text(o.company_id.logo)" class="img-responsive" style="max-width: 120px" /></td>
+                            <td rowspan="6">
+                                <p><strong t-field="o.company_id.legal_name" /></p>
+                                <span><t t-esc="o.company_id.street" />, <t t-esc="o.company_id.number" />, <t t-esc="o.company_id.street2" /></span><br />
+                                <span>Bairro <t t-esc="o.company_id.district" /></span><br />
+                                <span><t t-esc="o.company_id.city_id.name" /> - <t t-esc="o.company_id.state_id.code" /></span><br />
+                                <span>CEP <t t-esc="o.company_id.zip" /></span>
+                            </td>
+                            <td rowspan="6">
+                                <strong>CNPJ</strong><br/>
+                                <p><t t-esc="o.company_id.cnpj_cpf" /></p>
+                                <strong>Inscrição Estadual</strong><br/>
+                                <p><t t-esc="o.company_id.inscr_est" /></p>
+                                <strong>Inscrição Municipal</strong><br/>
+                                <p><t t-esc="o.company_id.inscr_mun" /></p>
+                            </td>
+                            <td rowspan="3">
+                                <strong>Pedido de Compra</strong>
+                                <h1 class="color-purple" style="margin-top: 0"><t t-esc="o.name" /></h1>
+                            </td>
+                        </tr>
+                        <tr></tr><tr></tr>
+                        <tr>
+                            <td rowspan="3">
+                                <strong>Data do Pedido</strong>
+                                <p t-field="o.date_order" t-options='{"widget": "date"}'/>
+                            </td>
+                        </tr>
+                        <tr></tr><tr></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="page color-gray">
+                <style>
+                    .div-with-border{
+                        border-bottom: 1px solid #777;
+                        border-top: 1px solid #777;
+                        padding-bottom: 20px;
+                    }
+                    .color-purple{
+                        color: #5F5E97;
+                    }
+                    .kk-site-info{
+                        margin-top: 20px;
+                        margin-bottom: 20px;
+                    }
+                    .font-underline{
+                        text-decoration: underline;
+                    }
+                    .ul-square{list-style-type: square;}
+                    .ul-check{list-style-type: none;}
+                    .ul-check li:before{content: "\2713\0020";}
+                    .color-gray{
+                        color: #4C4C4C;
+                    }
+                </style>
+                <div class="oe_structure"/>
+                <br />
+                <br />
+                <div class="row div-with-border">
+                    <p><strong>Fornecedor</strong></p>
+                    <span t-field="o.partner_id.legal_name" /> <br/>
+                    <span t-field="o.partner_id.street" />, <span t-field="o.partner_id.number" />
+                    <t t-if="o.partner_id.street2">
+                        , <span t-field="o.partner_id.street2" />
+                    </t>
+                    , <span t-field="o.partner_id.city_id.name" />, <span t-field="o.partner_id.state_id.code" />, CEP <span t-field="o.partner_id.zip" /> <br />
+                    <i class="fa fa-phone" /> <span t-field="o.partner_id.phone" /> <i class="fa fa-envelope-o" /> <span t-field="o.partner_id.email" /> <br />
+                    <span>CNPJ: <t t-esc="o.partner_id.cnpj_cpf" /> | IE: <t t-esc="o.partner_id.inscr_est" /> | CCM: </span> <br/><br/>
+                    <p><strong>Referência do Fornecedor: </strong><span t-field="o.partner_ref" /></p>
+                </div>
+                <div class="row div-with-border color-gray" style="border-top: none; padding-top: 20px;">
+                    <p><strong>Condições de Pagamento: <span t-field="o.payment_term_id" /></strong></p>
+                    <p><t t-esc="o.payment_term_id.note.split('\n')[0]" /></p>
+                </div>
+                <table class="table color-gray">
+                    <thead>
+                        <tr class="color-purple">
+                            <th>Descrição</th>
+                            <th>Qtd</th>
+                            <th>Cód. Site KK</th>
+                            <th>ID Site</th>
+                            <th>Data Entrega</th>
+                            <th>Impostos</th>
+                            <th>Preço Unitário</th>
+                            <th>Subtotal</th>
+                        </tr>
+                    </thead>
+                    <tbody style="background-color: #f2f2f2">
+                        <t t-foreach="o.order_line" t-as="line">
+                            <tr>
+                                <td><span t-field="line.product_id" /></td>
+                                <td><span t-field="line.product_qty" /></td>
+                                <td><span t-field="line.kk_site_id.cod_site_kk" /></td>
+                                <td><span t-field="line.kk_site_id.site_id" /></td>
+                                <td><span t-field="line.kk_delivery_date" /></td>
+                                <td><span t-esc="', '.join(tax.name for tax in line.taxes_id)" /></td>
+                                <td><span t-field="line.price_unit" /></td>
+                                <td><span t-field="line.price_subtotal"
+                                t-options='{"widget": "monetary", "display_currency": o.currency_id}'/></td>
+                            </tr>
+                        </t>
+                    </tbody>
+                </table>
+
+                <div class="row color-gray">
+                    <div class="col-xs-4 pull-right">
+                        <table class="table">
+                            <tr>
+                                <td><strong>Subtotal</strong></td>
+                                <td class="text-right">
+                                    <span t-field="o.amount_untaxed"
+                                        t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Impostos</strong></td>
+                                <td class="text-right">
+                                    <span t-field="o.amount_tax"
+                                        t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                </td>
+                            </tr>
+                            <tr class="border-black color-purple">
+                                <td>Total</td>
+                                <td class="text-right">
+                                    <span t-field="o.amount_total"
+                                        t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="row color-gray">
+                    <p><strong>INFORMAÇÕES DOS SITES</strong></p>
+                    <t t-foreach="o.order_line.mapped('kk_site_id')" t-as="site">
+                        <div class="kk-site-info">
+                            <span class="font-underline"><t t-esc="site.cod_site_kk" /> - <t t-esc="site.site_id" /></span> <br/>
+                            <span t-field="site.street" /> <span t-field="site.number" /> - Bairro <span t-field="site.district" />
+                            - Cidade <span t-field="site.city_id.name" /> - Estado <span t-field="site.state_id.code" /> - CEP <span t-field="site.zip" /><br/>
+                            <span>Coordenadas em graus decimais (Latitude, Longitude): <t t-esc="site.coordenadas" /> </span> <br/>
+                            Tipo de Site: <span t-field="site.tipo_site" /> - Tipo de Estrutura: <span t-field="site.tipo_estrutura" /> - Altura da EV: <t t-esc="site.altura_total" />
+                        </div>
+                    </t>
+                </div>
+
+                <div class="row div-with-border" style="border-bottom: none;">
+                    <br/>
+                    <p class="font-underline"><strong>INSTRUÇÕES DE FATURAMENTO</strong></p>
+                    <ul class="ul-square">
+                        <li>As seguintes informações deverão constar na nota fiscal:</li>
+                        <ul class="ul-check">
+                            <li>Código do Site KK (Cód. Site KK)</li>
+                            <li>ID Site</li>
+                            <li>Dados da Conta Bancária para Pagamento</li>
+                        </ul>
+                        <li><strong>As notas fiscais devem ser enviadas necessariamente em pdf para o e-mail financeiro@kk.eng.br.</strong></li>
+                        <li>Não nos responsabilizaremos pelo pagamento caso a nota seja enviada por outro formato ou e-mail.</li>
+                        <li>Para que as notas sejam lançadas para pagamento, será necessário o aceite da Engenharia da KK.</li>
+                    </ul>
+                    <p class="font-underline"><strong>IMPOSTOS</strong></p>
+                    <ul class="ul-square">
+                        <li>
+                        Para as notas fiscais de serviços de mão de obra (7.02), o fornecedor precisará destacar no corpo da nota fiscal a alíquota de
+ISSQN do município onde a obra foi executada.
+                        </li>
+                        <li>
+                            Caso o fornecedor seja optante pelo Simples Nacional, deverá destacar a alíquota corresponde ao seu enquadramento fiscal. O
+fornecedor também precisa estar ciente sobre quais impostos serão retidos em sua nota fiscal. O não destaque correto dos impostos
+poderá implicar no aceite da nota.
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+            <div class="footer">
+                <style>
+                    .bordered-info{
+                        width: 100%;
+                        margin: auto;
+                        border-top: 1px solid #5F5E97;
+                        border-bottom: 1px solid #5F5E97;
+                        color: #5F5E97;
+                        text-decoration: none;
+                    }
+                    .bordered-info a{
+                        text-decoration: none;
+                        color: #5F5E97;
+                        cursor: pointer;
+                    }
+                </style>
+                <div class="row text-center" style="padding-top: 30px;">
+                    <div class="bordered-info">
+                        <i class="fa fa-phone" /> <span>011 3733-9645</span> | <a href="mailto: contato@kk.eng.br"><i class="fa fa-envelope-o" /> contato@kk.eng.br</a> | <a href="http://www.kk.eng.br" target="_blank"><i class="fa fa-mouse-pointer" /> http://www.kk.eng.br</a>
+                    </div>
+                    <div class="text-muted">
+                        Página
+                        <span class="page"/>
+                        de
+                        <span class="topage"/>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <template id="kk_report_purchaseorder">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="kk_sites.kk_report_purchaseorder_document" t-lang="o.partner_id.lang"/>
+            </t>
+        </t>
+    </template>
+
+</odoo>

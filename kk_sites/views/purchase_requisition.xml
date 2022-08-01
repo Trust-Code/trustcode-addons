@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record model="ir.ui.view" id="view_kk_purchase_requisition_tree">
+        <field name="name">view.kk.purchase.requisition.tree</field>
+        <field name="model">purchase.requisition</field>
+        <field name="inherit_id" ref="purchase_requisition.view_purchase_requisition_tree" />
+        <field name="arch" type="xml">
+            <field name="name" position="attributes">
+                <attribute name="string">Referência da Concorrência</attribute>
+            </field>
+            <field name="user_id" position="after">
+                <field name="schedule_date" />
+            </field>
+            <field name="ordering_date" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </field>
+            <field name="date_end" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </field>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="view_kk_purchase_requisition_form">
+        <field name="name">view.kk.purchase.requisition.form</field>
+        <field name="model">purchase.requisition</field>
+        <field name="inherit_id" ref="purchase_requisition.view_purchase_requisition_form" />
+        <field name="arch" type="xml">
+            <field name="ordering_date" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </field>
+            <field name="qty_ordered" position="after">
+                <field name="kk_site_id" can_create="false"/>
+                <field name="kk_site_partner_id" can_create="false" readonly="1" />
+                <field name="kk_site_city_state" readonly="1" />
+            </field>
+            <xpath expr="//field[@name='line_ids']//form//field[@name='product_id']" position="after">
+                <field name="kk_site_id" />
+                <field name="kk_site_partner_id" />
+            </xpath>
+        </field>
+    </record>
+
+</odoo>
