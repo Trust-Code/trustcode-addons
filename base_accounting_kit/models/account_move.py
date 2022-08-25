@@ -96,7 +96,10 @@ class AccountInvoiceLine(models.Model):
     @api.model
     def _query_get(self, domain=None):
         tables, where_clause, where_params = super(AccountInvoiceLine, self)._query_get(domain=domain)
-        return tables.reverse(), where_clause, where_params
+        tables = tables.split(",")
+        tables.reverse()
+        tables = " , ".join(tables)
+        return " " + tables + " ", where_clause, where_params
 
     @api.depends('asset_category_id', 'move_id.invoice_date')
     def _get_asset_date(self):
