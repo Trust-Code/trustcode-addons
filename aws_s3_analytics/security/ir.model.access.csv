@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_aws_s3_analytics,access.aws.s3.analytics,model_aws_s3_analytics,account.group_account_readonly,1,0,0,1
+access_object_lines,access.object.lines,model_object_lines,account.group_account_readonly,1,1,1,1

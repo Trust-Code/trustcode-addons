@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+
+    <record id="bucket_action" model="ir.actions.act_window">
+        <field name="name">Bucket view</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">aws.s3.analytics</field>
+        <field name="view_mode">kanban,form,graph</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Aguarde enquanto sincronizamos com a AWS!
+            </p>
+        </field>
+    </record>
+
+    <menuitem id="aws_s3_analytics_menu_root"
+              name="S3 Analytics"
+              web_icon="aws_s3_analytics,static/description/icon.png"
+              sequence="7"/>
+
+    <menuitem id="s3_buckets_menu"
+              name="Buckets"
+              parent="aws_s3_analytics_menu_root"
+              action="bucket_action"
+              sequence="2"/>
+
+    <record id="view_bucket_form" model="ir.ui.view">
+        <field name="name">aws.s3.analytics.form</field>
+        <field name="model">aws.s3.analytics</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <field name="bucket_name"/>
+                </group>
+                <group>
+                    <field name="object_line_ids">
+                        <tree>
+                            <field name="bucket_name_id" invisible="1"/>
+                            <field name="bucket_object"/>
+                            <field name="last_modified"/>
+                            <field name="disk_usage"/>
+                            <field name="relation_id" invisible="1"/>
+                        </tree>
+                    </field>
+                </group>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="view_bucket_kanban">
+        <field name="name">aws.s3.analytics.kanban</field>
+        <field name="model">aws.s3.analytics</field>
+        <field name="arch" type="xml">
+            <kanban class="o_kanban_mobile" sample="1">
+                <field name="bucket_name"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div t-attf-class="oe_kanban_card oe_kanban_global_click">
+                            <div class="oe_kanban_details">
+                                <ul>
+                                    <li>
+                                        <h3>
+                                            <field name="bucket_name"/>
+                                        </h3>
+                                    </li>
+                                </ul>
+
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+</odoo>
