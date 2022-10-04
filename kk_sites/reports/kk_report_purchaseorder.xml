@@ -87,19 +87,30 @@
                 <br />
                 <div class="row div-with-border">
                     <p><strong>Fornecedor</strong></p>
-                    <span t-field="o.partner_id.legal_name" /> <br/>
+                    <t t-if="o.partner_id.legal_name">
+                        <span t-field="o.partner_id.legal_name" /> <br/>
+                    </t>
+                    <t t-else="">
+                        <span t-field="o.partner_id.name" /> <br/>
+                    </t>
                     <span t-field="o.partner_id.street" />, <span t-field="o.partner_id.number" />
                     <t t-if="o.partner_id.street2">
                         , <span t-field="o.partner_id.street2" />
                     </t>
                     , <span t-field="o.partner_id.city_id.name" />, <span t-field="o.partner_id.state_id.code" />, CEP <span t-field="o.partner_id.zip" /> <br />
                     <i class="fa fa-phone" /> <span t-field="o.partner_id.phone" /> <i class="fa fa-envelope-o" /> <span t-field="o.partner_id.email" /> <br />
-                    <span>CNPJ: <t t-esc="o.partner_id.cnpj_cpf" /> | IE: <t t-esc="o.partner_id.inscr_est" /> | CCM: </span> <br/><br/>
+                    <span>CNPJ: <t t-esc="o.partner_id.cnpj_cpf" />
+                    <t t-if="o.partner_id.inscr_est">
+                        | IE: <t t-esc="o.partner_id.inscr_est" />
+                    </t>
+                    </span> <br/><br/>
                     <p><strong>Referência do Fornecedor: </strong><span t-field="o.partner_ref" /></p>
                 </div>
                 <div class="row div-with-border color-gray" style="border-top: none; padding-top: 20px;">
                     <p><strong>Condições de Pagamento: <span t-field="o.payment_term_id" /></strong></p>
-                    <p><t t-esc="o.payment_term_id.note.split('\n')[0]" /></p>
+                    <t t-if="o.payment_term_id.note">
+                        <p><t t-esc="o.payment_term_id.note.split('\n')[0]" /></p>
+                    </t>
                 </div>
                 <table class="table color-gray">
                     <thead>
@@ -172,7 +183,7 @@
                     </t>
                 </div>
 
-                <div class="row div-with-border" style="border-bottom: none;">
+                <div class="row div-with-border" style="border-bottom: none;page-break-before:always;">
                     <br/>
                     <p class="font-underline"><strong>INSTRUÇÕES DE FATURAMENTO</strong></p>
                     <ul class="ul-square">

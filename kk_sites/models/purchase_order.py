@@ -41,11 +41,11 @@ class PurchaseOrderLine(models.Model):
     kk_date_planned = fields.Date(string="Data Programada")
     kk_delivery_date = fields.Date(string="Data de Entrega")
     kk_site_city_state = fields.Char(
-        string="Cidade/UF", compute="_compute_kk_site_city_state"
+        string="Cidade/UF", compute="_compute_kk_site_city_state", store=True
     )
 
     @api.multi
-    @api.onchange("kk_site_id")
+    @api.depends("kk_site_id")
     def _compute_kk_site_city_state(self):
         for item in self:
             item.kk_site_city_state = (
