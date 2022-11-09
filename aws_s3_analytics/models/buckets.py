@@ -1,16 +1,20 @@
-import boto3
 import datetime
 from odoo import fields, models
 
+try:
+    import boto3
+except ImportError:
+    _logger.error('Cannot import Boto3', exc_info=True)
 
 
-class AwsS3Analytics(models.Model):
-    _name = 'aws.s3.analytics'
+class AwsS3Buckets(models.Model):
+    _name = 'aws.s3.buckets'
     _description = 'AWS S3 Analytics'
-    _rec_name = 'bucket_name'
+    _rec_name = 'name'
 
-    bucket_name = fields.Char(string="Bucket", readonly=True)
-    object_line_ids = fields.One2many('object.lines', 'relation_id', string='Object Lines', readonly=True)
+    name = fields.Char(string="Bucket", readonly=False)
+    find_bucket = fields.Boolean('Bucket encontrado: ')
+    bucket_risk = fields.Boolean('Bucket em risco: ')
 
     def list_buckets(self):
 
@@ -31,19 +35,14 @@ class AwsS3Analytics(models.Model):
             name_dir = i.name
 
             vals = {
-                "bucket_name": name_dir,
+                "name": name_dir,
             }
 
-            self.create(vals)
-            self.env.cr.commit()
+            bucket_c = self.search([("name", "=", name_dir)])
+            print(name_dir)
+            print(bucket_c)
+            if bucket_c:
+                bucket_c.write(vals)
+            else:
+                self.create(vals)
 
-
-class ObjectLines(models.Model):
-    _name = 'object.lines'
-    _description = 'Object lines'
-
-    bucket_name_id = fields.Many2one('aws.s3.analytics', string='Bucket')
-    bucket_object = fields.Char(string="Objeto")
-    last_modified = fields.Datetime('Ultima modificação do Obj')
-    disk_usage = fields.Float(string="Uso de disco", digits='Disk usage')
-    relation_id = fields.Many2one('aws.s3.analytics', string='IDS')
