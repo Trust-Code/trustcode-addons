@@ -7,7 +7,7 @@
       <field name="state">code</field>
       <field name="numbercall">-1</field>
       <field eval="False" name="doall" />
-      <field name="model_id" ref="aws_s3_analytics.model_aws_s3_analytics"/>
+      <field name="model_id" ref="aws_s3_analytics.model_aws_s3_buckets"/>
       <field name="code">model.list_buckets()</field>
   </record>
 

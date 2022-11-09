@@ -1,5 +1,6 @@
 <odoo>
     <odoo>
+        #substitur id#
         <record id="aws_integration_company_view" model="ir.ui.view">
             <field name="model">res.company</field>
             <field name="inherit_id" ref="base.view_company_form"/>
@@ -7,8 +8,8 @@
                 <xpath expr="//notebook" position="inside">
                     <page name="AWS S3 Integration" string="AWS S3 Integration">
                         <group name="AWS Credencials" string="AWS S3 Integration ">
-                            <field name="aws_access_key_id_o"></field>
-                            <field name="aws_secret_access_key_o"></field>
+                            <field name="aws_access_key_id_o" password="True"></field>
+                            <field name="aws_secret_access_key_o" password="True"></field>
                         </group>
                     </page>
                 </xpath>
