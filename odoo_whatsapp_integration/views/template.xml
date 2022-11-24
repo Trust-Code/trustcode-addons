@@ -1,0 +1,208 @@
+<?xml version="1.0"?>
+<odoo>
+    <record id="whatsapp_sales_template" model="mail.template">
+        <field name="name">Whats App Sale template</field>
+        <field name="subject">Sales template</field>
+        <field name="model_id" ref="sale.model_sale_order"/>
+        <field name="body_html"><![CDATA[<div style="font-family: 'Lucica Grande', Ubuntu, Arial, Verdana, sans-serif; font-size: 12px;">
+         <div>
+            Hello *${object.partner_id.name or ''}*,
+         </div>
+         % if object.state == 'draft' or object.state == 'sent':
+            Your Quotation *${object.name}* with amount *${format_amount(object.amount_total, object.currency_id)}* is ready.
+            <div>
+                Your quotation date and time is "${object.date_order}"
+            </div>
+            <div>
+                Quotation details are as follows: <br>
+                % for each in object:
+                    % for id in each.order_line:
+                        *Product: ${id.product_id.name}* <br>
+                         *Qty: ${id.product_uom_qty}*<br>
+                         *Price: ${id.price_subtotal}*<br>
+                    % endfor
+                % endfor
+            </div>
+         % else:
+            <div>
+                Your Sale Order Number *${object.name}* with amount *${format_amount(object.amount_total, object.currency_id)}* is Confirmed.
+            </div>
+            <div>
+                Your order date and time is "${object.date_order}"
+            </div>
+            <div>
+                Your order details are as follows: <br>
+                % for each in object:
+                    % for id in each.order_line:
+                        *Product: ${id.product_id.name}* <br>
+                         *Qty: ${id.product_uom_qty}*<br>
+                         *Price: ${id.price_subtotal}*<br>
+                    % endfor
+                % endfor
+            </div>
+         % endif
+        <div>
+            If you have any questions, please feel free to contact us.
+        </div>
+        ]]>
+        </field>
+    </record>
+    <record id="whatsapp_inventory_template" model="mail.template">
+        <field name="name">Whats app Inventory template</field>
+        <field name="subject">Inventory Template</field>
+        <field name="model_id" ref="stock.model_stock_picking"/>
+        <field name="body_html"><![CDATA[<div style="font-family: 'Lucica Grande', Ubuntu, Arial, Verdana, sans-serif; font-size: 12px;">
+         <p style="margin: 0px; padding: 0px; font-size: 13px;">
+         <div>
+            Hello *${object.partner_id.name or ''}*,
+         </div>
+         <div>
+             % if object.state == 'draft':
+                We have received your order *${object.name}*. It will be shipped soon
+                <div>
+                    Order details are as follows: <br>
+                    % for each in object:
+                        % for id in each.move_ids_without_package:
+                            *Product: ${id.product_id.name}* <br>
+                            *Qty: ${id.product_uom_qty}* <br>
+                        % endfor
+                    % endfor
+                </div>
+             % endif
+             % if object.state == 'confirmed':
+                We have received your order *${object.name}*. It will be shipped soon
+                <div>
+                    Order details are as follows: <br>
+                    % for each in object:
+                        % for id in each.move_line_ids_without_package:
+                            *Product: ${id.product_id.name}* <br>
+                            *Qty: ${id.product_uom_qty}* <br>
+                        % endfor
+                    % endfor
+                </div>
+             % endif
+             % if object.state == 'assigned':
+                Your order *${object.name}* is ready. It will be shipped soon
+                <div>
+                    Order details are as follows: <br>
+                    % for each in object:
+                        % for id in each.move_line_ids_without_package:
+                            *Product: ${id.product_id.name}* <br>
+                            *Qty: ${id.product_uom_qty}* <br>
+                        % endfor
+                    % endfor
+                </div>
+             % endif
+             % if object.state == 'done':
+                Your order *${object.name}* is shipped.
+                <div>
+                    Order details are as follows: <br>
+                    % for each in object:
+                        % for id in each.move_line_ids_without_package:
+                            *Product: ${id.product_id.name}* <br>
+                            *Qty: ${id.qty_done}* <br>
+                        % endfor
+                    % endfor
+                </div>
+             % endif
+         </div>
+         <div>
+            If you have any questions, please feel free to contact us.
+         </div>
+            </p>
+        ]]>
+        </field>
+    </record>
+    <record id="whatsapp_invoice_template" model="mail.template">
+        <field name="name">Whats app Invoice template</field>
+        <field name="subject">Invoice Template</field>
+        <field name="model_id" ref="account.model_account_move"/>
+        <field name="body_html">
+            <![CDATA[<div style="font-family: 'Lucica Grande', Ubuntu, Arial, Verdana, sans-serif; font-size: 12px;">
+        <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                <div>
+                    Dear *${object.partner_id.name}*
+                </div>
+                <div>
+                    Here is your invoice *${object.name}* with amount *${format_amount(object.amount_total, object.currency_id)}*
+                    from ${object.company_id.name}.
+                </div>
+                <div>
+                    % if object.payment_state == 'paid':
+                        This invoice is already paid. Amount due is *${format_amount(object.amount_residual,object.currency_id)}*
+                    % else:
+                        Please remit payment at your earliest convenience. Amount due is *${format_amount(object.amount_residual,object.currency_id)}*
+                    % endif
+                </div>
+                The invoice date and time is "${object.invoice_date}"
+                <div>
+                    Your order details are as follows:
+                    <br>
+                    % for each in object:
+                        % for id in each.invoice_line_ids:
+                            *Product: ${id.product_id.name}* <br>
+                            *Qty: ${id.quantity}* <br>
+                            *Price: ${id.price_unit}* <br>
+                        % endfor
+                    % endfor
+                </div>
+                If you have any questions, please feel free to contact us.
+        ]]>
+        </field>
+    </record>
+    <record id="whatsapp_purchase_template" model="mail.template">
+        <field name="name">Whats app Purchase template</field>
+        <field name="subject">Purchase Template</field>
+        <field name="model_id" ref="purchase.model_purchase_order"/>
+        <field name="body_html"><![CDATA[<div style="font-family: 'Lucica Grande', Ubuntu, Arial, Verdana, sans-serif; font-size: 12px;">
+             <p style="margin: 0px; padding: 0px; font-size: 13px;">
+             <div>
+                Hello *${object.partner_id.name or ''}*,
+             </div>
+            % if object.state == 'draft' or object.state == 'sent':
+                This is about Request For Quotation (RFQ) *${object.name}* with amount *${format_amount(object.amount_total, object.currency_id)}*
+                <div>
+                    We are expecting receipt of products on "${object.date_planned}"
+                </div>
+                <div>
+                    Quotation details are as follows: <br>
+                    % for each in object:
+                        % for id in each.order_line:
+                            *Product: ${id.product_id.name}* <br>
+                            *Qty: ${id.product_qty}* <br>
+                            *Price: ${id.price_subtotal}*<br>
+                        % endfor
+                    % endfor
+                </div>
+            % else:
+                <div>
+                    Your Purchase Order Number *${object.name}* with amount *${format_amount(object.amount_total, object.currency_id)}* is Confirmed.
+                </div>
+                <div>
+                    Order confirmation date and time is "${object.date_approve}"
+                </div>
+                <div>
+                    Order details are as follows: <br>
+                    % for each in object:
+                        % for id in each.order_line:
+                            *Product: ${id.product_id.name}* <br>
+                            *Qty: ${id.product_qty}* <br>
+                            *Price: ${id.price_subtotal}*<br>
+                        % endfor
+                    % endfor
+                </div>
+            % endif
+            <div>
+                We are expecting receipt of products on or before scheduled date <br/>
+                If you have any questions, please feel free to contact us.
+            </div>
+        ]]>
+        </field>
+    </record>
+    <record id="whatsapp_contacts_template" model="mail.template">
+        <field name="name">Whats app Contact template</field>
+        <field name="subject">Contact Message Template</field>
+        <field name="model_id" ref="model_res_partner"/>
+        <field name="body_html"></field>
+    </record>
+</odoo>
