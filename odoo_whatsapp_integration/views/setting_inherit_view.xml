@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="res_config_settings_view_form_whatsapp" model="ir.ui.view">
+            <field name="name">res.config.settings.view.form.inherit.whatsapp</field>
+            <field name="model">res.config.settings</field>
+            <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//div[hasclass('app_settings_block')]/div[@name='integration']" position="after">
+                    <div class="app_setting_block" data-string="Odoo WhatsApp Integration"
+                         string="Odoo WhatsApp Integration" data-key="odoo_whatsapp_integration">
+                        <div id="direct_whatsapp" modifiers="{}">
+                            <h2 modifiers="{}">Whatsapp Direct Message</h2>
+                            <div class="row mt16 o_settings_container" id="pricing_setting_container">
+                                <div class="col-12 col-lg-6 o_setting_box"
+                                     id="whatsapp_direct_button"
+                                     title="Activate to unable Direct Whatsapp Message button">
+                                    <div class="o_setting_left_pane">
+                                        <field name="group_send_sms"/>
+                                    </div>
+                                    <div class="o_setting_right_pane">
+                                        <label for="group_send_sms"/>
+                                        <div class="text-muted">
+                                            Click to enable direct whatsapp message feature
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,114 @@
+<odoo>
+    <record model="ir.ui.view" id="whatsapp_demo_sale">
+        <field name="name">custom_whatsapp_module_demo_1</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"></field>
+        <field name="arch" type="xml">
+            <xpath expr="//form/header/button[@name='action_cancel']" position="after">
+                <button name="sale_whatsapp" type="object" class="oe_highlight" string="Send Custom Whatsapp Message"
+                        icon="fa-whatsapp"/>
+            </xpath>
+            <xpath expr="//form/header/button[@name='action_cancel']" position="after">
+                <button name="send_direct_message" type="object" class="oe_highlight" string="Direct Whatsapp Message"
+                        icon="fa-whatsapp" groups="odoo_whatsapp_integration.group_send_sms"/>
+            </xpath>
+        </field>
+    </record>
+    <record model="ir.ui.view" id="whatsapp_demo_inventory_order">
+        <field name="name">custom_whatsapp_module_demo_2</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"></field>
+        <field name="arch" type="xml">
+            <xpath expr="//form/header/button[@name='action_cancel']" position="after">
+                <button name="inventory_whatsapp" type="object" class="oe_highlight"
+                        string="Send Custom Whatsapp Message"
+                        icon="fa-whatsapp"/>
+            </xpath>
+            <xpath expr="//form/header/button[@name='action_cancel']" position="after">
+                <button name="send_direct_message" type="object" class="oe_highlight" string="Direct Whatsapp Message"
+                        icon="fa-whatsapp" groups="odoo_whatsapp_integration.group_send_sms"/>
+            </xpath>
+        </field>
+    </record>
+    <record model="ir.ui.view" id="whatsapp_demo_invoice_order">
+        <field name="name">custom_whatsapp_module_demo_4</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form"></field>
+        <field name="arch" type="xml">
+            <xpath expr="//form/header/button[@name='button_draft']" position="after">
+                <button name="invoice_whatsapp" type="object" class="oe_highlight" string="Send Custom Whatsapp Message"
+                        icon="fa-whatsapp"/>
+            </xpath>
+            <xpath expr="//form/header/button[@name='button_draft']" position="after">
+                <button name="send_direct_message" type="object" class="oe_highlight" string="Direct Whatsapp Message"
+                        icon="fa-whatsapp" groups="odoo_whatsapp_integration.group_send_sms"/>
+            </xpath>
+
+        </field>
+    </record>
+    <record model="ir.ui.view" id="whatsapp_demo_purchase_order">
+        <field name="name">custom_whatsapp_module_demo_3</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_form"></field>
+        <field name="arch" type="xml">
+            <xpath expr="//form/header/button[@name='button_cancel']" position="after">
+                <button name="purchase_whatsapp" type="object" class="oe_highlight" string="Send Custom Whatsapp Message"
+                        icon="fa-whatsapp"/>
+            </xpath>
+            <xpath expr="//form/header/button[@name='button_cancel']" position="after">
+                <button name="send_direct_message" type="object" class="oe_highlight" string="Direct Whatsapp Message"
+                        icon="fa-whatsapp" groups="odoo_whatsapp_integration.group_send_sms"/>
+            </xpath>
+        </field>
+    </record>
+    <record model="ir.ui.view" id="whatsapp_button">
+        <field name="name">whatsapp_button_contacts</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"></field>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='mobile']" position="after">
+                <button icon="fa-whatsapp" style="color:#25D366;border:none" help="Send WhatsApp Message" name="contact_whatsapp" type="object" attrs="{'invisible': [('mobile', '=', False)]}"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!--    add action to action button in sales-->
+    <record id="action_whatsapp_message" model="ir.actions.server">
+        <field name="name">Whatsapp Message</field>
+        <field name="model_id" ref="sale.model_sale_order"/>
+        <field name="binding_model_id" ref="sale.model_sale_order"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">action = records.multi_sms()</field>
+    </record>
+
+    <!--    add action to action button in purchase-->
+    <record id="action_whatsapp_message_purchase" model="ir.actions.server">
+        <field name="name">Whatsapp Message</field>
+        <field name="model_id" ref="model_purchase_order"/>
+        <field name="binding_model_id" ref="model_purchase_order"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">action = records.multi_sms()</field>
+    </record>
+
+    <!--    add action to action button in inventory-->
+    <record id="action_whatsapp_message_inventory" model="ir.actions.server">
+        <field name="name">Whatsapp Message</field>
+        <field name="model_id" ref="model_stock_picking"/>
+        <field name="binding_model_id" ref="model_stock_picking"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">action = records.multi_sms()</field>
+    </record>
+
+    <!--    add action to action button in invoice-->
+    <record id="action_whatsapp_message_invoice" model="ir.actions.server">
+        <field name="name">Whatsapp Message</field>
+        <field name="model_id" ref="model_account_move"/>
+        <field name="binding_model_id" ref="model_account_move"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">action = records.multi_sms()</field>
+    </record>
+</odoo>
