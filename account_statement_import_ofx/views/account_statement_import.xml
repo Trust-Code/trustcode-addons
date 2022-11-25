@@ -10,6 +10,11 @@
             <xpath expr="//ul[@id='statement_format']" position="inside">
                 <li>Open Financial Exchange (.OFX Money)</li>
             </xpath>
+            <field name="statement_file" position="after">
+                <group>
+                    <field name="unique_transaction" />
+                </group>
+            </field>
         </field>
     </record>
 </odoo>
