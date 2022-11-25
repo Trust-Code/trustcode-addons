@@ -1,7 +1,8 @@
 import io
 import logging
+import uuid
 
-from odoo import _, api, models
+from odoo import _, api, models, fields
 from odoo.exceptions import UserError
 
 _logger = logging.getLogger(__name__)
@@ -15,6 +16,19 @@ except ImportError:
 
 class AccountStatementImport(models.TransientModel):
     _inherit = "account.statement.import"
+
+    unique_transaction = fields.Boolean(
+        string="Gerar ID Único",
+        default=False,
+        help="Apenas marque esta opção em caso do arquivo OFX conter \
+        registros duplicados (campo FITID), alguns bancos exportam \
+        o arquivo OFX com dois registros diferentes com mesmo número \
+        de transação (o que não deveria). O comportamento padrão do Odoo \
+        caso exista duplicados é ignorar os duplicados (mesmo FITID) \
+        e se forem todos duplicados dizer que o arquivo já foi importado. \
+        Se alguma dessas situações estiver ocorrendo ao importar o arquivo \
+        talvez você precise marcar esta opção.",
+    )
 
     @api.model
     def _check_ofx(self, data_file):
@@ -40,11 +54,14 @@ class AccountStatementImport(models.TransientModel):
             payment_ref += " " + transaction.checknum
         if transaction.memo:
             payment_ref += " : " + transaction.memo
+        unique_id = transaction.id
+        if self.unique_transaction:
+            unique_id = str(uuid.uuid4())
         vals = {
             "date": transaction.date,
             "payment_ref": payment_ref,
             "amount": float(transaction.amount),
-            "unique_import_id": transaction.id,
+            "unique_import_id": unique_id,
         }
         return vals
 
@@ -75,7 +92,11 @@ class AccountStatementImport(models.TransientModel):
                     "balance_end_real": balance,
                 }
                 result.append(
-                    (account.statement.currency, account.number, [vals_bank_statement])
+                    (
+                        account.statement.currency,
+                        account.number,
+                        [vals_bank_statement],
+                    )
                 )
         except Exception as e:
             raise UserError(
