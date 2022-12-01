@@ -88,7 +88,7 @@
                                 <group>
                                     <field name="tipo_fundacao" />
                                     <field name="numero_elementos" />
-                                    <field name="dimensoes_fundacao" placeholder="XXX x XXX" />
+                                    <field name="dimensoes_fundacao" placeholder="XXX x XXX" invisible="1" />
                                     <label for="dimensao_fundacao_lado1"
                                         string="Dimensões da Fundação (cm)"
                                         help="Em caso de Tubulão usar: Fuste x Saia. Em caso de Bloco ou Radier usar: Largura Maior x Largura Menor x Altura." />
