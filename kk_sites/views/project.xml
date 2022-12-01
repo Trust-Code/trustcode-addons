@@ -12,7 +12,7 @@
                 <separator/>
                 <field name="purchase_order_id" />
                 <field name="kk_delivery_date" />
-                <field name="kk_po_partner_id" readonly="1" />
+                <field name="kk_po_partner_id" />
             </field>
         </field>
     </record>
