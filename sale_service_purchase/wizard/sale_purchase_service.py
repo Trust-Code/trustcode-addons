@@ -2,7 +2,7 @@
 
 from datetime import datetime
 
-from odoo import models, fields, api
+from odoo import models, fields, api, _
 from odoo.exceptions import Warning
 
 
@@ -40,9 +40,9 @@ class SalesPurchaseOrder(models.TransientModel):
                 for line in sale_orders.order_line:
                     if not line.is_po_created:
                         if not line.product_id.type == 'service':
-                            raise Warning('Some of the product found in the sales order that types is not service so the purchase order can not be created.')
+                            raise Warning(_('Some of the product found in the sales order that types is not service so the purchase order can not be created.'))
                         elif line.product_id.type == 'service' and not line.product_id.service_type == 'create_purchase_order':
-                            raise Warning('Service Products are not set as track service with create purchase order option.')
+                            raise Warning(_('Service Products are not set as track service with create purchase order option.'))
                         else:
                             order_line_vals = rec._prepare_purchase_order_line(po, line)
                             purchase_order_line = po_line_obj.create(order_line_vals)
@@ -133,9 +133,9 @@ class SalesPurchaseOrder(models.TransientModel):
                 for line in sale_orders.order_line:
                     if not line.is_po_created:
                         if not line.product_id.type == 'service':
-                            raise Warning('Some of the product found in the sales order that types is not service so the purchase order can not be created.')
+                            raise Warning(_('Some of the product found in the sales order that types is not service so the purchase order can not be created.'))
                         elif line.product_id.type == 'service' and not line.product_id.service_type == 'create_purchase_order':
-                            raise Warning('Service Products are not set as track service with create purchase order option.')
+                            raise Warning(_('Service Products are not set as track service with create purchase order option.'))
                         else:
                             order_line_vals = rec._prepare_purchase_requisition_line(pr, line)
                             PurchaseRequisitionLine.create(order_line_vals)

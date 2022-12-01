@@ -1,0 +1,168 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+#	* sale_service_purchase
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 11.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-12-01 14:42+0000\n"
+"PO-Revision-Date: 2022-12-01 14:42+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: sale_service_purchase
+#: model:ir.ui.view,arch_db:sale_service_purchase.view_order_form_inherit_create_purchaseorder
+msgid "Create Purchase Order"
+msgstr "Criar Pedido de Compra"
+
+#. module: sale_service_purchase
+#: model:ir.model.fields,field_description:sale_service_purchase.field_sales_purchase_order_create_uid
+msgid "Created by"
+msgstr "Criado por"
+
+#. module: sale_service_purchase
+#: model:ir.model.fields,field_description:sale_service_purchase.field_sales_purchase_order_create_date
+msgid "Created on"
+msgstr "Criado em"
+
+#. module: sale_service_purchase
+#: model:ir.ui.view,arch_db:sale_service_purchase.create_purchase_order_form_view
+msgid "Criar Concorrência"
+msgstr "Criar Concorrência"
+
+#. module: sale_service_purchase
+#: model:ir.ui.view,arch_db:sale_service_purchase.create_purchase_order_form_view
+msgid "Criar PDC"
+msgstr "Criar PDC"
+
+#. module: sale_service_purchase
+#: model:ir.model.fields,field_description:sale_service_purchase.field_sales_purchase_order_display_name
+msgid "Display Name"
+msgstr "Nome exibido"
+
+#. module: sale_service_purchase
+#: model:ir.model.fields,field_description:sale_service_purchase.field_sales_purchase_order_id
+msgid "ID"
+msgstr "ID"
+
+#. module: sale_service_purchase
+#: model:ir.model.fields,field_description:sale_service_purchase.field_sale_order_so_created
+msgid "IS Sales Order Created?"
+msgstr "Pedido de venda criado?"
+
+#. module: sale_service_purchase
+#: model:ir.model.fields,field_description:sale_service_purchase.field_sale_order_need_external_service
+msgid "Is Need External Service?"
+msgstr "Necessita de Serviço Externo?"
+
+#. module: sale_service_purchase
+#: model:ir.model.fields,field_description:sale_service_purchase.field_sale_order_line_is_po_created
+msgid "Is PO Created"
+msgstr "PO Criada"
+
+#. module: sale_service_purchase
+#: model:ir.model.fields,field_description:sale_service_purchase.field_sales_purchase_order___last_update
+msgid "Last Modified on"
+msgstr "Última modificação em"
+
+#. module: sale_service_purchase
+#: model:ir.model.fields,field_description:sale_service_purchase.field_sales_purchase_order_write_uid
+msgid "Last Updated by"
+msgstr "Última atualização por"
+
+#. module: sale_service_purchase
+#: model:ir.model.fields,field_description:sale_service_purchase.field_sales_purchase_order_write_date
+msgid "Last Updated on"
+msgstr "Última atualização em"
+
+#. module: sale_service_purchase
+#: model:ir.model.fields,field_description:sale_service_purchase.field_sales_purchase_order_need_external_service
+msgid "Need External Service"
+msgstr "Necessidade de Serviço Externo"
+
+#. module: sale_service_purchase
+#: model:ir.model,name:sale_service_purchase.model_product_template
+msgid "Product Template"
+msgstr "Modelo de Produto"
+
+#. module: sale_service_purchase
+#: model:ir.model,name:sale_service_purchase.model_purchase_order
+#: model:ir.model.fields,field_description:sale_service_purchase.field_sale_order_purchase_order_ids
+#: model:ir.ui.view,arch_db:sale_service_purchase.view_order_form_inherit_create_purchaseorder
+msgid "Purchase Order"
+msgstr "Pedido de Compra"
+
+#. module: sale_service_purchase
+#: model:ir.ui.view,arch_db:sale_service_purchase.view_order_form_inherit_create_purchaseorder
+msgid "Purchase Orders"
+msgstr "Pedidos de Compra"
+
+#. module: sale_service_purchase
+#: model:ir.ui.view,arch_db:sale_service_purchase.create_purchase_order_form_view
+msgid "Purchase order for Services"
+msgstr "Pedidos de compra para Serviços"
+
+#. module: sale_service_purchase
+#: model:ir.model,name:sale_service_purchase.model_sale_order
+msgid "Quotation"
+msgstr "Cotação"
+
+#. module: sale_service_purchase
+#: model:ir.model,name:sale_service_purchase.model_sale_order_line
+msgid "Sales Order Line"
+msgstr "Linha do Pedido de Vendas"
+
+#. module: sale_service_purchase
+#: model:ir.actions.act_window,name:sale_service_purchase.action_create_purchase_order
+msgid "Sales Purchase Order"
+msgstr "Pedido de Compra de Vendas"
+
+#. module: sale_service_purchase
+#: code:addons/sale_service_purchase/wizard/sale_purchase_service.py:45
+#: code:addons/sale_service_purchase/wizard/sale_purchase_service.py:138
+#, python-format
+msgid "Service Products are not set as track service with create purchase order option."
+msgstr "Os Serviços desta venda não foram definidos em serviço de rastreamento com a opção de criação de solicitação de compra."
+
+#. module: sale_service_purchase
+#: model:ir.model.fields,field_description:sale_service_purchase.field_purchase_order_sale_order_id
+msgid "Service Sales Order"
+msgstr "Pedido de Venda de Serviço"
+
+#. module: sale_service_purchase
+#: code:addons/sale_service_purchase/wizard/sale_purchase_service.py:43
+#: code:addons/sale_service_purchase/wizard/sale_purchase_service.py:136
+#, python-format
+msgid "Some of the product found in the sales order that types is not service so the purchase order can not be created."
+msgstr "Alguns dos produtos encontrados no pedido de venda não são de serviço, portanto, o pedido de compra não pode ser criado."
+
+#. module: sale_service_purchase
+#: model:ir.ui.view,arch_db:sale_service_purchase.create_purchase_order_form_view
+msgid "This wizard will create purchase order from sales order for services type of product."
+msgstr "Este wizard irá criar um pedido de compra a partir de um pedido de venda para produtos do tipo serviço."
+
+#. module: sale_service_purchase
+#: model:ir.model.fields,field_description:sale_service_purchase.field_sales_purchase_order_partner_id
+msgid "Vendor"
+msgstr "Fornecedor"
+
+#. module: sale_service_purchase
+#: model:ir.ui.view,arch_db:sale_service_purchase.create_purchase_order_form_view
+msgid "_Cancel"
+msgstr "_Cancelar"
+
+#. module: sale_service_purchase
+#: model:ir.ui.view,arch_db:sale_service_purchase.create_purchase_order_form_view
+msgid "or"
+msgstr "ou"
+
+#. module: sale_service_purchase
+#: model:ir.model,name:sale_service_purchase.model_sales_purchase_order
+msgid "sales.purchase.order"
+msgstr "sales.purchase.order"
+
