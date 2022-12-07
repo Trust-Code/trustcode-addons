@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from datetime import datetime, timedelta
+from datetime import datetime
 
-from odoo import models, fields, api
-from openerp.exceptions import Warning
+from odoo import models, fields, api, _
+from odoo.exceptions import Warning
+
 
 class SalesPurchaseOrder(models.TransientModel):
     _name = 'sales.purchase.order'
@@ -39,9 +40,9 @@ class SalesPurchaseOrder(models.TransientModel):
                 for line in sale_orders.order_line:
                     if not line.is_po_created:
                         if not line.product_id.type == 'service':
-                            raise Warning('Some of the product found in the sales order that types is not service so the purchase order can not be created.')
+                            raise Warning(_('Some of the product found in the sales order that types is not service so the purchase order can not be created.'))
                         elif line.product_id.type == 'service' and not line.product_id.service_type == 'create_purchase_order':
-                            raise Warning('Service Products are not set as track service with create purchase order option.')
+                            raise Warning(_('Service Products are not set as track service with create purchase order option.'))
                         else:
                             order_line_vals = rec._prepare_purchase_order_line(po, line)
                             purchase_order_line = po_line_obj.create(order_line_vals)
@@ -94,6 +95,55 @@ class SalesPurchaseOrder(models.TransientModel):
             'taxes_id': [(6, 0, taxes_id.ids)],
             'order_id': po.id,
             'name': line.name,
-#             'account_analytic_id': line.order_id.compute_project_id.id,
         }
+
+    @api.multi
+    def _prepare_purchase_requisition_line(self, pr, line):
+        seller = line.product_id._select_seller(
+            partner_id=self.partner_id,
+            quantity=line.product_uom_qty,
+            date=pr.schedule_date,
+            uom_id=line.product_id.uom_po_id)
+        return {
+            'product_qty': line.product_uom_qty,
+            'qty_ordered': line.product_uom_qty,
+            'product_id': line.product_id.id,
+            'product_uom': line.product_id.uom_po_id.id,
+            'price_unit': seller.price or 0.0,
+            'schedule_date': fields.Datetime.now(),
+            'requisition_id': pr.id,
+            'name': line.name,
+        }
+
+    @api.multi
+    def create_purchase_requisition(self):
+        sale_order_id = self._context.get('active_id', False)
+        sale_orders = self.env['sale.order'].browse(sale_order_id)
+        PurchaseRequisition = self.env['purchase.requisition']
+        PurchaseRequisitionLine = self.env['purchase.requisition.line']
+        for rec in self:
+            order_ids = []
+            if sale_orders.so_created:
+                vals = rec._prepare_purchase_order(sale_orders, rec.partner_id)
+                vals.update({
+                    'name': 'PR - {}'.format(sale_orders.name)
+                })
+                vals.pop('fiscal_position_id')
+                pr = PurchaseRequisition.create(vals)
+                for line in sale_orders.order_line:
+                    if not line.is_po_created:
+                        if not line.product_id.type == 'service':
+                            raise Warning(_('Some of the product found in the sales order that types is not service so the purchase order can not be created.'))
+                        elif line.product_id.type == 'service' and not line.product_id.service_type == 'create_purchase_order':
+                            raise Warning(_('Service Products are not set as track service with create purchase order option.'))
+                        else:
+                            order_line_vals = rec._prepare_purchase_requisition_line(pr, line)
+                            PurchaseRequisitionLine.create(order_line_vals)
+                            order_ids.append(pr.id)
+                            line.is_po_created = True
+            res = self.env.ref('purchase_requisition.action_purchase_requisition')
+            res = res.read()[0]
+            res['domain'] = str([('id', 'in', order_ids)])
+        return res
+
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

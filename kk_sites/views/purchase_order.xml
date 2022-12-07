@@ -13,9 +13,10 @@
             <!-- CHANGES DATE_PLANNED ON THE PURCHASE.ORDER MODEL -->
             <xpath expr="//page[2]//field[@name='date_planned']" position="attributes">
                 <attribute name="invisible">1</attribute>
+                <attribute name="required">0</attribute>
             </xpath>
             <xpath expr="//page[2]//field[@name='date_planned']" position="after">
-                <field name="kk_date_planned" nolabel="1" required="1" attrs="{'readonly': [('state', 'not in', ('draft', 'sent'))]}" />
+                <field name="kk_date_planned" nolabel="1" attrs="{'readonly': [('state', 'not in', ('draft', 'sent'))]}" />
             </xpath>
             <!-- CHANGES DATE_PLANNED ON THE PURCHASE.ORDER.LINE MODEL -->
             <field name="date_planned" position="attributes">
@@ -53,20 +54,20 @@
         <field name="name">kk.site.purchase.line.tree</field>
         <field name="model">purchase.order.line</field>
         <field name="arch" type="xml">
-            <tree string="Linhas do Pedido de Compra" create="0" delete="0">
-                <field name="order_id" />
-                <field name="partner_id" />
-                <field name="product_id" />
+            <tree string="Linhas do Pedido de Compra" create="0" delete="0" editable="top">
+                <field name="order_id" readonly="1" />
+                <field name="partner_id" readonly="1" />
+                <field name="product_id" readonly="1" />
                 <field name="kk_site_id" />
                 <field name="kk_site_city_state" />
                 <field name="kk_site_partner_id" />
-                <field name="product_qty" />
-                <field name="create_uid" />
-                <field name="create_date" widget="date" />
+                <field name="product_qty" readonly="1" />
+                <field name="create_uid" readonly="1" />
+                <field name="create_date" widget="date" readonly="1" />
                 <field name="kk_date_planned" />
                 <field name="kk_delivery_date" />
-                <field name="state" />
-                <field name="price_subtotal" />
+                <field name="state" readonly="1" />
+                <field name="price_subtotal" readonly="1" />
             </tree>
         </field>
     </record>
@@ -97,7 +98,7 @@
         <field name="name">Linhas do Pedido de Compra</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">purchase.order.line</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">tree</field>
         <field name="search_view_id" ref="kk_site_purchase_line_tree_search"/>
         <field name="view_id" ref="kk_site_purchase_line_tree"/>
     </record>

@@ -14,7 +14,8 @@
                             <group/>
                         </group>
                         <footer>
-                            <button name="create_purchase_order" type="object" string="Create" class="btn-primary"/>
+                            <button name="create_purchase_order" type="object" string="Criar PDC" class="btn-primary"/>
+                            <button name="create_purchase_requisition" type="object" string="Criar Concorrência" class="btn-primary"/>
                             or
                             <button string="_Cancel" class="btn-default" special="cancel" />
                         </footer>

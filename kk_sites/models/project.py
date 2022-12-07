@@ -54,9 +54,14 @@ class Task(models.Model):
     kk_delivery_date = fields.Date(string="Data de Entrega 3º")
     kk_po_partner_id = fields.Many2one(
         comodel_name="res.partner",
-        related="purchase_order_id.partner_id",
         string="Fornecedor Relacionado",
+        store=True
     )
+
+    @api.onchange('purchase_order_id')
+    def onchange_purchase_order_id(self):
+        for task in self:
+            task.kk_po_partner_id = task.purchase_order_id.partner_id.id
 
     @api.model
     def create(self, vals):
