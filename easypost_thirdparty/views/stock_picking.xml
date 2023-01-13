@@ -1,0 +1,15 @@
+<odoo>
+
+    <record id="view_stock_picking_form" model="ir.ui.view">
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="delivery.view_picking_withcarrier_out_form" />
+        <field name="arch" type="xml">
+            <field name="carrier_id" position="after">
+                <field name="shipping_payment_type" />
+                <field name="shipping_thirdparty_partner_id" 
+                    attrs="{'invisible': [('shipping_payment_type', '!=', 'THIRD_PARTY')], 'required': [('shipping_payment_type', '==', 'THIRD_PARTY')]}" />
+            </field>
+        </field>
+    </record>
+
+</odoo>
