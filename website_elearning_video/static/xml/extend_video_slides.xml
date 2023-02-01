@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- Copyright (c) 2017-Present Webkul Software Pvt. Ltd. (<https://webkul.com/>) -->
+<!-- See LICENSE URL <https://store.webkul.com/license.html/> for full copyright and licensing details. -->
+
+<templates id="template" xml:space="preserve">
+    <t t-extend="website.slides.fullscreen.video">
+        <t t-jquery=".player" t-operation="replace">
+            <t t-if="widget.slide.attachmentId">
+                <div class="player embed-responsive embed-responsive-16by9 embed-responsive-item h-100 video-file">
+                    <video controls="true" preload="metadata">
+                        <source t-attf-src="/get_video/#{widget.slide.attachmentId}" type="video/mp4" />
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+            </t>
+            <t t-else=" ">
+            <div class="player embed-responsive embed-responsive-16by9 embed-responsive-item h-100">
+                <iframe t-att-id="'youtube-player' + widget.slide.id" t-att-src="widget.slide.embedUrl" allowFullScreen="true" frameborder="0" enablejsapi="1" autoplay="1" allow="autoplay"></iframe>
+            </div>
+            </t>
+        </t>
+    </t>
+</templates>

@@ -1,0 +1,13 @@
+<odoo>
+    <data noupdate="1">
+        <!-- <record id="demo_1" model="wk.video.types">
+            <field name="name">video/mp4</field>
+        </record> -->
+
+        <record id="demo_2" model="website.slide.video">
+            <field name="name">mp4</field>
+            <field name="is_active">True</field>
+            <field name="file_size">15</field>
+        </record>
+    </data>
+</odoo>

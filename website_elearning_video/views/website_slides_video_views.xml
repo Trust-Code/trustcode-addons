@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) 2015-Present Webkul Software Pvt. Ltd. (<https://webkul.com/>) -->
+<!-- See LICENSE file for full copyright and licensing details. -->
+<!-- "License URL : <https://store.webkul.com/license.html/>" -->
+
+<odoo>
+	<data>
+		<record id="view_inherit_slide_slide_form" model="ir.ui.view">
+			<field name="name">slide.slide.form.view.inherit</field>
+			<field name="model">slide.slide</field>
+			<field name="inherit_id" ref="website_slides.view_slide_slide_form"/>
+			<field name="arch" type="xml">
+				<field name='url' position="before">
+					<field name="document_type" attrs="{'invisible': [('slide_type', '!=', 'video')]}"/>
+					<field name="slide_attachment"
+						attrs="{'invisible': [('document_type', '=', 'url')]}"
+						domain="[('mimetype', 'ilike', 'video/')]" invisible='1'/>
+					<label for="name" string=""/>
+					 <field name="fname" invisible='1'/>
+					 <field widget="binary" height="64" name="attachment" filename='fname' attrs="{'required':[('document_type','=','binary')],'invisible': [('document_type', '=', 'url')]}"/>
+					<button name="%(website_elearning_video.video_slide_attachment_wizard_action)d" type="action" attrs="{'invisible': [('document_type', '=', 'url')]}" class="btn-success mb-2" icon="fa-paperclip" string="Add Attachment" invisible='1'/>
+				</field>
+				<xpath expr="//field[@name='url']" position="attributes">
+					<attribute name="attrs">{'required': [('document_type', '=', 'url'), ('slide_type', '=', 'video')], 'invisible': ['|', ('slide_type', '!=', 'video'), ('document_type', '!=', 'url')]}</attribute>
+				</xpath>
+			</field>
+		</record>
+	</data>
+</odoo>

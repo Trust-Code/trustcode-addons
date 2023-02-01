@@ -1,0 +1,32 @@
+<!-- Copyright (c) 2015-Present Webkul Software Pvt. Ltd. (<https://webkul.com/>) -->
+<!-- See LICENSE file for full copyright and licensing details. -->
+<!-- "License URL : <https://store.webkul.com/license.html/>" -->
+
+<odoo>
+  <data> 
+    <record id="website_slide_type_config_tree" model="ir.ui.view">
+      <field name="name">website.slide.video.tree</field>
+      <field name="model">website.slide.video</field>
+      <field name="arch" type="xml">
+        <tree string="Choose Video Types" name="Choose Video Types" editable="bottom">
+          <field name="name" />
+          <field name="file_size"/>
+          <field name="website_id" widget="many2many_tags"/>
+          <field name="is_active" />
+        </tree>
+      </field>
+    </record>
+
+    <record id="website_slide_type_config_tree_action" model="ir.actions.act_window">
+      <field name="name">Choose Formats</field>
+      <field name="type">ir.actions.act_window</field>
+      <field name="res_model">website.slide.video</field>
+      <field name="view_mode">tree,form</field>
+      <field name="view_id" ref="website_elearning_video.website_slide_type_config_tree" />
+    </record>
+
+    <menuitem name="Website Slides" id="slide_config_main_menu" parent="website_slides.website_slides_menu_configuration" sequence="2" />
+    <menuitem name="Choose Formats" id="choose_format_config" parent="website_elearning_video.slide_config_main_menu" action="website_elearning_video.website_slide_type_config_tree_action" />
+
+  </data>
+</odoo>

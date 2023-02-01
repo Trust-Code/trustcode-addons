@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="video_slide_attachment_wizard_form" model="ir.ui.view">
+            <field name="name">Video Attachment</field>
+            <field name="model">video.attachment.wizard</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Add Attachment">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name"/>
+                                <field widget="binary" height="64" name="attachment" filename="name" />
+                            </group>
+                        </group>
+                        <footer>
+                            <button name="add_video_attachment" type="object" string="Save" class="oe_highlight"/>
+                            <button special="cancel" class="oe_highlight" string="Close" />
+                        </footer>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="video_slide_attachment_wizard_action" model="ir.actions.act_window">
+            <field name="name">Video Attachment Wizard</field>
+            <field name="res_model">video.attachment.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+    </data>
+</odoo>
