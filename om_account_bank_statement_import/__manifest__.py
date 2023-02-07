@@ -17,9 +17,6 @@
         'wizard/journal_creation.xml',
         'views/account_bank_statement_import_view.xml',
     ],
-    'demo': [
-        'demo/partner_bank.xml',
-    ],
     'images': ['static/description/banner.png'],
     'installable': True,
     'auto_install': True,
