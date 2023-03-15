@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_ir_module_history_settings_user,ir.module.history Settings User,app_action_history.model_ir_module_history,base.group_system,1,1,1,1
+
