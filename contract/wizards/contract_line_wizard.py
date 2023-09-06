@@ -1,20 +1,19 @@
 # Copyright 2018 ACSONE SA/NV
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
-from odoo import api, fields, models
+from odoo import fields, models
 
 
 class ContractLineWizard(models.TransientModel):
 
-    _name = 'contract.line.wizard'
-    _description = 'Contract Line Wizard'
+    _name = "contract.line.wizard"
+    _description = "Contract Line Wizard"
 
-    date_start = fields.Date(string='Date Start')
-    date_end = fields.Date(string='Date End')
-    recurring_next_date = fields.Date(string='Next Invoice Date')
-    is_auto_renew = fields.Boolean(string="Auto Renew", default=False)
+    date_start = fields.Date()
+    date_end = fields.Date()
+    recurring_next_date = fields.Date(string="Next Invoice Date")
+    is_auto_renew = fields.Boolean(default=False)
     manual_renew_needed = fields.Boolean(
-        string="Manual renew needed",
         default=False,
         help="This flag is used to make a difference between a definitive stop"
         "and temporary one for which a user is not able to plan a"
@@ -25,6 +24,7 @@ class ContractLineWizard(models.TransientModel):
         string="Contract Line",
         required=True,
         index=True,
+        ondelete="cascade",
     )
 
     def stop(self):
