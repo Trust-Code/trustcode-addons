@@ -7,20 +7,20 @@ Recurring - Contracts Management
    !! changes will be overwritten.                   !!
    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-.. |badge1| image:: https://img.shields.io/badge/maturity-Beta-yellow.png
+.. |badge1| image:: https://img.shields.io/badge/maturity-Production%2FStable-green.png
     :target: https://odoo-community.org/page/development-status
-    :alt: Beta
+    :alt: Production/Stable
 .. |badge2| image:: https://img.shields.io/badge/licence-AGPL--3-blue.png
     :target: http://www.gnu.org/licenses/agpl-3.0-standalone.html
     :alt: License: AGPL-3
 .. |badge3| image:: https://img.shields.io/badge/github-OCA%2Fcontract-lightgray.png?logo=github
-    :target: https://github.com/OCA/contract/tree/12.0/contract
+    :target: https://github.com/OCA/contract/tree/15.0/contract
     :alt: OCA/contract
 .. |badge4| image:: https://img.shields.io/badge/weblate-Translate%20me-F47D42.png
-    :target: https://translation.odoo-community.org/projects/contract-12-0/contract-12-0-contract
+    :target: https://translation.odoo-community.org/projects/contract-15-0/contract-15-0-contract
     :alt: Translate me on Weblate
 .. |badge5| image:: https://img.shields.io/badge/runbot-Try%20me-875A7B.png
-    :target: https://runbot.odoo-community.org/runbot/110/12.0
+    :target: https://runbot.odoo-community.org/runbot/110/15.0
     :alt: Try me on Runbot
 
 |badge1| |badge2| |badge3| |badge4| |badge5| 
@@ -29,6 +29,8 @@ This module enables contracts management with recurring
 invoicing functions. Also you can print and send by email contract report.
 
 It works for customer contract and supplier contracts.
+
+Contracts are shown in portal.
 
 **Table of contents**
 
@@ -40,6 +42,8 @@ Configuration
 
 To view discount field in contract line, you need to set *Discount on lines* in
 user access rights.
+
+Contracts can be viewed on the portal (list and detail) if the user logged into the portal is a follower of the contract.
 
 Usage
 =====
@@ -70,11 +74,17 @@ Usage
    They allow to define default journal, price list and lines when creating a contract.
    To use it, just select the template on the contract and fields will be filled automatically.
 
+* Contracts appear in portal to following users in every contract:
+
+.. image:: https://raw.githubusercontent.com/OCA/contract/15.0/contract/static/src/screenshots/portal-my.png
+.. image:: https://raw.githubusercontent.com/OCA/contract/15.0/contract/static/src/screenshots/portal-list.png
+.. image:: https://raw.githubusercontent.com/OCA/contract/15.0/contract/static/src/screenshots/portal-detail.png
+
 Known issues / Roadmap
 ======================
 
 * Recover states and others functional fields in Contracts.
-
+* Add recurrence flag at template level.
 
 Bug Tracker
 ===========
@@ -82,7 +92,7 @@ Bug Tracker
 Bugs are tracked on `GitHub Issues <https://github.com/OCA/contract/issues>`_.
 In case of trouble, please check there if your issue has already been reported.
 If you spotted it first, help us smashing it by providing a detailed and welcomed
-`feedback <https://github.com/OCA/contract/issues/new?body=module:%20contract%0Aversion:%2012.0%0A%0A**Steps%20to%20reproduce**%0A-%20...%0A%0A**Current%20behavior**%0A%0A**Expected%20behavior**>`_.
+`feedback <https://github.com/OCA/contract/issues/new?body=module:%20contract%0Aversion:%2015.0%0A%0A**Steps%20to%20reproduce**%0A-%20...%0A%0A**Current%20behavior**%0A%0A**Expected%20behavior**>`_.
 
 Do not contact contributors directly about support or help with technical issues.
 
@@ -92,24 +102,28 @@ Credits
 Authors
 ~~~~~~~
 
-* OpenERP SA
 * Tecnativa
-* LasLabs
+* ACSONE SA/NV
 
 Contributors
 ~~~~~~~~~~~~
 
-* Pedro M. Baeza <pedro.baeza@tecnativa.com>
-* Carlos Dauden <carlos.dauden@tecnativa.com>
 * Angel Moya <angel.moya@domatix.com>
 * Dave Lasley <dave@laslabs.com>
-* Vicent Cubells <vicent.cubells@tecnativa.com>
 * Miquel Raïch <miquel.raich@eficent.com>
 * Souheil Bejaoui <souheil.bejaoui@acsone.eu>
 * Thomas Binsfeld <thomas.binsfeld@acsone.eu>
-* Rafael Blasco <rafael.blasco@tecnativa.com>
 * Guillaume Vandamme <guillaume.vandamme@acsone.eu>
 * Raphaël Reverdy <raphael.reverdy@akretion.com>
+
+* `Tecnativa <https://www.tecnativa.com>`_:
+
+    * Pedro M. Baeza
+    * Carlos Dauden
+    * Vicent Cubells
+    * Rafael Blasco
+    * Víctor Martínez
+* Iván Antón <ozono@ozonomultimedia.com>
 
 Maintainers
 ~~~~~~~~~~~
@@ -124,6 +138,6 @@ OCA, or the Odoo Community Association, is a nonprofit organization whose
 mission is to support the collaborative development of Odoo features and
 promote its widespread use.
 
-This module is part of the `OCA/contract <https://github.com/OCA/contract/tree/12.0/contract>`_ project on GitHub.
+This module is part of the `OCA/contract <https://github.com/OCA/contract/tree/15.0/contract>`_ project on GitHub.
 
 You are welcome to contribute. To learn how please visit https://odoo-community.org/page/Contribute.

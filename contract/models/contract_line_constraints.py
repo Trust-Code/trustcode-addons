@@ -3,17 +3,18 @@
 
 import itertools
 from collections import namedtuple
+
 from odoo.fields import Date
 
 Criteria = namedtuple(
-    'Criteria',
+    "Criteria",
     [
-        'when',  # Contract line relatively to today (BEFORE, IN, AFTER)
-        'has_date_end',  # Is date_end set on contract line (bool)
-        'has_last_date_invoiced',  # Is last_date_invoiced set on contract line
-        'is_auto_renew',  # Is is_auto_renew set on contract line (bool)
-        'has_successor',  # Is contract line has_successor (bool)
-        'predecessor_has_successor',
+        "when",  # Contract line relatively to today (BEFORE, IN, AFTER)
+        "has_date_end",  # Is date_end set on contract line (bool)
+        "has_last_date_invoiced",  # Is last_date_invoiced set on contract line
+        "is_auto_renew",  # Is is_auto_renew set on contract line (bool)
+        "has_successor",  # Is contract line has_successor (bool)
+        "predecessor_has_successor",
         # Is contract line predecessor has successor (bool)
         # In almost of the cases
         # contract_line.predecessor.successor == contract_line
@@ -23,12 +24,12 @@ Criteria = namedtuple(
         # If contract_line.predecessor.successor != False
         # and contract_line is canceled, we don't allow uncancel
         # else we re-link contract_line and its predecessor
-        'canceled',  # Is contract line canceled (bool)
+        "canceled",  # Is contract line canceled (bool)
     ],
 )
 Allowed = namedtuple(
-    'Allowed',
-    ['plan_successor', 'stop_plan_successor', 'stop', 'cancel', 'uncancel'],
+    "Allowed",
+    ["plan_successor", "stop_plan_successor", "stop", "cancel", "uncancel"],
 )
 
 
@@ -36,8 +37,8 @@ def _expand_none(criteria):
     variations = []
     for attribute, value in criteria._asdict().items():
         if value is None:
-            if attribute == 'when':
-                variations.append(['BEFORE', 'IN', 'AFTER'])
+            if attribute == "when":
+                variations.append(["BEFORE", "IN", "AFTER"])
             else:
                 variations.append([True, False])
         else:
@@ -46,14 +47,14 @@ def _expand_none(criteria):
 
 
 def _add(matrix, criteria, allowed):
-    """ Expand None values to True/False combination """
+    """Expand None values to True/False combination"""
     for c in _expand_none(criteria):
         matrix[c] = allowed
 
 
 CRITERIA_ALLOWED_DICT = {
     Criteria(
-        when='BEFORE',
+        when="BEFORE",
         has_date_end=True,
         has_last_date_invoiced=False,
         is_auto_renew=True,
@@ -68,7 +69,7 @@ CRITERIA_ALLOWED_DICT = {
         uncancel=False,
     ),
     Criteria(
-        when='BEFORE',
+        when="BEFORE",
         has_date_end=True,
         has_last_date_invoiced=False,
         is_auto_renew=False,
@@ -83,7 +84,7 @@ CRITERIA_ALLOWED_DICT = {
         uncancel=False,
     ),
     Criteria(
-        when='BEFORE',
+        when="BEFORE",
         has_date_end=True,
         has_last_date_invoiced=False,
         is_auto_renew=False,
@@ -98,7 +99,7 @@ CRITERIA_ALLOWED_DICT = {
         uncancel=False,
     ),
     Criteria(
-        when='BEFORE',
+        when="BEFORE",
         has_date_end=False,
         has_last_date_invoiced=False,
         is_auto_renew=False,
@@ -113,7 +114,7 @@ CRITERIA_ALLOWED_DICT = {
         uncancel=False,
     ),
     Criteria(
-        when='IN',
+        when="IN",
         has_date_end=True,
         has_last_date_invoiced=False,
         is_auto_renew=True,
@@ -128,7 +129,7 @@ CRITERIA_ALLOWED_DICT = {
         uncancel=False,
     ),
     Criteria(
-        when='IN',
+        when="IN",
         has_date_end=True,
         has_last_date_invoiced=False,
         is_auto_renew=False,
@@ -143,7 +144,7 @@ CRITERIA_ALLOWED_DICT = {
         uncancel=False,
     ),
     Criteria(
-        when='IN',
+        when="IN",
         has_date_end=True,
         has_last_date_invoiced=False,
         is_auto_renew=False,
@@ -158,7 +159,7 @@ CRITERIA_ALLOWED_DICT = {
         uncancel=False,
     ),
     Criteria(
-        when='IN',
+        when="IN",
         has_date_end=False,
         has_last_date_invoiced=False,
         is_auto_renew=False,
@@ -173,7 +174,7 @@ CRITERIA_ALLOWED_DICT = {
         uncancel=False,
     ),
     Criteria(
-        when='BEFORE',
+        when="BEFORE",
         has_date_end=True,
         has_last_date_invoiced=True,
         is_auto_renew=True,
@@ -188,7 +189,7 @@ CRITERIA_ALLOWED_DICT = {
         uncancel=False,
     ),
     Criteria(
-        when='BEFORE',
+        when="BEFORE",
         has_date_end=True,
         has_last_date_invoiced=True,
         is_auto_renew=False,
@@ -203,7 +204,7 @@ CRITERIA_ALLOWED_DICT = {
         uncancel=False,
     ),
     Criteria(
-        when='BEFORE',
+        when="BEFORE",
         has_date_end=True,
         has_last_date_invoiced=True,
         is_auto_renew=False,
@@ -218,7 +219,7 @@ CRITERIA_ALLOWED_DICT = {
         uncancel=False,
     ),
     Criteria(
-        when='BEFORE',
+        when="BEFORE",
         has_date_end=False,
         has_last_date_invoiced=True,
         is_auto_renew=False,
@@ -233,7 +234,7 @@ CRITERIA_ALLOWED_DICT = {
         uncancel=False,
     ),
     Criteria(
-        when='IN',
+        when="IN",
         has_date_end=True,
         has_last_date_invoiced=True,
         is_auto_renew=True,
@@ -248,7 +249,7 @@ CRITERIA_ALLOWED_DICT = {
         uncancel=False,
     ),
     Criteria(
-        when='IN',
+        when="IN",
         has_date_end=True,
         has_last_date_invoiced=True,
         is_auto_renew=False,
@@ -263,7 +264,7 @@ CRITERIA_ALLOWED_DICT = {
         uncancel=False,
     ),
     Criteria(
-        when='IN',
+        when="IN",
         has_date_end=True,
         has_last_date_invoiced=True,
         is_auto_renew=False,
@@ -278,7 +279,7 @@ CRITERIA_ALLOWED_DICT = {
         uncancel=False,
     ),
     Criteria(
-        when='IN',
+        when="IN",
         has_date_end=False,
         has_last_date_invoiced=True,
         is_auto_renew=False,
@@ -293,7 +294,7 @@ CRITERIA_ALLOWED_DICT = {
         uncancel=False,
     ),
     Criteria(
-        when='AFTER',
+        when="AFTER",
         has_date_end=True,
         has_last_date_invoiced=None,
         is_auto_renew=True,
@@ -308,7 +309,7 @@ CRITERIA_ALLOWED_DICT = {
         uncancel=False,
     ),
     Criteria(
-        when='AFTER',
+        when="AFTER",
         has_date_end=True,
         has_last_date_invoiced=None,
         is_auto_renew=False,
@@ -323,7 +324,7 @@ CRITERIA_ALLOWED_DICT = {
         uncancel=False,
     ),
     Criteria(
-        when='AFTER',
+        when="AFTER",
         has_date_end=True,
         has_last_date_invoiced=None,
         is_auto_renew=False,
@@ -377,10 +378,10 @@ for c in CRITERIA_ALLOWED_DICT:
 def compute_when(date_start, date_end):
     today = Date.today()
     if today < date_start:
-        return 'BEFORE'
+        return "BEFORE"
     if date_end and today > date_end:
-        return 'AFTER'
-    return 'IN'
+        return "AFTER"
+    return "IN"
 
 
 def compute_criteria(
