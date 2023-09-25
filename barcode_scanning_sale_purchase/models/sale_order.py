@@ -10,7 +10,7 @@ class SaleOrderLines(models.Model):
     def _onchange_barcode_scan(self):
         product_rec = self.env['product.product']
         if self.barcode_scan:
-            product = product_rec.search([('barcode', '=', self.barcode_scan)])
+            product = product_rec.search([('default_code', '=', self.barcode_scan)])
             self.product_id = product.id
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
