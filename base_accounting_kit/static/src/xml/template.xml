@@ -119,8 +119,8 @@
                                 </div>
                                 <div class="card-tools">
                                     <select id="income_expense_values">
-                                        <option id="income_this_year" value="income_this_year">This Year</option>
-                                        <option id="income_this_month" value="income_this_month">This Month</option>
+                                        <option id="income_this_year" value="income_this_year">Este ano</option>
+                                        <option id="income_this_month" value="income_this_month">Este mês</option>
                                         <div role="separator" class="dropdown-divider" />
                                         <option id="income_last_month" value="income_last_month">Last Month</option>
                                         <option id="income_last_year" value="income_this_year">Last Year</option>
@@ -149,8 +149,8 @@
                                 </div>
                                 <div class="card-tools">
                                     <select id="invoice_values">
-                                        <option id="invoice_this_month" value="this_month">This Month</option>
-                                        <option id="invoice_this_year" value="this_year">This Year</option>
+                                        <option id="invoice_this_month" value="this_month">Este mês</option>
+                                        <option id="invoice_this_year" value="this_year">Este ano</option>
                                     </select>
                                 </div>
                             </div>
@@ -240,8 +240,8 @@
                                 </div>
                                 <div class="card-tools">
                                     <select id="aged_receivable_values">
-                                        <option id="aged_payable_this_month" value="this_month">This Month</option>
-                                        <option id="aged_payable_this_year" value="this_year">This Year</option>
+                                        <option id="aged_payable_this_month" value="this_month">Este mês</option>
+                                        <option id="aged_payable_this_year" value="this_year">Este ano</option>
                                     </select>
                                 </div>
                             </div>
@@ -267,8 +267,8 @@
                                 </div>
                                 <div class="card-tools">
                                     <select id="aged_payable_value">
-                                        <option id="aged_receivable_this_month" value="this_month">This Month</option>
-                                        <option id="aged_receivable_this_year" value="this_year">This Year</option>
+                                        <option id="aged_receivable_this_month" value="this_month">Este mês</option>
+                                        <option id="aged_receivable_this_year" value="this_year">Este ano</option>
                                     </select>
                                 </div>
                             </div>
@@ -294,7 +294,7 @@
                                 <div class="card-tools">
                                     <select id="top_10_customer_value">
 <!--                                        <option id="null" value="null"></option>-->
-                                        <option id="top_10_customer_this_month" value="this_month">This Month</option>
+                                        <option id="top_10_customer_this_month" value="this_month">Este mês</option>
                                         <div role="separator" class="dropdown-divider" />
                                         <option id="top_10_customer_last_month" value="last_month">Last Month</option>
 
