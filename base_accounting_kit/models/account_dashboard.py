@@ -450,7 +450,7 @@ class DashBoard(models.Model):
         bill_amount = bill_amount[:9]
         bill_amount.append(amounts)
         bill_partner = bill_partner[:9]
-        bill_partner.append("Others")
+        bill_partner.append("Outros")
         records = {
             'bill_partner': bill_partner,
             'bill_amount': bill_amount,
@@ -498,7 +498,7 @@ class DashBoard(models.Model):
         due_amount = due_amount[:9]
         due_amount.append(amounts)
         due_partner = due_partner[:9]
-        due_partner.append("Others")
+        due_partner.append("Outros")
         records = {
             'due_partner': due_partner,
             'due_amount': due_amount,
@@ -555,7 +555,7 @@ class DashBoard(models.Model):
         due_amount = due_amount[:9]
         due_amount.append(amounts)
         due_partner = due_partner[:9]
-        due_partner.append("Others")
+        due_partner.append("Outros")
         records = {
             'due_partner': due_partner,
             'due_amount': due_amount,
@@ -614,7 +614,7 @@ class DashBoard(models.Model):
         bill_amount = bill_amount[:9]
         bill_amount.append(amounts)
         bill_partner = bill_partner[:9]
-        bill_partner.append("Others")
+        bill_partner.append("Outros")
         records = {
             'bill_partner': bill_partner,
             'bill_amount': bill_amount,
