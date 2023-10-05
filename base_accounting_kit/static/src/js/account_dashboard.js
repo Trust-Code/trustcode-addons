@@ -1150,7 +1150,7 @@ odoo.define('AccountingDashboard.AccountingDashboard', function(require) {
 
 
                     $('#toggle-two').bootstrapToggle({
-                        on: 'Todos os Lançamentos',
+                        on: 'Lançamentos (todos)',
                         off: 'Lançamentos Postados'
                     });
 
