@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<data>
+<template id="classic_report_purchaseorder_document">
+<t t-if="o and 'company_id' in o">
+                <t t-set="company" t-value="o.company_id"></t>
+            </t>
+            <t t-if="not o or not 'company_id' in o">
+                <t t-set="company" t-value="res_company"></t>
+            </t>
+            <div class="header">
+                <div class="row mt32 mb32">
+                    <div class="col-6">
+                        <img t-if="company.logo" t-att-src="'data:image/png;base64,%s' % to_text(company.logo)" style="max-height: 50px;" />
+                    </div>
+                    <div class="col-6 text-right" style="font:12px lucida-console,sans-serif !important;">
+                        <span t-field="company.partner_id" />
+                        <br/>
+                        <span t-field="company.partner_id.street" />
+                        <br/>
+                        <span t-field="company.partner_id.street2" />
+                        <br/>
+                        <span t-field="company.partner_id.city" />
+                        <br/>
+                        <span t-field="company.partner_id.country_id" />
+                        <br/>
+                        <span t-field="company.partner_id.vat" />
+                        <br/>
+                    </div>
+                </div>
+            </div>
+
+<t t-call="web.external_layout">
+        <t t-set="o" t-value="o.with_context({'lang':o.partner_id.lang})"/>
+        <div class="page">
+           <div class="oe_structure"/>
+        
+                    <table class="table table-sm" style=" table-layout:fixed;" >
+                <thead>
+                    <tr>
+                        <th width="30px" style="background-color:#3498DB !important;border: 1px !important; border-style: solid !important; border-color: #fff; color:#fff !important; ">Vendor</th>
+                        <th width="30px" style="background-color:#3498DB !important;border: 1px !important; border-style: solid !important; border-color: #fff; color:#fff !important; ">Shipping Address</th>
+                        <th width="20px" style="background-color:#3498DB !important;border: 1px !important; border-style: solid !important; border-color: #fff; color:#fff !important; ">Reference/Description</th>
+                        <th t-if="o.state != 'draft'" width="20px" style="background-color:#3498DB !important;border: 1px !important; border-style: solid !important; border-color: #fff; color:#fff !important; ">Purchase Order #</th>
+                        <th t-if="o.state == 'draft'" width="20px" style="background-color:#3498DB !important;border: 1px !important; border-style: solid !important; border-color: #fff; color:#fff !important; ">Request for Quotation #</th>
+                    </tr>
+               </thead>
+               <tbody>
+                        <tr>
+                            <td style="border: 1px !important; border-style: solid !important; border-color: #fff !important;">
+                               <div t-field="o.partner_id"/>
+                               <t t-if="o.partner_id.street">
+                                <t t-esc="o.partner_id.street"/>
+                                </t><br/>
+                                <t t-if="o.partner_id.street2">
+                                    <t t-esc="o.partner_id.street2"/>
+                                </t><br/>
+                                <t t-if="o.partner_id.city">
+                                    <t t-esc="o.partner_id.city"/>
+                                </t><br/>
+                                <t t-if="o.partner_id.state_id.name">
+                                    <t t-esc="o.partner_id.state_id.name"/>
+                                </t><br/>
+                                <t t-if="o.partner_id.country_id.name">
+                                    <t t-esc="o.partner_id.country_id.name"/>
+                                </t><br/>
+                                <t t-if="o.partner_id.zip">
+                                    <t t-esc="o.partner_id.zip"/>
+                                </t><br/>
+                                <div t-field="o.partner_id.vat"/>
+                            </td>
+                            <td style="border: 1px !important; border-style: solid    !important; border-color: #fff !important;">
+                                <div t-if="o.dest_address_id">
+                                    <div t-field="o.dest_address_id"
+                                    t-field-options='{"widget": "contact", "fields": ["address", "name", "phone", "fax"], "no_marker": true, "phone_icons": true}'/>
+                                    <div t-field="o.partner_id.vat"/>
+                                </div>
+
+                                <div t-if="not o.dest_address_id and o.picking_type_id and o.picking_type_id.warehouse_id">
+                                    <span t-field="o.picking_type_id.warehouse_id.name"/>
+                                    <div t-field="o.picking_type_id.warehouse_id.partner_id"
+                                        t-field-options='{"widget": "contact", "fields": ["address", "phone", "fax"], "no_marker": true, "phone_icons": true}'/>
+                                   <div t-field="o.partner_id.vat"/>
+                                </div>
+                            </td>
+                        <td style="border: 1px !important; border-style: solid !important; border-color: #fff !important;">
+                        <div t-field="o.partner_ref"/>
+                        </td>
+                        <td style="border: 1px !important; border-style: solid !important; border-color: #fff !important;">
+                            <b><div t-field="o.name"/></b>
+                        </td>
+                    </tr>
+               </tbody>
+            </table>
+            
+            <table class="table table-sm" style=" table-layout:fixed; padding-top=20px;" >
+                <thead>
+                    <tr>
+                        <th width="30px" style="background-color:#3498DB !important;border: 1px !important; border-style: solid !important; border-color: #fff; color:#fff !important; ">Order Date</th>
+                        <th width="30px" style="background-color:#3498DB !important;border: 1px !important; border-style: solid !important; border-color: #fff; color:#fff !important; ">Scheduled Date</th>
+                        <th width="20px" style="background-color:#3498DB !important;border: 1px !important; border-style: solid !important; border-color: #fff; color:#fff !important; ">Approval Date</th>
+                        <th width="20px" style="background-color:#3498DB !important;border: 1px !important; border-style: solid !important; border-color: #fff; color:#fff !important; ">Payment Term</th>
+                    </tr>
+               </thead>
+               <tbody>
+                <tr>
+                    <td style="border: 1px !important; border-style: solid !important; border-color: #fff !important;">
+                            <div t-field="o.date_order"/>
+                            </td>
+                        <td style="border: 1px !important; border-style: solid !important; border-color: #fff !important;">
+                                <div t-field="o.date_planned"/>
+                        </td>
+                        <td style="border: 1px !important; border-style: solid !important; border-color: #fff !important;">
+                    <div t-field="o.date_approve"/>
+                        </td>
+                        <td style="border: 1px !important; border-style: solid !important; border-color: #fff !important;">
+                    <div t-field="o.payment_term_id"/>
+                        </td>
+                        </tr>
+                       </tbody>
+            </table>
+
+            <table class="table table-sm">
+                <thead>
+                    <tr>
+                        <th style="background-color:#3498DB !important;border: 1px !important; border-style: solid !important; border-color: #fff; color:#fff !important; "><strong>Description</strong></th>
+                        <th style="background-color:#3498DB !important;border: 1px !important; border-style: solid !important; border-color: #fff; color:#fff !important; "><strong>Taxes</strong></th>
+                        <th class="text-center" style="background-color:#3498DB !important;border: 1px !important; border-style: solid !important; border-color: #fff; color:#fff !important; "><strong>Date Req.</strong></th>
+                        <th class="text-right" style="background-color:#3498DB !important;border: 1px !important; border-style: solid !important; border-color: #fff; color:#fff !important; "><strong>Qty</strong></th>
+                        <th class="text-right" style="background-color:#3498DB !important;border: 1px !important; border-style: solid !important; border-color: #fff; color:#fff !important; "><strong>Unit Price</strong></th>
+                        <th class="text-right" style="background-color:#3498DB !important;border: 1px !important; border-style: solid !important; border-color: #fff; color:#fff !important; "><strong>Net Price</strong></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr t-foreach="o.order_line" t-as="line">
+                        <td>
+                            <span t-field="line.name"/>
+                        </td>
+                        <td>
+                            <span t-esc="', '.join(map(lambda x: x.name, line.taxes_id))"/>
+                        </td>
+                        <td class="text-center">
+                            <span t-field="line.date_planned"/>
+                        </td>
+                        <td class="text-right">
+                            <span t-field="line.product_qty"/>
+                            <span t-field="line.product_uom.name" groups="product.group_uom"/>
+                        </td>
+                        <td class="text-right">
+                            <span t-field="line.price_unit"/>
+                        </td>
+                        <td class="text-right">
+                            <span t-field="line.price_subtotal"
+                                t-field-options='{"widget": "monetary", "display_currency": "o.currency_id"}'/>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+                
+            
+                <div class="col-xs-4 pull-right">
+                    <table class="table table-condensed">
+                        <tr class="border-black">
+                            <td><strong>Total Without Taxes</strong></td>
+                            <td class="text-right">
+                                <span t-field="o.amount_untaxed"
+                                    t-field-options='{"widget": "monetary", "display_currency": "o.currency_id"}'/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Taxes</td>
+                            <td class="text-right">
+                                <span t-field="o.amount_tax"
+                                    t-field-options='{"widget": "monetary", "display_currency": "o.currency_id"}'/>
+                            </td>
+                        </tr>
+                        <tr style=" background-color: #3498DB;" class="border-black">
+                            <td><strong>Total</strong></td>
+                            <td class="text-right">
+                                <span t-field="o.amount_total"
+                                    t-field-options='{"widget": "monetary", "display_currency": "o.currency_id"}'/>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+    <br/><br/><br/><br/><br/><br/><br/>
+<div style=" background-color: #3498DB; color:#fff !important; font:15px lucida-console,sans-serif !important; ">
+            <p t-if="o.notes">
+            <strong><span>Note:</span> </strong> <span t-field="o.notes" />
+            </p>
+            </div>
+            <div class="oe_structure"/>
+        </div>
+    </t>
+</template>
+
+<template id="report_purchaseorder" inherit_id="purchase.report_purchaseorder_document">
+
+  <xpath expr="//t[@t-call='web.external_layout']" position="replace">
+    <t t-call="web.html_container">
+        <t t-foreach="docs" t-as="o">
+            <t t-if="o.company_id.purchase_template == 'classic'">
+                <t t-call="bi_professional_reports_templates.classic_report_purchaseorder_document" t-lang="o.partner_id.lang"/>
+            </t>
+            <t t-if="o.company_id.purchase_template == 'fency'">
+                <t t-call="bi_professional_reports_templates.fency_report_purchaseorder_document" t-lang="o.partner_id.lang"/>
+            </t>
+            <t t-if="o.company_id.purchase_template == 'modern'">
+                <t t-call="bi_professional_reports_templates.modern_report_purchaseorder_document" t-lang="o.partner_id.lang"/>
+            </t>
+            <t t-if="o.company_id.purchase_template =='odoo_standard'">
+                <t t-call="bi_professional_reports_templates.odoo_standard_report_purchaseorder_document" t-lang="o.partner_id.lang"/>
+            </t>
+        </t>
+    </t>
+ </xpath>
+</template>
+</data>
+</odoo>
