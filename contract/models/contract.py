@@ -353,6 +353,7 @@ class ContractContract(models.Model):
                 self._finalize_invoice_values(invoice_values)
             )
         invoices = self.env['account.move'].create(final_invoices_values)
+
         return invoices
 
     @api.model
@@ -423,6 +424,8 @@ class ContractContract(models.Model):
     def _recurring_create_invoice(self, date_ref=False):
         invoices_values = self._prepare_recurring_invoices_values(date_ref)
         invoices = self.env['account.move'].create(invoices_values)
+        for invoice in invoices:
+            invoice._onchange_partner_id()
         return invoices
 
     @api.model
